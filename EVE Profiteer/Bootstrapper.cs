@@ -18,11 +18,12 @@ namespace eZet.EveProfiteer {
 
             container.Singleton<IWindowManager, WindowManager>();
             container.Singleton<IEventAggregator, EventAggregator>();
+            container.Singleton<KeyManagementDbContext>();
             container.Singleton<EveApiService>();
             container.PerRequest<IShell, ShellViewModel>();
             container.PerRequest<ManageKeysViewModel>();
             container.PerRequest<AddKeyViewModel>();
-            container.Singleton<KeyManagementDbContext>();
+            container.PerRequest<EditKeyViewModel>();
         }
 
         protected override object GetInstance(Type service, string key) {

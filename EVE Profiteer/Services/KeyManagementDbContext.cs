@@ -5,7 +5,7 @@ namespace eZet.EveProfiteer.Services {
     public class KeyManagementDbContext : DbContext {
 
         public KeyManagementDbContext() : base("EveProfiteerDb") {
-            
+            Database.SetInitializer(new DropCreateDatabaseIfModelChanges<KeyManagementDbContext>());
         }
 
         public DbSet<ApiKeyEntity> ApiKeyEntities { get; set; }

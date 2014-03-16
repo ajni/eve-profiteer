@@ -72,6 +72,7 @@
     <Compile Include="Models\ApiKey.cs" />
     <Compile Include="Services\EveApiService.cs" />
     <Compile Include="Services\KeyManagementDbContext.cs" />
+    <Compile Include="ViewModels\EditKeyViewModel.cs" />
     <Compile Include="ViewModels\AddKeyViewModel.cs" />
     <Compile Include="ViewModels\ManageKeysViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
@@ -79,12 +80,19 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Views\EditKeyView.xaml.cs">
+      <DependentUpon>EditKeyView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\AddKeyView.xaml.cs">
       <DependentUpon>AddKeyView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ManageKeysView.xaml.cs">
       <DependentUpon>ManageKeysView.xaml</DependentUpon>
     </Compile>
+    <Page Include="Views\EditKeyView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\AddKeyView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

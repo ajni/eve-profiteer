@@ -17,7 +17,7 @@ namespace eZet.EveProfiteer.Views {
     /// <summary>
     /// Interaction logic for ManageKeysView.xaml
     /// </summary>
-    public partial class ManageKeysView : UserControl {
+    public partial class ManageKeysView : Window {
         public ManageKeysView() {
             InitializeComponent();
         }
