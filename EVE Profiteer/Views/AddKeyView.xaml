@@ -10,8 +10,8 @@
     </Window.Resources>
     <DockPanel>
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="10">
-            <Button Content="Cancel" IsCancel="True"></Button>
-            <Button Name="SaveButton" Content="Done" IsDefault="True"></Button>
+            <Button Content="Cancel" IsCancel="True" Margin="5"></Button>
+            <Button Name="SaveButton" Content="Done" IsDefault="True" Margin="5"></Button>
         </StackPanel>
         <StackPanel DockPanel.Dock="Top" Margin="10">
             <TextBlock Text="Key ID"/>
@@ -20,6 +20,6 @@
             <TextBox Name="VCode" Text="{Binding Key.VCode}"/>
             <Button HorizontalAlignment="Left"  Margin="10" Content="Load" MaxWidth="60" Name="LoadButton"></Button>
         </StackPanel>
-        <ListBox Margin="10" Name="Characters" SelectionMode="Multiple" ItemTemplate="{DynamicResource ApiKeyEntityListbox}" ItemContainerStyle="{DynamicResource ApiKeyEntityListBoxItemStyle}"/>
+        <ListBox Margin="10" Name="Entities" SelectionMode="Multiple" ItemTemplate="{DynamicResource ApiKeyEntityListbox}" ItemContainerStyle="{DynamicResource ApiKeyEntityListBoxItemStyle}"/>
     </DockPanel>
 </Window>

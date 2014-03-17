@@ -1,9 +1,16 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace eZet.EveProfiteer.Models {
     public class ApiKeyEntity {
 
-        public long Id { get; set; }
+        private ICollection<ApiKey> apiKeys;
+
+
+        [Key]
+        public int Id { get; set; }
+
+        public long EntityId { get; set; }
         
         public string Name { get; set; }
 
@@ -13,10 +20,13 @@ namespace eZet.EveProfiteer.Models {
 
         public bool IsActive { get; set; }
 
-        public ICollection<ApiKey> ApiKeys { get; set; }
+        public virtual ICollection<ApiKey> ApiKeys {
+            get { return apiKeys; }
+            set { apiKeys = value; }
+        }
 
         public ApiKeyEntity() {
-            ApiKeys = new HashSet<ApiKey>();
+            apiKeys = new HashSet<ApiKey>();
         }
     }
 }

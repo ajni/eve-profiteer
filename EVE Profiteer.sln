@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EVE Profiteer", "EVE Profit
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EveLib.EveOnline", "..\EVE Library\EveLib.EveOnline\EveLib.EveOnline.csproj", "{655CA737-CD94-4128-B2B5-DCE37EA6E7F8}"
 EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "EveProfiteerDb", "EveProfiteerDb\EveProfiteerDb.sqlproj", "{0308E349-1B83-43C6-9C72-932542581978}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,12 @@ Global
 		{655CA737-CD94-4128-B2B5-DCE37EA6E7F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{655CA737-CD94-4128-B2B5-DCE37EA6E7F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{655CA737-CD94-4128-B2B5-DCE37EA6E7F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0308E349-1B83-43C6-9C72-932542581978}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0308E349-1B83-43C6-9C72-932542581978}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0308E349-1B83-43C6-9C72-932542581978}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{0308E349-1B83-43C6-9C72-932542581978}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0308E349-1B83-43C6-9C72-932542581978}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0308E349-1B83-43C6-9C72-932542581978}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

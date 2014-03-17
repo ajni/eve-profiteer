@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Caliburn.Micro;
+﻿using Caliburn.Micro;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
 
@@ -16,7 +14,16 @@ namespace eZet.EveProfiteer.ViewModels {
 
         public ApiKey SelectedKey {
             get { return selectedKey; }
-            set { selectedKey = value; NotifyOfPropertyChange(() => selectedKey); }
+            set { selectedKey = value; NotifyOfPropertyChange(() => selectedKey); NotifyOfPropertyChange(() => CanEditKeyButton); NotifyOfPropertyChange(() => CanDeleteKeyButton);}
+        }
+
+
+        public bool CanEditKeyButton {
+            get { return SelectedKey != null; }
+        }
+
+        public bool CanDeleteKeyButton {
+            get { return SelectedKey != null; }
         }
 
         public BindableCollection<ApiKey> Keys {
@@ -28,7 +35,7 @@ namespace eZet.EveProfiteer.ViewModels {
         public ManageKeysViewModel(IWindowManager windowManager, KeyManagementDbContext dbContext) {
             this.windowManager = windowManager;
             this.dbContext = dbContext;
-            Keys = new BindableCollection<ApiKey>(dbContext.ApiKeys.ToList());
+            Keys = new BindableCollection<ApiKey>(dbContext.ApiKeys);
         }
 
         public void AddKeyButton() {
@@ -43,6 +50,7 @@ namespace eZet.EveProfiteer.ViewModels {
             var vm = IoC.Get<EditKeyViewModel>().With(SelectedKey);
             windowManager.ShowDialog(vm);
         }
+
 
         public async void DeleteKeyButton() {
             dbContext.ApiKeys.Remove(SelectedKey);

@@ -18,6 +18,6 @@
             <TextBox Name="VCode" IsEnabled="False" Text="{Binding Key.VCode}"></TextBox>
             <Button HorizontalAlignment="Left"  Margin="10" Content="Refresh" MaxWidth="60" Name="RefreshButton"></Button>
         </StackPanel>
-        <ListBox Margin="10" Name="Characters" SelectionMode="Multiple" ItemTemplate="{DynamicResource ApiKeyEntityListbox}" ItemContainerStyle="{DynamicResource ApiKeyEntityListBoxItemStyle}"/>
+        <ListBox Margin="10" Name="Entities" SelectionMode="Multiple" ItemTemplate="{DynamicResource ApiKeyEntityListbox}" ItemContainerStyle="{DynamicResource ApiKeyEntityListBoxItemStyle}"/>
     </DockPanel>
 </Window>

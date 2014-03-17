@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Data.Entity;
+using System.Linq;
 using Caliburn.Micro;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
@@ -7,6 +8,8 @@ namespace eZet.EveProfiteer.ViewModels {
     public class EditKeyViewModel : Screen {
 
         private ApiKey key;
+
+        private bool isRefreshed;
 
         public ApiKey Key {
             get { return key; }
@@ -17,11 +20,11 @@ namespace eZet.EveProfiteer.ViewModels {
 
         private readonly KeyManagementDbContext db;
 
-        private BindableCollection<ApiKeyEntity> characters;
+        private BindableCollection<ApiKeyEntity> entities;
 
-        public BindableCollection<ApiKeyEntity> Characters {
-            get { return characters; }
-            set { characters = value; NotifyOfPropertyChange(() => Characters); }
+        public BindableCollection<ApiKeyEntity> Entities {
+            get { return entities; }
+            set { entities = value; NotifyOfPropertyChange(() => Entities); }
         }
 
         public EditKeyViewModel(KeyManagementDbContext db, EveApiService eveApi) {
@@ -31,17 +34,29 @@ namespace eZet.EveProfiteer.ViewModels {
 
         public EditKeyViewModel With(ApiKey apikey) {
             Key = apikey;
-            var a = db.ApiKeys.Find(Key.ApiKeyId);
-            Characters = new BindableCollection<ApiKeyEntity>(a.Entities);
+            Entities = new BindableCollection<ApiKeyEntity>(Key.Entities.ToList());
             return this;
         }
 
 
         public void RefreshButton() {
-            Characters = new BindableCollection<ApiKeyEntity>(eveApi.GetEntities(Key.ApiKeyId, Key.VCode));
+            Entities = new BindableCollection<ApiKeyEntity>(eveApi.GetEntities(Key.ApiKeyId, Key.VCode));
+            isRefreshed = true;
         }
 
+        // TODO Remove deleted characters
         public void SaveButton() {
+            if (isRefreshed) {
+                foreach (var entity in Entities) {
+                    var a = Key.Entities.Single(e => e.EntityId == entity.EntityId);
+                    if (a != null) {
+                        a.IsActive = entity.IsActive;
+                    }
+                    else {
+                        db.Entry(entity).State = EntityState.Added;
+                    }
+                }
+            }
             db.SaveChanges();
             TryClose(true);
         }

@@ -6,8 +6,10 @@ namespace eZet.EveProfiteer.ViewModels {
 
         private readonly IWindowManager windowManager;
 
+
         public ShellViewModel(IWindowManager windowManager) {
             this.windowManager = windowManager;
+
         }
 
         public void ManageKeys() {

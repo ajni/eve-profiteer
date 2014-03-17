@@ -1,21 +1,27 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace eZet.EveProfiteer.Models {
-    public sealed class ApiKey {
+    public class ApiKey {
 
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        private ICollection<ApiKeyEntity> entities;
+
+        [Key]
+        public int Id { get; set; }
+
         public long ApiKeyId { get; set; }
 
         public string VCode { get; set; }
 
         public string KeyType { get; set; }
 
-        public ICollection<ApiKeyEntity> Entities { get; set; }
+        public virtual ICollection<ApiKeyEntity> Entities {
+            get { return entities; }
+            set { entities = value; }
+        }
 
         public ApiKey() {
-            Entities = new HashSet<ApiKeyEntity>();
+            entities = new HashSet<ApiKeyEntity>();
         }
 
     }

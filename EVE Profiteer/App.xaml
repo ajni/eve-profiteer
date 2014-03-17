@@ -22,7 +22,7 @@
                         <StackPanel Orientation="Horizontal" TextBlock.FontWeight="Bold" >
                             <TextBlock Text="{Binding Name, FallbackValue=Name}" />
                         </StackPanel>
-                        <TextBlock Text="{Binding Id, FallbackValue=Id}" />
+                        <TextBlock Text="{Binding EntityId, FallbackValue=Id}" />
                     </StackPanel>
                 </Grid>
             </DataTemplate>

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using Caliburn.Micro;
 using eZet.EveProfiteer.Models;
@@ -13,26 +14,44 @@ namespace eZet.EveProfiteer.ViewModels {
 
         private readonly KeyManagementDbContext db;
 
-        private IList<ApiKeyEntity> characters;
+        private ICollection<ApiKeyEntity> entities;
 
-        public IList<ApiKeyEntity> Characters {
-            get { return characters; }
-            set { characters = value; NotifyOfPropertyChange(() => Characters); }
+        private readonly IWindowManager windowManager;
+
+        public ICollection<ApiKeyEntity> Entities {
+            get { return entities; }
+            set { entities = value; NotifyOfPropertyChange(() => Entities); }
         }
 
-        public AddKeyViewModel(KeyManagementDbContext db, EveApiService eveApi) {
+        public AddKeyViewModel(IWindowManager windowManager, KeyManagementDbContext db, EveApiService eveApi) {
+            this.windowManager = windowManager;
             this.db = db;
             this.eveApi = eveApi;
-            Key = new ApiKey { ApiKeyId = 3053778, VCode = "Hu3uslqNc3HDP8XmMMt1Cgb56TpPqqnF2tXssniROFkIMEDLztLPD8ktx6q5WVC2" };
+            Key = db.ApiKeys.Create();
+            Key.ApiKeyId = 3053778;
+            Key.VCode = "Hu3uslqNc3HDP8XmMMt1Cgb56TpPqqnF2tXssniROFkIMEDLztLPD8ktx6q5WVC2";
         }
 
         public void LoadButton() {
-            Characters = eveApi.GetEntities(Key.ApiKeyId, Key.VCode);
+            Entities = eveApi.GetEntities(Key.ApiKeyId, Key.VCode);
         }
 
         public void SaveButton() {
-            db.ApiKeyEntities.AddRange(Characters);
+            if (db.ApiKeys.SingleOrDefault(e => e.ApiKeyId == Key.ApiKeyId) != null) {
+                MessageBox.Show("This key has already been added.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
             db.ApiKeys.Add(Key);
+            foreach (var c in Entities) {
+                var entity = db.ApiKeyEntities.SingleOrDefault(e => e.EntityId == c.EntityId);
+                if (entity != null) {
+                    entity.IsActive = c.IsActive;
+                } else {
+                    entity = c;
+                }
+                entity.ApiKeys.Add(Key);
+                Key.Entities.Add(entity);
+            }
             db.SaveChanges();
             TryClose(true);
         }
