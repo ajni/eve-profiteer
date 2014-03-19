@@ -5,6 +5,8 @@ namespace eZet.EveProfiteer.Models {
     public class ApiKeyEntity {
 
         private ICollection<ApiKey> apiKeys;
+        
+        private ICollection<Transaction> transactions;
 
 
         [Key]
@@ -25,8 +27,14 @@ namespace eZet.EveProfiteer.Models {
             set { apiKeys = value; }
         }
 
+        public virtual ICollection<Transaction> Transactions {
+            get { return transactions; }
+            set { transactions = value; }
+        }
+
         public ApiKeyEntity() {
             apiKeys = new HashSet<ApiKey>();
+            transactions = new HashSet<Transaction>();
         }
     }
 }

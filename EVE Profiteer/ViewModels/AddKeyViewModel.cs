@@ -12,7 +12,7 @@ namespace eZet.EveProfiteer.ViewModels {
 
         private readonly EveApiService eveApi;
 
-        private readonly KeyManagementDbContext db;
+        private readonly EveProfiteerDbContext db;
 
         private ICollection<ApiKeyEntity> entities;
 
@@ -23,7 +23,7 @@ namespace eZet.EveProfiteer.ViewModels {
             set { entities = value; NotifyOfPropertyChange(() => Entities); }
         }
 
-        public AddKeyViewModel(IWindowManager windowManager, KeyManagementDbContext db, EveApiService eveApi) {
+        public AddKeyViewModel(IWindowManager windowManager, EveProfiteerDbContext db, EveApiService eveApi) {
             this.windowManager = windowManager;
             this.db = db;
             this.eveApi = eveApi;
@@ -33,7 +33,7 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         public void LoadButton() {
-            Entities = eveApi.GetEntities(Key.ApiKeyId, Key.VCode);
+            Entities = eveApi.GetApiKeyEntities(Key);
         }
 
         public void SaveButton() {

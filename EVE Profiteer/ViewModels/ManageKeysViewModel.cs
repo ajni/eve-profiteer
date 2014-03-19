@@ -6,7 +6,7 @@ namespace eZet.EveProfiteer.ViewModels {
     public class ManageKeysViewModel : Screen {
 
         private readonly IWindowManager windowManager;
-        private readonly KeyManagementDbContext dbContext;
+        private readonly EveProfiteerDbContext dbContext;
 
         private BindableCollection<ApiKey> keys;
 
@@ -32,7 +32,7 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
 
-        public ManageKeysViewModel(IWindowManager windowManager, KeyManagementDbContext dbContext) {
+        public ManageKeysViewModel(IWindowManager windowManager, EveProfiteerDbContext dbContext) {
             this.windowManager = windowManager;
             this.dbContext = dbContext;
             Keys = new BindableCollection<ApiKey>(dbContext.ApiKeys);

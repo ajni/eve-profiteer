@@ -18,7 +18,7 @@ namespace eZet.EveProfiteer.ViewModels {
 
         private readonly EveApiService eveApi;
 
-        private readonly KeyManagementDbContext db;
+        private readonly EveProfiteerDbContext db;
 
         private BindableCollection<ApiKeyEntity> entities;
 
@@ -27,7 +27,7 @@ namespace eZet.EveProfiteer.ViewModels {
             set { entities = value; NotifyOfPropertyChange(() => Entities); }
         }
 
-        public EditKeyViewModel(KeyManagementDbContext db, EveApiService eveApi) {
+        public EditKeyViewModel(EveProfiteerDbContext db, EveApiService eveApi) {
             this.db = db;
             this.eveApi = eveApi;
         }
@@ -40,7 +40,7 @@ namespace eZet.EveProfiteer.ViewModels {
 
 
         public void RefreshButton() {
-            Entities = new BindableCollection<ApiKeyEntity>(eveApi.GetEntities(Key.ApiKeyId, Key.VCode));
+            Entities = new BindableCollection<ApiKeyEntity>(eveApi.GetApiKeyEntities(Key));
             isRefreshed = true;
         }
 

@@ -8,27 +8,33 @@
                 <ResourceDictionary>
                     <local:Bootstrapper x:Key="Bootstrapper" />
                 </ResourceDictionary>
+                <ResourceDictionary>
+
+                    <DataTemplate x:Key="ApiKeyEntityListbox">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="60"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Margin="5" BorderBrush="Black" BorderThickness="1">
+                                <!--<Image Source="{Binding ImagePath}" Stretch="Fill" Width="50" Height="50" />-->
+                            </Border>
+                            <StackPanel Grid.Column="1" Margin="5">
+                                <StackPanel Orientation="Horizontal" TextBlock.FontWeight="Bold" >
+                                    <TextBlock Text="{Binding Name, FallbackValue=Name}" />
+                                </StackPanel>
+                                <TextBlock Text="{Binding EntityId, FallbackValue=Id}" />
+                            </StackPanel>
+                        </Grid>
+                    </DataTemplate>
+                </ResourceDictionary>
+                <ResourceDictionary>
+
+                    <Style x:Key="ApiKeyEntityListBoxItemStyle" TargetType="{x:Type ListBoxItem}">
+                        <Setter Property="IsSelected" Value="{Binding IsActive}" />
+                    </Style>
+                </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
-            <DataTemplate x:Key="ApiKeyEntityListbox">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="60"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Border Margin="5" BorderBrush="Black" BorderThickness="1">
-                        <!--<Image Source="{Binding ImagePath}" Stretch="Fill" Width="50" Height="50" />-->
-                    </Border>
-                    <StackPanel Grid.Column="1" Margin="5">
-                        <StackPanel Orientation="Horizontal" TextBlock.FontWeight="Bold" >
-                            <TextBlock Text="{Binding Name, FallbackValue=Name}" />
-                        </StackPanel>
-                        <TextBlock Text="{Binding EntityId, FallbackValue=Id}" />
-                    </StackPanel>
-                </Grid>
-            </DataTemplate>
-            <Style x:Key="ApiKeyEntityListBoxItemStyle" TargetType="{x:Type ListBoxItem}">
-                <Setter Property="IsSelected" Value="{Binding IsActive}" />
-            </Style>
 
         </ResourceDictionary>
     </Application.Resources>

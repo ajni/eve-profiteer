@@ -46,6 +46,7 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Caliburn.Micro.1.5.2\lib\net45\System.Windows.Interactivity.dll</HintPath>
     </Reference>
@@ -60,6 +61,24 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="Xceed.Wpf.AvalonDock">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.2.1.0\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Aero">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.2.1.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Aero.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.2.1.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.VS2010">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.2.1.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.VS2010.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.DataGrid">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.2.1.0\lib\net40\Xceed.Wpf.DataGrid.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.2.1.0\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -70,18 +89,20 @@
     <Compile Include="Framework\IShell.cs" />
     <Compile Include="Models\ApiKeyEntity.cs" />
     <Compile Include="Models\ApiKey.cs" />
+    <Compile Include="Models\Transaction.cs" />
     <Compile Include="Services\EveApiService.cs" />
     <Compile Include="Services\EveProfiteerDbContext.cs" />
-    <Compile Include="Services\KeyManagementDbContext.cs" />
+    <Compile Include="Util\Mapper.cs" />
     <Compile Include="ViewModels\EditKeyViewModel.cs" />
     <Compile Include="ViewModels\AddKeyViewModel.cs" />
     <Compile Include="ViewModels\ManageKeysViewModel.cs" />
+    <Compile Include="ViewModels\OverviewTabViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ViewModels\TransactionsViewModel.cs" />
+    <Compile Include="ViewModels\TransactionsTabViewModel.cs" />
     <Compile Include="Views\EditKeyView.xaml.cs">
       <DependentUpon>EditKeyView.xaml</DependentUpon>
     </Compile>
@@ -91,9 +112,16 @@
     <Compile Include="Views\ManageKeysView.xaml.cs">
       <DependentUpon>ManageKeysView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\TransactionsView.xaml.cs">
-      <DependentUpon>TransactionsView.xaml</DependentUpon>
+    <Compile Include="Views\ShellView.xaml.cs">
+      <DependentUpon>ShellView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\TransactionsTabView.xaml.cs">
+      <DependentUpon>TransactionsTabView.xaml</DependentUpon>
+    </Compile>
+    <Page Include="Themes\Theme.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\EditKeyView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -107,10 +135,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ShellView.xaml">
-      <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\TransactionsView.xaml">
+    <Page Include="Views\TransactionsTabView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
