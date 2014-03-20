@@ -26,6 +26,7 @@ namespace eZet.EveProfiteer {
             container.PerRequest<EditKeyViewModel>();
             container.PerRequest<TransactionsTabViewModel>();
             container.PerRequest<OverviewTabViewModel>();
+            container.PerRequest<JournalTabViewModel>();
         }
 
         protected override object GetInstance(Type service, string key) {

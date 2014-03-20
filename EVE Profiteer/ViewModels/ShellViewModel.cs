@@ -7,19 +7,23 @@ namespace eZet.EveProfiteer.ViewModels {
 
         private readonly IWindowManager windowManager;
 
-
         public ShellViewModel(IWindowManager windowManager) {
             this.windowManager = windowManager;
             Items.Add(IoC.Get<OverviewTabViewModel>());
-            var transactions = IoC.Get<TransactionsTabViewModel>();
             var key = new ApiKey();
             key.ApiKeyId = 3053778;
             key.VCode = "Hu3uslqNc3HDP8XmMMt1Cgb56TpPqqnF2tXssniROFkIMEDLztLPD8ktx6q5WVC2";
             var entity = new ApiKeyEntity();
+            entity.Id = 1;
             entity.EntityId = 977615922;
-            transactions.Initialize(key, entity);
 
+            var transactions = IoC.Get<TransactionsTabViewModel>();
+            transactions.Initialize(key, entity);
             Items.Add(transactions);
+
+            var journal = IoC.Get<JournalTabViewModel>();
+            journal.Initialize(key, entity);
+            Items.Add(journal);
         }
 
         public void ManageKeys() {

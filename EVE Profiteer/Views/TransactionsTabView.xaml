@@ -5,25 +5,42 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:xcdg="http://schemas.xceed.com/wpf/xaml/datagrid"
+             xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
-        <xcdg:DataGridVirtualizingQueryableCollectionViewSource x:Key="Test"  QueryableSource="{Binding Transactions}"/>
+        <xcdg:DataGridCollectionViewSource x:Key="TransactionSource" Source="{Binding Transactions.SourceCollection}"/>
 
     </UserControl.Resources>
     <Grid>
-        <xcdg:DataGridControl ItemsSource="{Binding Source={StaticResource Test}}" AutoCreateColumns="False">
+        <!--<xcdg:DataGridControl NavigationBehavior="RowOnly" ReadOnly="True" ItemsSource="{Binding Source={StaticResource TransactionSource}}" AutoCreateColumns="False">
             <xcdg:DataGridControl.Columns>
                 <xcdg:Column FieldName="TransactionDate" Title="Date"/>
                 <xcdg:Column FieldName="TransactionType" Title="Order Type"/>
                 <xcdg:Column FieldName="TypeName" Title="Name"/>
                 <xcdg:Column FieldName="Quantity" Title="Quantity"/>
                 <xcdg:Column FieldName="Price" Title="Price"/>
+                <xcdg:Column FieldName="Total" Title="Total"/>
                 <xcdg:Column FieldName="ClientName" Title="Client"/>
                 <xcdg:Column FieldName="StationName" Title="Station"/>
             </xcdg:DataGridControl.Columns>
 
-        </xcdg:DataGridControl>
+        </xcdg:DataGridControl>-->
+        <dxg:GridControl  AutoGenerateColumns="None" ItemsSource="{Binding Transactions}">
+            <dxg:GridControl.View>
+                <dxg:TableView AllowEditing="False" NavigationStyle="Row" ShowAutoFilterRow="True" PrintTotalSummary="True" IsTotalSummaryMenuEnabled="True" ShowSearchPanelMode="Default" ShowGroupPanel="False"/>
+            </dxg:GridControl.View>
+            <dxg:GridControl.Columns>
+                <dxg:GridColumn FieldName="TransactionDate" Name="Date"/>
+                <dxg:GridColumn FieldName="TransactionType" Name="OrderType"/>
+                <dxg:GridColumn FieldName="TypeName" Name="Name"/>
+                <dxg:GridColumn FieldName="Quantity" Name="Quantity"/>
+                <dxg:GridColumn FieldName="Price" Name="Price"/>
+                <dxg:GridColumn FieldName="Total" Name="Total"/>
+                <dxg:GridColumn FieldName="ClientName" Name="Client"/>
+                <dxg:GridColumn FieldName="StationName" Name="Station"/>
+            </dxg:GridControl.Columns>
+        </dxg:GridControl>
 
     </Grid>
 </UserControl>

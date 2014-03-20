@@ -13,5 +13,7 @@ namespace eZet.EveProfiteer.Services {
         public DbSet<ApiKey> ApiKeys { get; set; }
 
         public DbSet<Transaction> Transactions { get; set; }
+
+        public DbSet<JournalEntry> JournalEntries { get; set; }
     }
 }

@@ -4,6 +4,8 @@ using System.ComponentModel.DataAnnotations;
 namespace eZet.EveProfiteer.Models {
     public class Transaction {
 
+        private decimal total;
+
         [Key]
         public int Id { get; set; }
 
@@ -19,6 +21,14 @@ namespace eZet.EveProfiteer.Models {
 
         public decimal Price { get; set; }
 
+        public decimal Total {
+            get {
+                if (total == 0) total = Quantity * Price;
+                return total;
+            }
+            set { total = value; }
+        }
+
         public long ClientId { get; set; }
 
         public string ClientName { get; set; }
@@ -30,6 +40,7 @@ namespace eZet.EveProfiteer.Models {
         public string TransactionType { get; set; }
 
         public string TransactionFor { get; set; }
+
 
         public virtual ApiKeyEntity ApiKeyEntity { get; set; }
     }

@@ -19,5 +19,23 @@ namespace eZet.EveProfiteer.Util {
             target.TransactionFor = source.TransactionFor;
             return target;
         }
+
+        public static JournalEntry Map(WalletJournal.JournalEntry source, JournalEntry target) {
+            target.Date = source.Date;
+            target.RefId = source.RefId;
+            target.refTypeId = source.refTypeId;
+            target.OwnerId = source.OwnerId;
+            target.OwnerName = source.OwnerName;
+            target.ParticipantId = source.ParticipantId;
+            target.ParticipantName = source.ParticipantName;
+            target.ArgumentId = source.ArgumentId;
+            target.ArgumentName = source.ArgumentName;
+            target.Amount = source.Amount;
+            target.BalanceAfter = source.BalanceAfter;
+            target.Reason = source.Reason;
+            target.TaxReceiverId = source.TaxReceiverId;
+            target.TaxAmount = source.TaxAmount;
+            return target;
+        }
     }
 }
