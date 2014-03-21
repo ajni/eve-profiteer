@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Caliburn.Micro;
 using eZet.EveProfiteer.Models;
+using eZet.EveProfiteer.Repository;
 using eZet.EveProfiteer.Services;
 using Xceed.Wpf.DataGrid;
 
@@ -12,7 +13,6 @@ namespace eZet.EveProfiteer.ViewModels {
         private readonly EveApiService eveApi;
 
         private DataGridCollectionView journal;
-
 
         public DataGridCollectionView Journal {
             get { return journal; }

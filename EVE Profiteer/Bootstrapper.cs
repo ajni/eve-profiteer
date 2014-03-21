@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using Caliburn.Micro;
 using eZet.EveProfiteer.Framework;
+using eZet.EveProfiteer.Models;
+using eZet.EveProfiteer.Repository;
 using eZet.EveProfiteer.Services;
 using eZet.EveProfiteer.ViewModels;
 
@@ -18,8 +21,18 @@ namespace eZet.EveProfiteer {
 
             container.Singleton<IWindowManager, WindowManager>();
             container.Singleton<IEventAggregator, EventAggregator>();
-            container.Singleton<EveProfiteerDbContext>();
             container.Singleton<EveApiService>();
+
+            container.PerRequest<EveProfiteerDbContext>();
+
+            container.PerRequest<TransactionService>();
+            
+            container.PerRequest<IRepository<Transaction>, DbContextRepository<Transaction>>();
+            container.PerRequest<IRepository<JournalEntry>, DbContextRepository<JournalEntry>>();
+
+            container.PerRequest<DbContext, EveProfiteerDbContext>();
+
+            // Models
             container.PerRequest<IShell, ShellViewModel>();
             container.PerRequest<ManageKeysViewModel>();
             container.PerRequest<AddKeyViewModel>();

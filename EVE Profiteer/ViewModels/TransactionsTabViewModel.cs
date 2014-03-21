@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Caliburn.Micro;
 using eZet.EveProfiteer.Models;
+using eZet.EveProfiteer.Repository;
 using eZet.EveProfiteer.Services;
 using Xceed.Wpf.DataGrid;
 
@@ -10,6 +11,8 @@ namespace eZet.EveProfiteer.ViewModels {
         private readonly EveProfiteerDbContext dbContext;
 
         private DataGridCollectionView transactions;
+
+        private readonly TransactionService transactionService;
 
 
         public DataGridCollectionView Transactions {
@@ -23,7 +26,8 @@ namespace eZet.EveProfiteer.ViewModels {
 
         private readonly EveApiService eveApi;
 
-        public TransactionsTabViewModel(EveProfiteerDbContext dbContext, EveApiService eveApi) {
+        public TransactionsTabViewModel(TransactionService transactionService, EveProfiteerDbContext dbContext, EveApiService eveApi) {
+            this.transactionService = transactionService;
             this.dbContext = dbContext;
             this.eveApi = eveApi;
             DisplayName = "Transactions";
@@ -32,26 +36,23 @@ namespace eZet.EveProfiteer.ViewModels {
         public void Initialize(ApiKey key, ApiKeyEntity entity) {
             ApiKey = key;
             Entity = entity;
-            Transactions = new DataGridCollectionView(dbContext.Transactions.Where(t => t.ApiKeyEntity.Id == entity.Id).ToList());
+            Transactions = new DataGridCollectionView(transactionService.Find(t => t.ApiKeyEntity.Id == entity.Id));
             Update();
         }
 
         public void Update() {
             long latest = 0;
-            latest = (from t in dbContext.Transactions
-                      //where t.Entity.Id == Entity.Id
-                      orderby t.TransactionId descending
-                      select t.TransactionId).FirstOrDefault();
-            var list = eveApi.GetNewTransactions(ApiKey, Entity, dbContext.Transactions.Create, latest);
-            dbContext.Transactions.AddRange(list);
-            dbContext.SaveChanges();
+            latest = transactionService.GetLatestId();
+            var list = eveApi.GetNewTransactions(ApiKey, Entity, transactionService.Create, latest);
+            transactionService.AddRange(list);
+            transactionService.SaveChanges();
         }
 
         public void FullRefresh() {
-            dbContext.Transactions.RemoveRange(dbContext.Transactions.Where(i => i.ApiKeyEntity.Id == Entity.Id));
+            transactionService.RemoveAll(Entity);
             var list = eveApi.GetAllTransactions(ApiKey, Entity, dbContext.Transactions.Create);
-            dbContext.Transactions.AddRange(list);
-            dbContext.SaveChanges();
+            transactionService.AddRange(list);
+            transactionService.SaveChanges();
         }
     }
 }

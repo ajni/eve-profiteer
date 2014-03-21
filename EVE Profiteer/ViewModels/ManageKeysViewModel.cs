@@ -1,6 +1,6 @@
 ﻿using Caliburn.Micro;
 using eZet.EveProfiteer.Models;
-using eZet.EveProfiteer.Services;
+using eZet.EveProfiteer.Repository;
 
 namespace eZet.EveProfiteer.ViewModels {
     public class ManageKeysViewModel : Screen {

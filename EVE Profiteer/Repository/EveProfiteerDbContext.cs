@@ -1,7 +1,7 @@
 ﻿using System.Data.Entity;
 using eZet.EveProfiteer.Models;
 
-namespace eZet.EveProfiteer.Services {
+namespace eZet.EveProfiteer.Repository {
     public class EveProfiteerDbContext : DbContext {
 
         public EveProfiteerDbContext() : base("EveProfiteerDb") {

@@ -2,6 +2,7 @@
 using System.Linq;
 using Caliburn.Micro;
 using eZet.EveProfiteer.Models;
+using eZet.EveProfiteer.Repository;
 using eZet.EveProfiteer.Services;
 
 namespace eZet.EveProfiteer.ViewModels {
