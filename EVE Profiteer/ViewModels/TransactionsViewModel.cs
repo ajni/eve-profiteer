@@ -1,12 +1,11 @@
-﻿using System.Linq;
-using Caliburn.Micro;
+﻿using Caliburn.Micro;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Repository;
 using eZet.EveProfiteer.Services;
 using Xceed.Wpf.DataGrid;
 
 namespace eZet.EveProfiteer.ViewModels {
-    public class TransactionsTabViewModel : Screen {
+    public class TransactionsViewModel : Screen {
 
         private readonly EveProfiteerDbContext dbContext;
 
@@ -26,7 +25,7 @@ namespace eZet.EveProfiteer.ViewModels {
 
         private readonly EveApiService eveApi;
 
-        public TransactionsTabViewModel(TransactionService transactionService, EveProfiteerDbContext dbContext, EveApiService eveApi) {
+        public TransactionsViewModel(TransactionService transactionService, EveProfiteerDbContext dbContext, EveApiService eveApi) {
             this.transactionService = transactionService;
             this.dbContext = dbContext;
             this.eveApi = eveApi;
@@ -37,7 +36,7 @@ namespace eZet.EveProfiteer.ViewModels {
             ApiKey = key;
             Entity = entity;
             Transactions = new DataGridCollectionView(transactionService.Find(t => t.ApiKeyEntity.Id == entity.Id));
-            Update();
+            //Update();
         }
 
         public void Update() {

@@ -6,8 +6,8 @@ namespace eZet.EveProfiteer.Views {
     /// <summary>
     /// Interaction logic for TransactionsView.xaml
     /// </summary>
-    public partial class TransactionsTabView : UserControl {
-        public TransactionsTabView() {
+    public partial class TransactionsView : UserControl {
+        public TransactionsView() {
             InitializeComponent();
         }
 

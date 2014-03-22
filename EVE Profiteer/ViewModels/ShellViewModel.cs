@@ -9,7 +9,7 @@ namespace eZet.EveProfiteer.ViewModels {
 
         public ShellViewModel(IWindowManager windowManager) {
             this.windowManager = windowManager;
-            Items.Add(IoC.Get<OverviewTabViewModel>());
+            Items.Add(IoC.Get<OverviewViewModel>());
             var key = new ApiKey();
             key.ApiKeyId = 3053778;
             key.VCode = "Hu3uslqNc3HDP8XmMMt1Cgb56TpPqqnF2tXssniROFkIMEDLztLPD8ktx6q5WVC2";
@@ -17,13 +17,15 @@ namespace eZet.EveProfiteer.ViewModels {
             entity.Id = 1;
             entity.EntityId = 977615922;
 
-            var transactions = IoC.Get<TransactionsTabViewModel>();
+            var transactions = IoC.Get<TransactionsViewModel>();
             transactions.Initialize(key, entity);
             Items.Add(transactions);
 
-            var journal = IoC.Get<JournalTabViewModel>();
+            var journal = IoC.Get<JournalViewModel>();
             journal.Initialize(key, entity);
             Items.Add(journal);
+
+            Items.Add(IoC.Get<MarketAnalyzerViewModel>());
         }
 
         public void ManageKeys() {

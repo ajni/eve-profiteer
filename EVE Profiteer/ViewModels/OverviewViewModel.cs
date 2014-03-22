@@ -1,9 +1,9 @@
 ﻿using Caliburn.Micro;
 
 namespace eZet.EveProfiteer.ViewModels {
-    public class OverviewTabViewModel : Screen {
+    public class OverviewViewModel : Screen {
 
-        public OverviewTabViewModel() {
+        public OverviewViewModel() {
             DisplayName = "Overview";
         }
     }

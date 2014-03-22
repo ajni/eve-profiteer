@@ -6,7 +6,7 @@ using eZet.EveProfiteer.Services;
 using Xceed.Wpf.DataGrid;
 
 namespace eZet.EveProfiteer.ViewModels {
-    public class JournalTabViewModel : Screen {
+    public class JournalViewModel : Screen {
 
         private readonly EveProfiteerDbContext dbContext;
 
@@ -23,7 +23,7 @@ namespace eZet.EveProfiteer.ViewModels {
 
         public ApiKeyEntity Entity { get; set; }
 
-        public JournalTabViewModel(EveProfiteerDbContext dbContext, EveApiService eveApi) {
+        public JournalViewModel(EveProfiteerDbContext dbContext, EveApiService eveApi) {
             this.dbContext = dbContext;
             this.eveApi = eveApi;
             DisplayName = "Journal";

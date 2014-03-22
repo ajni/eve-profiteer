@@ -1,0 +1,231 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="EveDbModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="invMarketGroups">
+          <Key>
+            <PropertyRef Name="marketGroupID" />
+          </Key>
+          <Property Name="marketGroupID" Type="int" Nullable="false" />
+          <Property Name="parentGroupID" Type="int" />
+          <Property Name="marketGroupName" Type="nvarchar" MaxLength="100" />
+          <Property Name="description" Type="nvarchar" MaxLength="3000" />
+          <Property Name="iconID" Type="int" />
+          <Property Name="hasTypes" Type="bit" />
+        </EntityType>
+        <EntityType Name="invTypes">
+          <Key>
+            <PropertyRef Name="typeID" />
+          </Key>
+          <Property Name="typeID" Type="int" Nullable="false" />
+          <Property Name="groupID" Type="int" />
+          <Property Name="typeName" Type="nvarchar" MaxLength="100" />
+          <Property Name="description" Type="nvarchar" MaxLength="3000" />
+          <Property Name="mass" Type="float" />
+          <Property Name="volume" Type="float" />
+          <Property Name="capacity" Type="float" />
+          <Property Name="portionSize" Type="int" />
+          <Property Name="raceID" Type="tinyint" />
+          <Property Name="basePrice" Type="money" />
+          <Property Name="published" Type="bit" />
+          <Property Name="marketGroupID" Type="int" />
+          <Property Name="chanceOfDuplicating" Type="float" />
+        </EntityType>
+        <EntityType Name="mapRegions">
+          <Key>
+            <PropertyRef Name="regionID" />
+          </Key>
+          <Property Name="regionID" Type="int" Nullable="false" />
+          <Property Name="regionName" Type="nvarchar" MaxLength="100" />
+          <Property Name="x" Type="float" />
+          <Property Name="y" Type="float" />
+          <Property Name="z" Type="float" />
+          <Property Name="xMin" Type="float" />
+          <Property Name="xMax" Type="float" />
+          <Property Name="yMin" Type="float" />
+          <Property Name="yMax" Type="float" />
+          <Property Name="zMin" Type="float" />
+          <Property Name="zMax" Type="float" />
+          <Property Name="factionID" Type="int" />
+          <Property Name="radius" Type="float" />
+        </EntityType>
+        <EntityContainer Name="EveDbModelStoreContainer">
+          <EntitySet Name="invMarketGroups" EntityType="Self.invMarketGroups" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="invTypes" EntityType="Self.invTypes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="mapRegions" EntityType="Self.mapRegions" Schema="dbo" store:Type="Tables" />
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="eZet.EveProfiteer.EveDbModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="MarketGroup">
+          <Key>
+            <PropertyRef Name="MarketGroupId" />
+          </Key>
+          <Property Name="MarketGroupId" Type="Int32" Nullable="false" />
+          <Property Name="ParentGroupId" Type="Int32" Nullable="true" />
+          <Property Name="MarketGroupName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="3000" FixedLength="false" Unicode="true" />
+          <Property Name="IconId" Type="Int32" />
+          <Property Name="HasTypes" Type="Boolean" />
+          <NavigationProperty Name="Items" Relationship="eZet.EveProfiteer.EveDbModel.invTypeinvMarketGroup" FromRole="invMarketGroup" ToRole="invType" />
+          <NavigationProperty Name="ParentGroup" Relationship="eZet.EveProfiteer.EveDbModel.MarketGroupMarketGroup" FromRole="MarketGroupParent" ToRole="MarketGroupChild" />
+          <NavigationProperty Name="SubGroups" Relationship="eZet.EveProfiteer.EveDbModel.MarketGroupMarketGroup" FromRole="MarketGroupChild" ToRole="MarketGroupParent" />
+          </EntityType>
+        <EntityType Name="Item">
+          <Key>
+            <PropertyRef Name="TypeId" />
+          </Key>
+          <Property Name="TypeId" Type="Int32" Nullable="false" />
+          <Property Name="GroupId" Type="Int32" />
+          <Property Name="TypeName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="3000" FixedLength="false" Unicode="true" />
+          <Property Name="Mass" Type="Double" />
+          <Property Name="Volume" Type="Double" />
+          <Property Name="Capacity" Type="Double" />
+          <Property Name="PortionSize" Type="Int32" />
+          <Property Name="RaceId" Type="Byte" />
+          <Property Name="BasePrice" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="Published" Type="Boolean" />
+          <Property Name="MarketGroupId" Type="Int32" Nullable="true" />
+          <Property Name="chanceOfDuplicating" Type="Double" />
+          <NavigationProperty Name="ParentGroup" Relationship="eZet.EveProfiteer.EveDbModel.invTypeinvMarketGroup" FromRole="invType" ToRole="invMarketGroup" />
+        </EntityType>
+        <EntityContainer Name="EveDbContext" annotation:LazyLoadingEnabled="true" a:TypeAccess="Public" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration">
+          <EntitySet Name="MarketGroups" EntityType="eZet.EveProfiteer.EveDbModel.MarketGroup" />
+          <EntitySet Name="Items" EntityType="eZet.EveProfiteer.EveDbModel.Item" />
+          <AssociationSet Name="invTypeinvMarketGroup" Association="eZet.EveProfiteer.EveDbModel.invTypeinvMarketGroup">
+            <End Role="invType" EntitySet="Items" />
+            <End Role="invMarketGroup" EntitySet="MarketGroups" />
+          </AssociationSet>
+          <AssociationSet Name="MarketGroupMarketGroup" Association="eZet.EveProfiteer.EveDbModel.MarketGroupMarketGroup">
+            <End Role="MarketGroupParent" EntitySet="MarketGroups" />
+            <End Role="MarketGroupChild" EntitySet="MarketGroups" />
+          </AssociationSet>
+          <EntitySet Name="Regions" EntityType="eZet.EveProfiteer.EveDbModel.Region" />
+        </EntityContainer>
+        <Association Name="invTypeinvMarketGroup">
+          <End Type="eZet.EveProfiteer.EveDbModel.Item" Role="invType" Multiplicity="*" />
+          <End Type="eZet.EveProfiteer.EveDbModel.MarketGroup" Role="invMarketGroup" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="invMarketGroup">
+              <PropertyRef Name="MarketGroupId" />
+            </Principal>
+            <Dependent Role="invType">
+              <PropertyRef Name="MarketGroupId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="MarketGroupMarketGroup">
+          <End Type="eZet.EveProfiteer.EveDbModel.MarketGroup" Role="MarketGroupParent" Multiplicity="*" />
+          <End Type="eZet.EveProfiteer.EveDbModel.MarketGroup" Role="MarketGroupChild" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="MarketGroupChild">
+              <PropertyRef Name="MarketGroupId" />
+            </Principal>
+            <Dependent Role="MarketGroupParent">
+              <PropertyRef Name="ParentGroupId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Region">
+          <Key>
+            <PropertyRef Name="RegionId" />
+          </Key>
+          <Property Name="RegionId" Type="Int32" Nullable="false" />
+          <Property Name="RegionName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="X" Type="Double" />
+          <Property Name="Y" Type="Double" />
+          <Property Name="Z" Type="Double" />
+          <Property Name="XMin" Type="Double" />
+          <Property Name="XMax" Type="Double" />
+          <Property Name="YMin" Type="Double" />
+          <Property Name="YMax" Type="Double" />
+          <Property Name="ZMin" Type="Double" />
+          <Property Name="ZMax" Type="Double" />
+          <Property Name="FactionId" Type="Int32" />
+          <Property Name="Radius" Type="Double" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="EveDbModelStoreContainer" CdmEntityContainer="EveDbContext">
+          <EntitySetMapping Name="MarketGroups">
+            <EntityTypeMapping TypeName="eZet.EveProfiteer.EveDbModel.MarketGroup">
+              <MappingFragment StoreEntitySet="invMarketGroups">
+                <ScalarProperty Name="MarketGroupId" ColumnName="marketGroupID" />
+                <ScalarProperty Name="ParentGroupId" ColumnName="parentGroupID" />
+                <ScalarProperty Name="MarketGroupName" ColumnName="marketGroupName" />
+                <ScalarProperty Name="Description" ColumnName="description" />
+                <ScalarProperty Name="IconId" ColumnName="iconID" />
+                <ScalarProperty Name="HasTypes" ColumnName="hasTypes" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Items">
+            <EntityTypeMapping TypeName="IsTypeOf(eZet.EveProfiteer.EveDbModel.Item)">
+              <MappingFragment StoreEntitySet="invTypes">
+                <ScalarProperty Name="MarketGroupId" ColumnName="marketGroupID" />
+                <ScalarProperty Name="chanceOfDuplicating" ColumnName="chanceOfDuplicating" />
+                <ScalarProperty Name="Published" ColumnName="published" />
+                <ScalarProperty Name="BasePrice" ColumnName="basePrice" />
+                <ScalarProperty Name="RaceId" ColumnName="raceID" />
+                <ScalarProperty Name="PortionSize" ColumnName="portionSize" />
+                <ScalarProperty Name="Capacity" ColumnName="capacity" />
+                <ScalarProperty Name="Volume" ColumnName="volume" />
+                <ScalarProperty Name="Mass" ColumnName="mass" />
+                <ScalarProperty Name="Description" ColumnName="description" />
+                <ScalarProperty Name="TypeName" ColumnName="typeName" />
+                <ScalarProperty Name="GroupId" ColumnName="groupID" />
+                <ScalarProperty Name="TypeId" ColumnName="typeID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Regions">
+            <EntityTypeMapping TypeName="eZet.EveProfiteer.EveDbModel.Region">
+              <MappingFragment StoreEntitySet="mapRegions">
+                <ScalarProperty Name="Radius" ColumnName="radius" />
+                <ScalarProperty Name="FactionId" ColumnName="factionID" />
+                <ScalarProperty Name="ZMax" ColumnName="zMax" />
+                <ScalarProperty Name="ZMin" ColumnName="zMin" />
+                <ScalarProperty Name="YMax" ColumnName="yMax" />
+                <ScalarProperty Name="YMin" ColumnName="yMin" />
+                <ScalarProperty Name="XMax" ColumnName="xMax" />
+                <ScalarProperty Name="XMin" ColumnName="xMin" />
+                <ScalarProperty Name="Z" ColumnName="z" />
+                <ScalarProperty Name="Y" ColumnName="y" />
+                <ScalarProperty Name="X" ColumnName="x" />
+                <ScalarProperty Name="RegionName" ColumnName="regionName" />
+                <ScalarProperty Name="RegionId" ColumnName="regionID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

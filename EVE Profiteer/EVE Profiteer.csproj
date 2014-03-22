@@ -113,8 +113,37 @@
     <Compile Include="Framework\IShell.cs" />
     <Compile Include="Models\ApiKeyEntity.cs" />
     <Compile Include="Models\ApiKey.cs" />
+    <Compile Include="Models\EveDbModel.Designer.cs">
+      <DependentUpon>EveDbModel.edmx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Models\EveDbModelContext.Context.cs">
+      <DependentUpon>EveDbModelContext.Context.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Models\EveDbModelContext.cs">
+      <DependentUpon>EveDbModelContext.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Models\Extensions\Item.cs" />
+    <Compile Include="Models\Extensions\MarketGroup.cs" />
+    <Compile Include="Models\Item.cs">
+      <DependentUpon>EveDbModelContext.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\JournalEntry.cs" />
+    <Compile Include="Models\MarketAnalyzer.cs" />
+    <Compile Include="Models\MarketAnalyzerResult.cs" />
+    <Compile Include="Models\MarketGroup.cs">
+      <DependentUpon>EveDbModelContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Region.cs">
+      <DependentUpon>EveDbModelContext.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Transaction.cs" />
+    <Compile Include="Models\TreeNode.cs" />
     <Compile Include="Repository\IEntity.cs" />
     <Compile Include="Repository\IRepository.cs" />
     <Compile Include="Repository\DbContextRepository.cs" />
@@ -122,21 +151,30 @@
     <Compile Include="Services\ApiKeyService.cs" />
     <Compile Include="Services\EveApiService.cs" />
     <Compile Include="Repository\EveProfiteerDbContext.cs" />
+    <Compile Include="Services\EveDbService.cs" />
+    <Compile Include="Services\EveMarketDataService.cs" />
     <Compile Include="Services\RepositoryService.cs" />
     <Compile Include="Services\TransactionService.cs" />
     <Compile Include="Util\Mapper.cs" />
+    <Compile Include="Util\ProgressType.cs" />
+    <Compile Include="ViewModels\AnalyzerProgressViewModel.cs" />
     <Compile Include="ViewModels\EditKeyViewModel.cs" />
     <Compile Include="ViewModels\AddKeyViewModel.cs" />
     <Compile Include="ViewModels\ItemDetailsViewModel.cs" />
-    <Compile Include="ViewModels\JournalTabViewModel.cs" />
+    <Compile Include="ViewModels\JournalViewModel.cs" />
     <Compile Include="ViewModels\ManageKeysViewModel.cs" />
-    <Compile Include="ViewModels\OverviewTabViewModel.cs" />
+    <Compile Include="ViewModels\MarketAnalyzerViewModel.cs" />
+    <Compile Include="ViewModels\OverviewViewModel.cs" />
+    <Compile Include="ViewModels\ScannerLinkViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ViewModels\TransactionsTabViewModel.cs" />
+    <Compile Include="ViewModels\TransactionsViewModel.cs" />
+    <Compile Include="Views\AnalyzerProgressView.xaml.cs">
+      <DependentUpon>AnalyzerProgressView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\EditKeyView.xaml.cs">
       <DependentUpon>EditKeyView.xaml</DependentUpon>
     </Compile>
@@ -146,21 +184,31 @@
     <Compile Include="Views\ItemDetailsView.xaml.cs">
       <DependentUpon>ItemDetailsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\JournalTabView.xaml.cs">
-      <DependentUpon>JournalTabView.xaml</DependentUpon>
+    <Compile Include="Views\JournalView.xaml.cs">
+      <DependentUpon>JournalView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MarketAnalyzerView.xaml.cs">
+      <DependentUpon>MarketAnalyzerView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ManageKeysView.xaml.cs">
       <DependentUpon>ManageKeysView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\ScannerLinkView.xaml.cs">
+      <DependentUpon>ScannerLinkView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ShellView.xaml.cs">
       <DependentUpon>ShellView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\TransactionsTabView.xaml.cs">
-      <DependentUpon>TransactionsTabView.xaml</DependentUpon>
+    <Compile Include="Views\TransactionsView.xaml.cs">
+      <DependentUpon>TransactionsView.xaml</DependentUpon>
     </Compile>
     <Page Include="Themes\Theme.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AnalyzerProgressView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\EditKeyView.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -174,19 +222,27 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\JournalTabView.xaml">
+    <Page Include="Views\JournalView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MarketAnalyzerView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\ManageKeysView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\ScannerLinkView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\ShellView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\TransactionsTabView.xaml">
+    <Page Include="Views\TransactionsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -210,6 +266,23 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EntityDeploy Include="Models\EveDbModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>EveDbModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="Models\EveDbModel.edmx.diagram">
+      <DependentUpon>EveDbModel.edmx</DependentUpon>
+    </None>
+    <None Include="Models\EveDbModelContext.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>EveDbModel.edmx</DependentUpon>
+      <LastGenOutput>EveDbModelContext.Context.cs</LastGenOutput>
+    </None>
+    <None Include="Models\EveDbModelContext.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>EveDbModel.edmx</DependentUpon>
+      <LastGenOutput>EveDbModelContext.cs</LastGenOutput>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -221,6 +294,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\EVE Library\EveLib.EveMarketData\EveLib.EveMarketData.csproj">
+      <Project>{185E2271-BBA1-4071-AC46-BF47153BDB7A}</Project>
+      <Name>EveLib.EveMarketData</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\EVE Library\EveLib.EveOnline\EveLib.EveOnline.csproj">
       <Project>{655CA737-CD94-4128-B2B5-DCE37EA6E7F8}</Project>
       <Name>EveLib.EveOnline</Name>

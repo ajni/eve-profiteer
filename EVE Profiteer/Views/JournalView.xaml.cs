@@ -15,10 +15,10 @@ using System.Windows.Shapes;
 
 namespace eZet.EveProfiteer.Views {
     /// <summary>
-    /// Interaction logic for JournalTabView.xaml
+    /// Interaction logic for JournalView.xaml
     /// </summary>
-    public partial class JournalTabView : UserControl {
-        public JournalTabView() {
+    public partial class JournalView : UserControl {
+        public JournalView() {
             InitializeComponent();
         }
     }
