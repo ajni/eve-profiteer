@@ -1,23 +1,22 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using eZet.EveProfiteer.Models;
-using eZet.EveProfiteer.Repository;
 
 namespace eZet.EveProfiteer.Services {
-    public class ApiKeyService {
+    public class KeyManagementService {
 
         public RepositoryService<ApiKey> ApiKeyRepository { get; private set; }
 
         public RepositoryService<ApiKeyEntity> ApiKeyEntityRepository { get; private set; }
 
-        public ApiKeyService(RepositoryService<ApiKey> apiKeyRepository, RepositoryService<ApiKeyEntity> apiKeyEntityRepository) {
+        public KeyManagementService(RepositoryService<ApiKey> apiKeyRepository, RepositoryService<ApiKeyEntity> apiKeyEntityRepository) {
             ApiKeyRepository = apiKeyRepository;
             ApiKeyEntityRepository = apiKeyEntityRepository;
         }
 
         public void AddKey(ApiKey key, IEnumerable<ApiKeyEntity> entities) {
             foreach (var c in entities) {
-                var entity = ApiKeyEntityRepository.GetAll().SingleOrDefault(e => e.EntityId == c.EntityId);
+                var entity = ApiKeyEntityRepository.All().SingleOrDefault(e => e.EntityId == c.EntityId);
                 if (entity != null) {
                     entity.IsActive = c.IsActive;
                 } else {
@@ -30,6 +29,9 @@ namespace eZet.EveProfiteer.Services {
             ApiKeyEntityRepository.SaveChanges();
         }
 
-
+        public void DeleteKey(ApiKey key) {
+            ApiKeyRepository.Remove(key);
+            ApiKeyRepository.SaveChanges();
+        }
     }
 }

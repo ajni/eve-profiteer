@@ -11,15 +11,14 @@ namespace eZet.EveProfiteer.Services {
         }
 
         public long GetLatestId() {
-            return (from t in Repository.GetAll()
+            return (from t in Repository.All()
                     //where t.Entity.Id == Entity.Id
                     orderby t.TransactionId descending
                     select t.TransactionId).FirstOrDefault();
         }
 
-
         public IEnumerable<Transaction> RemoveAll(ApiKeyEntity entity) {
-            return Repository.RemoveRange(Repository.GetAll().Where(i => i.ApiKeyEntity.Id == entity.Id));
+            return Repository.RemoveRange(Repository.All().Where(i => i.ApiKeyEntity.Id == entity.Id));
         }
 
     }

@@ -1,13 +1,11 @@
-﻿using Caliburn.Micro;
+﻿using System.Linq;
+using Caliburn.Micro;
 using eZet.EveProfiteer.Models;
-using eZet.EveProfiteer.Repository;
 using eZet.EveProfiteer.Services;
 using Xceed.Wpf.DataGrid;
 
 namespace eZet.EveProfiteer.ViewModels {
     public class TransactionsViewModel : Screen {
-
-        private readonly EveProfiteerDbContext dbContext;
 
         private DataGridCollectionView transactions;
 
@@ -25,9 +23,8 @@ namespace eZet.EveProfiteer.ViewModels {
 
         private readonly EveApiService eveApi;
 
-        public TransactionsViewModel(TransactionService transactionService, EveProfiteerDbContext dbContext, EveApiService eveApi) {
+        public TransactionsViewModel(TransactionService transactionService, EveApiService eveApi) {
             this.transactionService = transactionService;
-            this.dbContext = dbContext;
             this.eveApi = eveApi;
             DisplayName = "Transactions";
         }
@@ -35,7 +32,7 @@ namespace eZet.EveProfiteer.ViewModels {
         public void Initialize(ApiKey key, ApiKeyEntity entity) {
             ApiKey = key;
             Entity = entity;
-            Transactions = new DataGridCollectionView(transactionService.Find(t => t.ApiKeyEntity.Id == entity.Id));
+            Transactions = new DataGridCollectionView(transactionService.All().Where(t => t.ApiKeyEntity.Id == entity.Id));
             //Update();
         }
 
@@ -49,7 +46,7 @@ namespace eZet.EveProfiteer.ViewModels {
 
         public void FullRefresh() {
             transactionService.RemoveAll(Entity);
-            var list = eveApi.GetAllTransactions(ApiKey, Entity, dbContext.Transactions.Create);
+            var list = eveApi.GetAllTransactions(ApiKey, Entity, transactionService.Create);
             transactionService.AddRange(list);
             transactionService.SaveChanges();
         }

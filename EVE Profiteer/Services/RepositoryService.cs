@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using eZet.EveProfiteer.Repository;
 
 namespace eZet.EveProfiteer.Services {
-    public class RepositoryService<T> : IRepository<T> where T : class {
+    public class RepositoryService<T> where T : class {
 
         protected readonly IRepository<T> Repository;
 
-        protected RepositoryService(IRepository<T> repository) {
+        public RepositoryService(IRepository<T> repository) {
             Repository = repository;
         }
 
@@ -26,8 +24,8 @@ namespace eZet.EveProfiteer.Services {
             return Repository.Create();
         }
 
-        public IQueryable<T> GetAll() {
-            return Repository.GetAll();
+        public IQueryable<T> All() {
+            return Repository.All();
         }
 
         public T Add(T entity) {
@@ -54,8 +52,5 @@ namespace eZet.EveProfiteer.Services {
             return Repository.Find(pkey);
         }
 
-        public IQueryable<T> Find(Expression<Func<T, bool>> filter) {
-            return Repository.Find(filter);
-        }
     }
 }

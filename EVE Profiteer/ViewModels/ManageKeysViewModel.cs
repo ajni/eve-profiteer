@@ -1,12 +1,13 @@
-﻿using Caliburn.Micro;
+﻿using System.Linq;
+using Caliburn.Micro;
 using eZet.EveProfiteer.Models;
-using eZet.EveProfiteer.Repository;
+using eZet.EveProfiteer.Services;
 
 namespace eZet.EveProfiteer.ViewModels {
     public class ManageKeysViewModel : Screen {
 
         private readonly IWindowManager windowManager;
-        private readonly EveProfiteerDbContext dbContext;
+        private readonly KeyManagementService keyManagementService;
 
         private BindableCollection<ApiKey> keys;
 
@@ -32,15 +33,15 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
 
-        public ManageKeysViewModel(IWindowManager windowManager, EveProfiteerDbContext dbContext) {
+        public ManageKeysViewModel(IWindowManager windowManager, KeyManagementService keyManagementService) {
             this.windowManager = windowManager;
-            this.dbContext = dbContext;
-            Keys = new BindableCollection<ApiKey>(dbContext.ApiKeys);
+            this.keyManagementService = keyManagementService;
+            Keys = new BindableCollection<ApiKey>(keyManagementService.ApiKeyRepository.All().ToList());
         }
 
         public void AddKeyButton() {
             var vm = IoC.Get<AddKeyViewModel>();
-            var result = windowManager.ShowDialog(IoC.Get<AddKeyViewModel>());
+            var result = windowManager.ShowDialog(vm);
             if (result.HasValue && result == true) {
                 Keys.Add(vm.Key);
             }
@@ -53,8 +54,7 @@ namespace eZet.EveProfiteer.ViewModels {
 
 
         public async void DeleteKeyButton() {
-            dbContext.ApiKeys.Remove(SelectedKey);
-            await dbContext.SaveChangesAsync();
+            keyManagementService.DeleteKey(SelectedKey);
             Keys.Remove(SelectedKey);
             SelectedKey = null;
         }

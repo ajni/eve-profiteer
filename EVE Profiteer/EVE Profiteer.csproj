@@ -144,11 +144,10 @@
     </Compile>
     <Compile Include="Models\Transaction.cs" />
     <Compile Include="Models\TreeNode.cs" />
-    <Compile Include="Repository\IEntity.cs" />
     <Compile Include="Repository\IRepository.cs" />
     <Compile Include="Repository\DbContextRepository.cs" />
-    <Compile Include="Services\ApiKeyEntityService.cs" />
-    <Compile Include="Services\ApiKeyService.cs" />
+    <Compile Include="Services\IRepositoryService.cs" />
+    <Compile Include="Services\KeyManagementService.cs" />
     <Compile Include="Services\EveApiService.cs" />
     <Compile Include="Repository\EveProfiteerDbContext.cs" />
     <Compile Include="Services\EveDbService.cs" />

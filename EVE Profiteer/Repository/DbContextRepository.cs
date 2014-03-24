@@ -23,7 +23,7 @@ namespace eZet.EveProfiteer.Repository {
 
         public bool Validate { get; set; }
 
-        public IQueryable<T> GetAll() {
+        public IQueryable<T> All() {
             return Set;
         }
 
@@ -49,10 +49,6 @@ namespace eZet.EveProfiteer.Repository {
 
         public T Find(int pkey) {
             return Set.Find(pkey);
-        }
-
-        public IQueryable<T> Find(Expression<Func<T, bool>> filter) {
-            return Set.Where(filter);
         }
 
         public void Dispose() {

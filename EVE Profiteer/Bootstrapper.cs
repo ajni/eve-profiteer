@@ -28,11 +28,18 @@ namespace eZet.EveProfiteer {
             container.PerRequest<TransactionService>();
             container.PerRequest<EveMarketService>();
             container.PerRequest<EveDataService>();
+            container.Singleton<KeyManagementService>();
             
             container.PerRequest<IRepository<Transaction>, DbContextRepository<Transaction>>();
             container.PerRequest<IRepository<JournalEntry>, DbContextRepository<JournalEntry>>();
+            container.PerRequest<IRepository<ApiKey>, DbContextRepository<ApiKey>>();
+            container.PerRequest<IRepository<ApiKeyEntity>, DbContextRepository<ApiKeyEntity>>();
+
+            container.PerRequest<RepositoryService<ApiKey>>();
+            container.PerRequest<RepositoryService<ApiKeyEntity>>();
 
             container.PerRequest<DbContext, EveProfiteerDbContext>();
+
 
             // Models
             container.PerRequest<IShell, ShellViewModel>();

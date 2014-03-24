@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using Caliburn.Micro;
 using eZet.EveProfiteer.Models;
-using eZet.EveProfiteer.Repository;
 using eZet.EveProfiteer.Services;
 
 namespace eZet.EveProfiteer.ViewModels {
@@ -12,11 +12,9 @@ namespace eZet.EveProfiteer.ViewModels {
 
         private readonly EveApiService eveApi;
 
-        private readonly EveProfiteerDbContext db;
-
         private ICollection<ApiKeyEntity> entities;
 
-        private readonly ApiKeyService apiKeyService;
+        private readonly KeyManagementService keyManagementService;
 
         private readonly IWindowManager windowManager;
 
@@ -25,12 +23,11 @@ namespace eZet.EveProfiteer.ViewModels {
             set { entities = value; NotifyOfPropertyChange(() => Entities); }
         }
 
-        public AddKeyViewModel(IWindowManager windowManager, ApiKeyService apiKeyService, EveProfiteerDbContext db, EveApiService eveApi) {
+        public AddKeyViewModel(IWindowManager windowManager, KeyManagementService keyManagementService, EveApiService eveApi) {
             this.windowManager = windowManager;
-            this.apiKeyService = apiKeyService;
-            this.db = db;
+            this.keyManagementService = keyManagementService;
             this.eveApi = eveApi;
-            Key = apiKeyService.ApiKeyRepository.Create();
+            Key = keyManagementService.ApiKeyRepository.Create();
             Key.ApiKeyId = 3053778;
             Key.VCode = "Hu3uslqNc3HDP8XmMMt1Cgb56TpPqqnF2tXssniROFkIMEDLztLPD8ktx6q5WVC2";
         }
@@ -40,11 +37,11 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         public void SaveButton() {
-            if (apiKeyService.ApiKeyRepository.Find(t => t.ApiKeyId == Key.ApiKeyId) != null) {
+            if (keyManagementService.ApiKeyRepository.All().SingleOrDefault(t => t.ApiKeyId == Key.ApiKeyId) != null) {
                 MessageBox.Show("This key has already been added.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
-            apiKeyService.AddKey(Key, Entities);
+            keyManagementService.AddKey(Key, Entities);
             TryClose(true);
         }
     }

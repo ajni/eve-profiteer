@@ -1,7 +1,6 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 
-namespace eZet.Eve.EveProfiteer.Views {
+namespace eZet.EveProfiteer.Views {
     /// <summary>
     /// Interaction logic for ScannerLinkView.xaml
     /// </summary>

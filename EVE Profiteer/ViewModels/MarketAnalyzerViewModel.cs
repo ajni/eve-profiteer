@@ -30,13 +30,13 @@ namespace eZet.EveProfiteer.ViewModels {
             this.marketService = marketService;
             this.windowManager = windowManager;
             DisplayName = "Market Analyzer";
-            
+
             SelectedItems = new BindableCollection<Item>();
             PropertyChanged += gridFilter_PropertyChanged;
 
             TreeRootNodes = buildTree();
             Regions = dataService.GetRegions().ToList();
-            
+
             SelectedRegion = Regions.Single(f => f.RegionId == 10000002);
         }
 
@@ -132,7 +132,7 @@ namespace eZet.EveProfiteer.ViewModels {
             var cts = new CancellationTokenSource();
             var progressVm = new AnalyzerProgressViewModel(cts);
             MarketAnalyzer res = await getResult(progressVm.GetProgressReporter(), cts);
-            MarketAnalyzerResults = new ListCollectionView(res.Items.Values.ToList());
+            MarketAnalyzerResults = new ListCollectionView(res.Results.Values.ToList());
             busy.IsBusy = false;
         }
 
@@ -152,7 +152,7 @@ namespace eZet.EveProfiteer.ViewModels {
 
         private Task<MarketAnalyzer> getResult(IProgress<ProgressType> progress, CancellationTokenSource cts) {
             return
-                Task.Factory.StartNew(
+                Task.Run(
                     () => marketService.GetMarketAnalyzer(SelectedRegion, SelectedItems, DayLimit, progress), cts.Token);
         }
 
@@ -176,8 +176,7 @@ namespace eZet.EveProfiteer.ViewModels {
                     int id = key.Value.ParentGroupId ?? default(int);
                     groups.TryGetValue(id, out group);
                     group.Children.Add(key.Value);
-                }
-                else {
+                } else {
                     rootList.Add(key.Value);
                 }
             }
@@ -198,8 +197,7 @@ namespace eZet.EveProfiteer.ViewModels {
             if (e.PropertyName == "IsChecked") {
                 if (item.IsChecked == true) {
                     SelectedItems.Add(item);
-                }
-                else if (item.IsChecked == false)
+                } else if (item.IsChecked == false)
                     SelectedItems.Remove(item);
                 else {
                     throw new NotImplementedException();
