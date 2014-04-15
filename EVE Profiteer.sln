@@ -15,7 +15,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EveLib.Core", "..\EVE Libra
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EveLib.EveCentral", "..\EVE Library\EveLib.EveCentral\EveLib.EveCentral.csproj", "{FCD48E90-6605-4BC1-B761-0B37DF390990}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvePilot Order Editor", "EvePilot Order Editor\EvePilot Order Editor.csproj", "{0FD4CF67-093D-465C-9AFD-EFB9A2F159F6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Order IO Helper", "EvePilot Order Editor\Order IO Helper.csproj", "{0FD4CF67-093D-465C-9AFD-EFB9A2F159F6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NET Utilities", "..\NET Utilities\IoUtils\NET Utilities.csproj", "{1C0627DE-5E16-4079-9F4B-8A0092AE88AA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,6 +55,10 @@ Global
 		{0FD4CF67-093D-465C-9AFD-EFB9A2F159F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0FD4CF67-093D-465C-9AFD-EFB9A2F159F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0FD4CF67-093D-465C-9AFD-EFB9A2F159F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C0627DE-5E16-4079-9F4B-8A0092AE88AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C0627DE-5E16-4079-9F4B-8A0092AE88AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C0627DE-5E16-4079-9F4B-8A0092AE88AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C0627DE-5E16-4079-9F4B-8A0092AE88AA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -7,8 +7,8 @@
     <ProjectGuid>{0FD4CF67-093D-465C-9AFD-EFB9A2F159F6}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>eZet.EvePilotOrderEditor</RootNamespace>
-    <AssemblyName>EvePilotOrderEditor</AssemblyName>
+    <RootNamespace>eZet.Eve.OrderIoHelper</RootNamespace>
+    <AssemblyName>OrderIoHelper</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -43,10 +43,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\Order.cs" />
+    <Compile Include="Models\OrderCollection.cs" />
+    <Compile Include="Models\SellOrderCollection.cs" />
+    <Compile Include="Models\SellOrder.cs" />
+    <Compile Include="OrderIoHelper.cs" />
     <Compile Include="Test.cs" />
     <Compile Include="Models\BuyOrder.cs" />
     <Compile Include="Models\BuyOrderCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\NET Utilities\IoUtils\NET Utilities.csproj">
+      <Project>{1c0627de-5e16-4079-9f4b-8a0092ae88aa}</Project>
+      <Name>NET Utilities</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

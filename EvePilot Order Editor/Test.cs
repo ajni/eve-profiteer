@@ -1,18 +1,13 @@
-﻿using System.IO;
-
-namespace eZet.EvePilotOrderEditor {
+﻿namespace eZet.Eve.OrderIoHelper {
     public class Test {
 
         public static void Main(string[] args) {
-
-            var data = readFile("../../samples/BuyOrders.xml");
-
+            var buyorders = OrderIoHelper.ReadBuyOrders("../../samples");
+            var sellorders = OrderIoHelper.ReadSellOrders("../../samples");
+            OrderIoHelper.Write("../../samples", buyorders, sellorders);
         }
 
-        public static string readFile(string path) {
-            var data = File.ReadAllText(path);
-            return data;
-        }
+
 
     }
 }
