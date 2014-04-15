@@ -15,5 +15,7 @@ namespace eZet.EveProfiteer.Repository {
         public DbSet<Transaction> Transactions { get; set; }
 
         public DbSet<JournalEntry> JournalEntries { get; set; }
+
+        //public DbSet<ItemDetail> Items { get; set; }
     }
 }

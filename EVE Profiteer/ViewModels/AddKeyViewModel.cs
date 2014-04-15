@@ -16,18 +16,15 @@ namespace eZet.EveProfiteer.ViewModels {
 
         private readonly KeyManagementService keyManagementService;
 
-        private readonly IWindowManager windowManager;
-
         public ICollection<ApiKeyEntity> Entities {
             get { return entities; }
             set { entities = value; NotifyOfPropertyChange(() => Entities); }
         }
 
-        public AddKeyViewModel(IWindowManager windowManager, KeyManagementService keyManagementService, EveApiService eveApi) {
-            this.windowManager = windowManager;
+        public AddKeyViewModel(KeyManagementService keyManagementService, EveApiService eveApi) {
             this.keyManagementService = keyManagementService;
             this.eveApi = eveApi;
-            Key = keyManagementService.ApiKeyRepository.Create();
+            Key = keyManagementService.CreateApiKey();
             Key.ApiKeyId = 3053778;
             Key.VCode = "Hu3uslqNc3HDP8XmMMt1Cgb56TpPqqnF2tXssniROFkIMEDLztLPD8ktx6q5WVC2";
         }
@@ -37,7 +34,7 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         public void SaveButton() {
-            if (keyManagementService.ApiKeyRepository.All().SingleOrDefault(t => t.ApiKeyId == Key.ApiKeyId) != null) {
+            if (keyManagementService.AllApiKeys().SingleOrDefault(t => t.ApiKeyId == Key.ApiKeyId) != null) {
                 MessageBox.Show("This key has already been added.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }

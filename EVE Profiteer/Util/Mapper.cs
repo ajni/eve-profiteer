@@ -1,4 +1,4 @@
-﻿using eZet.EveLib.EveOnline.Model.Character;
+﻿using eZet.EveLib.Modules.Models.Character;
 using eZet.EveProfiteer.Models;
 
 namespace eZet.EveProfiteer.Util {

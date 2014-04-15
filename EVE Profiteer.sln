@@ -13,6 +13,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EveLib.EveMarketData", "..\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EveLib.Core", "..\EVE Library\EveLib.Core\EveLib.Core.csproj", "{AA85978C-2BF5-419F-9F8E-B70162E83F34}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EveLib.EveCentral", "..\EVE Library\EveLib.EveCentral\EveLib.EveCentral.csproj", "{FCD48E90-6605-4BC1-B761-0B37DF390990}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvePilot Order Editor", "EvePilot Order Editor\EvePilot Order Editor.csproj", "{0FD4CF67-093D-465C-9AFD-EFB9A2F159F6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +45,14 @@ Global
 		{AA85978C-2BF5-419F-9F8E-B70162E83F34}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA85978C-2BF5-419F-9F8E-B70162E83F34}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AA85978C-2BF5-419F-9F8E-B70162E83F34}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FCD48E90-6605-4BC1-B761-0B37DF390990}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FCD48E90-6605-4BC1-B761-0B37DF390990}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FCD48E90-6605-4BC1-B761-0B37DF390990}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FCD48E90-6605-4BC1-B761-0B37DF390990}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0FD4CF67-093D-465C-9AFD-EFB9A2F159F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0FD4CF67-093D-465C-9AFD-EFB9A2F159F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0FD4CF67-093D-465C-9AFD-EFB9A2F159F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0FD4CF67-093D-465C-9AFD-EFB9A2F159F6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

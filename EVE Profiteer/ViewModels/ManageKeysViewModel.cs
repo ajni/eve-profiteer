@@ -8,16 +8,13 @@ namespace eZet.EveProfiteer.ViewModels {
 
         private readonly IWindowManager windowManager;
         private readonly KeyManagementService keyManagementService;
-
         private BindableCollection<ApiKey> keys;
-
         private ApiKey selectedKey;
 
         public ApiKey SelectedKey {
             get { return selectedKey; }
             set { selectedKey = value; NotifyOfPropertyChange(() => selectedKey); NotifyOfPropertyChange(() => CanEditKeyButton); NotifyOfPropertyChange(() => CanDeleteKeyButton);}
         }
-
 
         public bool CanEditKeyButton {
             get { return SelectedKey != null; }
@@ -32,11 +29,10 @@ namespace eZet.EveProfiteer.ViewModels {
             set { keys = value; NotifyOfPropertyChange(() => Keys); }
         }
 
-
         public ManageKeysViewModel(IWindowManager windowManager, KeyManagementService keyManagementService) {
             this.windowManager = windowManager;
             this.keyManagementService = keyManagementService;
-            Keys = new BindableCollection<ApiKey>(keyManagementService.ApiKeyRepository.All().ToList());
+            Keys = new BindableCollection<ApiKey>(keyManagementService.AllApiKeys().ToList());
         }
 
         public void AddKeyButton() {
@@ -52,8 +48,7 @@ namespace eZet.EveProfiteer.ViewModels {
             windowManager.ShowDialog(vm);
         }
 
-
-        public async void DeleteKeyButton() {
+        public void DeleteKeyButton() {
             keyManagementService.DeleteKey(SelectedKey);
             Keys.Remove(SelectedKey);
             SelectedKey = null;

@@ -41,7 +41,7 @@ namespace eZet.EveProfiteer.ViewModels {
                       //where t.Entity.Id == Entity.Id
                       orderby t.RefId descending
                       select t.RefId).FirstOrDefault();
-            var list = eveApi.GetNewJournalEntries(ApiKey, Entity, dbContext.JournalEntries.Create, latest);
+            var list = eveApi.GetNewJournalEntries(ApiKey, Entity, latest);
             dbContext.JournalEntries.AddRange(list);
             dbContext.SaveChanges();
         }

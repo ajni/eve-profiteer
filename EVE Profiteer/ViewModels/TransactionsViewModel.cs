@@ -1,18 +1,17 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Caliburn.Micro;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
-using Xceed.Wpf.DataGrid;
 
 namespace eZet.EveProfiteer.ViewModels {
     public class TransactionsViewModel : Screen {
 
-        private DataGridCollectionView transactions;
+        private ICollection<Transaction> transactions;
 
         private readonly TransactionService transactionService;
 
-
-        public DataGridCollectionView Transactions {
+        public ICollection<Transaction> Transactions {
             get { return transactions; }
             set { transactions = value; NotifyOfPropertyChange(() => Transactions); }
         }
@@ -32,23 +31,24 @@ namespace eZet.EveProfiteer.ViewModels {
         public void Initialize(ApiKey key, ApiKeyEntity entity) {
             ApiKey = key;
             Entity = entity;
-            Transactions = new DataGridCollectionView(transactionService.All().Where(t => t.ApiKeyEntity.Id == entity.Id));
-            //Update();
+            Transactions = transactionService.All().Where(t => t.ApiKeyEntity.Id == entity.Id).ToList();
         }
 
-        public void Update() {
+        public void UpdateAction() {
             long latest = 0;
-            latest = transactionService.GetLatestId();
-            var list = eveApi.GetNewTransactions(ApiKey, Entity, transactionService.Create, latest);
-            transactionService.AddRange(list);
-            transactionService.SaveChanges();
+            latest = transactionService.GetLatestId(Entity);
+            var list = eveApi.GetNewTransactions(ApiKey, Entity, latest);
+            foreach (var item in list) {
+                Transactions.Add(item);
+            }
+            //NotifyOfPropertyChange(() => Transactions);
+            //transactionService.AddNew(list);
         }
 
         public void FullRefresh() {
             transactionService.RemoveAll(Entity);
             var list = eveApi.GetAllTransactions(ApiKey, Entity, transactionService.Create);
-            transactionService.AddRange(list);
-            transactionService.SaveChanges();
+            transactionService.AddNew(list);
         }
     }
 }

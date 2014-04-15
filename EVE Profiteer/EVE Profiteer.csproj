@@ -133,6 +133,8 @@
     <Compile Include="Models\Item.cs">
       <DependentUpon>EveDbModelContext.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ItemDetail.cs" />
+    <Compile Include="Models\ItemProfit.cs" />
     <Compile Include="Models\JournalEntry.cs" />
     <Compile Include="Models\MarketAnalyzer.cs" />
     <Compile Include="Models\MarketAnalyzerResult.cs" />
@@ -142,6 +144,9 @@
     <Compile Include="Models\Region.cs">
       <DependentUpon>EveDbModelContext.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Station.cs" />
+    <Compile Include="Models\StationTradeAnalyzer.cs" />
+    <Compile Include="Models\StationTradeEntry.cs" />
     <Compile Include="Models\Transaction.cs" />
     <Compile Include="Models\TreeNode.cs" />
     <Compile Include="Repository\IRepository.cs" />
@@ -150,7 +155,7 @@
     <Compile Include="Services\KeyManagementService.cs" />
     <Compile Include="Services\EveApiService.cs" />
     <Compile Include="Repository\EveProfiteerDbContext.cs" />
-    <Compile Include="Services\EveDbService.cs" />
+    <Compile Include="Services\EveDataService.cs" />
     <Compile Include="Services\EveMarketDataService.cs" />
     <Compile Include="Services\RepositoryService.cs" />
     <Compile Include="Services\TransactionService.cs" />
@@ -162,7 +167,8 @@
     <Compile Include="ViewModels\ItemDetailsViewModel.cs" />
     <Compile Include="ViewModels\JournalViewModel.cs" />
     <Compile Include="ViewModels\ManageKeysViewModel.cs" />
-    <Compile Include="ViewModels\MarketAnalyzerViewModel.cs" />
+    <Compile Include="ViewModels\ProfitViewModel.cs" />
+    <Compile Include="ViewModels\StationTraderViewModel.cs" />
     <Compile Include="ViewModels\OverviewViewModel.cs" />
     <Compile Include="ViewModels\ScannerLinkViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
@@ -186,8 +192,11 @@
     <Compile Include="Views\JournalView.xaml.cs">
       <DependentUpon>JournalView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\MarketAnalyzerView.xaml.cs">
-      <DependentUpon>MarketAnalyzerView.xaml</DependentUpon>
+    <Compile Include="Views\ProfitView.xaml.cs">
+      <DependentUpon>ProfitView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\StationTraderView.xaml.cs">
+      <DependentUpon>StationTraderView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ManageKeysView.xaml.cs">
       <DependentUpon>ManageKeysView.xaml</DependentUpon>
@@ -225,7 +234,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\MarketAnalyzerView.xaml">
+    <Page Include="Views\ProfitView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\StationTraderView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -293,6 +306,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\EVE Library\EveLib.EveCentral\EveLib.EveCentral.csproj">
+      <Project>{FCD48E90-6605-4BC1-B761-0B37DF390990}</Project>
+      <Name>EveLib.EveCentral</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\EVE Library\EveLib.EveMarketData\EveLib.EveMarketData.csproj">
       <Project>{185E2271-BBA1-4071-AC46-BF47153BDB7A}</Project>
       <Name>EveLib.EveMarketData</Name>

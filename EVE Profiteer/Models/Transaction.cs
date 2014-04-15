@@ -1,7 +1,9 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using eZet.EveLib.Modules.Models;
 
 namespace eZet.EveProfiteer.Models {
+
     public class Transaction {
 
         private decimal total;
@@ -37,10 +39,9 @@ namespace eZet.EveProfiteer.Models {
 
         public string StationName { get; set; }
 
-        public string TransactionType { get; set; }
+        public OrderType TransactionType { get; set; }
 
         public string TransactionFor { get; set; }
-
 
         public virtual ApiKeyEntity ApiKeyEntity { get; set; }
     }

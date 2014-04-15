@@ -1,20 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Linq.Expressions;
 
 namespace eZet.EveProfiteer.Repository {
     public class DbContextRepository<T> : IRepository<T> where T : class {
 
-        private DbContext dbContext { get; set; }
+        public DbContext DbContext { get; private set; }
 
         private DbSet<T> Set {
-            get { return dbContext.Set<T>(); }
+            get { return DbContext.Set<T>(); }
         }
 
         public DbContextRepository(DbContext dbContext) {
-            this.dbContext = dbContext;
+            DbContext = dbContext;
         }
 
         public T Create() {
@@ -44,7 +42,7 @@ namespace eZet.EveProfiteer.Repository {
         }
 
         public int SaveChanges() {
-            return dbContext.SaveChanges();
+            return DbContext.SaveChanges();
         }
 
         public T Find(int pkey) {
@@ -52,7 +50,7 @@ namespace eZet.EveProfiteer.Repository {
         }
 
         public void Dispose() {
-            dbContext.Dispose();
+            DbContext.Dispose();
         }
     }
 }
