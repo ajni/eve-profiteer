@@ -157,6 +157,7 @@
     <Compile Include="Repository\EveProfiteerDbContext.cs" />
     <Compile Include="Services\EveDataService.cs" />
     <Compile Include="Services\EveMarketDataService.cs" />
+    <Compile Include="Services\OrderEditorService.cs" />
     <Compile Include="Services\RepositoryService.cs" />
     <Compile Include="Services\TransactionService.cs" />
     <Compile Include="Util\Mapper.cs" />
@@ -167,6 +168,7 @@
     <Compile Include="ViewModels\ItemDetailsViewModel.cs" />
     <Compile Include="ViewModels\JournalViewModel.cs" />
     <Compile Include="ViewModels\ManageKeysViewModel.cs" />
+    <Compile Include="ViewModels\OrderEditorViewModel.cs" />
     <Compile Include="ViewModels\ProfitViewModel.cs" />
     <Compile Include="ViewModels\StationTraderViewModel.cs" />
     <Compile Include="ViewModels\OverviewViewModel.cs" />
@@ -191,6 +193,9 @@
     </Compile>
     <Compile Include="Views\JournalView.xaml.cs">
       <DependentUpon>JournalView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\OrderEditorView.xaml.cs">
+      <DependentUpon>OrderEditorView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ProfitView.xaml.cs">
       <DependentUpon>ProfitView.xaml</DependentUpon>
@@ -231,6 +236,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\JournalView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\OrderEditorView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -317,6 +326,10 @@
     <ProjectReference Include="..\..\EVE Library\EveLib.EveOnline\EveLib.EveOnline.csproj">
       <Project>{655CA737-CD94-4128-B2B5-DCE37EA6E7F8}</Project>
       <Name>EveLib.EveOnline</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EvePilot Order Editor\Order Editor Service.csproj">
+      <Project>{0FD4CF67-093D-465C-9AFD-EFB9A2F159F6}</Project>
+      <Name>Order Editor Service</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

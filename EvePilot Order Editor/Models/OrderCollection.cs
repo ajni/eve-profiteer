@@ -14,7 +14,6 @@ namespace eZet.Eve.OrderIoHelper.Models {
             foreach (var sellOrder in sellOrders) {
                 Items.Add(new Order(null, sellOrder));
             }
-
         }
 
         public BuyOrderCollection ToBuyOrderCollection() {

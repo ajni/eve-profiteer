@@ -28,6 +28,7 @@ namespace eZet.EveProfiteer {
             container.PerRequest<TransactionService>();
             container.PerRequest<EveMarketService>();
             container.PerRequest<EveDataService>();
+            container.PerRequest<OrderEditorService>();
             container.Singleton<KeyManagementService>();
             
             container.PerRequest<IRepository<Transaction>, DbContextRepository<Transaction>>();
@@ -52,6 +53,7 @@ namespace eZet.EveProfiteer {
             container.PerRequest<JournalViewModel>();
             container.PerRequest<ItemDetailsViewModel>();
             container.PerRequest<ProfitViewModel>();
+            container.PerRequest<OrderEditorViewModel>();
         }
 
         protected override object GetInstance(Type service, string key) {

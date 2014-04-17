@@ -4,7 +4,7 @@ namespace eZet.Eve.OrderIoHelper.Models {
     public class Order {
 
         public Order() {
-            
+
         }
 
         public Order(BuyOrder buyOrder, SellOrder sellOrder) {
@@ -21,7 +21,7 @@ namespace eZet.Eve.OrderIoHelper.Models {
                 ItemId = buyOrder.ItemId;
                 MaxBuyPrice = buyOrder.MaxPrice;
                 BuyQuantity = buyOrder.Quantity;
-                UpdateTime = buyOrder.UpdateTime;
+                //UpdateTime = buyOrder.UpdateTime;
             }
         }
 
@@ -43,7 +43,7 @@ namespace eZet.Eve.OrderIoHelper.Models {
                 ItemId = ItemId,
                 MaxPrice = MaxBuyPrice,
                 Quantity = BuyQuantity,
-                UpdateTime = DateTime.UtcNow,
+                //UpdateTime = DateTime.UtcNow,
             };
             return order;
         }
@@ -52,22 +52,39 @@ namespace eZet.Eve.OrderIoHelper.Models {
 
         public long ItemId { get; private set; }
 
-        public decimal MinSellPrice { get; set; }
+        public int BuyQuantity{get; set; }
 
         public decimal MaxBuyPrice { get; set; }
 
+        public decimal TotalMaxBuyPrice {
+            get { return BuyQuantity * MaxBuyPrice; }
+            set { if (MaxBuyPrice != 0) BuyQuantity = (int)(value / MaxBuyPrice); }
+        }
+
         public int MinSellQuantity { get; set; }
-        
+
+        public decimal MinSellPrice { get; set; }
+
+        public decimal TotalMinSellPrice {
+            get { return MinSellQuantity*MinSellPrice; }
+            set { if (MinSellPrice != 0) MinSellQuantity = (int) (value/MinSellPrice); }
+        }
+
         public int MaxSellQuantity { get; set; }
 
-        public int BuyQuantity { get; set; }
+        public decimal TotalMaxSellPrice {
+            get { return MaxSellQuantity * MinSellPrice; }
+            set { if (MinSellPrice != 0) MaxSellQuantity = (int)(value / MinSellPrice); }
+        }
 
         public DateTime UpdateTime { get; private set; }
 
-        public int Volume { get; set; }
+        public double AvgVolume { get; set; }
 
         public decimal CurrentBuyPrice { get; set; }
 
         public decimal CurrentSellPrice { get; set; }
+
+        public decimal AvgPrice { get; set; }
     }
 }

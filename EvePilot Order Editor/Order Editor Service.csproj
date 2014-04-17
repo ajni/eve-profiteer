@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{0FD4CF67-093D-465C-9AFD-EFB9A2F159F6}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>eZet.Eve.OrderIoHelper</RootNamespace>
     <AssemblyName>OrderIoHelper</AssemblyName>
@@ -47,13 +47,16 @@
     <Compile Include="Models\OrderCollection.cs" />
     <Compile Include="Models\SellOrderCollection.cs" />
     <Compile Include="Models\SellOrder.cs" />
-    <Compile Include="OrderIoHelper.cs" />
-    <Compile Include="Test.cs" />
+    <Compile Include="OrderInstallerIoService.cs" />
     <Compile Include="Models\BuyOrder.cs" />
     <Compile Include="Models\BuyOrderCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\EVE Library\EveLib.EveMarketData\EveLib.EveMarketData.csproj">
+      <Project>{185E2271-BBA1-4071-AC46-BF47153BDB7A}</Project>
+      <Name>EveLib.EveMarketData</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\NET Utilities\IoUtils\NET Utilities.csproj">
       <Project>{1c0627de-5e16-4079-9f4b-8a0092ae88aa}</Project>
       <Name>NET Utilities</Name>

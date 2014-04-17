@@ -18,7 +18,7 @@ namespace eZet.Eve.OrderIoHelper.Models {
         [DataMember(Name = "quantity", IsRequired = true, Order = 3)]
         public int Quantity { get; set; }
 
-        [DataMember(Name = "updateTime", IsRequired = true, Order = 4)]
+        [DataMember(Name = "updateTime", Order = 4)]
         public DateTime UpdateTime { get; set; }
 
     }

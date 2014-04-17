@@ -22,6 +22,8 @@ namespace eZet.EveProfiteer.Services {
             Jita = 60003760;
         }
 
+    
+
         public StationTradeAnalyzer GetStationTrader(Station station, ICollection<Item> items, int dayLimit) {
             var historyOptions = new EveMarketDataOptions();
             historyOptions.AgeSpan = TimeSpan.FromDays(dayLimit);

@@ -35,6 +35,7 @@ namespace eZet.EveProfiteer.ViewModels {
             Items.Add(IoC.Get<StationTraderViewModel>());
             Items.Add(IoC.Get<ItemDetailsViewModel>());
             Items.Add(IoC.Get<ProfitViewModel>());
+            Items.Add(IoC.Get<OrderEditorViewModel>());
 
             if (ActiveKey != null) {
                 transactions.Initialize(ActiveKey, ActiveKeyEntity);
