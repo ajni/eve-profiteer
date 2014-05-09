@@ -44,7 +44,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\Order.cs" />
-    <Compile Include="Models\OrderCollection.cs" />
     <Compile Include="Models\SellOrderCollection.cs" />
     <Compile Include="Models\SellOrder.cs" />
     <Compile Include="OrderInstallerIoService.cs" />

@@ -9,52 +9,55 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <DockPanel>
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Left">
-            <Button Name="Open">Open</Button>
-            <Button Name="Save">Save</Button>
-            <Button Name="Average">Set Average</Button>
+            <Button Margin="5" Name="Open">Open</Button>
+            <Button Margin="5" Name="Save">Save</Button>
+            <Button Margin="5" Name="Average">Set average</Button>
+            <Button Margin="5" Name="EditOrdersDialog">Edit Orders</Button>
         </StackPanel>
 
-        <dxg:GridControl Name="Orders" AutoGenerateColumns="None" ItemsSource="{Binding Orders}">
+        <dxg:GridControl Name="Orders" AutoGenerateColumns="None" ItemsSource="{Binding Orders}" SelectedItems="{Binding SelectedOrders}" SelectionMode="Row">
             <dxg:GridControl.View>
-                <dxg:TableView NavigationStyle="Cell" ShowAutoFilterRow="True" PrintTotalSummary="True" PrintFixedTotalSummary="" ShowSearchPanelMode="Default" ShowGroupPanel="False" AutoWidth="True"/>
+                <dxg:SelectionView ShowAutoFilterRow="False" ShowTotalSummary="False" ShowFixedTotalSummary="True" ShowGroupPanel="False" AutoWidth="True" NavigationStyle="Cell">
+                </dxg:SelectionView>
             </dxg:GridControl.View>
             <dxg:GridControl.TotalSummary>
                 <dxg:GridSummaryItem SummaryType="Count" Alignment="Right" />
-                <dxg:GridSummaryItem FieldName="TotalMaxBuyPrice" SummaryType="Sum" DisplayFormat="Sum: {0:c2}" />
+                <dxg:GridSummaryItem FieldName="TotalMaxBuyPrice" SummaryType="Sum" DisplayFormat="Buyorder total: {0:N0} isk" Alignment="Left" />
             </dxg:GridControl.TotalSummary>
             <dxg:GridControl.Columns>
+                <dxg:SelectAllColumn></dxg:SelectAllColumn>
                 <dxg:GridColumn AllowEditing="False" FieldName="ItemName" Header="Item"/>
                 <dxg:GridColumn FieldName="BuyQuantity" Width="50"/>
                 <dxg:GridColumn FieldName="MaxBuyPrice">
                     <dxg:GridColumn.EditSettings>
-                        <dxe:TextEditSettings DisplayFormat="N2" />
+                        <dxe:TextEditSettings DisplayFormat="N0" />
                     </dxg:GridColumn.EditSettings>
                 </dxg:GridColumn>
                 <dxg:GridColumn FieldName="TotalMaxBuyPrice" Header="Buy Total">
                     <dxg:GridColumn.EditSettings>
-                        <dxe:TextEditSettings DisplayFormat="N2" />
+                        <dxe:TextEditSettings DisplayFormat="N0" />
                     </dxg:GridColumn.EditSettings>
                 </dxg:GridColumn>
                 <dxg:GridColumn FieldName="MinSellQuantity" Width="50"/>
                 <dxg:GridColumn FieldName="MinSellPrice">
                     <dxg:GridColumn.EditSettings>
-                        <dxe:TextEditSettings DisplayFormat="N2" />
+                        <dxe:TextEditSettings DisplayFormat="N0" />
                     </dxg:GridColumn.EditSettings>
                 </dxg:GridColumn>
                 <dxg:GridColumn FieldName="TotalMinSellPrice" Header="Min Sell Total">
                     <dxg:GridColumn.EditSettings>
-                        <dxe:TextEditSettings DisplayFormat="N2" />
+                        <dxe:TextEditSettings DisplayFormat="N0" />
                     </dxg:GridColumn.EditSettings>
                 </dxg:GridColumn>
                 <dxg:GridColumn FieldName="MaxSellQuantity" Width="50"/>
                 <dxg:GridColumn FieldName="TotalMaxSellPrice" Header="Max Sell Total">
                     <dxg:GridColumn.EditSettings>
-                        <dxe:TextEditSettings DisplayFormat="N2" />
+                        <dxe:TextEditSettings DisplayFormat="N0" />
                     </dxg:GridColumn.EditSettings>
                 </dxg:GridColumn>
                 <dxg:GridColumn AllowEditing="False" FieldName="AvgPrice">
                     <dxg:GridColumn.EditSettings>
-                        <dxe:TextEditSettings DisplayFormat="N2" />
+                        <dxe:TextEditSettings DisplayFormat="N0" />
                     </dxg:GridColumn.EditSettings>
                 </dxg:GridColumn>
                 <dxg:GridColumn AllowEditing="False" FieldName="AvgVolume" Width="50">

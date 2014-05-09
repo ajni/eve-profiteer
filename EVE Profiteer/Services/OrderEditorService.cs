@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using DevExpress.XtraPrinting.Native;
@@ -20,14 +21,23 @@ namespace eZet.EveProfiteer.Services {
 
         private EveMarketData EveMarketData { get; set; }
 
-        public OrderCollection LoadOrders(string path) {
+        public ICollection<Order> LoadOrders(string path) {
             var buyOrders = OrderInstallerIoService.ReadBuyOrders(path + Path.DirectorySeparatorChar + BuyOrdersFileName);
             var sellOrders = OrderInstallerIoService.ReadSellOrders(path + Path.DirectorySeparatorChar + SellOrdersFileName);
-            var orders = new OrderCollection(buyOrders, sellOrders);
+            var sellOrderLookup = sellOrders.ToLookup(f => f.ItemId);
+            var orders = new List<Order>();
+            foreach (var buyOrder in buyOrders) {
+                var sellOrder = sellOrderLookup[buyOrder.ItemId].SingleOrDefault();
+                sellOrders.Remove(sellOrder);
+                orders.Add(new Order(buyOrder, sellOrder));
+            }
+            foreach (var sellOrder in sellOrders) {
+                orders.Add(new Order(null, sellOrder));
+            }
             return orders;
         }
 
-        public void LoadPriceData(OrderCollection orders, int dayLimit) {
+        public void LoadPriceData(ICollection<Order> orders, int dayLimit) {
             var historyOptions = new EveMarketDataOptions();
             foreach (var order in orders) {
                 historyOptions.Items.Add(order.ItemId);
@@ -45,9 +55,27 @@ namespace eZet.EveProfiteer.Services {
             }
         }
 
-        public void SaveOrders(string path, OrderCollection orders) {
-            OrderInstallerIoService.WriteBuyOrders(path + Path.DirectorySeparatorChar + BuyOrdersFileName, orders.ToBuyOrderCollection());
-            OrderInstallerIoService.WriteSellOrders(path + Path.DirectorySeparatorChar + SellOrdersFileName, orders.ToSellOrderCollection());
+        public void SaveOrders(string path, ICollection<Order> orders) {
+            OrderInstallerIoService.WriteBuyOrders(path + Path.DirectorySeparatorChar + BuyOrdersFileName, ToBuyOrderCollection(orders));
+            OrderInstallerIoService.WriteSellOrders(path + Path.DirectorySeparatorChar + SellOrdersFileName, ToSellOrderCollection(orders));
+        }
+
+        public BuyOrderCollection ToBuyOrderCollection(IEnumerable<Order> orders) {
+            var buyOrders = new BuyOrderCollection();
+            foreach (var order in orders) {
+                if (order.BuyQuantity > 0)
+                    buyOrders.Add(order.ToBuyOrder());
+            }
+            return buyOrders;
+        }
+
+        public SellOrderCollection ToSellOrderCollection(IEnumerable<Order> orders) {
+            var sellOrders = new SellOrderCollection();
+            foreach (var order in orders) {
+                if (order.MinSellQuantity > 0)
+                    sellOrders.Add(order.ToSellOrder());
+            }
+            return sellOrders;
         }
     }
 

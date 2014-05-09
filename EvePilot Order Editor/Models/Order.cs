@@ -29,7 +29,7 @@ namespace eZet.Eve.OrderIoHelper.Models {
             var order = new SellOrder {
                 ItemName = ItemName,
                 ItemId = ItemId,
-                MinPrice = MinSellPrice,
+                MinPrice = (long)MinSellPrice,
                 MaxQuantity = MaxSellQuantity,
                 Quantity = MinSellQuantity,
                 UpdateTime = DateTime.UtcNow,
@@ -41,7 +41,7 @@ namespace eZet.Eve.OrderIoHelper.Models {
             var order = new BuyOrder {
                 ItemName = ItemName,
                 ItemId = ItemId,
-                MaxPrice = MaxBuyPrice,
+                MaxPrice = (long)MaxBuyPrice,
                 Quantity = BuyQuantity,
                 //UpdateTime = DateTime.UtcNow,
             };

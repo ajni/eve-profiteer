@@ -13,7 +13,7 @@ namespace eZet.Eve.OrderIoHelper.Models {
         public long ItemId { get; set; }
 
         [DataMember(Name = "maxPrice", IsRequired = true, Order = 2)]
-        public decimal MaxPrice { get; set; }
+        public long MaxPrice { get; set; }
 
         [DataMember(Name = "quantity", IsRequired = true, Order = 3)]
         public int Quantity { get; set; }
