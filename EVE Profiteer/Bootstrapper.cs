@@ -10,54 +10,54 @@ using eZet.EveProfiteer.ViewModels;
 
 namespace eZet.EveProfiteer {
     public class Bootstrapper : BootstrapperBase {
-        SimpleContainer container;
+        SimpleContainer _container;
 
         public Bootstrapper() {
             Start();
         }
 
         protected override void Configure() {
-            container = new SimpleContainer();
+            _container = new SimpleContainer();
 
-            container.Singleton<IWindowManager, WindowManager>();
-            container.Singleton<IEventAggregator, EventAggregator>();
-            container.Singleton<EveApiService>();
+            _container.Singleton<IWindowManager, WindowManager>();
+            _container.Singleton<IEventAggregator, EventAggregator>();
+            _container.Singleton<EveApiService>();
 
-            container.PerRequest<EveProfiteerDbContext>();
+            _container.PerRequest<EveProfiteerDbContext>();
 
-            container.PerRequest<TransactionService>();
-            container.PerRequest<EveMarketService>();
-            container.PerRequest<EveDataService>();
-            container.PerRequest<OrderEditorService>();
-            container.Singleton<KeyManagementService>();
+            _container.PerRequest<TransactionService>();
+            _container.PerRequest<EveMarketService>();
+            _container.PerRequest<EveDataService>();
+            _container.PerRequest<OrderEditorService>();
+            _container.Singleton<KeyManagementService>();
             
-            container.PerRequest<IRepository<Transaction>, DbContextRepository<Transaction>>();
-            container.PerRequest<IRepository<JournalEntry>, DbContextRepository<JournalEntry>>();
-            container.PerRequest<IRepository<ApiKey>, DbContextRepository<ApiKey>>();
-            container.PerRequest<IRepository<ApiKeyEntity>, DbContextRepository<ApiKeyEntity>>();
+            _container.PerRequest<IRepository<Transaction>, DbContextRepository<Transaction>>();
+            _container.PerRequest<IRepository<JournalEntry>, DbContextRepository<JournalEntry>>();
+            _container.PerRequest<IRepository<ApiKey>, DbContextRepository<ApiKey>>();
+            _container.PerRequest<IRepository<ApiKeyEntity>, DbContextRepository<ApiKeyEntity>>();
 
-            container.PerRequest<RepositoryService<ApiKey>>();
-            container.PerRequest<RepositoryService<ApiKeyEntity>>();
+            _container.PerRequest<RepositoryService<ApiKey>>();
+            _container.PerRequest<RepositoryService<ApiKeyEntity>>();
 
-            container.Singleton<DbContext, EveProfiteerDbContext>();
+            _container.Singleton<DbContext, EveProfiteerDbContext>();
 
 
             // Models
-            container.PerRequest<IShell, ShellViewModel>();
-            container.PerRequest<ManageKeysViewModel>();
-            container.PerRequest<AddKeyViewModel>();
-            container.PerRequest<EditKeyViewModel>();
-            container.PerRequest<OverviewViewModel>();
-            container.PerRequest<TransactionsViewModel>();
-            container.PerRequest<MarketAnalyzerViewModel>();
-            container.PerRequest<JournalViewModel>();
-            container.PerRequest<ItemDetailsViewModel>();
-            container.PerRequest<ProfitViewModel>();
-            container.PerRequest<OrderEditorViewModel>();
+            _container.PerRequest<IShell, ShellViewModel>();
+            _container.PerRequest<ManageKeysViewModel>();
+            _container.PerRequest<AddKeyViewModel>();
+            _container.PerRequest<EditKeyViewModel>();
+            _container.PerRequest<OverviewViewModel>();
+            _container.PerRequest<TransactionsViewModel>();
+            _container.PerRequest<MarketAnalyzerViewModel>();
+            _container.PerRequest<JournalViewModel>();
+            _container.PerRequest<ItemDetailsViewModel>();
+            _container.PerRequest<ProfitViewModel>();
+            _container.PerRequest<OrderEditorViewModel>();
         }
 
         protected override object GetInstance(Type service, string key) {
-            var instance = container.GetInstance(service, key);
+            var instance = _container.GetInstance(service, key);
             if (instance != null)
                 return instance;
 
@@ -65,11 +65,11 @@ namespace eZet.EveProfiteer {
         }
 
         protected override IEnumerable<object> GetAllInstances(Type service) {
-            return container.GetAllInstances(service);
+            return _container.GetAllInstances(service);
         }
 
         protected override void BuildUp(object instance) {
-            container.BuildUp(instance);
+            _container.BuildUp(instance);
         }
 
         protected override void OnStartup(object sender, System.Windows.StartupEventArgs e) {

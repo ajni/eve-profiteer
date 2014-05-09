@@ -17,7 +17,9 @@
 
         <dxg:GridControl Name="Orders" AutoGenerateColumns="None" ItemsSource="{Binding Orders}" SelectedItems="{Binding SelectedOrders}" SelectionMode="Row">
             <dxg:GridControl.View>
-                <dxg:SelectionView ShowAutoFilterRow="False" ShowTotalSummary="False" ShowFixedTotalSummary="True" ShowGroupPanel="False" AutoWidth="True" NavigationStyle="Cell">
+                <dxg:SelectionView ShowAutoFilterRow="False" ShowTotalSummary="False" ShowFixedTotalSummary="True" ShowGroupPanel="False" AutoWidth="True"
+                                   NavigationStyle="Cell" NewItemRowPosition="Top" ShowingEditor="GridViewBase_OnShowingEditor" InitNewRow="TableView_OnInitNewRow"
+                                   ValidateRow="GridViewBase_OnValidateRow" InvalidRowException="GridViewBase_OnInvalidRowException">
                 </dxg:SelectionView>
             </dxg:GridControl.View>
             <dxg:GridControl.TotalSummary>
@@ -26,7 +28,7 @@
             </dxg:GridControl.TotalSummary>
             <dxg:GridControl.Columns>
                 <dxg:SelectAllColumn></dxg:SelectAllColumn>
-                <dxg:GridColumn AllowEditing="False" FieldName="ItemName" Header="Item"/>
+                <dxg:GridColumn FieldName="ItemName" Header="Item" Validate="GridColumn_OnValidate"/>
                 <dxg:GridColumn FieldName="BuyQuantity" Width="50"/>
                 <dxg:GridColumn FieldName="MaxBuyPrice">
                     <dxg:GridColumn.EditSettings>
@@ -67,6 +69,5 @@
                 </dxg:GridColumn>
             </dxg:GridControl.Columns>
         </dxg:GridControl>
-
     </DockPanel>
 </UserControl>

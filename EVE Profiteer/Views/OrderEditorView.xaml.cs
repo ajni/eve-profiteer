@@ -1,25 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using Caliburn.Micro;
+using DevExpress.Xpf.Grid;
+using InvalidRowExceptionEventArgs = DevExpress.Xpf.Grid.InvalidRowExceptionEventArgs;
 
 namespace eZet.EveProfiteer.Views {
     /// <summary>
     /// Interaction logic for OrderEditorView.xaml
     /// </summary>
-    public partial class OrderEditorView : UserControl {
+    public partial class OrderEditorView {
+        private readonly IEventAggregator _eventAggregator;
+
         public OrderEditorView() {
+            _eventAggregator = IoC.Get<IEventAggregator>();
             InitializeComponent();
+        }
+
+        private void GridViewBase_OnShowingEditor(object sender, ShowingEditorEventArgs e) {
+            var view = sender as SelectionView;
+            if (Orders.CurrentColumn.FieldName == "ItemName") {
+                if (Orders.View.FocusedRowHandle != DevExpress.XtraGrid.GridControl.NewItemRowHandle) {
+                    e.Cancel = true;
+                }
+            }
+        }
+
+        private void TableView_OnInitNewRow(object sender, InitNewRowEventArgs e) {
+            //throw new System.NotImplementedException();
+        }
+
+        private void GridViewBase_OnValidateRow(object sender, GridRowValidationEventArgs e) {
+            _eventAggregator.Publish(e);
+        }
+
+        private void GridViewBase_OnInvalidRowException(object sender, InvalidRowExceptionEventArgs e) {
+            throw new System.NotImplementedException();
+        }
+
+        private void GridColumn_OnValidate(object sender, GridCellValidationEventArgs e) {
+            
+            _eventAggregator.Publish(e);
         }
     }
 }

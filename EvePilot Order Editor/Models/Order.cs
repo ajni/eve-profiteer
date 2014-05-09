@@ -48,9 +48,9 @@ namespace eZet.Eve.OrderIoHelper.Models {
             return order;
         }
 
-        public string ItemName { get; private set; }
+        public string ItemName { get; set; }
 
-        public long ItemId { get; private set; }
+        public long ItemId { get; set; }
 
         public int BuyQuantity{get; set; }
 

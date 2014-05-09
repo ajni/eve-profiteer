@@ -22,22 +22,29 @@ namespace eZet.EveProfiteer.Services {
         private EveMarketData EveMarketData { get; set; }
 
         public ICollection<Order> LoadOrders(string path) {
-            var buyOrders = OrderInstallerIoService.ReadBuyOrders(path + Path.DirectorySeparatorChar + BuyOrdersFileName);
-            var sellOrders = OrderInstallerIoService.ReadSellOrders(path + Path.DirectorySeparatorChar + SellOrdersFileName);
-            var sellOrderLookup = sellOrders.ToLookup(f => f.ItemId);
             var orders = new List<Order>();
-            foreach (var buyOrder in buyOrders) {
-                var sellOrder = sellOrderLookup[buyOrder.ItemId].SingleOrDefault();
-                sellOrders.Remove(sellOrder);
-                orders.Add(new Order(buyOrder, sellOrder));
-            }
-            foreach (var sellOrder in sellOrders) {
-                orders.Add(new Order(null, sellOrder));
+            try {
+                var buyOrders =
+                    OrderInstallerIoService.ReadBuyOrders(path + Path.DirectorySeparatorChar + BuyOrdersFileName);
+                var sellOrders =
+                    OrderInstallerIoService.ReadSellOrders(path + Path.DirectorySeparatorChar + SellOrdersFileName);
+                var sellOrderLookup = sellOrders.ToLookup(f => f.ItemId);
+                foreach (var buyOrder in buyOrders) {
+                    var sellOrder = sellOrderLookup[buyOrder.ItemId].SingleOrDefault();
+                    sellOrders.Remove(sellOrder);
+                    orders.Add(new Order(buyOrder, sellOrder));
+                }
+                foreach (var sellOrder in sellOrders) {
+                    orders.Add(new Order(null, sellOrder));
+                }
+            } catch (FileNotFoundException e) {
+
             }
             return orders;
         }
 
         public void LoadPriceData(ICollection<Order> orders, int dayLimit) {
+            if (orders.Count == 0) return;
             var historyOptions = new EveMarketDataOptions();
             foreach (var order in orders) {
                 historyOptions.Items.Add(order.ItemId);

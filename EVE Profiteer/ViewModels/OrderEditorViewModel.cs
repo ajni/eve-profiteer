@@ -3,15 +3,19 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Forms;
 using Caliburn.Micro;
+using DevExpress.Xpf.Grid;
+using DevExpress.XtraEditors.DXErrorProvider;
 using eZet.Eve.OrderIoHelper.Models;
 using eZet.EveProfiteer.Services;
 using eZet.EveProfiteer.Views;
 using Screen = Caliburn.Micro.Screen;
 
 namespace eZet.EveProfiteer.ViewModels {
-    public class OrderEditorViewModel : Screen {
+    public class OrderEditorViewModel : Screen, IHandle<object> {
         private readonly IWindowManager _windowManager;
+        private readonly IEventAggregator _eventAggregator;
         private readonly OrderEditorService _orderEditorService;
+        private readonly EveDataService _eveDataService;
 
         private string _selectedPath = @"C:\Users\Lars Kristian\AppData\Local\MacroLab\Eve Pilot\Client_1\EVETrader";
 
@@ -37,10 +41,15 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
 
-        public OrderEditorViewModel(IWindowManager windowManager, OrderEditorService orderEditorService) {
+        public OrderEditorViewModel(IWindowManager windowManager, IEventAggregator eventAggregator, OrderEditorService orderEditorService, EveDataService eveDataService) {
             _windowManager = windowManager;
+            _eventAggregator = eventAggregator;
             _orderEditorService = orderEditorService;
+            _eveDataService = eveDataService;
             DisplayName = "Order Editor";
+
+
+            _eventAggregator.Subscribe(this);
 
             SelectedOrders = new ObservableCollection<Order>();
             Orders = new ObservableCollection<Order>();
@@ -112,6 +121,25 @@ namespace eZet.EveProfiteer.ViewModels {
                 }
             }
             ((OrderEditorView)GetView()).Orders.RefreshData();
+        }
+
+        public void Handle(object message) {
+            if (message.GetType() != typeof (GridCellValidationEventArgs)) return;
+            var e = message as GridCellValidationEventArgs;
+            var value = e.Value.ToString();
+            var item = _eveDataService.GetItems().SingleOrDefault(f => f.TypeName == value);
+            if (item == null) {
+                e.IsValid = false;
+                e.SetError("Invalid item.");
+            } else {
+                if (Orders.SingleOrDefault(order => order.ItemId == item.TypeId) != null) {
+                    e.IsValid = false;
+                    e.SetError("Item has already been added.");
+                }
+                else {
+                    ((Order) e.Row).ItemId = item.TypeId;
+                }
+            }
         }
     }
 }
