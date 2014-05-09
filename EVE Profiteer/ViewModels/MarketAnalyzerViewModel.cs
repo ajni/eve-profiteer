@@ -1,30 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Caliburn.Micro;
 using eZet.Eve.EveProfiteer.Entities;
 using eZet.Eve.EveProfiteer.ViewModels;
+using eZet.Eve.OrderIoHelper.Models;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
 using Xceed.Wpf.Toolkit;
+using Screen = Caliburn.Micro.Screen;
 
 namespace eZet.EveProfiteer.ViewModels {
-    public class StationTraderViewModel : Screen {
-        private IWindowManager windowManager { get; set; }
-        private int dayLimit = 5;
-        private ICollection<StationTradeEntry> marketAnalyzerResults;
-        private BindableCollection<Item> selectedItems;
-        private Station selectedStation;
+    public class MarketAnalyzerViewModel : Screen {
+        private readonly IWindowManager _windowManager;
+        private int _dayLimit = 5;
+        private ICollection<MarketAnalyzerItem> _marketAnalyzerResults;
+        private ICollection<Item> _selectedItems;
+        private Station _selectedStation;
+        private readonly EveDataService _eveDataService;
+        private readonly EveMarketService _eveMarketService;
+        private readonly OrderEditorService _orderEditorService;
+        private string _selectedPath = @"C:\Users\Lars Kristian\AppData\Local\MacroLab\Eve Pilot\Client_1\EVETrader";
 
-        public StationTraderViewModel(IWindowManager windowManager, EveDataService eveDataService,
-            EveMarketService eveMarketService) {
-            this.eveDataService = eveDataService;
-            this.eveMarketService = eveMarketService;
-            this.windowManager = windowManager;
-            DisplayName = "Station Trader";
+
+        public MarketAnalyzerViewModel(IWindowManager windowManager, EveDataService eveDataService,
+            EveMarketService eveMarketService, OrderEditorService orderEditorService) {
+            _eveDataService = eveDataService;
+            _eveMarketService = eveMarketService;
+            _orderEditorService = orderEditorService;
+            _windowManager = windowManager;
+            DisplayName = "Market Analyzer";
 
             SelectedItems = new BindableCollection<Item>();
 
@@ -34,43 +44,40 @@ namespace eZet.EveProfiteer.ViewModels {
             SelectedStation = Stations.Single(f => f.StationId == 60003760);
         }
 
-        private EveDataService eveDataService { get; set; }
-
-        private EveMarketService eveMarketService { get; set; }
 
         public ICollection<MarketGroup> TreeRootNodes { get; private set; }
 
         public ICollection<Station> Stations { get; private set; }
 
         public Station SelectedStation {
-            get { return selectedStation; }
+            get { return _selectedStation; }
             set {
-                selectedStation = value;
+                _selectedStation = value;
                 NotifyOfPropertyChange(() => SelectedStation);
             }
         }
 
-        public BindableCollection<Item> SelectedItems {
-            get { return selectedItems; }
+        public ICollection<Item> SelectedItems {
+            get { return _selectedItems; }
             private set {
-                selectedItems = value;
+                _selectedItems = value;
                 NotifyOfPropertyChange(() => SelectedItems);
             }
         }
 
 
-        public ICollection<StationTradeEntry> MarketAnalyzerResults {
-            get { return marketAnalyzerResults; }
+        public ICollection<MarketAnalyzerItem> MarketAnalyzerResults {
+            get { return _marketAnalyzerResults; }
             private set {
-                marketAnalyzerResults = value;
+                _marketAnalyzerResults = value;
                 NotifyOfPropertyChange(() => MarketAnalyzerResults);
             }
         }
 
         public int DayLimit {
-            get { return dayLimit; }
+            get { return _dayLimit; }
             private set {
-                dayLimit = value;
+                _dayLimit = value;
                 NotifyOfPropertyChange(() => DayLimit);
             }
         }
@@ -80,7 +87,7 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         public async Task AnalyzeAction() {
-            var busy = new BusyIndicator {IsBusy = true};
+            var busy = new BusyIndicator { IsBusy = true };
             var cts = new CancellationTokenSource();
             var progressVm = new AnalyzerProgressViewModel(cts);
             var res = await getResult(progressVm.GetProgressReporter(), cts);
@@ -93,26 +100,38 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         public void ScannerLinkAction() {
-            IEnumerable<long> list =
-                MarketAnalyzerResults.Cast<MarketAnalyzerResult>()
-                    .Where(result => result.IsChecked)
-                    .Select(f => f.TypeId);
-            Uri uri = eveMarketService.GetScannerLink(list.ToList());
-            var scannerVm = new ScannerLinkViewModel(uri);
-            windowManager.ShowDialog(scannerVm);
+            //IEnumerable<long> list =
+            //    MarketAnalyzerResults.Cast<MarketAnalyzerResult>()
+            //        .Where(result => result.IsChecked)
+            //        .Select(f => f.TypeId);
+            //Uri uri = _eveMarketService.GetScannerLink(list.ToList());
+            //var scannerVm = new ScannerLinkViewModel(uri);
+            //_windowManager.ShowDialog(scannerVm);
         }
 
-        private async Task<StationTradeAnalyzer> getResult(IProgress<ProgressType> progress, CancellationTokenSource cts) {
+        public void ImportOrders() {
+            var dialog = new FolderBrowserDialog();
+            dialog.ShowNewFolderButton = false;
+            dialog.SelectedPath = _selectedPath;
+            if (dialog.ShowDialog() == DialogResult.OK) {
+                _selectedPath = dialog.SelectedPath;
+                var orders = _orderEditorService.LoadOrders(dialog.SelectedPath).Select(item => item.ItemId);
+                var items = _eveDataService.GetItems().Where(item => orders.Contains(item.TypeId)).ToList();
+                SelectedItems = items;
+            }
+        }
+
+        private async Task<MarketAnalyzer> getResult(IProgress<ProgressType> progress, CancellationTokenSource cts) {
             return await
                 Task.Run(
-                    () => eveMarketService.GetStationTrader(SelectedStation, SelectedItems, DayLimit), cts.Token);
+                    () => _eveMarketService.GetStationTrader(SelectedStation, SelectedItems, DayLimit), cts.Token);
         }
 
         private ICollection<MarketGroup> buildTree() {
             var rootList = new List<MarketGroup>();
-            eveDataService.SetLazyLoad(false);
-            List<Item> items = eveDataService.GetItems().Where(p => p.MarketGroupId.HasValue).ToList();
-            List<MarketGroup> groupList = eveDataService.GetMarketGroups().ToList();
+            _eveDataService.SetLazyLoad(false);
+            List<Item> items = _eveDataService.GetItems().Where(p => p.MarketGroupId.HasValue).ToList();
+            List<MarketGroup> groupList = _eveDataService.GetMarketGroups().ToList();
             Dictionary<int, MarketGroup> groups = groupList.ToDictionary(t => t.MarketGroupId);
 
             foreach (Item item in items) {
@@ -132,7 +151,7 @@ namespace eZet.EveProfiteer.ViewModels {
                     rootList.Add(key.Value);
                 }
             }
-            eveDataService.SetLazyLoad(true);
+            _eveDataService.SetLazyLoad(true);
             return rootList;
         }
 

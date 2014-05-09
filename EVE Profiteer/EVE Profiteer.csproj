@@ -143,7 +143,6 @@
     <Compile Include="Models\ItemProfit.cs" />
     <Compile Include="Models\JournalEntry.cs" />
     <Compile Include="Models\MarketAnalyzer.cs" />
-    <Compile Include="Models\MarketAnalyzerResult.cs" />
     <Compile Include="Models\MarketGroup.cs">
       <DependentUpon>EveDbModelContext.tt</DependentUpon>
     </Compile>
@@ -151,8 +150,7 @@
       <DependentUpon>EveDbModelContext.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Station.cs" />
-    <Compile Include="Models\StationTradeAnalyzer.cs" />
-    <Compile Include="Models\StationTradeEntry.cs" />
+    <Compile Include="Models\MarketAnalyzerItem.cs" />
     <Compile Include="Models\Transaction.cs" />
     <Compile Include="Models\TreeNode.cs" />
     <Compile Include="Repository\IRepository.cs" />
@@ -180,7 +178,7 @@
     <Compile Include="Views\EditOrderDialogView.xaml.cs">
       <DependentUpon>EditOrderDialogView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\StationTraderViewModel.cs" />
+    <Compile Include="ViewModels\MarketAnalyzerViewModel.cs" />
     <Compile Include="ViewModels\OverviewViewModel.cs" />
     <Compile Include="ViewModels\ScannerLinkViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
@@ -210,8 +208,8 @@
     <Compile Include="Views\ProfitView.xaml.cs">
       <DependentUpon>ProfitView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\StationTraderView.xaml.cs">
-      <DependentUpon>StationTraderView.xaml</DependentUpon>
+    <Compile Include="Views\MarketAnalyzerView.xaml.cs">
+      <DependentUpon>MarketAnalyzerView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ManageKeysView.xaml.cs">
       <DependentUpon>ManageKeysView.xaml</DependentUpon>
@@ -257,7 +255,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\StationTraderView.xaml">
+    <Page Include="Views\MarketAnalyzerView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

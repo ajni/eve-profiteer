@@ -4,13 +4,13 @@ using System.Linq;
 using eZet.EveLib.Modules.Models;
 
 namespace eZet.EveProfiteer.Models {
-    public class StationTradeEntry {
+    public class MarketAnalyzerItem {
 
         public Item ItemData { get; set; }
 
         public IEnumerable<ItemHistory.ItemHistoryEntry> History;
 
-        public StationTradeEntry(Item item, ItemPrices.ItemPriceEntry sellOrder, ItemPrices.ItemPriceEntry buyOrder, IEnumerable<ItemHistory.ItemHistoryEntry> history) {
+        public MarketAnalyzerItem(Item item, ItemPrices.ItemPriceEntry sellOrder, ItemPrices.ItemPriceEntry buyOrder, IEnumerable<ItemHistory.ItemHistoryEntry> history) {
             ItemData = item;
             History = history;
             Updated = sellOrder.Updated;

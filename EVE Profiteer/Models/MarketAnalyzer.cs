@@ -1,40 +1,46 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using eZet.EveLib.Modules.Models;
 
 namespace eZet.EveProfiteer.Models {
     public class MarketAnalyzer {
 
-        public Dictionary<long, MarketAnalyzerResult> Results { get; set; }
+        public ICollection<MarketAnalyzerItem> Result { get; set; }
 
-        private readonly ICollection<Item> itemData;
+        private IDictionary<long, ItemPrices.ItemPriceEntry> sellOrders { get; set; }
 
-        private readonly List<ItemHistory.ItemHistoryEntry> itemHistory;
+        private IDictionary<long, ItemPrices.ItemPriceEntry> buyOrders { get; set; }
 
-        private Region region;
+        private ILookup<long, ItemHistory.ItemHistoryEntry> history { get; set; }
 
-        public MarketAnalyzer(Region region, ICollection<Item> itemData) {
-            this.region = region;
+        private IEnumerable<Item> itemData { get; set; }
+
+        public MarketAnalyzer(IEnumerable<Item> itemData, IEnumerable<ItemPrices.ItemPriceEntry> sellOrders, IEnumerable<ItemPrices.ItemPriceEntry> buyOrders, IEnumerable<ItemHistory.ItemHistoryEntry> history) {
             this.itemData = itemData;
-            this.itemHistory = new List<ItemHistory.ItemHistoryEntry>();
-            Results = new Dictionary<long, MarketAnalyzerResult>();
+            this.sellOrders = sellOrders.ToDictionary(f => f.TypeId);
+            this.buyOrders = buyOrders.ToDictionary(f => f.TypeId);
+            this.history = history.ToLookup(f => f.TypeId);
+            Result = new List<MarketAnalyzerItem>();
         }
 
-        public void Add(ICollection<ItemHistory.ItemHistoryEntry> history) {
-            this.itemHistory.AddRange(history);
-        }
-
-        public void Calculate() {
+        public void Analyze() {
             foreach (var item in itemData) {
-                Results.Add(item.TypeId, new MarketAnalyzerResult(region, item));
-            }
-            foreach (var item in itemHistory) {
-                Results[item.TypeId].Data.Add(item);
-            }
-            foreach (var item in Results.Values) {
-                if (item.Data.Count != 0)
-                    item.Calculate();
+                ItemPrices.ItemPriceEntry sellOrder, buyOrder;
+                sellOrders.TryGetValue(item.TypeId, out sellOrder);
+                buyOrders.TryGetValue(item.TypeId, out buyOrder);
+                var itemHistory = new List<ItemHistory.ItemHistoryEntry>();
+                if (history.Contains(item.TypeId)) {
+                    itemHistory = history[item.TypeId].ToList();
+                }
+                Result.Add(new MarketAnalyzerItem(item, sellOrder, buyOrder, itemHistory));
             }
         }
+
+
+
+
+
+
 
     }
 }

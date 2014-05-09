@@ -14,7 +14,7 @@ namespace eZet.EveProfiteer.Services {
             var query = from item in db.Items
                         where item.TypeId == id
                         select item;
-            return query.First();
+            return query.Single();
         }
 
         public IQueryable<Item> GetItems() {

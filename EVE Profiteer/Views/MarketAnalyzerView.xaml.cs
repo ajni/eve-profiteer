@@ -5,10 +5,10 @@ namespace eZet.EveProfiteer.Views {
     /// <summary>
     /// Interaction logic for MarketAnalyzerView.xaml
     /// </summary>
-    public partial class StationTraderView : UserControl {
+    public partial class MarketAnalyzerView {
 
 
-        public StationTraderView() {
+        public MarketAnalyzerView() {
             InitializeComponent();
             Splitter.DragDelta += SplitterNameDragDelta;
         }

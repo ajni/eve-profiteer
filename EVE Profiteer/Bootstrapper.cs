@@ -49,7 +49,7 @@ namespace eZet.EveProfiteer {
             container.PerRequest<EditKeyViewModel>();
             container.PerRequest<OverviewViewModel>();
             container.PerRequest<TransactionsViewModel>();
-            container.PerRequest<StationTraderViewModel>();
+            container.PerRequest<MarketAnalyzerViewModel>();
             container.PerRequest<JournalViewModel>();
             container.PerRequest<ItemDetailsViewModel>();
             container.PerRequest<ProfitViewModel>();
