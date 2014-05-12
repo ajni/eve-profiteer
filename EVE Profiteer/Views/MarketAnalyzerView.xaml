@@ -4,7 +4,8 @@
         xmlns:models="clr-namespace:eZet.EveProfiteer.Models"
         xmlns:cal="http://www.caliburnproject.org"
         xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
-        xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors">
+        xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+        xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars">
 
     <DockPanel LastChildFill="True">
         <ToolBarTray DockPanel.Dock="Top">
@@ -55,9 +56,13 @@
             <GridSplitter Name="Splitter" Grid.Column="1" Margin="3" VerticalAlignment="Stretch" Width="5" ResizeBehavior="PreviousAndNext" Focusable="False" IsTabStop="False" Background="#FFD1DAEE"/>
             
             <DockPanel LastChildFill="True" Grid.Column="2">
-                <dxg:GridControl  AutoGenerateColumns="None" ItemsSource="{Binding MarketAnalyzerResults}">
+                <dxg:GridControl  AutoGenerateColumns="None" ItemsSource="{Binding MarketAnalyzerResults}" Name="GridControl">
                     <dxg:GridControl.View>
-                        <dxg:TableView AllowEditing="False" NavigationStyle="Row" ShowAutoFilterRow="True" ShowFixedTotalSummary="True" IsTotalSummaryMenuEnabled="True" ShowGroupPanel="False"/>
+                        <dxg:TableView AllowEditing="False" NavigationStyle="Row" ShowAutoFilterRow="True" ShowFixedTotalSummary="True" IsTotalSummaryMenuEnabled="True" ShowGroupPanel="False">
+                            <dxg:TableView.RowCellMenuCustomizations>
+                                <dxb:BarButtonItem Name="AddOrderItem" Content="Add to orders" Command="{Binding Path=(dxb:GridPopupMenuBase.GridMenuInfo).View.DataContext.AddToOrdersCommand, RelativeSource={RelativeSource Self}}" CommandParameter="{Binding View.DataControl.SelectedItems}"/>
+                            </dxg:TableView.RowCellMenuCustomizations>
+                        </dxg:TableView>
                     </dxg:GridControl.View>
                     <dxg:GridControl.TotalSummary>
                         <dxg:GridSummaryItem SummaryType="Count" Alignment="Right" />

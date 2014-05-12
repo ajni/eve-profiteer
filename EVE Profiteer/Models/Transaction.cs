@@ -6,7 +6,7 @@ namespace eZet.EveProfiteer.Models {
 
     public class Transaction {
 
-        private decimal total;
+        private decimal _total;
 
         [Key]
         public int Id { get; set; }
@@ -25,10 +25,10 @@ namespace eZet.EveProfiteer.Models {
 
         public decimal Total {
             get {
-                if (total == 0) total = Quantity * Price;
-                return total;
+                if (_total == 0) _total = Quantity * Price;
+                return _total;
             }
-            set { total = value; }
+            set { _total = value; }
         }
 
         public long ClientId { get; set; }

@@ -1,11 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Windows.Forms;
 using Caliburn.Micro;
+using DevExpress.Data.PLinq.Helpers;
 using DevExpress.Xpf.Grid;
-using DevExpress.XtraEditors.DXErrorProvider;
-using eZet.Eve.OrderIoHelper.Models;
+using DevExpress.Xpf.Mvvm.Native;
+using DevExpress.Xpf.Ribbon.Customization;
+using eZet.EveProfiteer.Events;
+using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
 using eZet.EveProfiteer.Views;
 using Screen = Caliburn.Micro.Screen;
@@ -48,34 +53,48 @@ namespace eZet.EveProfiteer.ViewModels {
             _eveDataService = eveDataService;
             DisplayName = "Order Editor";
 
-
             _eventAggregator.Subscribe(this);
 
             SelectedOrders = new ObservableCollection<Order>();
             Orders = new ObservableCollection<Order>();
+            Orders.CollectionChanged += OrdersOnCollectionChanged;
             DayLimit = 10;
             BuyOrderAvgOffset = 2;
             SellOrderAvgOffset = 2;
         }
 
-        public void Open() {
+        private void OrdersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
+            if (e.NewItems != null)
+                _orderEditorService.AddOrders(e.NewItems.OfType<Order>());
+            if (e.OldItems != null)
+                _orderEditorService.DeleteOrders(e.OldItems.OfType<Order>());
+            _orderEditorService.SaveChanges();
+
+        }
+
+        protected override void OnInitialize() {
+            Orders.AddRange(_orderEditorService.GetOrders().ToList());
+        }
+
+        public void Import() {
             var dialog = new FolderBrowserDialog();
             dialog.ShowNewFolderButton = false;
             dialog.SelectedPath = _selectedPath;
             if (dialog.ShowDialog() == DialogResult.OK) {
-                var orders = _orderEditorService.LoadOrders(dialog.SelectedPath);
+                var orders = _orderEditorService.LoadOrdersFromDisk(dialog.SelectedPath);
                 _orderEditorService.LoadPriceData(orders, DayLimit);
-                Orders = new ObservableCollection<Order>(orders);
+                Orders.Clear();
+                Orders.AddRange(orders);
                 _selectedPath = dialog.SelectedPath;
             }
         }
 
-        public void Save() {
+        public void Export() {
             var dialog = new FolderBrowserDialog();
             dialog.ShowNewFolderButton = false;
             dialog.SelectedPath = _selectedPath;
             if (dialog.ShowDialog() == DialogResult.OK) {
-                _orderEditorService.SaveOrders(dialog.SelectedPath, Orders);
+                _orderEditorService.SaveOrdersToDisk(dialog.SelectedPath, Orders);
                 _selectedPath = dialog.SelectedPath;
             }
         }
@@ -85,19 +104,9 @@ namespace eZet.EveProfiteer.ViewModels {
                 order.MaxBuyPrice = order.AvgPrice + order.AvgPrice * (decimal)(BuyOrderAvgOffset / 100.0);
                 order.MinSellPrice = order.AvgPrice - order.AvgPrice * (decimal)(SellOrderAvgOffset / 100.0);
             }
-            ((OrderEditorView)GetView()).Orders.RefreshData();
+            refreshOrders();
         }
 
-        public void SelectAll() {
-            var list = new List<Order>();
-            foreach (var order in Orders)
-                list.Add(order);
-            SelectedOrders = new ObservableCollection<Order>(list);
-        }
-
-        public void SelectNone() {
-            SelectedOrders.Clear();
-        }
 
         public void EditOrdersDialog() {
             var vm = new EditOrderDialogViewModel();
@@ -109,7 +118,7 @@ namespace eZet.EveProfiteer.ViewModels {
                         order.BuyQuantity = 1;
                 }
                 if (vm.SetMinSellOrderTotal && order.MinSellPrice != 0) {
-                    order.MinSellQuantity = (int) (vm.MinSellOrderTotal/order.MinSellPrice);
+                    order.MinSellQuantity = (int)(vm.MinSellOrderTotal / order.MinSellPrice);
                     if (order.MinSellQuantity == 0)
                         order.MinSellQuantity = 1;
                 }
@@ -120,26 +129,43 @@ namespace eZet.EveProfiteer.ViewModels {
                         order.MaxSellQuantity = 1;
                 }
             }
-            ((OrderEditorView)GetView()).Orders.RefreshData();
+            refreshOrders();
         }
 
         public void Handle(object message) {
-            if (message.GetType() != typeof (GridCellValidationEventArgs)) return;
-            var e = message as GridCellValidationEventArgs;
-            var value = e.Value.ToString();
+            if (message.GetType() == typeof(GridCellValidationEventArgs)) {
+                gridCellValidationHandler(message as GridCellValidationEventArgs);
+            } else if (message.GetType() == typeof(AddToOrdersEvent)) {
+                addToOrdersEventHandler(message as AddToOrdersEvent);
+            }
+        }
+
+        private void addToOrdersEventHandler(AddToOrdersEvent e) {
+            foreach (var item in e.Items) {
+                Orders.Add(new Order { ItemId = item.ItemData.TypeId, ItemName = item.ItemData.TypeName });
+            }
+        }
+
+        private void gridCellValidationHandler(GridCellValidationEventArgs eventArgs) {
+            var value = eventArgs.Value.ToString();
             var item = _eveDataService.GetItems().SingleOrDefault(f => f.TypeName == value);
             if (item == null) {
-                e.IsValid = false;
-                e.SetError("Invalid item.");
+                eventArgs.IsValid = false;
+                eventArgs.SetError("Invalid item.");
             } else {
                 if (Orders.SingleOrDefault(order => order.ItemId == item.TypeId) != null) {
-                    e.IsValid = false;
-                    e.SetError("Item has already been added.");
-                }
-                else {
-                    ((Order) e.Row).ItemId = item.TypeId;
+                    eventArgs.IsValid = false;
+                    eventArgs.SetError("Item has already been added.");
+                } else {
+                    ((Order)eventArgs.Row).ItemId = item.TypeId;
                 }
             }
+        }
+
+        private void refreshOrders() {
+            var view = GetView() as OrderEditorView;
+            if (view != null)
+                view.Orders.RefreshData();
         }
     }
 }

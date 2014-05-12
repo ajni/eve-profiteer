@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Input;
 using Caliburn.Micro;
+using DevExpress.Xpf.Mvvm;
 using eZet.Eve.EveProfiteer.Entities;
 using eZet.Eve.EveProfiteer.ViewModels;
-using eZet.Eve.OrderIoHelper.Models;
+using eZet.EveProfiteer.Events;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
 using Xceed.Wpf.Toolkit;
@@ -18,6 +19,7 @@ using Screen = Caliburn.Micro.Screen;
 namespace eZet.EveProfiteer.ViewModels {
     public class MarketAnalyzerViewModel : Screen {
         private readonly IWindowManager _windowManager;
+        private readonly IEventAggregator _eventAggregator;
         private int _dayLimit = 5;
         private ICollection<MarketAnalyzerItem> _marketAnalyzerResults;
         private ICollection<Item> _selectedItems;
@@ -28,12 +30,13 @@ namespace eZet.EveProfiteer.ViewModels {
         private string _selectedPath = @"C:\Users\Lars Kristian\AppData\Local\MacroLab\Eve Pilot\Client_1\EVETrader";
 
 
-        public MarketAnalyzerViewModel(IWindowManager windowManager, EveDataService eveDataService,
+        public MarketAnalyzerViewModel(IWindowManager windowManager, IEventAggregator eventAggregator, EveDataService eveDataService,
             EveMarketService eveMarketService, OrderEditorService orderEditorService) {
             _eveDataService = eveDataService;
             _eveMarketService = eveMarketService;
             _orderEditorService = orderEditorService;
             _windowManager = windowManager;
+            _eventAggregator = eventAggregator;
             DisplayName = "Market Analyzer";
 
             SelectedItems = new BindableCollection<Item>();
@@ -41,8 +44,14 @@ namespace eZet.EveProfiteer.ViewModels {
             TreeRootNodes = buildTree();
             Stations = getStations();
 
+            AddToOrdersCommand = new DelegateCommand<IList<object>>(AddToOrders);
+
             SelectedStation = Stations.Single(f => f.StationId == 60003760);
+               // ((MarketAnalyzerView) GetView()).GridControl.View.DataControl.SelectedItems;
+
         }
+
+        public ICommand AddToOrdersCommand { get; set; }
 
 
         public ICollection<MarketGroup> TreeRootNodes { get; private set; }
@@ -109,13 +118,19 @@ namespace eZet.EveProfiteer.ViewModels {
             //_windowManager.ShowDialog(scannerVm);
         }
 
+        public void AddToOrders(IList<object> items) {
+            if (items.Count == 0) return;
+            var itams = items.Select(item => item as MarketAnalyzerItem).ToList();
+            _eventAggregator.Publish(new AddToOrdersEvent(itams));
+        }
+
         public void ImportOrders() {
             var dialog = new FolderBrowserDialog();
             dialog.ShowNewFolderButton = false;
             dialog.SelectedPath = _selectedPath;
             if (dialog.ShowDialog() == DialogResult.OK) {
                 _selectedPath = dialog.SelectedPath;
-                var orders = _orderEditorService.LoadOrders(dialog.SelectedPath).Select(item => item.ItemId);
+                var orders = _orderEditorService.LoadOrdersFromDisk(dialog.SelectedPath).Select(item => item.ItemId);
                 var items = _eveDataService.GetItems().Where(item => orders.Contains(item.TypeId)).ToList();
                 SelectedItems = items;
             }

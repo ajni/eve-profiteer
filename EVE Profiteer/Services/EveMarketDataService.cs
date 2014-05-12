@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using eZet.Eve.EveProfiteer.Entities;
 using eZet.EveLib.Modules;
 using eZet.EveLib.Modules.Models;
 using eZet.EveProfiteer.Models;
@@ -17,7 +16,7 @@ namespace eZet.EveProfiteer.Services {
         private int Jita { get; set; }
 
         public EveMarketService() {
-            eveMarketData = new EveMarketData(Format.Json);
+            eveMarketData = new EveMarketData(EveMarketData.DataFormat.Json);
             eveCentral = new EveCentral();
             Jita = 60003760;
         }

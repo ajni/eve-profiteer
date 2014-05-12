@@ -118,6 +118,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Bootstrapper.cs" />
+    <Compile Include="Events\AddToOrdersEvent.cs" />
     <Compile Include="Framework\IShell.cs" />
     <Compile Include="Models\ApiKeyEntity.cs" />
     <Compile Include="Models\ApiKey.cs" />
@@ -148,6 +149,7 @@
     <Compile Include="Models\MarketGroup.cs">
       <DependentUpon>EveDbModelContext.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Order.cs" />
     <Compile Include="Models\Region.cs">
       <DependentUpon>EveDbModelContext.tt</DependentUpon>
     </Compile>

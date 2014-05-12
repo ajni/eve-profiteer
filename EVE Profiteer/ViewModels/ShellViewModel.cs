@@ -1,8 +1,10 @@
 using System.Linq;
 using Caliburn.Micro;
+using DevExpress.Xpf.NavBar;
 using eZet.EveProfiteer.Framework;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
+using eZet.EveProfiteer.Views;
 
 namespace eZet.EveProfiteer.ViewModels {
     public class ShellViewModel : Conductor<IScreen>.Collection.OneActive, IShell {
@@ -33,7 +35,9 @@ namespace eZet.EveProfiteer.ViewModels {
             Items.Add(journal);
 
             Items.Add(IoC.Get<MarketAnalyzerViewModel>());
+
             Items.Add(IoC.Get<OrderEditorViewModel>());
+
             //Items.Add(IoC.Get<ItemDetailsViewModel>());
             //Items.Add(IoC.Get<ProfitViewModel>());
 

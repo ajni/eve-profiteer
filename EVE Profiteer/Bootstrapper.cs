@@ -35,6 +35,7 @@ namespace eZet.EveProfiteer {
             _container.PerRequest<IRepository<JournalEntry>, DbContextRepository<JournalEntry>>();
             _container.PerRequest<IRepository<ApiKey>, DbContextRepository<ApiKey>>();
             _container.PerRequest<IRepository<ApiKeyEntity>, DbContextRepository<ApiKeyEntity>>();
+            _container.PerRequest<IRepository<Order>, DbContextRepository<Order>>();
 
             _container.PerRequest<RepositoryService<ApiKey>>();
             _container.PerRequest<RepositoryService<ApiKeyEntity>>();
