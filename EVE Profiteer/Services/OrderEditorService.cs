@@ -6,6 +6,7 @@ using DevExpress.XtraPrinting.Native;
 using eZet.Eve.OrderIoHelper;
 using eZet.Eve.OrderIoHelper.Models;
 using eZet.EveLib.Modules;
+using eZet.EveOnlineDbModels;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Repository;
 

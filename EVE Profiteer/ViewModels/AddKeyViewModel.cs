@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows;
 using Caliburn.Micro;
+using eZet.EveOnlineDbModels;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
 

@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Caliburn.Micro;
+using eZet.EveOnlineDbModels;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Repository;
 using eZet.EveProfiteer.Services;

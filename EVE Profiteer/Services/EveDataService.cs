@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using eZet.EveProfiteer.Models;
+using eZet.EveOnlineDbModels;
 
 namespace eZet.EveProfiteer.Services {
     public class EveDataService {
@@ -10,35 +10,35 @@ namespace eZet.EveProfiteer.Services {
             db.Configuration.LazyLoadingEnabled = val;
         }
 
-        public Item GetItem(long id) {
-            var query = from item in db.Items
+        public InvType GetType(long id) {
+            var query = from item in db.InvTypes
                         where item.TypeId == id
                         select item;
             return query.Single();
         }
 
-        public IQueryable<Item> GetItems() {
-            var query = from item in db.Items
+        public IQueryable<InvType> GetTypes() {
+            var query = from item in db.InvTypes
                         select item;
             return query;
         }
 
-        public MarketGroup GetMarketGroup(long id) {
-            var query = from g in db.MarketGroups
+        public InvMarketGroup GetMarketGroup(long id) {
+            var query = from g in db.InvMarketGroups
                         where g.MarketGroupId == id
                         select g;
             return query.First();
 
         }
 
-        public IQueryable<MarketGroup> GetMarketGroups() {
-            var query = from g in db.MarketGroups
+        public IQueryable<InvMarketGroup> GetMarketGroups() {
+            var query = from g in db.InvMarketGroups
                         select g;
             return query;
         }
 
-        public IQueryable<Region> GetRegions() {
-            var query = from row in db.Regions
+        public IQueryable<MapRegion> GetRegions() {
+            var query = from row in db.MapRegions
                         where row.RegionId < 11000001
                         orderby row.RegionName
                         select row;

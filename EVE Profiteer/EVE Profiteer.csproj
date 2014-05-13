@@ -122,41 +122,14 @@
     <Compile Include="Framework\IShell.cs" />
     <Compile Include="Models\ApiKeyEntity.cs" />
     <Compile Include="Models\ApiKey.cs" />
-    <Compile Include="Models\EveDbModel.Designer.cs">
-      <DependentUpon>EveDbModel.edmx</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="Models\EveDbModelContext.Context.cs">
-      <DependentUpon>EveDbModelContext.Context.tt</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="Models\EveDbModelContext.cs">
-      <DependentUpon>EveDbModelContext.tt</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="Models\Extensions\Item.cs" />
-    <Compile Include="Models\Extensions\MarketGroup.cs" />
-    <Compile Include="Models\Item.cs">
-      <DependentUpon>EveDbModelContext.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\ItemDetail.cs" />
     <Compile Include="Models\ItemProfit.cs" />
     <Compile Include="Models\JournalEntry.cs" />
     <Compile Include="Models\MarketAnalyzer.cs" />
-    <Compile Include="Models\MarketGroup.cs">
-      <DependentUpon>EveDbModelContext.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\Order.cs" />
-    <Compile Include="Models\Region.cs">
-      <DependentUpon>EveDbModelContext.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\Station.cs" />
     <Compile Include="Models\MarketAnalyzerItem.cs" />
     <Compile Include="Models\Transaction.cs" />
-    <Compile Include="Models\TreeNode.cs" />
     <Compile Include="Repository\IRepository.cs" />
     <Compile Include="Repository\DbContextRepository.cs" />
     <Compile Include="Services\IRepositoryService.cs" />
@@ -299,23 +272,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EntityDeploy Include="Models\EveDbModel.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>EveDbModel.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <None Include="Models\EveDbModel.edmx.diagram">
-      <DependentUpon>EveDbModel.edmx</DependentUpon>
-    </None>
-    <None Include="Models\EveDbModelContext.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>EveDbModel.edmx</DependentUpon>
-      <LastGenOutput>EveDbModelContext.Context.cs</LastGenOutput>
-    </None>
-    <None Include="Models\EveDbModelContext.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>EveDbModel.edmx</DependentUpon>
-      <LastGenOutput>EveDbModelContext.cs</LastGenOutput>
-    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -339,6 +295,10 @@
       <Project>{655CA737-CD94-4128-B2B5-DCE37EA6E7F8}</Project>
       <Name>EveLib.EveOnline</Name>
     </ProjectReference>
+    <ProjectReference Include="..\EveOnlineDbModels\EveOnlineDbModels.csproj">
+      <Project>{7759033a-8095-44be-91a3-84911019b5a3}</Project>
+      <Name>EveOnlineDbModels</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EvePilot Order Editor\Order Editor Service.csproj">
       <Project>{0FD4CF67-093D-465C-9AFD-EFB9A2F159F6}</Project>
       <Name>Order Editor Service</Name>
@@ -347,9 +307,7 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Data\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

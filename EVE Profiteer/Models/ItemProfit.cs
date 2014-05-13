@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
+using eZet.EveOnlineDbModels;
 
 namespace eZet.EveProfiteer.Models {
     public class ItemProfit {
 
 
-        public ItemProfit(Item item, IEnumerable<Transaction> sellOrders, IEnumerable<Transaction> buyOrders) {
-            Item = item;
+        public ItemProfit(InvType invType, IEnumerable<Transaction> sellOrders, IEnumerable<Transaction> buyOrders) {
+            InvType = invType;
             SellOrders = sellOrders;
             BuyOrders = buyOrders;
             foreach (var order in SellOrders) {
@@ -28,7 +28,7 @@ namespace eZet.EveProfiteer.Models {
 
         public IEnumerable<Transaction> BuyOrders { get; private set; }
 
-        public Item Item { get; private set; }
+        public InvType InvType { get; private set; }
 
         public int QuantitySold { get; private set; }
 

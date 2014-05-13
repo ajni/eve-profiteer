@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using eZet.EveOnlineDbModels;
 using eZet.EveProfiteer.Models;
 
 namespace eZet.EveProfiteer.Events {

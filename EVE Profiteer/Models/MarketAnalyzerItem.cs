@@ -2,16 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using eZet.EveLib.Modules.Models;
+using eZet.EveOnlineDbModels;
 
 namespace eZet.EveProfiteer.Models {
     public class MarketAnalyzerItem {
 
-        public Item ItemData { get; set; }
+        public InvType InvTypeData { get; set; }
 
         public IEnumerable<ItemHistory.ItemHistoryEntry> History;
 
-        public MarketAnalyzerItem(Item item, ItemPrices.ItemPriceEntry sellOrder, ItemPrices.ItemPriceEntry buyOrder, IEnumerable<ItemHistory.ItemHistoryEntry> history) {
-            ItemData = item;
+        public MarketAnalyzerItem(InvType invType, ItemPrices.ItemPriceEntry sellOrder, ItemPrices.ItemPriceEntry buyOrder, IEnumerable<ItemHistory.ItemHistoryEntry> history) {
+            InvTypeData = invType;
             History = history;
             Updated = sellOrder.Updated;
             BuyPrice = buyOrder.Price;

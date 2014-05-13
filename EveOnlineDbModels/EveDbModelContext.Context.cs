@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace eZet.EveProfiteer.Models
+namespace eZet.EveOnlineDbModels
 {
     using System;
     using System.Data.Entity;
@@ -25,8 +25,8 @@ namespace eZet.EveProfiteer.Models
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<MarketGroup> MarketGroups { get; set; }
-        public virtual DbSet<Item> Items { get; set; }
-        public virtual DbSet<Region> Regions { get; set; }
+        public virtual DbSet<InvMarketGroup> InvMarketGroups { get; set; }
+        public virtual DbSet<InvType> InvTypes { get; set; }
+        public virtual DbSet<MapRegion> MapRegions { get; set; }
     }
 }

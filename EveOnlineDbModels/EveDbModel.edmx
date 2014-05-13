@@ -60,8 +60,8 @@
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
-      <Schema Namespace="eZet.EveProfiteer.EveDbModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityType Name="MarketGroup">
+      <Schema Namespace="eZet.EveOnlineDbModels" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="InvMarketGroup">
           <Key>
             <PropertyRef Name="MarketGroupId" />
           </Key>
@@ -71,11 +71,11 @@
           <Property Name="Description" Type="String" MaxLength="3000" FixedLength="false" Unicode="true" />
           <Property Name="IconId" Type="Int32" />
           <Property Name="HasTypes" Type="Boolean" />
-          <NavigationProperty Name="Items" Relationship="eZet.EveProfiteer.EveDbModel.invTypeinvMarketGroup" FromRole="invMarketGroup" ToRole="invType" />
-          <NavigationProperty Name="ParentGroup" Relationship="eZet.EveProfiteer.EveDbModel.MarketGroupMarketGroup" FromRole="MarketGroupParent" ToRole="MarketGroupChild" />
-          <NavigationProperty Name="SubGroups" Relationship="eZet.EveProfiteer.EveDbModel.MarketGroupMarketGroup" FromRole="MarketGroupChild" ToRole="MarketGroupParent" />
+          <NavigationProperty Name="Items" Relationship="eZet.EveOnlineDbModels.invTypeinvMarketGroup" FromRole="invMarketGroup" ToRole="invType" />
+          <NavigationProperty Name="ParentGroup" Relationship="eZet.EveOnlineDbModels.MarketGroupMarketGroup" FromRole="MarketGroupParent" ToRole="MarketGroupChild" />
+          <NavigationProperty Name="SubGroups" Relationship="eZet.EveOnlineDbModels.MarketGroupMarketGroup" FromRole="MarketGroupChild" ToRole="MarketGroupParent" />
           </EntityType>
-        <EntityType Name="Item">
+        <EntityType Name="InvType">
           <Key>
             <PropertyRef Name="TypeId" />
           </Key>
@@ -92,24 +92,24 @@
           <Property Name="Published" Type="Boolean" />
           <Property Name="MarketGroupId" Type="Int32" Nullable="true" />
           <Property Name="chanceOfDuplicating" Type="Double" />
-          <NavigationProperty Name="ParentGroup" Relationship="eZet.EveProfiteer.EveDbModel.invTypeinvMarketGroup" FromRole="invType" ToRole="invMarketGroup" />
+          <NavigationProperty Name="ParentGroup" Relationship="eZet.EveOnlineDbModels.invTypeinvMarketGroup" FromRole="invType" ToRole="invMarketGroup" />
         </EntityType>
         <EntityContainer Name="EveDbContext" annotation:LazyLoadingEnabled="true" a:TypeAccess="Public" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration">
-          <EntitySet Name="MarketGroups" EntityType="eZet.EveProfiteer.EveDbModel.MarketGroup" />
-          <EntitySet Name="Items" EntityType="eZet.EveProfiteer.EveDbModel.Item" />
-          <AssociationSet Name="invTypeinvMarketGroup" Association="eZet.EveProfiteer.EveDbModel.invTypeinvMarketGroup">
-            <End Role="invType" EntitySet="Items" />
-            <End Role="invMarketGroup" EntitySet="MarketGroups" />
+          <EntitySet Name="InvMarketGroups" EntityType="eZet.EveOnlineDbModels.InvMarketGroup" />
+          <EntitySet Name="InvTypes" EntityType="eZet.EveOnlineDbModels.InvType" />
+          <AssociationSet Name="invTypeinvMarketGroup" Association="eZet.EveOnlineDbModels.invTypeinvMarketGroup">
+            <End Role="invType" EntitySet="InvTypes" />
+            <End Role="invMarketGroup" EntitySet="InvMarketGroups" />
           </AssociationSet>
-          <AssociationSet Name="MarketGroupMarketGroup" Association="eZet.EveProfiteer.EveDbModel.MarketGroupMarketGroup">
-            <End Role="MarketGroupParent" EntitySet="MarketGroups" />
-            <End Role="MarketGroupChild" EntitySet="MarketGroups" />
+          <AssociationSet Name="MarketGroupMarketGroup" Association="eZet.EveOnlineDbModels.MarketGroupMarketGroup">
+            <End Role="MarketGroupParent" EntitySet="InvMarketGroups" />
+            <End Role="MarketGroupChild" EntitySet="InvMarketGroups" />
           </AssociationSet>
-          <EntitySet Name="Regions" EntityType="eZet.EveProfiteer.EveDbModel.Region" />
+          <EntitySet Name="MapRegions" EntityType="eZet.EveOnlineDbModels.MapRegion" />
         </EntityContainer>
         <Association Name="invTypeinvMarketGroup">
-          <End Type="eZet.EveProfiteer.EveDbModel.Item" Role="invType" Multiplicity="*" />
-          <End Type="eZet.EveProfiteer.EveDbModel.MarketGroup" Role="invMarketGroup" Multiplicity="0..1" />
+          <End Type="eZet.EveOnlineDbModels.InvType" Role="invType" Multiplicity="*" />
+          <End Type="eZet.EveOnlineDbModels.InvMarketGroup" Role="invMarketGroup" Multiplicity="0..1" />
           <ReferentialConstraint>
             <Principal Role="invMarketGroup">
               <PropertyRef Name="MarketGroupId" />
@@ -120,8 +120,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="MarketGroupMarketGroup">
-          <End Type="eZet.EveProfiteer.EveDbModel.MarketGroup" Role="MarketGroupParent" Multiplicity="*" />
-          <End Type="eZet.EveProfiteer.EveDbModel.MarketGroup" Role="MarketGroupChild" Multiplicity="0..1" />
+          <End Type="eZet.EveOnlineDbModels.InvMarketGroup" Role="MarketGroupParent" Multiplicity="*" />
+          <End Type="eZet.EveOnlineDbModels.InvMarketGroup" Role="MarketGroupChild" Multiplicity="0..1" />
           <ReferentialConstraint>
             <Principal Role="MarketGroupChild">
               <PropertyRef Name="MarketGroupId" />
@@ -131,7 +131,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="Region">
+        <EntityType Name="MapRegion">
           <Key>
             <PropertyRef Name="RegionId" />
           </Key>
@@ -155,8 +155,8 @@
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="EveDbModelStoreContainer" CdmEntityContainer="EveDbContext">
-          <EntitySetMapping Name="MarketGroups">
-            <EntityTypeMapping TypeName="eZet.EveProfiteer.EveDbModel.MarketGroup">
+          <EntitySetMapping Name="InvMarketGroups">
+            <EntityTypeMapping TypeName="eZet.EveOnlineDbModels.InvMarketGroup">
               <MappingFragment StoreEntitySet="invMarketGroups">
                 <ScalarProperty Name="MarketGroupId" ColumnName="marketGroupID" />
                 <ScalarProperty Name="ParentGroupId" ColumnName="parentGroupID" />
@@ -167,8 +167,8 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Items">
-            <EntityTypeMapping TypeName="IsTypeOf(eZet.EveProfiteer.EveDbModel.Item)">
+          <EntitySetMapping Name="InvTypes">
+            <EntityTypeMapping TypeName="IsTypeOf(eZet.EveOnlineDbModels.InvType)">
               <MappingFragment StoreEntitySet="invTypes">
                 <ScalarProperty Name="MarketGroupId" ColumnName="marketGroupID" />
                 <ScalarProperty Name="chanceOfDuplicating" ColumnName="chanceOfDuplicating" />
@@ -186,8 +186,8 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Regions">
-            <EntityTypeMapping TypeName="eZet.EveProfiteer.EveDbModel.Region">
+          <EntitySetMapping Name="MapRegions">
+            <EntityTypeMapping TypeName="eZet.EveOnlineDbModels.MapRegion">
               <MappingFragment StoreEntitySet="mapRegions">
                 <ScalarProperty Name="Radius" ColumnName="radius" />
                 <ScalarProperty Name="FactionId" ColumnName="factionID" />

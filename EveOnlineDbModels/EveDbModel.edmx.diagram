@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="73465e4f5a1f42babf2c29bd2c87bcf6" Name="EveDbDiagram">
+        <EntityTypeShape EntityType="eZet.EveOnlineDbModels.InvMarketGroup" Width="1.5" PointX="4" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="eZet.EveOnlineDbModels.InvType" Width="1.5" PointX="1.375" PointY="0.625" IsExpanded="true" />
+        <AssociationConnector Association="eZet.EveOnlineDbModels.invTypeinvMarketGroup" />
+        <AssociationConnector Association="eZet.EveOnlineDbModels.MarketGroupMarketGroup" />
+        <EntityTypeShape EntityType="eZet.EveOnlineDbModels.MapRegion" Width="1.5" PointX="6.75" PointY="1" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

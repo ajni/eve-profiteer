@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using eZet.EveOnlineDbModels;
 
 namespace eZet.EveProfiteer.Models {
     public class ItemDetail {
@@ -8,7 +9,7 @@ namespace eZet.EveProfiteer.Models {
 
         public string Status { get; set; }
 
-        public Item Item { get; set; }
+        public InvType InvType { get; set; }
 
 
 

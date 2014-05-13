@@ -1,18 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 
-namespace eZet.EveProfiteer.Models {
+namespace eZet.EveOnlineDbModels {
 
     public abstract class TreeNode : INotifyPropertyChanged {
 
         protected bool? _isChecked = false;
 
-        [NotMapped]
         public virtual TreeNode Parent { get; set; }
 
-        [NotMapped]
         public virtual ICollection<TreeNode> Children { get; set; }
 
         public bool? IsChecked {

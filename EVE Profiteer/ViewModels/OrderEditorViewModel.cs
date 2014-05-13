@@ -10,6 +10,7 @@ using DevExpress.Xpf.Grid;
 using DevExpress.Xpf.Mvvm.Native;
 using DevExpress.Xpf.Ribbon.Customization;
 using eZet.EveProfiteer.Events;
+using eZet.EveOnlineDbModels;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
 using eZet.EveProfiteer.Views;
@@ -142,13 +143,13 @@ namespace eZet.EveProfiteer.ViewModels {
 
         private void addToOrdersEventHandler(AddToOrdersEvent e) {
             foreach (var item in e.Items) {
-                Orders.Add(new Order { ItemId = item.ItemData.TypeId, ItemName = item.ItemData.TypeName });
+                Orders.Add(new Order { ItemId = item.InvTypeData.TypeId, ItemName = item.InvTypeData.TypeName });
             }
         }
 
         private void gridCellValidationHandler(GridCellValidationEventArgs eventArgs) {
             var value = eventArgs.Value.ToString();
-            var item = _eveDataService.GetItems().SingleOrDefault(f => f.TypeName == value);
+            var item = _eveDataService.GetTypes().SingleOrDefault(f => f.TypeName == value);
             if (item == null) {
                 eventArgs.IsValid = false;
                 eventArgs.SetError("Invalid item.");

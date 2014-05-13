@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-
 namespace eZet.EveProfiteer.Models {
     public class JournalEntry {
 

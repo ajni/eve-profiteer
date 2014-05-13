@@ -1,10 +1,9 @@
 using System.Linq;
 using Caliburn.Micro;
-using DevExpress.Xpf.NavBar;
 using eZet.EveProfiteer.Framework;
+using eZet.EveOnlineDbModels;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
-using eZet.EveProfiteer.Views;
 
 namespace eZet.EveProfiteer.ViewModels {
     public class ShellViewModel : Conductor<IScreen>.Collection.OneActive, IShell {

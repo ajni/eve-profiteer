@@ -1,4 +1,5 @@
 ﻿using System.Data.Entity;
+using eZet.EveOnlineDbModels;
 using eZet.EveProfiteer.Models;
 
 namespace eZet.EveProfiteer.Repository {

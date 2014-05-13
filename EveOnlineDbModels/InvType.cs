@@ -7,12 +7,12 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace eZet.EveProfiteer.Models
+namespace eZet.EveOnlineDbModels
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class Item
+    public partial class InvType
     {
         public int TypeId { get; set; }
         public Nullable<int> GroupId { get; set; }
@@ -28,6 +28,6 @@ namespace eZet.EveProfiteer.Models
         public Nullable<int> MarketGroupId { get; set; }
         public Nullable<double> chanceOfDuplicating { get; set; }
     
-        public virtual MarketGroup ParentGroup { get; set; }
+        public virtual InvMarketGroup ParentGroup { get; set; }
     }
 }

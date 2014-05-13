@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using eZet.EveLib.Modules;
 using eZet.EveLib.Modules.Models;
+using eZet.EveOnlineDbModels;
 using eZet.EveProfiteer.Models;
 using OrderType = eZet.EveLib.Modules.OrderType;
 
@@ -23,7 +24,7 @@ namespace eZet.EveProfiteer.Services {
 
     
 
-        public MarketAnalyzer GetStationTrader(Station station, ICollection<Item> items, int dayLimit) {
+        public MarketAnalyzer GetStationTrader(Station station, ICollection<InvType> items, int dayLimit) {
             var historyOptions = new EveMarketDataOptions();
             historyOptions.AgeSpan = TimeSpan.FromDays(dayLimit);
             historyOptions.Regions.Add(station.RegionId);

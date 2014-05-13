@@ -10,6 +10,7 @@ using Caliburn.Micro;
 using DevExpress.Xpf.Mvvm;
 using eZet.Eve.EveProfiteer.Entities;
 using eZet.Eve.EveProfiteer.ViewModels;
+using eZet.EveOnlineDbModels;
 using eZet.EveProfiteer.Events;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
@@ -22,7 +23,7 @@ namespace eZet.EveProfiteer.ViewModels {
         private readonly IEventAggregator _eventAggregator;
         private int _dayLimit = 5;
         private ICollection<MarketAnalyzerItem> _marketAnalyzerResults;
-        private ICollection<Item> _selectedItems;
+        private ICollection<InvType> _selectedItems;
         private Station _selectedStation;
         private readonly EveDataService _eveDataService;
         private readonly EveMarketService _eveMarketService;
@@ -39,7 +40,7 @@ namespace eZet.EveProfiteer.ViewModels {
             _eventAggregator = eventAggregator;
             DisplayName = "Market Analyzer";
 
-            SelectedItems = new BindableCollection<Item>();
+            SelectedItems = new BindableCollection<InvType>();
 
             TreeRootNodes = buildTree();
             Stations = getStations();
@@ -54,7 +55,7 @@ namespace eZet.EveProfiteer.ViewModels {
         public ICommand AddToOrdersCommand { get; set; }
 
 
-        public ICollection<MarketGroup> TreeRootNodes { get; private set; }
+        public ICollection<InvMarketGroup> TreeRootNodes { get; private set; }
 
         public ICollection<Station> Stations { get; private set; }
 
@@ -66,7 +67,7 @@ namespace eZet.EveProfiteer.ViewModels {
             }
         }
 
-        public ICollection<Item> SelectedItems {
+        public ICollection<InvType> SelectedItems {
             get { return _selectedItems; }
             private set {
                 _selectedItems = value;
@@ -131,7 +132,7 @@ namespace eZet.EveProfiteer.ViewModels {
             if (dialog.ShowDialog() == DialogResult.OK) {
                 _selectedPath = dialog.SelectedPath;
                 var orders = _orderEditorService.LoadOrdersFromDisk(dialog.SelectedPath).Select(item => item.ItemId);
-                var items = _eveDataService.GetItems().Where(item => orders.Contains(item.TypeId)).ToList();
+                var items = _eveDataService.GetTypes().Where(item => orders.Contains(item.TypeId)).ToList();
                 SelectedItems = items;
             }
         }
@@ -142,15 +143,15 @@ namespace eZet.EveProfiteer.ViewModels {
                     () => _eveMarketService.GetStationTrader(SelectedStation, SelectedItems, DayLimit), cts.Token);
         }
 
-        private ICollection<MarketGroup> buildTree() {
-            var rootList = new List<MarketGroup>();
+        private ICollection<InvMarketGroup> buildTree() {
+            var rootList = new List<InvMarketGroup>();
             _eveDataService.SetLazyLoad(false);
-            List<Item> items = _eveDataService.GetItems().Where(p => p.MarketGroupId.HasValue).ToList();
-            List<MarketGroup> groupList = _eveDataService.GetMarketGroups().ToList();
-            Dictionary<int, MarketGroup> groups = groupList.ToDictionary(t => t.MarketGroupId);
+            List<InvType> items = _eveDataService.GetTypes().Where(p => p.MarketGroupId.HasValue).ToList();
+            List<InvMarketGroup> groupList = _eveDataService.GetMarketGroups().ToList();
+            Dictionary<int, InvMarketGroup> groups = groupList.ToDictionary(t => t.MarketGroupId);
 
-            foreach (Item item in items) {
-                MarketGroup group;
+            foreach (InvType item in items) {
+                InvMarketGroup group;
                 int id = item.MarketGroupId ?? default(int);
                 groups.TryGetValue(id, out group);
                 group.Children.Add(item);
@@ -158,7 +159,7 @@ namespace eZet.EveProfiteer.ViewModels {
             }
             foreach (var key in groups) {
                 if (key.Value.ParentGroupId.HasValue) {
-                    MarketGroup group;
+                    InvMarketGroup group;
                     int id = key.Value.ParentGroupId ?? default(int);
                     groups.TryGetValue(id, out group);
                     group.Children.Add(key.Value);
@@ -171,7 +172,7 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         private void treeViewCheckBox_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            var item = sender as Item;
+            var item = sender as InvType;
             if (e.PropertyName == "IsChecked") {
                 if (item.IsChecked == true) {
                     SelectedItems.Add(item);

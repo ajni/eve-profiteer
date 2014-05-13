@@ -7,17 +7,17 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace eZet.EveProfiteer.Models
+namespace eZet.EveOnlineDbModels
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class MarketGroup
+    public partial class InvMarketGroup
     {
-        public MarketGroup()
+        public InvMarketGroup()
         {
-            this.Items = new HashSet<Item>();
-            this.SubGroups = new HashSet<MarketGroup>();
+            this.Items = new HashSet<InvType>();
+            this.SubGroups = new HashSet<InvMarketGroup>();
         }
     
         public int MarketGroupId { get; set; }
@@ -27,8 +27,8 @@ namespace eZet.EveProfiteer.Models
         public Nullable<int> IconId { get; set; }
         public Nullable<bool> HasTypes { get; set; }
     
-        public virtual ICollection<Item> Items { get; set; }
-        public virtual MarketGroup ParentGroup { get; set; }
-        public virtual ICollection<MarketGroup> SubGroups { get; set; }
+        public virtual ICollection<InvType> Items { get; set; }
+        public virtual InvMarketGroup ParentGroup { get; set; }
+        public virtual ICollection<InvMarketGroup> SubGroups { get; set; }
     }
 }

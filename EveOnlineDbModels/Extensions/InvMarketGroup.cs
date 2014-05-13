@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
 
-namespace eZet.EveProfiteer.Models {
-    public partial class MarketGroup : TreeNode {
+namespace eZet.EveOnlineDbModels {
+    public partial class InvMarketGroup : TreeNode {
 
         private ICollection<TreeNode> _children = new List<TreeNode>();
 
@@ -11,7 +11,7 @@ namespace eZet.EveProfiteer.Models {
                 return ParentGroup;
             }
             set {
-                ParentGroup = value as MarketGroup;
+                ParentGroup = value as InvMarketGroup;
             }
         }
 

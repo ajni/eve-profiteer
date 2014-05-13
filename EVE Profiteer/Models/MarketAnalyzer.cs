@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using eZet.EveLib.Modules.Models;
+using eZet.EveOnlineDbModels;
 
 namespace eZet.EveProfiteer.Models {
     public class MarketAnalyzer {
@@ -13,9 +14,9 @@ namespace eZet.EveProfiteer.Models {
 
         private ILookup<long, ItemHistory.ItemHistoryEntry> history { get; set; }
 
-        private IEnumerable<Item> itemData { get; set; }
+        private IEnumerable<InvType> itemData { get; set; }
 
-        public MarketAnalyzer(IEnumerable<Item> itemData, IEnumerable<ItemPrices.ItemPriceEntry> sellOrders, IEnumerable<ItemPrices.ItemPriceEntry> buyOrders, IEnumerable<ItemHistory.ItemHistoryEntry> history) {
+        public MarketAnalyzer(IEnumerable<InvType> itemData, IEnumerable<ItemPrices.ItemPriceEntry> sellOrders, IEnumerable<ItemPrices.ItemPriceEntry> buyOrders, IEnumerable<ItemHistory.ItemHistoryEntry> history) {
             this.itemData = itemData;
             this.sellOrders = sellOrders.ToDictionary(f => f.TypeId);
             this.buyOrders = buyOrders.ToDictionary(f => f.TypeId);
