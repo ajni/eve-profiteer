@@ -69,7 +69,7 @@
                         <dxg:GridSummaryItem SummaryType="Count" Alignment="Right" />
                     </dxg:GridControl.TotalSummary>
                     <dxg:GridControl.Columns>
-                        <dxg:GridColumn FieldName="ItemData.TypeName"/>
+                        <dxg:GridColumn FieldName="InvTypeData.TypeName"/>
                         <dxg:GridColumn FieldName="BuyPrice">
                             <dxg:GridColumn.EditSettings>
                                 <dxe:TextEditSettings DisplayFormat="N2" />

@@ -1,4 +1,6 @@
-﻿using eZet.EveLib.Modules.Models.Character;
+﻿using System;
+using eZet.EveLib.Modules.Models;
+using eZet.EveLib.Modules.Models.Character;
 using eZet.EveOnlineDbModels;
 using eZet.EveProfiteer.Models;
 
@@ -16,7 +18,8 @@ namespace eZet.EveProfiteer.Util {
             target.ClientName = source.ClientName;
             target.StationId = source.StationId;
             target.StationName = source.StationName;
-            target.TransactionType = source.TransactionType;
+            // TODO add conversion
+            //target.TransactionType = source.TransactionType;
             target.TransactionFor = source.TransactionFor;
             return target;
         }

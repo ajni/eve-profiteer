@@ -120,23 +120,16 @@
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Events\AddToOrdersEvent.cs" />
     <Compile Include="Framework\IShell.cs" />
-    <Compile Include="Models\ApiKeyEntity.cs" />
-    <Compile Include="Models\ApiKey.cs" />
     <Compile Include="Models\ItemDetail.cs" />
     <Compile Include="Models\ItemProfit.cs" />
-    <Compile Include="Models\JournalEntry.cs" />
     <Compile Include="Models\MarketAnalyzer.cs" />
-    <Compile Include="Models\Order.cs" />
     <Compile Include="Models\Station.cs" />
     <Compile Include="Models\MarketAnalyzerItem.cs" />
-    <Compile Include="Models\Transaction.cs" />
     <Compile Include="Repository\IRepository.cs" />
     <Compile Include="Repository\DbContextRepository.cs" />
-    <Compile Include="Services\IRepositoryService.cs" />
     <Compile Include="Services\KeyManagementService.cs" />
     <Compile Include="Services\EveApiService.cs" />
-    <Compile Include="Repository\EveProfiteerDbContext.cs" />
-    <Compile Include="Services\EveDataService.cs" />
+    <Compile Include="Services\EveOnlineStaticDataService.cs" />
     <Compile Include="Services\EveMarketDataService.cs" />
     <Compile Include="Services\OrderEditorService.cs" />
     <Compile Include="Services\RepositoryService.cs" />
@@ -151,7 +144,6 @@
     <Compile Include="ViewModels\JournalViewModel.cs" />
     <Compile Include="ViewModels\ManageKeysViewModel.cs" />
     <Compile Include="ViewModels\OrderEditorViewModel.cs" />
-    <Compile Include="ViewModels\ProfitViewModel.cs" />
     <Compile Include="Views\EditOrderDialogView.xaml.cs">
       <DependentUpon>EditOrderDialogView.xaml</DependentUpon>
     </Compile>
@@ -302,6 +294,10 @@
     <ProjectReference Include="..\EvePilot Order Editor\Order Editor Service.csproj">
       <Project>{0FD4CF67-093D-465C-9AFD-EFB9A2F159F6}</Project>
       <Name>Order Editor Service</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EveProfiteerDbModels\EveProfiteerDbModels.csproj">
+      <Project>{87f63027-90fc-4f87-8840-52c2fc5406b7}</Project>
+      <Name>EveProfiteerDbModels</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

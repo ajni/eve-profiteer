@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Configuration;
 using System.Data;
+using System.Data.Entity;
 using System.Data.SqlClient;
 using System.Linq;
-using eZet.EveOnlineDbModels;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Repository;
 
@@ -28,11 +27,11 @@ namespace eZet.EveProfiteer.Services {
         }
 
         public IEnumerable<Transaction> AddNew(IEnumerable<Transaction> list) {
-            var db = (DbContextRepository<Transaction>)Repository;
+            var db = (DbContext)Repository;
             var addNew = list as IList<Transaction> ?? list.ToList();
-            db.DbContext.Configuration.ValidateOnSaveEnabled = false;
-            db.DbContext.Configuration.AutoDetectChangesEnabled = false;
-            db.AddRange(addNew);
+            db.Configuration.ValidateOnSaveEnabled = false;
+            db.Configuration.AutoDetectChangesEnabled = false;
+            Repository.AddRange(addNew);
             db.SaveChanges();
             //BulkInsert((db.DbContext.Database.Connection.ConnectionString, "dbo.Transactions", addNew);
             return addNew;

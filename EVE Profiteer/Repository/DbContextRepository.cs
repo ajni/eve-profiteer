@@ -3,15 +3,15 @@ using System.Data.Entity;
 using System.Linq;
 
 namespace eZet.EveProfiteer.Repository {
-    public class DbContextRepository<T> : IRepository<T> where T : class {
+    public class DbContextRepository<T, TContext> : IRepository<T> where T : class where TContext : DbContext {
 
-        public DbContext DbContext { get; private set; }
+        public TContext DbContext { get; private set; }
 
         private DbSet<T> Set {
             get { return DbContext.Set<T>(); }
         }
 
-        public DbContextRepository(DbContext dbContext) {
+        public DbContextRepository(TContext dbContext) {
             DbContext = dbContext;
         }
 

@@ -25,15 +25,15 @@ namespace eZet.EveProfiteer.ViewModels {
         private ICollection<MarketAnalyzerItem> _marketAnalyzerResults;
         private ICollection<InvType> _selectedItems;
         private Station _selectedStation;
-        private readonly EveDataService _eveDataService;
+        private readonly EveOnlineStaticDataService _eveOnlineStaticDataService;
         private readonly EveMarketService _eveMarketService;
         private readonly OrderEditorService _orderEditorService;
         private string _selectedPath = @"C:\Users\Lars Kristian\AppData\Local\MacroLab\Eve Pilot\Client_1\EVETrader";
 
 
-        public MarketAnalyzerViewModel(IWindowManager windowManager, IEventAggregator eventAggregator, EveDataService eveDataService,
+        public MarketAnalyzerViewModel(IWindowManager windowManager, IEventAggregator eventAggregator, EveOnlineStaticDataService eveOnlineStaticDataService,
             EveMarketService eveMarketService, OrderEditorService orderEditorService) {
-            _eveDataService = eveDataService;
+            _eveOnlineStaticDataService = eveOnlineStaticDataService;
             _eveMarketService = eveMarketService;
             _orderEditorService = orderEditorService;
             _windowManager = windowManager;
@@ -132,7 +132,7 @@ namespace eZet.EveProfiteer.ViewModels {
             if (dialog.ShowDialog() == DialogResult.OK) {
                 _selectedPath = dialog.SelectedPath;
                 var orders = _orderEditorService.LoadOrdersFromDisk(dialog.SelectedPath).Select(item => item.ItemId);
-                var items = _eveDataService.GetTypes().Where(item => orders.Contains(item.TypeId)).ToList();
+                var items = _eveOnlineStaticDataService.GetTypes().Where(item => orders.Contains(item.TypeId)).ToList();
                 SelectedItems = items;
             }
         }
@@ -145,9 +145,9 @@ namespace eZet.EveProfiteer.ViewModels {
 
         private ICollection<InvMarketGroup> buildTree() {
             var rootList = new List<InvMarketGroup>();
-            _eveDataService.SetLazyLoad(false);
-            List<InvType> items = _eveDataService.GetTypes().Where(p => p.MarketGroupId.HasValue).ToList();
-            List<InvMarketGroup> groupList = _eveDataService.GetMarketGroups().ToList();
+            _eveOnlineStaticDataService.SetLazyLoad(false);
+            List<InvType> items = _eveOnlineStaticDataService.GetTypes().Where(p => p.MarketGroupId.HasValue).ToList();
+            List<InvMarketGroup> groupList = _eveOnlineStaticDataService.GetMarketGroups().ToList();
             Dictionary<int, InvMarketGroup> groups = groupList.ToDictionary(t => t.MarketGroupId);
 
             foreach (InvType item in items) {
@@ -167,7 +167,7 @@ namespace eZet.EveProfiteer.ViewModels {
                     rootList.Add(key.Value);
                 }
             }
-            _eveDataService.SetLazyLoad(true);
+            _eveOnlineStaticDataService.SetLazyLoad(true);
             return rootList;
         }
 

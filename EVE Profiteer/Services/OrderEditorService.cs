@@ -6,7 +6,6 @@ using DevExpress.XtraPrinting.Native;
 using eZet.Eve.OrderIoHelper;
 using eZet.Eve.OrderIoHelper.Models;
 using eZet.EveLib.Modules;
-using eZet.EveOnlineDbModels;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Repository;
 
@@ -38,10 +37,10 @@ namespace eZet.EveProfiteer.Services {
                 foreach (var buyOrder in buyOrders) {
                     var sellOrder = sellOrderLookup[buyOrder.ItemId].SingleOrDefault();
                     sellOrders.Remove(sellOrder);
-                    orders.Add(new Order(buyOrder, sellOrder));
+                    orders.Add(CreateOrder(buyOrder, sellOrder));
                 }
                 foreach (var sellOrder in sellOrders) {
-                    orders.Add(new Order(null, sellOrder));
+                    orders.Add(CreateOrder(null, sellOrder));
                 }
             } catch (FileNotFoundException e) {
 
@@ -92,7 +91,7 @@ namespace eZet.EveProfiteer.Services {
         private static BuyOrderCollection ToBuyOrderCollection(IEnumerable<Order> orders) {
             var buyOrders = new BuyOrderCollection();
             foreach (var order in orders.Where(order => order.BuyQuantity > 0)) {
-                buyOrders.Add(order.ToBuyOrder());
+                buyOrders.Add(ToBuyOrder(order));
             }
             return buyOrders;
         }
@@ -100,9 +99,54 @@ namespace eZet.EveProfiteer.Services {
         private static SellOrderCollection ToSellOrderCollection(IEnumerable<Order> orders) {
             var sellOrders = new SellOrderCollection();
             foreach (var order in orders.Where(order => order.MinSellQuantity > 0)) {
-                sellOrders.Add(order.ToSellOrder());
+                sellOrders.Add(ToSellOrder(order));
             }
             return sellOrders;
+        }
+
+
+        public static SellOrder ToSellOrder(Order order) {
+            var sellOrder = new SellOrder {
+                ItemName = order.ItemName,
+                ItemId = order.ItemId,
+                MinPrice = (long)order.MinSellPrice,
+                MaxQuantity = order.MaxSellQuantity,
+                Quantity = order.MinSellQuantity,
+                UpdateTime = DateTime.UtcNow,
+            };
+            return sellOrder;
+        }
+
+        public static BuyOrder ToBuyOrder(Order order) {
+            var buyOrder = new BuyOrder {
+                ItemName = order.ItemName,
+                ItemId = order.ItemId,
+                MaxPrice = (long)order.MaxBuyPrice,
+                Quantity = order.BuyQuantity,
+                //UpdateTime = DateTime.UtcNow,
+            };
+            return buyOrder;
+        }
+
+        public Order CreateOrder(BuyOrder buyOrder, SellOrder sellOrder) {
+            var order = new Order();
+
+            if (sellOrder != null) {
+                order.ItemName = sellOrder.ItemName;
+                order.ItemId = sellOrder.ItemId;
+                order.MinSellPrice = sellOrder.MinPrice;
+                order.MaxSellQuantity = sellOrder.MaxQuantity;
+                order.MinSellQuantity = sellOrder.Quantity;
+                order.UpdateTime = sellOrder.UpdateTime;
+            }
+            if (buyOrder != null) {
+                order.ItemName = buyOrder.ItemName;
+                order.ItemId = buyOrder.ItemId;
+                order.MaxBuyPrice = buyOrder.MaxPrice;
+                order.BuyQuantity = buyOrder.Quantity;
+                //order.UpdateTime = buyOrder.UpdateTime;
+            }
+            return order;
         }
 
     }

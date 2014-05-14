@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using eZet.EveLib.Modules;
 using eZet.EveLib.Modules.Models.Character;
-using eZet.EveOnlineDbModels;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Util;
 using ApiKey = eZet.EveProfiteer.Models.ApiKey;

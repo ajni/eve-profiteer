@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using Caliburn.Micro;
+using eZet.EveOnlineDbModels;
 using eZet.EveProfiteer.Framework;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Repository;
@@ -21,26 +22,30 @@ namespace eZet.EveProfiteer {
 
             _container.Singleton<IWindowManager, WindowManager>();
             _container.Singleton<IEventAggregator, EventAggregator>();
+
+            // DbContexts
+            _container.PerRequest<EveProfiteerDbEntities>();
+            _container.PerRequest<EveDbContext>();
+            
+            // Repositories
+            _container.PerRequest<IRepository<Transaction>, DbContextRepository<Transaction, EveProfiteerDbEntities>>();
+            _container.PerRequest<IRepository<JournalEntry>, DbContextRepository<JournalEntry, EveProfiteerDbEntities>>();
+            _container.PerRequest<IRepository<ApiKey>, DbContextRepository<ApiKey, EveProfiteerDbEntities>>();
+            _container.PerRequest<IRepository<ApiKeyEntity>, DbContextRepository<ApiKeyEntity, EveProfiteerDbEntities>>();
+            _container.PerRequest<IRepository<Order>, DbContextRepository<Order, EveProfiteerDbEntities>>();
+
+
+
+            // Services
             _container.Singleton<EveApiService>();
-
-            _container.PerRequest<EveProfiteerDbContext>();
-
             _container.PerRequest<TransactionService>();
             _container.PerRequest<EveMarketService>();
-            _container.PerRequest<EveDataService>();
+            _container.PerRequest<EveOnlineStaticDataService>();
             _container.PerRequest<OrderEditorService>();
             _container.Singleton<KeyManagementService>();
-            
-            _container.PerRequest<IRepository<Transaction>, DbContextRepository<Transaction>>();
-            _container.PerRequest<IRepository<JournalEntry>, DbContextRepository<JournalEntry>>();
-            _container.PerRequest<IRepository<ApiKey>, DbContextRepository<ApiKey>>();
-            _container.PerRequest<IRepository<ApiKeyEntity>, DbContextRepository<ApiKeyEntity>>();
-            _container.PerRequest<IRepository<Order>, DbContextRepository<Order>>();
 
             _container.PerRequest<RepositoryService<ApiKey>>();
             _container.PerRequest<RepositoryService<ApiKeyEntity>>();
-
-            _container.Singleton<DbContext, EveProfiteerDbContext>();
 
 
             // Models
@@ -53,7 +58,6 @@ namespace eZet.EveProfiteer {
             _container.PerRequest<MarketAnalyzerViewModel>();
             _container.PerRequest<JournalViewModel>();
             _container.PerRequest<ItemDetailsViewModel>();
-            _container.PerRequest<ProfitViewModel>();
             _container.PerRequest<OrderEditorViewModel>();
         }
 

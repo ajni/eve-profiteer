@@ -21,7 +21,7 @@ namespace eZet.EveProfiteer.ViewModels {
         private readonly IWindowManager _windowManager;
         private readonly IEventAggregator _eventAggregator;
         private readonly OrderEditorService _orderEditorService;
-        private readonly EveDataService _eveDataService;
+        private readonly EveOnlineStaticDataService _eveOnlineStaticDataService;
 
         private string _selectedPath = @"C:\Users\Lars Kristian\AppData\Local\MacroLab\Eve Pilot\Client_1\EVETrader";
 
@@ -47,11 +47,11 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
 
-        public OrderEditorViewModel(IWindowManager windowManager, IEventAggregator eventAggregator, OrderEditorService orderEditorService, EveDataService eveDataService) {
+        public OrderEditorViewModel(IWindowManager windowManager, IEventAggregator eventAggregator, OrderEditorService orderEditorService, EveOnlineStaticDataService eveOnlineStaticDataService) {
             _windowManager = windowManager;
             _eventAggregator = eventAggregator;
             _orderEditorService = orderEditorService;
-            _eveDataService = eveDataService;
+            _eveOnlineStaticDataService = eveOnlineStaticDataService;
             DisplayName = "Order Editor";
 
             _eventAggregator.Subscribe(this);
@@ -149,7 +149,7 @@ namespace eZet.EveProfiteer.ViewModels {
 
         private void gridCellValidationHandler(GridCellValidationEventArgs eventArgs) {
             var value = eventArgs.Value.ToString();
-            var item = _eveDataService.GetTypes().SingleOrDefault(f => f.TypeName == value);
+            var item = _eveOnlineStaticDataService.GetTypes().SingleOrDefault(f => f.TypeName == value);
             if (item == null) {
                 eventArgs.IsValid = false;
                 eventArgs.SetError("Invalid item.");

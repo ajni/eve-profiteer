@@ -19,6 +19,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NET Utilities", "..\NET Uti
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EveOnlineDbModels", "EveOnlineDbModels\EveOnlineDbModels.csproj", "{7759033A-8095-44BE-91A3-84911019B5A3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EveProfiteerDbModels", "EveProfiteerDbModels\EveProfiteerDbModels.csproj", "{87F63027-90FC-4F87-8840-52C2FC5406B7}"
+EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "EveProfiteerDb", "EveProfiteerDb\EveProfiteerDb.sqlproj", "{7C38B246-CC8A-46C2-A525-4B62E701ED72}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +61,16 @@ Global
 		{7759033A-8095-44BE-91A3-84911019B5A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7759033A-8095-44BE-91A3-84911019B5A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7759033A-8095-44BE-91A3-84911019B5A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87F63027-90FC-4F87-8840-52C2FC5406B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87F63027-90FC-4F87-8840-52C2FC5406B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87F63027-90FC-4F87-8840-52C2FC5406B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87F63027-90FC-4F87-8840-52C2FC5406B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C38B246-CC8A-46C2-A525-4B62E701ED72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C38B246-CC8A-46C2-A525-4B62E701ED72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C38B246-CC8A-46C2-A525-4B62E701ED72}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{7C38B246-CC8A-46C2-A525-4B62E701ED72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C38B246-CC8A-46C2-A525-4B62E701ED72}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C38B246-CC8A-46C2-A525-4B62E701ED72}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

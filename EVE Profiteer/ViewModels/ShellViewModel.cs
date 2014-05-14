@@ -1,7 +1,6 @@
 using System.Linq;
 using Caliburn.Micro;
 using eZet.EveProfiteer.Framework;
-using eZet.EveOnlineDbModels;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
 
@@ -19,7 +18,7 @@ namespace eZet.EveProfiteer.ViewModels {
             _windowManager = windowManager;
             _keyManagementService = keyManagementService;
             ActiveKey = keyManagementService.AllApiKeys().FirstOrDefault();
-            if (ActiveKey != null) ActiveKeyEntity = ActiveKey.Entities.Single(f => f.EntityId == 977615922);
+            if (ActiveKey != null) ActiveKeyEntity = ActiveKey.ApiKeyEntities.Single(f => f.EntityId == 977615922);
             SelectKey();
         }
 

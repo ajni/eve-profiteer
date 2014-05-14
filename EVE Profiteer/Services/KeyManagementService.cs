@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using eZet.EveOnlineDbModels;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Repository;
 
@@ -26,7 +25,7 @@ namespace eZet.EveProfiteer.Services {
                     ApiKeyEntityRepository.Add(entity);
                 }
                 entity.ApiKeys.Add(key);
-                key.Entities.Add(entity);
+                key.ApiKeyEntities.Add(entity);
             }
             ApiKeyRepository.SaveChanges();
             ApiKeyEntityRepository.SaveChanges();

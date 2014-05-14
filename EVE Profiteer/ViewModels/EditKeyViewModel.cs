@@ -36,7 +36,7 @@ namespace eZet.EveProfiteer.ViewModels {
 
         public EditKeyViewModel With(ApiKey apikey) {
             Key = apikey;
-            Entities = new BindableCollection<ApiKeyEntity>(Key.Entities.ToList());
+            Entities = new BindableCollection<ApiKeyEntity>(Key.ApiKeyEntities.ToList());
             return this;
         }
 
@@ -50,7 +50,7 @@ namespace eZet.EveProfiteer.ViewModels {
         public void SaveButton() {
             if (isRefreshed) {
                 foreach (var entity in Entities) {
-                    var a = Key.Entities.Single(e => e.EntityId == entity.EntityId);
+                    var a = Key.ApiKeyEntities.Single(e => e.EntityId == entity.EntityId);
                     if (a != null) {
                         a.IsActive = entity.IsActive;
                     }
