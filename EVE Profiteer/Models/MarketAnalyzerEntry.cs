@@ -5,13 +5,12 @@ using eZet.EveLib.Modules.Models;
 using eZet.EveOnlineDbModels;
 
 namespace eZet.EveProfiteer.Models {
-    public class MarketAnalyzerItem {
-
-        public InvType InvTypeData { get; set; }
-
+    public class MarketAnalyzerEntry {
+        private const int StandardDeviationFactor = 1;
         public IEnumerable<ItemHistory.ItemHistoryEntry> History;
 
-        public MarketAnalyzerItem(InvType invType, ItemPrices.ItemPriceEntry sellOrder, ItemPrices.ItemPriceEntry buyOrder, IEnumerable<ItemHistory.ItemHistoryEntry> history) {
+        public MarketAnalyzerEntry(InvType invType, ItemPrices.ItemPriceEntry sellOrder,
+            ItemPrices.ItemPriceEntry buyOrder, IEnumerable<ItemHistory.ItemHistoryEntry> history) {
             InvTypeData = invType;
             History = history;
             Updated = sellOrder.Updated;
@@ -19,6 +18,8 @@ namespace eZet.EveProfiteer.Models {
             SellPrice = sellOrder.Price;
             Calculate();
         }
+
+        public InvType InvTypeData { get; set; }
 
         public string OrderType { get; set; }
 
@@ -44,30 +45,29 @@ namespace eZet.EveProfiteer.Models {
 
         public string Updated { get; set; }
 
-        private const int StandardDeviationFactor = 1;
-
         public Order Order { get; set; }
 
         public void Calculate() {
             ProfitPerItem = SellPrice - BuyPrice;
-            Margin = BuyPrice != 0 ? ProfitPerItem / BuyPrice : 0;
+            Margin = BuyPrice != 0 ? ProfitPerItem/BuyPrice : 0;
             if (!History.Any()) return;
-            var list = History.OrderBy(f => f.Volume).ToList();
-            DailyVolumeMedian = list.Count == 1 ? list[0].Volume : list[list.Count / 2 - 1].Volume;
+            List<ItemHistory.ItemHistoryEntry> list = History.OrderBy(f => f.Volume).ToList();
+            DailyVolumeMedian = list.Count == 1 ? list[0].Volume : list[list.Count/2 - 1].Volume;
             DailyVolumeAverage = History.Average(f => f.Volume);
-            if (History.Count() % 2 == 0) {
-                DailyVolumeMedian = (DailyVolumeMedian + list[list.Count / 2].Volume) / 2;
+            if (History.Count()%2 == 0) {
+                DailyVolumeMedian = (DailyVolumeMedian + list[list.Count/2].Volume)/2;
             }
             var variance = new List<double>();
             list.ForEach(f => variance.Add(Math.Pow(f.Volume - DailyVolumeAverage, 2)));
             VolumeVariance = variance.Average();
             VolumeStandardDeviation = Math.Sqrt(VolumeVariance);
             DailyVolumeAdjustedAverage = History.Where(f => !isOutlier(f.Volume)).Average(f => f.Volume);
-            DailyProfit = ProfitPerItem * (decimal)DailyVolumeMedian;
+            DailyProfit = ProfitPerItem*(decimal) DailyVolumeMedian;
         }
 
         private bool isOutlier(double volume) {
-            return volume > DailyVolumeMedian + VolumeStandardDeviation*StandardDeviationFactor || volume < DailyVolumeMedian - VolumeStandardDeviation*StandardDeviationFactor;
+            return volume > DailyVolumeMedian + VolumeStandardDeviation*StandardDeviationFactor ||
+                   volume < DailyVolumeMedian - VolumeStandardDeviation*StandardDeviationFactor;
         }
     }
 }

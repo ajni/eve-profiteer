@@ -10,16 +10,15 @@ using eZet.EveProfiteer.Repository;
 
 namespace eZet.EveProfiteer.Services {
     public class TransactionService : RepositoryService<Transaction> {
-
         public TransactionService(IRepository<Transaction> repository)
             : base(repository) {
         }
 
         public long GetLatestId(ApiKeyEntity entity) {
             return (from t in Repository.All()
-                    where t.ApiKeyEntity.Id == entity.Id
-                    orderby t.TransactionId descending
-                    select t.TransactionId).FirstOrDefault();
+                where t.ApiKeyEntity.Id == entity.Id
+                orderby t.TransactionId descending
+                select t.TransactionId).FirstOrDefault();
         }
 
         public IEnumerable<Transaction> RemoveAll(ApiKeyEntity entity) {
@@ -27,8 +26,8 @@ namespace eZet.EveProfiteer.Services {
         }
 
         public IEnumerable<Transaction> AddNew(IEnumerable<Transaction> list) {
-            var db = (DbContext)Repository;
-            var addNew = list as IList<Transaction> ?? list.ToList();
+            var db = (DbContext) Repository;
+            IList<Transaction> addNew = list as IList<Transaction> ?? list.ToList();
             db.Configuration.ValidateOnSaveEnabled = false;
             db.Configuration.AutoDetectChangesEnabled = false;
             Repository.AddRange(addNew);
@@ -43,21 +42,22 @@ namespace eZet.EveProfiteer.Services {
                 bulkCopy.DestinationTableName = tableName;
 
                 var table = new DataTable();
-                var props = TypeDescriptor.GetProperties(typeof(T))
+                PropertyDescriptor[] props = TypeDescriptor.GetProperties(typeof (T))
                     //Dirty hack to make sure we only have system data types 
                     //i.e. filter out the relationships/collections
-                                           .Cast<PropertyDescriptor>()
-                                           .Where(propertyInfo => propertyInfo.PropertyType.Namespace.Equals("System"))
-                                           .ToArray();
+                    .Cast<PropertyDescriptor>()
+                    .Where(propertyInfo => propertyInfo.PropertyType.Namespace.Equals("System"))
+                    .ToArray();
 
-                foreach (var propertyInfo in props) {
+                foreach (PropertyDescriptor propertyInfo in props) {
                     bulkCopy.ColumnMappings.Add(propertyInfo.Name, propertyInfo.Name);
-                    table.Columns.Add(propertyInfo.Name, Nullable.GetUnderlyingType(propertyInfo.PropertyType) ?? propertyInfo.PropertyType);
+                    table.Columns.Add(propertyInfo.Name,
+                        Nullable.GetUnderlyingType(propertyInfo.PropertyType) ?? propertyInfo.PropertyType);
                 }
 
                 var values = new object[props.Length];
-                foreach (var item in list) {
-                    for (var i = 0; i < values.Length; i++) {
+                foreach (T item in list) {
+                    for (int i = 0; i < values.Length; i++) {
                         values[i] = props[i].GetValue(item);
                     }
 
@@ -67,6 +67,5 @@ namespace eZet.EveProfiteer.Services {
                 bulkCopy.WriteToServer(table);
             }
         }
-
     }
 }

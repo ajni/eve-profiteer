@@ -4,8 +4,8 @@
         Title="Analyzing..." Height="200" Width="300">
     <Grid Margin="30">
         <StackPanel>
-        <TextBlock Text="{Binding Status, Mode=OneWay}"></TextBlock>
-        <ProgressBar Name="AnalyzerProgressBar" IsIndeterminate="True" Height="20"></ProgressBar>
+            <TextBlock Text="{Binding Status, Mode=OneWay}" />
+            <ProgressBar Name="AnalyzerProgressBar" IsIndeterminate="True" Height="20" />
         </StackPanel>
     </Grid>
 </Window>

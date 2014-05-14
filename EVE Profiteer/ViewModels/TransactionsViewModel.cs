@@ -1,33 +1,32 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Caliburn.Micro;
-using eZet.EveOnlineDbModels;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
 
 namespace eZet.EveProfiteer.ViewModels {
     public class TransactionsViewModel : Screen {
-
-        private ICollection<Transaction> transactions;
-
-        private readonly TransactionService transactionService;
-
-        public ICollection<Transaction> Transactions {
-            get { return transactions; }
-            set { transactions = value; NotifyOfPropertyChange(() => Transactions); }
-        }
-
-        public ApiKey ApiKey { get; set; }
-
-        public ApiKeyEntity Entity { get; set; }
-
         private readonly EveApiService eveApi;
+        private readonly TransactionService transactionService;
+        private ICollection<Transaction> transactions;
 
         public TransactionsViewModel(TransactionService transactionService, EveApiService eveApi) {
             this.transactionService = transactionService;
             this.eveApi = eveApi;
             DisplayName = "Transactions";
         }
+
+        public ICollection<Transaction> Transactions {
+            get { return transactions; }
+            set {
+                transactions = value;
+                NotifyOfPropertyChange(() => Transactions);
+            }
+        }
+
+        public ApiKey ApiKey { get; set; }
+
+        public ApiKeyEntity Entity { get; set; }
 
         public void Initialize(ApiKey key, ApiKeyEntity entity) {
             ApiKey = key;
@@ -38,8 +37,8 @@ namespace eZet.EveProfiteer.ViewModels {
         public void UpdateAction() {
             long latest = 0;
             latest = transactionService.GetLatestId(Entity);
-            var list = eveApi.GetNewTransactions(ApiKey, Entity, latest);
-            foreach (var item in list) {
+            IEnumerable<Transaction> list = eveApi.GetNewTransactions(ApiKey, Entity, latest);
+            foreach (Transaction item in list) {
                 Transactions.Add(item);
             }
             //NotifyOfPropertyChange(() => Transactions);
@@ -48,7 +47,7 @@ namespace eZet.EveProfiteer.ViewModels {
 
         public void FullRefresh() {
             transactionService.RemoveAll(Entity);
-            var list = eveApi.GetAllTransactions(ApiKey, Entity, transactionService.Create);
+            IEnumerable<Transaction> list = eveApi.GetAllTransactions(ApiKey, Entity, transactionService.Create);
             transactionService.AddNew(list);
         }
     }

@@ -6,13 +6,8 @@ using eZet.EveProfiteer.Services;
 
 namespace eZet.EveProfiteer.ViewModels {
     public class ShellViewModel : Conductor<IScreen>.Collection.OneActive, IShell {
-
-        private readonly IWindowManager _windowManager;
         private readonly KeyManagementService _keyManagementService;
-
-        public ApiKey ActiveKey { get; private set; }
-
-        public ApiKeyEntity ActiveKeyEntity { get; private set; }
+        private readonly IWindowManager _windowManager;
 
         public ShellViewModel(IWindowManager windowManager, KeyManagementService keyManagementService) {
             _windowManager = windowManager;
@@ -21,6 +16,10 @@ namespace eZet.EveProfiteer.ViewModels {
             if (ActiveKey != null) ActiveKeyEntity = ActiveKey.ApiKeyEntities.Single(f => f.EntityId == 977615922);
             SelectKey();
         }
+
+        public ApiKey ActiveKey { get; private set; }
+
+        public ApiKeyEntity ActiveKeyEntity { get; private set; }
 
         public void SelectKey() {
             Items.Clear();
@@ -40,17 +39,13 @@ namespace eZet.EveProfiteer.ViewModels {
             //Items.Add(IoC.Get<ProfitViewModel>());
 
             if (ActiveKey != null) {
-              // transactions.Initialize(ActiveKey, ActiveKeyEntity);
-              // journal.Initialize(ActiveKey, ActiveKeyEntity);
+                // transactions.Initialize(ActiveKey, ActiveKeyEntity);
+                // journal.Initialize(ActiveKey, ActiveKeyEntity);
             }
-
         }
 
         public void ManageKeys() {
             _windowManager.ShowDialog(IoC.Get<ManageKeysViewModel>());
         }
-
-
-
     }
 }

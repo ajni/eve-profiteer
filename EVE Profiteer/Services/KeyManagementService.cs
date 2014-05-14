@@ -5,22 +5,23 @@ using eZet.EveProfiteer.Repository;
 
 namespace eZet.EveProfiteer.Services {
     public class KeyManagementService {
+        public KeyManagementService(IRepository<ApiKey> apiKeyRepository,
+            IRepository<ApiKeyEntity> apiKeyEntityRepository) {
+            ApiKeyRepository = apiKeyRepository;
+            ApiKeyEntityRepository = apiKeyEntityRepository;
+        }
 
         private IRepository<ApiKey> ApiKeyRepository { get; set; }
 
         private IRepository<ApiKeyEntity> ApiKeyEntityRepository { get; set; }
 
-        public KeyManagementService(IRepository<ApiKey> apiKeyRepository, IRepository<ApiKeyEntity> apiKeyEntityRepository) {
-            ApiKeyRepository = apiKeyRepository;
-            ApiKeyEntityRepository = apiKeyEntityRepository;
-        }
-
         public ApiKey AddKey(ApiKey key, IEnumerable<ApiKeyEntity> entities) {
-            foreach (var c in entities) {
-                var entity = ApiKeyEntityRepository.All().SingleOrDefault(e => e.EntityId == c.EntityId);
+            foreach (ApiKeyEntity c in entities) {
+                ApiKeyEntity entity = ApiKeyEntityRepository.All().SingleOrDefault(e => e.EntityId == c.EntityId);
                 if (entity != null) {
                     entity.IsActive = c.IsActive;
-                } else {
+                }
+                else {
                     entity = c;
                     ApiKeyEntityRepository.Add(entity);
                 }

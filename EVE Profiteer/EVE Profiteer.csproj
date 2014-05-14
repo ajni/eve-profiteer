@@ -125,7 +125,7 @@
     <Compile Include="Models\ItemProfit.cs" />
     <Compile Include="Models\MarketAnalyzer.cs" />
     <Compile Include="Models\Station.cs" />
-    <Compile Include="Models\MarketAnalyzerItem.cs" />
+    <Compile Include="Models\MarketAnalyzerEntry.cs" />
     <Compile Include="Repository\IRepository.cs" />
     <Compile Include="Repository\DbContextRepository.cs" />
     <Compile Include="Services\KeyManagementService.cs" />
@@ -145,6 +145,7 @@
     <Compile Include="ViewModels\JournalViewModel.cs" />
     <Compile Include="ViewModels\ManageKeysViewModel.cs" />
     <Compile Include="ViewModels\OrderEditorViewModel.cs" />
+    <Compile Include="Events\OrdersAddedEvent.cs" />
     <Compile Include="Views\EditOrderDialogView.xaml.cs">
       <DependentUpon>EditOrderDialogView.xaml</DependentUpon>
     </Compile>

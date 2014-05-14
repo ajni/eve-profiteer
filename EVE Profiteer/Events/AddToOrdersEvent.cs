@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
-using eZet.EveOnlineDbModels;
 using eZet.EveProfiteer.Models;
 
 namespace eZet.EveProfiteer.Events {
     public class AddToOrdersEvent {
-        public AddToOrdersEvent(IList<MarketAnalyzerItem> items) {
+        public AddToOrdersEvent(IList<MarketAnalyzerEntry> items) {
             Items = items;
         }
 
-        public IList<MarketAnalyzerItem> Items { get; private set; }
+        public IList<MarketAnalyzerEntry> Items { get; private set; }
     }
 }

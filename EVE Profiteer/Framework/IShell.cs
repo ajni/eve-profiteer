@@ -1,3 +1,4 @@
 namespace eZet.EveProfiteer.Framework {
-    public interface IShell {}
+    public interface IShell {
+    }
 }

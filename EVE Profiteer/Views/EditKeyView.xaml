@@ -1,23 +1,25 @@
 ﻿<Window x:Class="eZet.EveProfiteer.Views.EditKeyView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        mc:Ignorable="d"
+        d:DesignHeight="300" d:DesignWidth="300">
 
     <DockPanel>
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="10">
-            <Button Content="Cancel" IsCancel="True"></Button>
-            <Button Name="SaveButton" Content="Done" IsDefault="True"></Button>
+            <Button Content="Cancel" IsCancel="True" />
+            <Button Name="SaveButton" Content="Done" IsDefault="True" />
         </StackPanel>
         <StackPanel DockPanel.Dock="Top" Margin="10">
-            <TextBlock Text="Key ID"></TextBlock>
-            <TextBox Name="ApiKeyId" IsEnabled="False" Text="{Binding Key.ApiKeyId}"></TextBox>
-            <TextBlock Text="Verification code" Margin="0 20 0 0"></TextBlock>
-            <TextBox Name="VCode" IsEnabled="False" Text="{Binding Key.VCode}"></TextBox>
-            <Button HorizontalAlignment="Left"  Margin="10" Content="Refresh" MaxWidth="60" Name="RefreshButton"></Button>
+            <TextBlock Text="Key ID" />
+            <TextBox Name="ApiKeyId" IsEnabled="False" Text="{Binding Key.ApiKeyId}" />
+            <TextBlock Text="Verification code" Margin="0 20 0 0" />
+            <TextBox Name="VCode" IsEnabled="False" Text="{Binding Key.VCode}" />
+            <Button HorizontalAlignment="Left" Margin="10" Content="Refresh" MaxWidth="60" Name="RefreshButton" />
         </StackPanel>
-        <ListBox Margin="10" Name="Entities" SelectionMode="Multiple" ItemTemplate="{DynamicResource ApiKeyEntityListbox}" ItemContainerStyle="{DynamicResource ApiKeyEntityListBoxItemStyle}"/>
+        <ListBox Margin="10" Name="Entities" SelectionMode="Multiple"
+                 ItemTemplate="{DynamicResource ApiKeyEntityListbox}"
+                 ItemContainerStyle="{DynamicResource ApiKeyEntityListBoxItemStyle}" />
     </DockPanel>
 </Window>

@@ -3,24 +3,21 @@ using eZet.EveOnlineDbModels;
 
 namespace eZet.EveProfiteer.Models {
     public class ItemProfit {
-
-
         public ItemProfit(InvType invType, IEnumerable<Transaction> sellOrders, IEnumerable<Transaction> buyOrders) {
             InvType = invType;
             SellOrders = sellOrders;
             BuyOrders = buyOrders;
-            foreach (var order in SellOrders) {
+            foreach (Transaction order in SellOrders) {
                 QuantitySold += order.Quantity;
                 TotalSold += order.Total;
             }
 
-            foreach (var order in BuyOrders) {
+            foreach (Transaction order in BuyOrders) {
                 QuantityBought += order.Quantity;
                 TotalBought += order.Total;
             }
             TotalProfit = TotalSold - TotalBought;
             Stock = QuantityBought - QuantitySold;
-
         }
 
 
@@ -46,11 +43,5 @@ namespace eZet.EveProfiteer.Models {
         public decimal FifoProfit { get; private set; }
 
         public decimal LifoProfit { get; private set; }
-
-
-
-
-
-
     }
 }

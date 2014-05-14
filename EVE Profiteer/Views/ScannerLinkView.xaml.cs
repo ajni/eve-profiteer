@@ -2,7 +2,7 @@
 
 namespace eZet.EveProfiteer.Views {
     /// <summary>
-    /// Interaction logic for ScannerLinkView.xaml
+    ///     Interaction logic for ScannerLinkView.xaml
     /// </summary>
     public partial class ScannerLinkView : Window {
         public ScannerLinkView() {

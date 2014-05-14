@@ -14,14 +14,14 @@
                     <DataTemplate x:Key="ApiKeyEntityListbox">
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="60"/>
-                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="60" />
+                                <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Border Margin="5" BorderBrush="Black" BorderThickness="1">
                                 <!--<Image Source="{Binding ImagePath}" Stretch="Fill" Width="50" Height="50" />-->
                             </Border>
                             <StackPanel Grid.Column="1" Margin="5">
-                                <StackPanel Orientation="Horizontal" TextBlock.FontWeight="Bold" >
+                                <StackPanel Orientation="Horizontal" TextBlock.FontWeight="Bold">
                                     <TextBlock Text="{Binding Name, FallbackValue=Name}" />
                                 </StackPanel>
                                 <TextBlock Text="{Binding EntityId, FallbackValue=Id}" />

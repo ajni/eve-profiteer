@@ -1,13 +1,13 @@
-﻿using Screen = Caliburn.Micro.Screen;
+﻿using Caliburn.Micro;
 
 namespace eZet.EveProfiteer.ViewModels {
     public class EditOrderDialogViewModel : Screen {
-        private bool _setBuyOrderTotal;
-        private bool _setMinSellOrderTotal;
-        private bool _setMaxSellOrderTotal;
         private int _buyOrderTotal;
-        private int _minSellOrderTotal;
         private int _maxSellOrderTotal;
+        private int _minSellOrderTotal;
+        private bool _setBuyOrderTotal;
+        private bool _setMaxSellOrderTotal;
+        private bool _setMinSellOrderTotal;
 
         public bool SetBuyOrderTotal {
             get { return _setBuyOrderTotal; }

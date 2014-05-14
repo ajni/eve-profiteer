@@ -1,10 +1,11 @@
-﻿using Caliburn.Micro;
+﻿using System;
+using Caliburn.Micro;
 using DevExpress.Xpf.Grid;
-using InvalidRowExceptionEventArgs = DevExpress.Xpf.Grid.InvalidRowExceptionEventArgs;
+using GridControl = DevExpress.XtraGrid.GridControl;
 
 namespace eZet.EveProfiteer.Views {
     /// <summary>
-    /// Interaction logic for OrderEditorView.xaml
+    ///     Interaction logic for OrderEditorView.xaml
     /// </summary>
     public partial class OrderEditorView {
         private readonly IEventAggregator _eventAggregator;
@@ -17,7 +18,7 @@ namespace eZet.EveProfiteer.Views {
         private void GridViewBase_OnShowingEditor(object sender, ShowingEditorEventArgs e) {
             var view = sender as SelectionView;
             if (Orders.CurrentColumn.FieldName == "ItemName") {
-                if (Orders.View.FocusedRowHandle != DevExpress.XtraGrid.GridControl.NewItemRowHandle) {
+                if (Orders.View.FocusedRowHandle != GridControl.NewItemRowHandle) {
                     e.Cancel = true;
                 }
             }
@@ -32,11 +33,10 @@ namespace eZet.EveProfiteer.Views {
         }
 
         private void GridViewBase_OnInvalidRowException(object sender, InvalidRowExceptionEventArgs e) {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         private void GridColumn_OnValidate(object sender, GridCellValidationEventArgs e) {
-            
             _eventAggregator.Publish(e);
         }
     }

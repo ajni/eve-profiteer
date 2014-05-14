@@ -70,6 +70,9 @@
           <Property Name="CurrentBuyPrice" Type="decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="CurrentSellPrice" Type="decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="AvgPrice" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="ApiKeyEntity_Id" Type="int" />
+          <Property Name="IsSellOrder" Type="bit" Nullable="false" />
+          <Property Name="IsBuyOrder" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="Transactions">
           <Key>
@@ -143,6 +146,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Orders_ToApiKeyEntities">
+          <End Role="ApiKeyEntities" Type="Self.ApiKeyEntities" Multiplicity="0..1" />
+          <End Role="Orders" Type="Self.Orders" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ApiKeyEntities">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Orders">
+              <PropertyRef Name="ApiKeyEntity_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="EveProfiteerDbModelStoreContainer">
           <EntitySet Name="ApiKeyApiKeyEntities" EntityType="Self.ApiKeyApiKeyEntities" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ApiKeyEntities" EntityType="Self.ApiKeyEntities" Schema="dbo" store:Type="Tables" />
@@ -166,6 +181,10 @@
             <End Role="ApiKeyEntities" EntitySet="ApiKeyEntities" />
             <End Role="Transactions" EntitySet="Transactions" />
           </AssociationSet>
+          <AssociationSet Name="FK_Orders_ToApiKeyEntities" Association="Self.FK_Orders_ToApiKeyEntities">
+            <End Role="ApiKeyEntities" EntitySet="ApiKeyEntities" />
+            <End Role="Orders" EntitySet="Orders" />
+          </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -184,6 +203,7 @@
           <NavigationProperty Name="JournalEntries" Relationship="Self.FK_dbo_JournalEntries_dbo_ApiKeyEntities_ApiKeyEntity_Id" FromRole="ApiKeyEntities" ToRole="JournalEntries" />
           <NavigationProperty Name="Transactions" Relationship="Self.FK_dbo_Transactions_dbo_ApiKeyEntities_ApiKeyEntity_Id" FromRole="ApiKeyEntities" ToRole="Transactions" />
           <NavigationProperty Name="ApiKeys" Relationship="Self.ApiKeyApiKeyEntities" FromRole="ApiKeyEntities" ToRole="ApiKeys" />
+          <NavigationProperty Name="Orders" Relationship="EveProfiteerDbModel.FK_Orders_ToApiKeyEntities" FromRole="ApiKeyEntity" ToRole="Order" />
         </EntityType>
         <EntityType Name="ApiKey">
           <Key>
@@ -284,6 +304,10 @@
             <End Role="ApiKeys" EntitySet="ApiKeys" />
           </AssociationSet>
           <EntitySet Name="Orders" EntityType="EveProfiteerDbModel.Order" />
+          <AssociationSet Name="FK_Orders_ToApiKeyEntities" Association="EveProfiteerDbModel.FK_Orders_ToApiKeyEntities">
+            <End Role="ApiKeyEntity" EntitySet="ApiKeyEntities" />
+            <End Role="Order" EntitySet="Orders" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Order">
           <Key>
@@ -301,7 +325,23 @@
           <Property Name="CurrentSellPrice" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
           <Property Name="AvgPrice" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
           <Property Name="InvTypeId" Type="Int32" Nullable="false" />
+          <Property Name="ApiKeyEntity_Id" Type="Int32" />
+          <NavigationProperty Name="ApiKeyEntity" Relationship="EveProfiteerDbModel.FK_Orders_ToApiKeyEntities" FromRole="Order" ToRole="ApiKeyEntity" />
+          <Property Name="IsSellOrder" Type="Boolean" Nullable="false" />
+          <Property Name="IsBuyOrder" Type="Boolean" Nullable="false" />
         </EntityType>
+        <Association Name="FK_Orders_ToApiKeyEntities">
+          <End Type="EveProfiteerDbModel.ApiKeyEntity" Role="ApiKeyEntity" Multiplicity="0..1" />
+          <End Type="EveProfiteerDbModel.Order" Role="Order" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ApiKeyEntity">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Order">
+              <PropertyRef Name="ApiKeyEntity_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -384,6 +424,9 @@
           <EntitySetMapping Name="Orders">
             <EntityTypeMapping TypeName="EveProfiteerDbModel.Order">
               <MappingFragment StoreEntitySet="Orders">
+                <ScalarProperty Name="IsBuyOrder" ColumnName="IsBuyOrder" />
+                <ScalarProperty Name="IsSellOrder" ColumnName="IsSellOrder" />
+                <ScalarProperty Name="ApiKeyEntity_Id" ColumnName="ApiKeyEntity_Id" />
                 <ScalarProperty Name="InvTypeId" ColumnName="InvTypeId" />
                 <ScalarProperty Name="AvgPrice" ColumnName="AvgPrice" />
                 <ScalarProperty Name="CurrentSellPrice" ColumnName="CurrentSellPrice" />

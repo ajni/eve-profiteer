@@ -6,10 +6,6 @@ using System.Windows.Media;
 
 namespace eZet.EveProfiteer {
     public class ColorValueConverter : MarkupExtension, IValueConverter {
-        public override object ProvideValue(IServiceProvider serviceProvider) {
-            return this;
-        }
-
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
             if (value != null)
                 return Brushes.DarkSeaGreen;
@@ -18,6 +14,10 @@ namespace eZet.EveProfiteer {
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
             throw new NotImplementedException();
+        }
+
+        public override object ProvideValue(IServiceProvider serviceProvider) {
+            return this;
         }
     }
 }

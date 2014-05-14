@@ -1,30 +1,32 @@
 ﻿<UserControl
-             x:Class="eZet.EveProfiteer.Views.TransactionsView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="900">
+    x:Class="eZet.EveProfiteer.Views.TransactionsView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+    mc:Ignorable="d"
+    d:DesignHeight="300" d:DesignWidth="900">
     <DockPanel>
         <StackPanel Orientation="Horizontal">
-            <Button Name="UpdateAction"></Button>
+            <Button Name="UpdateAction" />
         </StackPanel>
 
         <dxg:GridControl AutoGenerateColumns="None" ItemsSource="{Binding Transactions}">
             <dxg:GridControl.View>
-                <dxg:TableView AllowEditing="False" NavigationStyle="Row" ShowAutoFilterRow="True" PrintTotalSummary="True" IsTotalSummaryMenuEnabled="True" ShowSearchPanelMode="Default" ShowGroupPanel="False"/>
+                <dxg:TableView AllowEditing="False" NavigationStyle="Row" ShowAutoFilterRow="True"
+                               PrintTotalSummary="True" IsTotalSummaryMenuEnabled="True" ShowSearchPanelMode="Default"
+                               ShowGroupPanel="False" />
             </dxg:GridControl.View>
             <dxg:GridControl.Columns>
-                <dxg:GridColumn FieldName="TransactionDate"  Header="Date"/>
-                <dxg:GridColumn FieldName="TransactionType" Header="Transaction Type"/>
-                <dxg:GridColumn FieldName="TypeName" Header="Item"/>
-                <dxg:GridColumn FieldName="Quantity"/>
-                <dxg:GridColumn FieldName="Price"/>
-                <dxg:GridColumn FieldName="Total"/>
-                <dxg:GridColumn FieldName="ClientName" Header="Client"/>
-                <dxg:GridColumn FieldName="StationName" Header="Station"/>
+                <dxg:GridColumn FieldName="TransactionDate" Header="Date" />
+                <dxg:GridColumn FieldName="TransactionType" Header="Transaction Type" />
+                <dxg:GridColumn FieldName="TypeName" Header="Item" />
+                <dxg:GridColumn FieldName="Quantity" />
+                <dxg:GridColumn FieldName="Price" />
+                <dxg:GridColumn FieldName="Total" />
+                <dxg:GridColumn FieldName="ClientName" Header="Client" />
+                <dxg:GridColumn FieldName="StationName" Header="Station" />
             </dxg:GridControl.Columns>
         </dxg:GridControl>
 

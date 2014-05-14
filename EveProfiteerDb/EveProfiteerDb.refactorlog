@@ -35,4 +35,18 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="ApiKeyEntity_Id" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="08400e18-5f79-4623-a1b3-a95adba27ea2" ChangeDateTime="05/14/2014 16:32:43">
+    <Property Name="ElementName" Value="[dbo].[Orders].[SellOrder]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Orders]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="IsSellOrder" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="6ff32952-a664-498b-b8a1-305c5c96916a" ChangeDateTime="05/14/2014 16:32:55">
+    <Property Name="ElementName" Value="[dbo].[Orders].[BuyOrder]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Orders]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="IsBuyOrder" />
+  </Operation>
 </Operations>

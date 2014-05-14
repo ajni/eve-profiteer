@@ -1,12 +1,8 @@
-﻿using System;
-using eZet.EveLib.Modules.Models;
-using eZet.EveLib.Modules.Models.Character;
-using eZet.EveOnlineDbModels;
+﻿using eZet.EveLib.Modules.Models.Character;
 using eZet.EveProfiteer.Models;
 
 namespace eZet.EveProfiteer.Util {
     public static class Mapper {
-
         public static Transaction Map(WalletTransactions.Transaction source, Transaction target) {
             target.TransactionId = source.TransactionId;
             target.TransactionDate = source.TransactionDate;

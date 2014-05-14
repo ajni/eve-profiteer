@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.Windows.Input;
 using Caliburn.Micro;
 using DevExpress.Xpf.Mvvm;
@@ -15,42 +14,42 @@ using eZet.EveProfiteer.Events;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
 using Xceed.Wpf.Toolkit;
-using Screen = Caliburn.Micro.Screen;
 
 namespace eZet.EveProfiteer.ViewModels {
-    public class MarketAnalyzerViewModel : Screen {
-        private readonly IWindowManager _windowManager;
+    public class MarketAnalyzerViewModel : Screen, IHandle<object> {
+        private readonly EveMarketService _eveMarketService;
+        private readonly EveOnlineStaticDataService _eveOnlineStaticDataService;
         private readonly IEventAggregator _eventAggregator;
+        private readonly OrderEditorService _orderEditorService;
+        private readonly IWindowManager _windowManager;
         private int _dayLimit = 5;
-        private ICollection<MarketAnalyzerItem> _marketAnalyzerResults;
+        private ICollection<MarketAnalyzerEntry> _marketAnalyzerResults;
         private ICollection<InvType> _selectedItems;
         private Station _selectedStation;
-        private readonly EveOnlineStaticDataService _eveOnlineStaticDataService;
-        private readonly EveMarketService _eveMarketService;
-        private readonly OrderEditorService _orderEditorService;
-        private string _selectedPath = @"C:\Users\Lars Kristian\AppData\Local\MacroLab\Eve Pilot\Client_1\EVETrader";
 
-
-        public MarketAnalyzerViewModel(IWindowManager windowManager, IEventAggregator eventAggregator, EveOnlineStaticDataService eveOnlineStaticDataService,
+        public MarketAnalyzerViewModel(IWindowManager windowManager, IEventAggregator eventAggregator,
+            EveOnlineStaticDataService eveOnlineStaticDataService,
             EveMarketService eveMarketService, OrderEditorService orderEditorService) {
             _eveOnlineStaticDataService = eveOnlineStaticDataService;
             _eveMarketService = eveMarketService;
             _orderEditorService = orderEditorService;
             _windowManager = windowManager;
             _eventAggregator = eventAggregator;
+            _eventAggregator.Subscribe(this);
             DisplayName = "Market Analyzer";
+
 
             SelectedItems = new BindableCollection<InvType>();
 
             TreeRootNodes = buildTree();
             Stations = getStations();
 
-            AddToOrdersCommand = new DelegateCommand<IList<object>>(AddToOrders);
+            AddToOrdersCommand = new DelegateCommand<IList<object>>(AddToOrders, CanAddToOrders);
 
             SelectedStation = Stations.Single(f => f.StationId == 60003760);
             // ((MarketAnalyzerView) GetView()).GridControl.View.DataControl.SelectedItems;
-
         }
+
 
         public ICommand AddToOrdersCommand { get; set; }
 
@@ -76,7 +75,7 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
 
-        public ICollection<MarketAnalyzerItem> MarketAnalyzerResults {
+        public ICollection<MarketAnalyzerEntry> MarketAnalyzerResults {
             get { return _marketAnalyzerResults; }
             private set {
                 _marketAnalyzerResults = value;
@@ -96,20 +95,25 @@ namespace eZet.EveProfiteer.ViewModels {
             get { return SelectedItems.Count != 0; }
         }
 
+        public void Handle(object message) {
+            if (message.GetType() == typeof (OrdersAddedEvent))
+                ordersAddedHandler(message as OrdersAddedEvent);
+        }
+
         public async Task AnalyzeAction() {
-            var busy = new BusyIndicator { IsBusy = true };
+            var busy = new BusyIndicator {IsBusy = true};
             var cts = new CancellationTokenSource();
             var progressVm = new AnalyzerProgressViewModel(cts);
-            var res = await getResult(progressVm.GetProgressReporter(), cts);
-            colorOrders(res.Result);
+            MarketAnalyzer res = await getResult(progressVm.GetProgressReporter(), cts);
+            SetOrders(res.Result);
             MarketAnalyzerResults = res.Result;
             busy.IsBusy = false;
         }
 
-        private void colorOrders(ICollection<MarketAnalyzerItem> items) {
-            var lookup = items.ToLookup(f => f.InvTypeData.TypeId);
-            var orders = _orderEditorService.GetOrders();
-            foreach (var order in orders) {
+        private void SetOrders(IEnumerable<MarketAnalyzerEntry> items) {
+            ILookup<int, MarketAnalyzerEntry> lookup = items.ToLookup(f => f.InvTypeData.TypeId);
+            IQueryable<Order> orders = _orderEditorService.GetOrders();
+            foreach (Order order in orders) {
                 if (lookup.Contains(order.InvTypeId)) {
                     lookup[order.InvTypeId].Single().Order = order;
                 }
@@ -130,15 +134,23 @@ namespace eZet.EveProfiteer.ViewModels {
             //_windowManager.ShowDialog(scannerVm);
         }
 
-        public void AddToOrders(IList<object> items) {
-            if (items.Count == 0) return;
-            var types = items.Select(item => item as MarketAnalyzerItem).ToList();
-            _eventAggregator.Publish(new AddToOrdersEvent(types));
+
+        private bool CanAddToOrders(IList<object> objects) {
+            List<MarketAnalyzerEntry> items = objects.Select(item => item as MarketAnalyzerEntry).ToList();
+            return items.All(item => item.Order == null);
         }
 
-        public void ImportOrders() {
-            var orders = _orderEditorService.GetOrders().Select(item => item.InvTypeId);
-            var items = _eveOnlineStaticDataService.GetTypes().Where(item => orders.Contains(item.TypeId)).ToList();
+
+        private void AddToOrders(IList<object> objects) {
+            if (objects.Count == 0) return;
+            List<MarketAnalyzerEntry> items = objects.Select(item => item as MarketAnalyzerEntry).ToList();
+            _eventAggregator.Publish(new AddToOrdersEvent(items));
+        }
+
+        public void SelectOrders() {
+            IQueryable<int> orders = _orderEditorService.GetOrders().Select(item => item.InvTypeId);
+            List<InvType> items =
+                _eveOnlineStaticDataService.GetTypes().Where(item => orders.Contains(item.TypeId)).ToList();
             SelectedItems = items;
         }
 
@@ -168,7 +180,8 @@ namespace eZet.EveProfiteer.ViewModels {
                     int id = key.Value.ParentGroupId ?? default(int);
                     groups.TryGetValue(id, out group);
                     group.Children.Add(key.Value);
-                } else {
+                }
+                else {
                     rootList.Add(key.Value);
                 }
             }
@@ -181,7 +194,8 @@ namespace eZet.EveProfiteer.ViewModels {
             if (e.PropertyName == "IsChecked") {
                 if (item.IsChecked == true) {
                     SelectedItems.Add(item);
-                } else if (item.IsChecked == false)
+                }
+                else if (item.IsChecked == false)
                     SelectedItems.Remove(item);
                 else {
                     throw new NotImplementedException();
@@ -192,8 +206,20 @@ namespace eZet.EveProfiteer.ViewModels {
 
         private ICollection<Station> getStations() {
             var list = new List<Station>();
-            list.Add(new Station { StationName = "Jita IV - Moon 4 - Caldari Navy Assembly Plant", StationId = 60003760, RegionId = 10000002 });
+            list.Add(new Station {
+                StationName = "Jita IV - Moon 4 - Caldari Navy Assembly Plant",
+                StationId = 60003760,
+                RegionId = 10000002
+            });
             return list;
+        }
+
+        private void ordersAddedHandler(OrdersAddedEvent ordersAddedEvent) {
+            ILookup<int, MarketAnalyzerEntry> lookup = MarketAnalyzerResults.ToLookup(f => f.InvTypeData.TypeId);
+            foreach (Order order in ordersAddedEvent.Orders) {
+                if (lookup.Contains(order.InvTypeId))
+                    lookup[order.InvTypeId].Single().Order = order;
+            }
         }
     }
 }

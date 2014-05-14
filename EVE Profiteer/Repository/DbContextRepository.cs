@@ -4,15 +4,14 @@ using System.Linq;
 
 namespace eZet.EveProfiteer.Repository {
     public class DbContextRepository<T, TContext> : IRepository<T> where T : class where TContext : DbContext {
+        public DbContextRepository(TContext dbContext) {
+            DbContext = dbContext;
+        }
 
         public TContext DbContext { get; private set; }
 
         private DbSet<T> Set {
             get { return DbContext.Set<T>(); }
-        }
-
-        public DbContextRepository(TContext dbContext) {
-            DbContext = dbContext;
         }
 
         public T Create() {

@@ -1,9 +1,9 @@
 ﻿using System.Windows;
-
+using DevExpress.Xpf.Core;
 
 namespace eZet.EveProfiteer.Views {
     /// <summary>
-    /// Interaction logic for ShellView.xaml
+    ///     Interaction logic for ShellView.xaml
     /// </summary>
     public partial class ShellView : Window {
         public ShellView() {
@@ -11,7 +11,7 @@ namespace eZet.EveProfiteer.Views {
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e) {
-            DevExpress.Xpf.Core.ThemeManager.ApplicationThemeName = "Office2013";
+            ThemeManager.ApplicationThemeName = "Office2013";
         }
     }
 }

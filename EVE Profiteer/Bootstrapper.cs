@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Windows;
 using Caliburn.Micro;
 using eZet.EveOnlineDbModels;
 using eZet.EveProfiteer.Framework;
@@ -10,7 +11,7 @@ using eZet.EveProfiteer.ViewModels;
 
 namespace eZet.EveProfiteer {
     public class Bootstrapper : BootstrapperBase {
-        SimpleContainer _container;
+        private SimpleContainer _container;
 
         public Bootstrapper() {
             Start();
@@ -25,14 +26,13 @@ namespace eZet.EveProfiteer {
             // DbContexts
             _container.PerRequest<EveProfiteerDbEntities>();
             _container.PerRequest<EveDbContext>();
-            
+
             // Repositories
             _container.PerRequest<IRepository<Transaction>, DbContextRepository<Transaction, EveProfiteerDbEntities>>();
             _container.PerRequest<IRepository<JournalEntry>, DbContextRepository<JournalEntry, EveProfiteerDbEntities>>();
             _container.PerRequest<IRepository<ApiKey>, DbContextRepository<ApiKey, EveProfiteerDbEntities>>();
             _container.PerRequest<IRepository<ApiKeyEntity>, DbContextRepository<ApiKeyEntity, EveProfiteerDbEntities>>();
             _container.PerRequest<IRepository<Order>, DbContextRepository<Order, EveProfiteerDbEntities>>();
-
 
 
             // Services
@@ -61,7 +61,7 @@ namespace eZet.EveProfiteer {
         }
 
         protected override object GetInstance(Type service, string key) {
-            var instance = _container.GetInstance(service, key);
+            object instance = _container.GetInstance(service, key);
             if (instance != null)
                 return instance;
 
@@ -76,7 +76,7 @@ namespace eZet.EveProfiteer {
             _container.BuildUp(instance);
         }
 
-        protected override void OnStartup(object sender, System.Windows.StartupEventArgs e) {
+        protected override void OnStartup(object sender, StartupEventArgs e) {
             DisplayRootViewFor<IShell>();
         }
     }

@@ -1,26 +1,27 @@
 ﻿<UserControl x:Class="eZet.EveProfiteer.Views.JournalView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:xcdg="http://schemas.xceed.com/wpf/xaml/datagrid"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
-        <xcdg:DataGridCollectionViewSource x:Key="JournalSource" Source="{Binding Journal.SourceCollection}"/>
+        <xcdg:DataGridCollectionViewSource x:Key="JournalSource" Source="{Binding Journal.SourceCollection}" />
 
     </UserControl.Resources>
     <Grid>
-        <xcdg:DataGridControl NavigationBehavior="RowOnly" ReadOnly="True" ItemsSource="{Binding Source={StaticResource JournalSource}}" AutoCreateColumns="False">
+        <xcdg:DataGridControl NavigationBehavior="RowOnly" ReadOnly="True"
+                              ItemsSource="{Binding Source={StaticResource JournalSource}}" AutoCreateColumns="False">
             <xcdg:DataGridControl.Columns>
-                <xcdg:Column FieldName="Date" Title="Date"/>
-                <xcdg:Column FieldName="OwnerName" Title="Owner"/>
-                <xcdg:Column FieldName="ParticipantName" Title="Participant"/>
-                <xcdg:Column FieldName="ArgumentName" Title="Argument"/>
-                <xcdg:Column FieldName="Amount" Title="Amount"/>
-                <xcdg:Column FieldName="BalanceAfter" Title="Balance"/>
-                <xcdg:Column FieldName="Reason" Title="Reason"/>
-                <xcdg:Column FieldName="TaxAmount" Title="Tax"/>
+                <xcdg:Column FieldName="Date" Title="Date" />
+                <xcdg:Column FieldName="OwnerName" Title="Owner" />
+                <xcdg:Column FieldName="ParticipantName" Title="Participant" />
+                <xcdg:Column FieldName="ArgumentName" Title="Argument" />
+                <xcdg:Column FieldName="Amount" Title="Amount" />
+                <xcdg:Column FieldName="BalanceAfter" Title="Balance" />
+                <xcdg:Column FieldName="Reason" Title="Reason" />
+                <xcdg:Column FieldName="TaxAmount" Title="Tax" />
             </xcdg:DataGridControl.Columns>
 
         </xcdg:DataGridControl>

@@ -1,25 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using DevExpress.XtraPrinting.Native;
 using eZet.Eve.OrderIoHelper;
 using eZet.Eve.OrderIoHelper.Models;
 using eZet.EveLib.Modules;
+using eZet.EveLib.Modules.Models;
 using eZet.EveOnlineDbModels;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Repository;
 
 namespace eZet.EveProfiteer.Services {
     public class OrderEditorService {
-
+        private readonly EveDbContext _eveDbContext;
+        private readonly IRepository<Order> _ordersRepository;
         public string BuyOrdersFileName = "BuyOrders.xml";
 
         public string SellOrdersFileName = "SellOrders.xml";
-
-        private readonly EveDbContext _eveDbContext;
-        private readonly IRepository<Order> _ordersRepository;
 
 
         public OrderEditorService(EveDbContext eveDbContext, IRepository<Order> ordersRepository) {
@@ -33,30 +31,41 @@ namespace eZet.EveProfiteer.Services {
         public ICollection<Order> LoadOrdersFromDisk(string path) {
             var orders = new List<Order>();
             try {
-                var buyOrders =
+                BuyOrderCollection buyOrders =
                     OrderInstallerIoService.ReadBuyOrders(path + Path.DirectorySeparatorChar + BuyOrdersFileName);
-                var sellOrders =
+                SellOrderCollection sellOrders =
                     OrderInstallerIoService.ReadSellOrders(path + Path.DirectorySeparatorChar + SellOrdersFileName);
-                var sellOrderLookup = sellOrders.ToLookup(f => f.ItemId);
-                foreach (var buyOrder in buyOrders) {
-                    var sellOrder = sellOrderLookup[buyOrder.ItemId].SingleOrDefault();
+                ILookup<int, SellOrder> sellOrderLookup = sellOrders.ToLookup(f => f.ItemId);
+                foreach (BuyOrder buyOrder in buyOrders) {
+                    SellOrder sellOrder = sellOrderLookup[buyOrder.ItemId].SingleOrDefault();
                     sellOrders.Remove(sellOrder);
                     orders.Add(CreateOrder(buyOrder, sellOrder));
                 }
-                foreach (var sellOrder in sellOrders) {
+                foreach (SellOrder sellOrder in sellOrders) {
                     orders.Add(CreateOrder(null, sellOrder));
                 }
-            } catch (FileNotFoundException e) {
-
             }
+            catch (FileNotFoundException e) {
+            }
+            loadType(orders);
             return orders;
         }
 
         public IQueryable<Order> GetOrders() {
-            var orders = _ordersRepository.All();
-            foreach (var order in orders)
-                loadType(order);
+            IQueryable<Order> orders = _ordersRepository.All();
+            loadType(orders);
             return orders;
+        }
+
+        private void loadType(IEnumerable<Order> orders) {
+            //order.InvType = _eveDbContext.InvTypes.Find(order.InvTypeId);
+            var enumerable = orders as IList<Order> ?? orders.ToList();
+            var orderIds = enumerable.Select(f => f.InvTypeId);
+            var types = _eveDbContext.InvTypes.Where(f => orderIds.Contains(f.TypeId));
+            var lookup = types.ToLookup(f => f.TypeId);
+            foreach (var order in enumerable) {
+                order.InvType = lookup[order.InvTypeId].Single();
+            }
         }
 
         private void loadType(Order order) {
@@ -64,7 +73,7 @@ namespace eZet.EveProfiteer.Services {
         }
 
         public void AddOrders(IEnumerable<Order> orders) {
-            foreach (var order in orders) {
+            foreach (Order order in orders) {
                 if (!_ordersRepository.All().Any(f => f.InvTypeId == order.InvTypeId))
                     _ordersRepository.Add(order);
             }
@@ -78,18 +87,18 @@ namespace eZet.EveProfiteer.Services {
             _ordersRepository.SaveChanges();
         }
 
-        public void LoadPriceData(ICollection<Order> orders, int dayLimit) {
+        public void LoadMarketData(ICollection<Order> orders, int dayLimit, int region = 10000002) {
             if (orders.Count == 0) return;
             var historyOptions = new EveMarketDataOptions();
-            foreach (var order in orders) {
+            foreach (Order order in orders) {
                 historyOptions.Items.Add(order.InvTypeId);
             }
             historyOptions.AgeSpan = TimeSpan.FromDays(dayLimit);
-            historyOptions.Regions.Add(10000002);
-            var history = EveMarketData.GetItemHistory(historyOptions);
-            var historyLookup = history.Result.History.ToLookup(f => f.TypeId);
-            foreach (var order in orders) {
-                var itemHistory = historyLookup[order.InvTypeId].ToList();
+            historyOptions.Regions.Add(region);
+            EveMarketDataResponse<ItemHistory> history = EveMarketData.GetItemHistory(historyOptions);
+            ILookup<long, ItemHistory.ItemHistoryEntry> historyLookup = history.Result.History.ToLookup(f => f.TypeId);
+            foreach (Order order in orders) {
+                List<ItemHistory.ItemHistoryEntry> itemHistory = historyLookup[order.InvTypeId].ToList();
                 if (!itemHistory.IsEmpty()) {
                     order.AvgPrice = itemHistory.Average(f => f.AvgPrice);
                     order.AvgVolume = itemHistory.Average(f => f.Volume);
@@ -98,13 +107,15 @@ namespace eZet.EveProfiteer.Services {
         }
 
         public void SaveOrdersToDisk(string path, ICollection<Order> orders) {
-            OrderInstallerIoService.WriteBuyOrders(path + Path.DirectorySeparatorChar + BuyOrdersFileName, ToBuyOrderCollection(orders));
-            OrderInstallerIoService.WriteSellOrders(path + Path.DirectorySeparatorChar + SellOrdersFileName, ToSellOrderCollection(orders));
+            OrderInstallerIoService.WriteBuyOrders(path + Path.DirectorySeparatorChar + BuyOrdersFileName,
+                ToBuyOrderCollection(orders));
+            OrderInstallerIoService.WriteSellOrders(path + Path.DirectorySeparatorChar + SellOrdersFileName,
+                ToSellOrderCollection(orders));
         }
 
         private static BuyOrderCollection ToBuyOrderCollection(IEnumerable<Order> orders) {
             var buyOrders = new BuyOrderCollection();
-            foreach (var order in orders.Where(order => order.BuyQuantity > 0)) {
+            foreach (Order order in orders.Where(order => order.IsBuyOrder)) {
                 buyOrders.Add(ToBuyOrder(order));
             }
             return buyOrders;
@@ -112,7 +123,7 @@ namespace eZet.EveProfiteer.Services {
 
         private static SellOrderCollection ToSellOrderCollection(IEnumerable<Order> orders) {
             var sellOrders = new SellOrderCollection();
-            foreach (var order in orders.Where(order => order.MinSellQuantity > 0)) {
+            foreach (Order order in orders.Where(order => order.IsSellOrder)) {
                 sellOrders.Add(ToSellOrder(order));
             }
             return sellOrders;
@@ -123,7 +134,7 @@ namespace eZet.EveProfiteer.Services {
             var sellOrder = new SellOrder {
                 ItemName = order.InvType.TypeName,
                 ItemId = order.InvTypeId,
-                MinPrice = (long)order.MinSellPrice,
+                MinPrice = (long) order.MinSellPrice,
                 MaxQuantity = order.MaxSellQuantity,
                 Quantity = order.MinSellQuantity,
                 UpdateTime = DateTime.UtcNow,
@@ -135,7 +146,7 @@ namespace eZet.EveProfiteer.Services {
             var buyOrder = new BuyOrder {
                 ItemName = order.InvType.TypeName,
                 ItemId = order.InvTypeId,
-                MaxPrice = (long)order.MaxBuyPrice,
+                MaxPrice = (long) order.MaxBuyPrice,
                 Quantity = order.BuyQuantity,
                 //UpdateTime = DateTime.UtcNow,
             };
@@ -145,21 +156,26 @@ namespace eZet.EveProfiteer.Services {
         public Order CreateOrder(BuyOrder buyOrder, SellOrder sellOrder) {
             var order = new Order();
             order.InvTypeId = sellOrder != null ? sellOrder.ItemId : buyOrder.ItemId;
-            loadType(order);
             if (sellOrder != null) {
+                order.IsSellOrder = true;
                 order.MinSellPrice = sellOrder.MinPrice;
-                order.MaxSellQuantity = sellOrder.MaxQuantity;
                 order.MinSellQuantity = sellOrder.Quantity;
+                order.MaxSellQuantity = sellOrder.MaxQuantity;
                 order.UpdateTime = sellOrder.UpdateTime;
             }
             if (buyOrder != null) {
+                order.IsBuyOrder = true;
                 order.MaxBuyPrice = buyOrder.MaxPrice;
                 order.BuyQuantity = buyOrder.Quantity;
             }
             return order;
         }
 
+        public Order CreateOrder(int invTypeId) {
+            var order = new Order();
+            order.InvTypeId = invTypeId;
+            loadType(order);
+            return order;
+        }
     }
-
-
 }

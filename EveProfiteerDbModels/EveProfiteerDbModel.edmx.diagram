@@ -13,6 +13,7 @@
         <AssociationConnector Association="EveProfiteerDbModel.FK_dbo_Transactions_dbo_ApiKeyEntities_ApiKeyEntity_Id" ManuallyRouted="false" />
         <AssociationConnector Association="EveProfiteerDbModel.ApiKeyApiKeyEntities" ManuallyRouted="false" />
         <EntityTypeShape EntityType="EveProfiteerDbModel.Order" Width="1.5" PointX="5.375" PointY="0.75" />
+        <AssociationConnector Association="EveProfiteerDbModel.FK_Orders_ToApiKeyEntities" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

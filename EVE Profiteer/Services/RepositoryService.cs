@@ -4,20 +4,19 @@ using eZet.EveProfiteer.Repository;
 
 namespace eZet.EveProfiteer.Services {
     public class RepositoryService<T> where T : class {
-
         protected readonly IRepository<T> Repository;
 
         public RepositoryService(IRepository<T> repository) {
             Repository = repository;
         }
 
-        public void Dispose() {
-            Repository.Dispose();
-        }
-
         public bool Validate {
             get { return Repository.Validate; }
             set { Repository.Validate = value; }
+        }
+
+        public void Dispose() {
+            Repository.Dispose();
         }
 
         public T Create() {
@@ -51,6 +50,5 @@ namespace eZet.EveProfiteer.Services {
         public T Find(int pkey) {
             return Repository.Find(pkey);
         }
-
     }
 }

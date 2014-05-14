@@ -5,8 +5,16 @@ using eZet.EveOnlineDbModels;
 
 namespace eZet.EveProfiteer.Models {
     public class MarketAnalyzer {
+        public MarketAnalyzer(IEnumerable<InvType> itemData, IEnumerable<ItemPrices.ItemPriceEntry> sellOrders,
+            IEnumerable<ItemPrices.ItemPriceEntry> buyOrders, IEnumerable<ItemHistory.ItemHistoryEntry> history) {
+            this.itemData = itemData;
+            this.sellOrders = sellOrders.ToDictionary(f => f.TypeId);
+            this.buyOrders = buyOrders.ToDictionary(f => f.TypeId);
+            this.history = history.ToLookup(f => f.TypeId);
+            Result = new List<MarketAnalyzerEntry>();
+        }
 
-        public ICollection<MarketAnalyzerItem> Result { get; set; }
+        public ICollection<MarketAnalyzerEntry> Result { get; set; }
 
         private IDictionary<long, ItemPrices.ItemPriceEntry> sellOrders { get; set; }
 
@@ -16,16 +24,8 @@ namespace eZet.EveProfiteer.Models {
 
         private IEnumerable<InvType> itemData { get; set; }
 
-        public MarketAnalyzer(IEnumerable<InvType> itemData, IEnumerable<ItemPrices.ItemPriceEntry> sellOrders, IEnumerable<ItemPrices.ItemPriceEntry> buyOrders, IEnumerable<ItemHistory.ItemHistoryEntry> history) {
-            this.itemData = itemData;
-            this.sellOrders = sellOrders.ToDictionary(f => f.TypeId);
-            this.buyOrders = buyOrders.ToDictionary(f => f.TypeId);
-            this.history = history.ToLookup(f => f.TypeId);
-            Result = new List<MarketAnalyzerItem>();
-        }
-
         public void Analyze() {
-            foreach (var item in itemData) {
+            foreach (InvType item in itemData) {
                 ItemPrices.ItemPriceEntry sellOrder, buyOrder;
                 sellOrders.TryGetValue(item.TypeId, out sellOrder);
                 buyOrders.TryGetValue(item.TypeId, out buyOrder);
@@ -33,15 +33,8 @@ namespace eZet.EveProfiteer.Models {
                 if (history.Contains(item.TypeId)) {
                     itemHistory = history[item.TypeId].ToList();
                 }
-                Result.Add(new MarketAnalyzerItem(item, sellOrder, buyOrder, itemHistory));
+                Result.Add(new MarketAnalyzerEntry(item, sellOrder, buyOrder, itemHistory));
             }
         }
-
-
-
-
-
-
-
     }
 }
