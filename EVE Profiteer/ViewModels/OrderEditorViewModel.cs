@@ -14,7 +14,7 @@ using eZet.EveProfiteer.Views;
 using Screen = Caliburn.Micro.Screen;
 
 namespace eZet.EveProfiteer.ViewModels {
-    public class OrderEditorViewModel : Screen, IHandle<object> {
+    public class OrderEditorViewModel : Screen, IHandle<AddToOrdersEvent>, IHandle<GridCellValidationEventArgs> {
         private readonly EveOnlineStaticDataService _eveOnlineStaticDataService;
         private readonly IEventAggregator _eventAggregator;
         private readonly OrderEditorService _orderEditorService;
@@ -65,16 +65,6 @@ namespace eZet.EveProfiteer.ViewModels {
             }
         }
 
-        public void Handle(object message) {
-            if (message.GetType() == typeof (GridCellValidationEventArgs)) {
-                gridCellValidationHandler(message as GridCellValidationEventArgs);
-            }
-            else if (message.GetType() == typeof (AddToOrdersEvent)) {
-                addToOrdersEventHandler(message as AddToOrdersEvent);
-            }
-        }
-
-
         private void OrdersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
             if (e.NewItems != null)
                 _orderEditorService.AddOrders(e.NewItems.OfType<Order>());
@@ -116,7 +106,7 @@ namespace eZet.EveProfiteer.ViewModels {
             }
         }
 
-        public void Average() {
+        public void SetPriceLimits() {
             foreach (Order order in SelectedOrders) {
                 order.MaxBuyPrice = order.AvgPrice + order.AvgPrice*(decimal) (BuyOrderAvgOffset/100.0);
                 order.MinSellPrice = order.AvgPrice - order.AvgPrice*(decimal) (SellOrderAvgOffset/100.0);
@@ -131,13 +121,11 @@ namespace eZet.EveProfiteer.ViewModels {
             foreach (Order order in SelectedOrders) {
                 if (vm.SetBuyOrderTotal && order.MaxBuyPrice != 0) {
                     order.BuyQuantity = (int) (vm.BuyOrderTotal/order.MaxBuyPrice);
-                    if (order.BuyQuantity == 0)
+                    if (vm.BuyOrderTotal <= order.MaxBuyPrice)
                         order.BuyQuantity = 1;
                 }
                 if (vm.SetMinSellOrderTotal && order.MinSellPrice != 0) {
                     order.MinSellQuantity = (int) (vm.MinSellOrderTotal/order.MinSellPrice);
-                    if (order.MinSellQuantity == 0)
-                        order.MinSellQuantity = 1;
                 }
 
                 if (vm.SetMaxSellOrderTotal && order.MinSellPrice != 0) {
@@ -149,7 +137,7 @@ namespace eZet.EveProfiteer.ViewModels {
             refreshOrders();
         }
 
-        private void addToOrdersEventHandler(AddToOrdersEvent e) {
+        public void Handle(AddToOrdersEvent e) {
             var orders = new List<Order>();
             foreach (MarketAnalyzerEntry item in e.Items) {
                 orders.Add(_orderEditorService.CreateOrder(item.InvTypeData.TypeId));
@@ -159,7 +147,7 @@ namespace eZet.EveProfiteer.ViewModels {
             _eventAggregator.Publish(new OrdersAddedEvent(orders));
         }
 
-        private void gridCellValidationHandler(GridCellValidationEventArgs eventArgs) {
+        public void Handle(GridCellValidationEventArgs eventArgs) {
             string value = eventArgs.Value.ToString();
             InvType item = _eveOnlineStaticDataService.GetTypes().SingleOrDefault(f => f.TypeName == value);
             if (item == null) {

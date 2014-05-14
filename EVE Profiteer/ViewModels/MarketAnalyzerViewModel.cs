@@ -104,15 +104,15 @@ namespace eZet.EveProfiteer.ViewModels {
             var busy = new BusyIndicator {IsBusy = true};
             var cts = new CancellationTokenSource();
             var progressVm = new AnalyzerProgressViewModel(cts);
-            MarketAnalyzer res = await getResult(progressVm.GetProgressReporter(), cts);
-            SetOrders(res.Result);
+            MarketAnalyzer res = await GetMarketAnalyzer(SelectedItems);
+            LoadOrderData(res.Result);
             MarketAnalyzerResults = res.Result;
             busy.IsBusy = false;
         }
 
-        private void SetOrders(IEnumerable<MarketAnalyzerEntry> items) {
-            ILookup<int, MarketAnalyzerEntry> lookup = items.ToLookup(f => f.InvTypeData.TypeId);
+        private void LoadOrderData(IEnumerable<MarketAnalyzerEntry> items) {
             IQueryable<Order> orders = _orderEditorService.GetOrders();
+            ILookup<int, MarketAnalyzerEntry> lookup = items.ToLookup(f => f.InvTypeData.TypeId);
             foreach (Order order in orders) {
                 if (lookup.Contains(order.InvTypeId)) {
                     lookup[order.InvTypeId].Single().Order = order;
@@ -147,17 +147,19 @@ namespace eZet.EveProfiteer.ViewModels {
             _eventAggregator.Publish(new AddToOrdersEvent(items));
         }
 
-        public void SelectOrders() {
-            IQueryable<int> orders = _orderEditorService.GetOrders().Select(item => item.InvTypeId);
+        public async Task LoadOrders() {
+            var orders = _orderEditorService.GetOrders().Select(item => item.InvTypeId).ToList();
             List<InvType> items =
                 _eveOnlineStaticDataService.GetTypes().Where(item => orders.Contains(item.TypeId)).ToList();
-            SelectedItems = items;
+            MarketAnalyzer res = await GetMarketAnalyzer(items);
+            LoadOrderData(res.Result);
+            MarketAnalyzerResults = res.Result;
         }
 
-        private async Task<MarketAnalyzer> getResult(IProgress<ProgressType> progress, CancellationTokenSource cts) {
+        private async Task<MarketAnalyzer> GetMarketAnalyzer(ICollection<InvType> items) {
             return await
                 Task.Run(
-                    () => _eveMarketService.GetMarketAnalyzer(SelectedStation, SelectedItems, DayLimit), cts.Token);
+                    () => _eveMarketService.GetMarketAnalyzer(SelectedStation, items, DayLimit));
         }
 
         private ICollection<InvMarketGroup> buildTree() {

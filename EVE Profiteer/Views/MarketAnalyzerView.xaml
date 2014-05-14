@@ -24,7 +24,7 @@
             <ToolBar>
                 <Button Content="Analyze" cal:Message.Attach="AnalyzeAction" Margin="10 0" Padding="5" />
                 <Button Content="IGB Link" cal:Message.Attach="ScannerLinkAction" Margin="10 0" Padding="5" />
-                <Button Content="Orders" cal:Message.Attach="SelectOrders" Margin="10 0" Padding="5" />
+                <Button Content="Load Orders" cal:Message.Attach="LoadOrders" Margin="10 0" Padding="5" />
                 <Label>Station:</Label>
                 <ComboBox Width="150" ItemsSource="{Binding Stations}" DisplayMemberPath="StationName"
                           SelectedItem="{Binding SelectedStation}" />
