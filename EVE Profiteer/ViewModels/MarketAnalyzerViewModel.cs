@@ -48,7 +48,7 @@ namespace eZet.EveProfiteer.ViewModels {
             AddToOrdersCommand = new DelegateCommand<IList<object>>(AddToOrders);
 
             SelectedStation = Stations.Single(f => f.StationId == 60003760);
-               // ((MarketAnalyzerView) GetView()).GridControl.View.DataControl.SelectedItems;
+            // ((MarketAnalyzerView) GetView()).GridControl.View.DataControl.SelectedItems;
 
         }
 
@@ -101,8 +101,19 @@ namespace eZet.EveProfiteer.ViewModels {
             var cts = new CancellationTokenSource();
             var progressVm = new AnalyzerProgressViewModel(cts);
             var res = await getResult(progressVm.GetProgressReporter(), cts);
+            colorOrders(res.Result);
             MarketAnalyzerResults = res.Result;
             busy.IsBusy = false;
+        }
+
+        private void colorOrders(ICollection<MarketAnalyzerItem> items) {
+            var lookup = items.ToLookup(f => f.InvTypeData.TypeId);
+            var orders = _orderEditorService.GetOrders();
+            foreach (var order in orders) {
+                if (lookup.Contains(order.InvTypeId)) {
+                    lookup[order.InvTypeId].Single().Order = order;
+                }
+            }
         }
 
         public bool CanScannerLinkAction() {
@@ -121,26 +132,20 @@ namespace eZet.EveProfiteer.ViewModels {
 
         public void AddToOrders(IList<object> items) {
             if (items.Count == 0) return;
-            var itams = items.Select(item => item as MarketAnalyzerItem).ToList();
-            _eventAggregator.Publish(new AddToOrdersEvent(itams));
+            var types = items.Select(item => item as MarketAnalyzerItem).ToList();
+            _eventAggregator.Publish(new AddToOrdersEvent(types));
         }
 
         public void ImportOrders() {
-            var dialog = new FolderBrowserDialog();
-            dialog.ShowNewFolderButton = false;
-            dialog.SelectedPath = _selectedPath;
-            if (dialog.ShowDialog() == DialogResult.OK) {
-                _selectedPath = dialog.SelectedPath;
-                var orders = _orderEditorService.LoadOrdersFromDisk(dialog.SelectedPath).Select(item => item.InvTypeId);
-                var items = _eveOnlineStaticDataService.GetTypes().Where(item => orders.Contains(item.TypeId)).ToList();
-                SelectedItems = items;
-            }
+            var orders = _orderEditorService.GetOrders().Select(item => item.InvTypeId);
+            var items = _eveOnlineStaticDataService.GetTypes().Where(item => orders.Contains(item.TypeId)).ToList();
+            SelectedItems = items;
         }
 
         private async Task<MarketAnalyzer> getResult(IProgress<ProgressType> progress, CancellationTokenSource cts) {
             return await
                 Task.Run(
-                    () => _eveMarketService.GetStationTrader(SelectedStation, SelectedItems, DayLimit), cts.Token);
+                    () => _eveMarketService.GetMarketAnalyzer(SelectedStation, SelectedItems, DayLimit), cts.Token);
         }
 
         private ICollection<InvMarketGroup> buildTree() {

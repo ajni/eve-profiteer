@@ -24,7 +24,7 @@ namespace eZet.EveProfiteer.Services {
 
     
 
-        public MarketAnalyzer GetStationTrader(Station station, ICollection<InvType> items, int dayLimit) {
+        public MarketAnalyzer GetMarketAnalyzer(Station station, ICollection<InvType> items, int dayLimit) {
             var historyOptions = new EveMarketDataOptions();
             historyOptions.AgeSpan = TimeSpan.FromDays(dayLimit);
             historyOptions.Regions.Add(station.RegionId);

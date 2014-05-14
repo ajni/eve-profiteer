@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using DevExpress.XtraPrinting.Native;
@@ -52,11 +53,21 @@ namespace eZet.EveProfiteer.Services {
         }
 
         public IQueryable<Order> GetOrders() {
-            return _ordersRepository.All();
+            var orders = _ordersRepository.All();
+            foreach (var order in orders)
+                loadType(order);
+            return orders;
+        }
+
+        private void loadType(Order order) {
+            order.InvType = _eveDbContext.InvTypes.Find(order.InvTypeId);
         }
 
         public void AddOrders(IEnumerable<Order> orders) {
-            _ordersRepository.AddRange(orders);
+            foreach (var order in orders) {
+                if (!_ordersRepository.All().Any(f => f.InvTypeId == order.InvTypeId))
+                    _ordersRepository.Add(order);
+            }
         }
 
         public void DeleteOrders(IEnumerable<Order> orders) {
@@ -134,7 +145,7 @@ namespace eZet.EveProfiteer.Services {
         public Order CreateOrder(BuyOrder buyOrder, SellOrder sellOrder) {
             var order = new Order();
             order.InvTypeId = sellOrder != null ? sellOrder.ItemId : buyOrder.ItemId;
-            order.InvType = _eveDbContext.InvTypes.Find(order.InvTypeId);
+            loadType(order);
             if (sellOrder != null) {
                 order.MinSellPrice = sellOrder.MinPrice;
                 order.MaxSellQuantity = sellOrder.MaxQuantity;

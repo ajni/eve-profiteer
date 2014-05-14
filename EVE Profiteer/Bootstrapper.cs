@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using Caliburn.Micro;
 using eZet.EveOnlineDbModels;
 using eZet.EveProfiteer.Framework;

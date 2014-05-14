@@ -11,6 +11,8 @@
     [CurrentBuyPrice]   DECIMAL (18, 2) NOT NULL,
     [CurrentSellPrice]  DECIMAL (18, 2) NOT NULL,
     [AvgPrice]          DECIMAL (18, 2) NOT NULL,
+    [ApiKeyEntity_Id] INT NULL, 
     CONSTRAINT [PK_dbo.Orders] PRIMARY KEY CLUSTERED ([Id] ASC), 
+    CONSTRAINT [FK_Orders_ToApiKeyEntities] FOREIGN KEY ([ApiKeyEntity_Id]) REFERENCES [ApiKeyEntities]([Id]), 
 );
 

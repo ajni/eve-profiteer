@@ -118,6 +118,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Bootstrapper.cs" />
+    <Compile Include="ColorValueConverter.cs" />
     <Compile Include="Events\AddToOrdersEvent.cs" />
     <Compile Include="Framework\IShell.cs" />
     <Compile Include="Models\ItemDetail.cs" />

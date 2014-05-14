@@ -46,6 +46,8 @@ namespace eZet.EveProfiteer.Models {
 
         private const int StandardDeviationFactor = 1;
 
+        public Order Order { get; set; }
+
         public void Calculate() {
             ProfitPerItem = SellPrice - BuyPrice;
             Margin = BuyPrice != 0 ? ProfitPerItem / BuyPrice : 0;

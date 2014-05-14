@@ -53,7 +53,6 @@ namespace eZet.EveProfiteer.ViewModels {
 
             SelectedOrders = new ObservableCollection<Order>();
             Orders = new ObservableCollection<Order>();
-            Orders.CollectionChanged += OrdersOnCollectionChanged;
             DayLimit = 10;
             BuyOrderAvgOffset = 2;
             SellOrderAvgOffset = 2;
@@ -69,7 +68,9 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         protected override void OnInitialize() {
-            //Orders.AddRange(_orderEditorService.GetOrders().ToList());
+            Orders.AddRange(_orderEditorService.GetOrders().ToList());
+            Orders.CollectionChanged += OrdersOnCollectionChanged;
+
         }
 
         public void Import() {

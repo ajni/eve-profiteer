@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[JournalEntries] (
-    [Id]              INT             IDENTITY (1, 1) NOT NULL,
+    [Id]              INT             IDENTITY NOT NULL,
     [Date]            DATETIME        NOT NULL,
     [RefId]           BIGINT          NOT NULL,
     [refTypeId]       BIGINT          NOT NULL,
