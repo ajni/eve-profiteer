@@ -28,14 +28,14 @@
             </dxg:GridControl.TotalSummary>
             <dxg:GridControl.Columns>
                 <dxg:SelectAllColumn></dxg:SelectAllColumn>
-                <dxg:GridColumn FieldName="ItemName" Header="Item" Validate="GridColumn_OnValidate"/>
+                <dxg:GridColumn FieldName="InvType.TypeName" Header="Item" Validate="GridColumn_OnValidate"/>
                 <dxg:GridColumn FieldName="BuyQuantity" Width="50"/>
                 <dxg:GridColumn FieldName="MaxBuyPrice">
                     <dxg:GridColumn.EditSettings>
                         <dxe:TextEditSettings DisplayFormat="N0" />
                     </dxg:GridColumn.EditSettings>
                 </dxg:GridColumn>
-                <dxg:GridColumn FieldName="TotalMaxBuyPrice" Header="Buy Total">
+                <dxg:GridColumn FieldName="TotalMaxBuyPrice2" Header="Buy Total" UnboundType="Decimal" UnboundExpression="[BuyQuantity] * [MaxBuyPrice]">
                     <dxg:GridColumn.EditSettings>
                         <dxe:TextEditSettings DisplayFormat="N0" />
                     </dxg:GridColumn.EditSettings>
@@ -46,13 +46,13 @@
                         <dxe:TextEditSettings DisplayFormat="N0" />
                     </dxg:GridColumn.EditSettings>
                 </dxg:GridColumn>
-                <dxg:GridColumn FieldName="TotalMinSellPrice" Header="Min Sell Total">
+                <dxg:GridColumn FieldName="TotalMinSellPrice" Header="Min Sell Total" UnboundType="Decimal" UnboundExpression="[MinSellQuantity] * [MinSellPrice]">
                     <dxg:GridColumn.EditSettings>
                         <dxe:TextEditSettings DisplayFormat="N0" />
                     </dxg:GridColumn.EditSettings>
                 </dxg:GridColumn>
                 <dxg:GridColumn FieldName="MaxSellQuantity" Width="50"/>
-                <dxg:GridColumn FieldName="TotalMaxSellPrice" Header="Max Sell Total">
+                <dxg:GridColumn FieldName="TotalMaxSellPrice" Header="Max Sell Total" UnboundType="Decimal" UnboundExpression="[MaxSellQuantity] * [MinSellPrice]">
                     <dxg:GridColumn.EditSettings>
                         <dxe:TextEditSettings DisplayFormat="N0" />
                     </dxg:GridColumn.EditSettings>

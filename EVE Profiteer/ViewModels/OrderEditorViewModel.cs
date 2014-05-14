@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Windows.Forms;
 using Caliburn.Micro;
-using DevExpress.Data.PLinq.Helpers;
 using DevExpress.Xpf.Grid;
-using DevExpress.Xpf.Mvvm.Native;
 using DevExpress.Xpf.Ribbon.Customization;
 using eZet.EveProfiteer.Events;
-using eZet.EveOnlineDbModels;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
 using eZet.EveProfiteer.Views;
@@ -74,7 +69,7 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         protected override void OnInitialize() {
-            Orders.AddRange(_orderEditorService.GetOrders().ToList());
+            //Orders.AddRange(_orderEditorService.GetOrders().ToList());
         }
 
         public void Import() {
@@ -143,7 +138,7 @@ namespace eZet.EveProfiteer.ViewModels {
 
         private void addToOrdersEventHandler(AddToOrdersEvent e) {
             foreach (var item in e.Items) {
-                Orders.Add(new Order { ItemId = item.InvTypeData.TypeId, ItemName = item.InvTypeData.TypeName });
+                Orders.Add(new Order { InvTypeId = item.InvTypeData.TypeId});
             }
         }
 
@@ -154,11 +149,11 @@ namespace eZet.EveProfiteer.ViewModels {
                 eventArgs.IsValid = false;
                 eventArgs.SetError("Invalid item.");
             } else {
-                if (Orders.SingleOrDefault(order => order.ItemId == item.TypeId) != null) {
+                if (Orders.SingleOrDefault(order => order.InvTypeId == item.TypeId) != null) {
                     eventArgs.IsValid = false;
                     eventArgs.SetError("Item has already been added.");
                 } else {
-                    ((Order)eventArgs.Row).ItemId = item.TypeId;
+                    ((Order)eventArgs.Row).InvTypeId = item.TypeId;
                 }
             }
         }

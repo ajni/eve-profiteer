@@ -6,6 +6,7 @@ using DevExpress.XtraPrinting.Native;
 using eZet.Eve.OrderIoHelper;
 using eZet.Eve.OrderIoHelper.Models;
 using eZet.EveLib.Modules;
+using eZet.EveOnlineDbModels;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Repository;
 
@@ -16,10 +17,12 @@ namespace eZet.EveProfiteer.Services {
 
         public string SellOrdersFileName = "SellOrders.xml";
 
+        private readonly EveDbContext _eveDbContext;
         private readonly IRepository<Order> _ordersRepository;
 
 
-        public OrderEditorService(IRepository<Order> ordersRepository) {
+        public OrderEditorService(EveDbContext eveDbContext, IRepository<Order> ordersRepository) {
+            _eveDbContext = eveDbContext;
             _ordersRepository = ordersRepository;
             EveMarketData = new EveMarketData();
         }
@@ -68,14 +71,14 @@ namespace eZet.EveProfiteer.Services {
             if (orders.Count == 0) return;
             var historyOptions = new EveMarketDataOptions();
             foreach (var order in orders) {
-                historyOptions.Items.Add(order.ItemId);
+                historyOptions.Items.Add(order.InvTypeId);
             }
             historyOptions.AgeSpan = TimeSpan.FromDays(dayLimit);
             historyOptions.Regions.Add(10000002);
             var history = EveMarketData.GetItemHistory(historyOptions);
             var historyLookup = history.Result.History.ToLookup(f => f.TypeId);
             foreach (var order in orders) {
-                var itemHistory = historyLookup[order.ItemId].ToList();
+                var itemHistory = historyLookup[order.InvTypeId].ToList();
                 if (!itemHistory.IsEmpty()) {
                     order.AvgPrice = itemHistory.Average(f => f.AvgPrice);
                     order.AvgVolume = itemHistory.Average(f => f.Volume);
@@ -107,8 +110,8 @@ namespace eZet.EveProfiteer.Services {
 
         public static SellOrder ToSellOrder(Order order) {
             var sellOrder = new SellOrder {
-                ItemName = order.ItemName,
-                ItemId = order.ItemId,
+                ItemName = order.InvType.TypeName,
+                ItemId = order.InvTypeId,
                 MinPrice = (long)order.MinSellPrice,
                 MaxQuantity = order.MaxSellQuantity,
                 Quantity = order.MinSellQuantity,
@@ -119,8 +122,8 @@ namespace eZet.EveProfiteer.Services {
 
         public static BuyOrder ToBuyOrder(Order order) {
             var buyOrder = new BuyOrder {
-                ItemName = order.ItemName,
-                ItemId = order.ItemId,
+                ItemName = order.InvType.TypeName,
+                ItemId = order.InvTypeId,
                 MaxPrice = (long)order.MaxBuyPrice,
                 Quantity = order.BuyQuantity,
                 //UpdateTime = DateTime.UtcNow,
@@ -130,21 +133,17 @@ namespace eZet.EveProfiteer.Services {
 
         public Order CreateOrder(BuyOrder buyOrder, SellOrder sellOrder) {
             var order = new Order();
-
+            order.InvTypeId = sellOrder != null ? sellOrder.ItemId : buyOrder.ItemId;
+            order.InvType = _eveDbContext.InvTypes.Find(order.InvTypeId);
             if (sellOrder != null) {
-                order.ItemName = sellOrder.ItemName;
-                order.ItemId = sellOrder.ItemId;
                 order.MinSellPrice = sellOrder.MinPrice;
                 order.MaxSellQuantity = sellOrder.MaxQuantity;
                 order.MinSellQuantity = sellOrder.Quantity;
                 order.UpdateTime = sellOrder.UpdateTime;
             }
             if (buyOrder != null) {
-                order.ItemName = buyOrder.ItemName;
-                order.ItemId = buyOrder.ItemId;
                 order.MaxBuyPrice = buyOrder.MaxPrice;
                 order.BuyQuantity = buyOrder.Quantity;
-                //order.UpdateTime = buyOrder.UpdateTime;
             }
             return order;
         }

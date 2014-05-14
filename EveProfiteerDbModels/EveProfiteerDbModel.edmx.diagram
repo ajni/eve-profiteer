@@ -8,11 +8,11 @@
         <EntityTypeShape EntityType="EveProfiteerDbModel.ApiKeyEntity" Width="1.5" PointX="0.75" PointY="6" IsExpanded="true" />
         <EntityTypeShape EntityType="EveProfiteerDbModel.ApiKey" Width="1.5" PointX="3" PointY="1.375" IsExpanded="true" />
         <EntityTypeShape EntityType="EveProfiteerDbModel.JournalEntry" Width="1.5" PointX="3" PointY="4.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="EveProfiteerDbModel.Order" Width="1.5" PointX="5.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="EveProfiteerDbModel.Transaction" Width="1.5" PointX="3" PointY="9.125" IsExpanded="true" />
         <AssociationConnector Association="EveProfiteerDbModel.FK_dbo_JournalEntries_dbo_ApiKeyEntities_ApiKeyEntity_Id" ManuallyRouted="false" />
         <AssociationConnector Association="EveProfiteerDbModel.FK_dbo_Transactions_dbo_ApiKeyEntities_ApiKeyEntity_Id" ManuallyRouted="false" />
         <AssociationConnector Association="EveProfiteerDbModel.ApiKeyApiKeyEntities" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="EveProfiteerDbModel.Order" Width="1.5" PointX="5.375" PointY="0.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -15,20 +15,16 @@ namespace eZet.EveProfiteer.Models
     public partial class Order
     {
         public int Id { get; set; }
-        public string ItemName { get; set; }
-        public long ItemId { get; set; }
         public int BuyQuantity { get; set; }
         public decimal MaxBuyPrice { get; set; }
-        public decimal TotalMaxBuyPrice { get; set; }
         public int MinSellQuantity { get; set; }
         public decimal MinSellPrice { get; set; }
-        public decimal TotalMinSellPrice { get; set; }
         public int MaxSellQuantity { get; set; }
-        public decimal TotalMaxSellPrice { get; set; }
         public System.DateTime UpdateTime { get; set; }
         public double AvgVolume { get; set; }
         public decimal CurrentBuyPrice { get; set; }
         public decimal CurrentSellPrice { get; set; }
         public decimal AvgPrice { get; set; }
+        public int InvTypeId { get; set; }
     }
 }

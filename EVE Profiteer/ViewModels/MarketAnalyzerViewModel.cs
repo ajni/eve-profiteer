@@ -131,7 +131,7 @@ namespace eZet.EveProfiteer.ViewModels {
             dialog.SelectedPath = _selectedPath;
             if (dialog.ShowDialog() == DialogResult.OK) {
                 _selectedPath = dialog.SelectedPath;
-                var orders = _orderEditorService.LoadOrdersFromDisk(dialog.SelectedPath).Select(item => item.ItemId);
+                var orders = _orderEditorService.LoadOrdersFromDisk(dialog.SelectedPath).Select(item => item.InvTypeId);
                 var items = _eveOnlineStaticDataService.GetTypes().Where(item => orders.Contains(item.TypeId)).ToList();
                 SelectedItems = items;
             }

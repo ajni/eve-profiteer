@@ -69,6 +69,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>EveProfiteerDbModel.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Extensions\Order.cs" />
     <Compile Include="JournalEntry.cs">
       <DependentUpon>EveProfiteerDbModel.tt</DependentUpon>
     </Compile>
@@ -105,6 +106,12 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EveOnlineDbModels\EveOnlineDbModels.csproj">
+      <Project>{7759033A-8095-44BE-91A3-84911019B5A3}</Project>
+      <Name>EveOnlineDbModels</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

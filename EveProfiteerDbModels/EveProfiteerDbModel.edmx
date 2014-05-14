@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="EveProfiteerDbModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="EveProfiteerDbModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="ApiKeyApiKeyEntities">
           <Key>
             <PropertyRef Name="ApiKey_Id" />
@@ -59,16 +59,12 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="ItemName" Type="nvarchar(max)" />
-          <Property Name="ItemId" Type="bigint" Nullable="false" />
+          <Property Name="InvTypeId" Type="bigint" Nullable="false" />
           <Property Name="BuyQuantity" Type="int" Nullable="false" />
           <Property Name="MaxBuyPrice" Type="decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="TotalMaxBuyPrice" Type="decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="MinSellQuantity" Type="int" Nullable="false" />
           <Property Name="MinSellPrice" Type="decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="TotalMinSellPrice" Type="decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="MaxSellQuantity" Type="int" Nullable="false" />
-          <Property Name="TotalMaxSellPrice" Type="decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="UpdateTime" Type="datetime" Nullable="false" />
           <Property Name="AvgVolume" Type="float" Nullable="false" />
           <Property Name="CurrentBuyPrice" Type="decimal" Precision="18" Scale="2" Nullable="false" />
@@ -171,8 +167,7 @@
             <End Role="Transactions" EntitySet="Transactions" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="EveProfiteerDbModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -221,27 +216,6 @@
           <Property Name="TaxAmount" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ApiKeyEntity_Id" Type="Int32" />
           <NavigationProperty Name="ApiKeyEntity" Relationship="Self.FK_dbo_JournalEntries_dbo_ApiKeyEntities_ApiKeyEntity_Id" FromRole="JournalEntries" ToRole="ApiKeyEntities" />
-        </EntityType>
-        <EntityType Name="Order">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ItemName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="ItemId" Type="Int64" Nullable="false" />
-          <Property Name="BuyQuantity" Type="Int32" Nullable="false" />
-          <Property Name="MaxBuyPrice" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="TotalMaxBuyPrice" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="MinSellQuantity" Type="Int32" Nullable="false" />
-          <Property Name="MinSellPrice" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="TotalMinSellPrice" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="MaxSellQuantity" Type="Int32" Nullable="false" />
-          <Property Name="TotalMaxSellPrice" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="UpdateTime" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="AvgVolume" Type="Double" Nullable="false" />
-          <Property Name="CurrentBuyPrice" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="CurrentSellPrice" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="AvgPrice" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
         </EntityType>
         <EntityType Name="Transaction">
           <Key>
@@ -296,7 +270,6 @@
           <EntitySet Name="ApiKeyEntities" EntityType="Self.ApiKeyEntity" />
           <EntitySet Name="ApiKeys" EntityType="Self.ApiKey" />
           <EntitySet Name="JournalEntries" EntityType="Self.JournalEntry" />
-          <EntitySet Name="Orders" EntityType="Self.Order" />
           <EntitySet Name="Transactions" EntityType="Self.Transaction" />
           <AssociationSet Name="FK_dbo_JournalEntries_dbo_ApiKeyEntities_ApiKeyEntity_Id" Association="Self.FK_dbo_JournalEntries_dbo_ApiKeyEntities_ApiKeyEntity_Id">
             <End Role="ApiKeyEntities" EntitySet="ApiKeyEntities" />
@@ -310,7 +283,25 @@
             <End Role="ApiKeyEntities" EntitySet="ApiKeyEntities" />
             <End Role="ApiKeys" EntitySet="ApiKeys" />
           </AssociationSet>
+          <EntitySet Name="Orders" EntityType="EveProfiteerDbModel.Order" />
         </EntityContainer>
+        <EntityType Name="Order">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="BuyQuantity" Type="Int32" Nullable="false" />
+          <Property Name="MaxBuyPrice" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="MinSellQuantity" Type="Int32" Nullable="false" />
+          <Property Name="MinSellPrice" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="MaxSellQuantity" Type="Int32" Nullable="false" />
+          <Property Name="UpdateTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="AvgVolume" Type="Double" Nullable="false" />
+          <Property Name="CurrentBuyPrice" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="CurrentSellPrice" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="AvgPrice" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="InvTypeId" Type="Int32" Nullable="false" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -361,28 +352,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Orders">
-            <EntityTypeMapping TypeName="EveProfiteerDbModel.Order">
-              <MappingFragment StoreEntitySet="Orders">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="ItemName" ColumnName="ItemName" />
-                <ScalarProperty Name="ItemId" ColumnName="ItemId" />
-                <ScalarProperty Name="BuyQuantity" ColumnName="BuyQuantity" />
-                <ScalarProperty Name="MaxBuyPrice" ColumnName="MaxBuyPrice" />
-                <ScalarProperty Name="TotalMaxBuyPrice" ColumnName="TotalMaxBuyPrice" />
-                <ScalarProperty Name="MinSellQuantity" ColumnName="MinSellQuantity" />
-                <ScalarProperty Name="MinSellPrice" ColumnName="MinSellPrice" />
-                <ScalarProperty Name="TotalMinSellPrice" ColumnName="TotalMinSellPrice" />
-                <ScalarProperty Name="MaxSellQuantity" ColumnName="MaxSellQuantity" />
-                <ScalarProperty Name="TotalMaxSellPrice" ColumnName="TotalMaxSellPrice" />
-                <ScalarProperty Name="UpdateTime" ColumnName="UpdateTime" />
-                <ScalarProperty Name="AvgVolume" ColumnName="AvgVolume" />
-                <ScalarProperty Name="CurrentBuyPrice" ColumnName="CurrentBuyPrice" />
-                <ScalarProperty Name="CurrentSellPrice" ColumnName="CurrentSellPrice" />
-                <ScalarProperty Name="AvgPrice" ColumnName="AvgPrice" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Transactions">
             <EntityTypeMapping TypeName="EveProfiteerDbModel.Transaction">
               <MappingFragment StoreEntitySet="Transactions">
@@ -412,6 +381,24 @@
               <ScalarProperty Name="Id" ColumnName="ApiKey_Id" />
             </EndProperty>
           </AssociationSetMapping>
+          <EntitySetMapping Name="Orders">
+            <EntityTypeMapping TypeName="EveProfiteerDbModel.Order">
+              <MappingFragment StoreEntitySet="Orders">
+                <ScalarProperty Name="InvTypeId" ColumnName="InvTypeId" />
+                <ScalarProperty Name="AvgPrice" ColumnName="AvgPrice" />
+                <ScalarProperty Name="CurrentSellPrice" ColumnName="CurrentSellPrice" />
+                <ScalarProperty Name="CurrentBuyPrice" ColumnName="CurrentBuyPrice" />
+                <ScalarProperty Name="AvgVolume" ColumnName="AvgVolume" />
+                <ScalarProperty Name="UpdateTime" ColumnName="UpdateTime" />
+                <ScalarProperty Name="MaxSellQuantity" ColumnName="MaxSellQuantity" />
+                <ScalarProperty Name="MinSellPrice" ColumnName="MinSellPrice" />
+                <ScalarProperty Name="MinSellQuantity" ColumnName="MinSellQuantity" />
+                <ScalarProperty Name="MaxBuyPrice" ColumnName="MaxBuyPrice" />
+                <ScalarProperty Name="BuyQuantity" ColumnName="BuyQuantity" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
