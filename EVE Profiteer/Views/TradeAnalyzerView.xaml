@@ -9,6 +9,14 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
         <DockPanel>
+            <ToolBarTray DockPanel.Dock="Top">
+                <ToolBar>
+                    <ComboBox Margin ="5" Width="100" HorizontalAlignment="Left" ItemsSource="{Binding ViewPeriodValues}" SelectedItem="{Binding SelectedViewPeriod}">
+                    </ComboBox>
+                    <Button Margin="5" Name="ViewPeriod">View</Button>
+                </ToolBar>
+
+            </ToolBarTray>
 
             <dxg:GridControl Name="TradeAnalyzerGrid" AutoGenerateColumns="None" ItemsSource="{Binding Items}"
                                 SelectionMode="None">
@@ -22,14 +30,15 @@
                     <dxg:GridSummaryItem FieldName="Balance" SummaryType="Sum" DisplayFormat="N2"/>
                     <dxg:GridSummaryItem FieldName="In" SummaryType="Sum" DisplayFormat="N2"/>
                     <dxg:GridSummaryItem FieldName="Out" SummaryType="Sum" DisplayFormat="N2"/>
-                    
+                    <dxg:GridSummaryItem FieldName="Transactions.Count" SummaryType="Sum" DisplayFormat="N0"/>
+                    <dxg:GridSummaryItem FieldName="QuantitySold" SummaryType="Sum" DisplayFormat="N0"/>
+                    <dxg:GridSummaryItem FieldName="QuantityBought" SummaryType="Sum" DisplayFormat="N0"/>
+
                     <dxg:GridSummaryItem SummaryType="Count" Alignment="Right" DisplayFormat="Items: {0:N0}" />
-                    <dxg:GridSummaryItem FieldName="Transactions.Count" SummaryType="Sum"
-                                     DisplayFormat="Transactions: {0:N0}" Alignment="Right" />
-                </dxg:GridControl.TotalSummary>
+                 </dxg:GridControl.TotalSummary>
                 <dxg:GridControl.Columns>
                     <dxg:GridColumn FieldName="TypeName" Header="Item"/>
-                    <dxg:GridColumn FieldName="Profit" Width="50">
+                    <dxg:GridColumn FieldName="Profit">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="N2" />
                         </dxg:GridColumn.EditSettings>
@@ -70,7 +79,7 @@
                             <dxe:TextEditSettings DisplayFormat="N0" />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
-                          <dxg:GridColumn FieldName="AvgBuyPrice">
+                    <dxg:GridColumn FieldName="AvgBuyPrice">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="N2" />
                         </dxg:GridColumn.EditSettings>

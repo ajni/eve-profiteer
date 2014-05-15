@@ -9,9 +9,6 @@
     d:DesignHeight="300" d:DesignWidth="900">
 
     <DockPanel>
-        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-            <Button Name="UpdateAction">Update</Button>
-        </StackPanel>
 
         <dxg:GridControl AutoGenerateColumns="None" ItemsSource="{Binding Transactions}" GroupSummaryGeneratorTemplate="{DynamicResource DataTemplate1}">
             <dxg:GridControl.View>

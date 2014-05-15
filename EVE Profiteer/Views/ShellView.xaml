@@ -7,8 +7,10 @@
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="File">
                 <MenuItem Name="ManageKeys" Header="Manage Keys" />
+                <MenuItem Name="UpdateTransactions" Header="Update Transactions" />
             </MenuItem>
             <MenuItem Header="Edit" />
+            <MenuItem Header="Tools" />
         </Menu>
         <StatusBar DockPanel.Dock="Bottom">
             <StatusBarItem Content="Statusbar" />

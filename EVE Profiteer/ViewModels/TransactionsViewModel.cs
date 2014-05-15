@@ -35,26 +35,11 @@ namespace eZet.EveProfiteer.ViewModels {
         public void Initialize(ApiKey key, ApiKeyEntity entity) {
             ApiKey = key;
             ApiKeyEntity = entity;
-            Transactions = new ObservableCollection<Transaction>(_transactionService.All().Where(t => t.ApiKeyEntity.Id == entity.Id).ToList());
+            Transactions = new ObservableCollection<Transaction>(_transactionService.Transactions().Where(t => t.ApiKeyEntity.Id == entity.Id).ToList());
         }
 
         protected override void OnInitialize() {
         }
 
-        public async Task UpdateAction() {long latest = 0;
-            latest = _transactionService.GetLatestId(ApiKeyEntity);
-            //latest = 3436520013;
-            IEnumerable<Transaction> list = _eveApi.GetNewTransactions(ApiKey, ApiKeyEntity, latest);
-            var transactions = list as IList<Transaction> ?? list.ToList();
-            Transactions.AddRange(transactions);
-            await Task.Run(() => _transactionService.BulkInsert(transactions));
-            //NotifyOfPropertyChange(() => Transactions);
-        }
-
-        public void FullRefresh() {
-            _transactionService.RemoveAll(ApiKeyEntity);
-            IEnumerable<Transaction> list = _eveApi.GetAllTransactions(ApiKey, ApiKeyEntity, _transactionService.Create);
-            _transactionService.BulkInsert(list);
-        }
     }
 }

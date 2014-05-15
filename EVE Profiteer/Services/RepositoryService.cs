@@ -23,7 +23,7 @@ namespace eZet.EveProfiteer.Services {
             return Repository.Create();
         }
 
-        public IQueryable<T> All() {
+        public IQueryable<T> Transactions() {
             return Repository.All();
         }
 

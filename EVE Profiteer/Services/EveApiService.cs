@@ -20,7 +20,7 @@ namespace eZet.EveProfiteer.Services {
         }
 
         public IEnumerable<Transaction> GetNewTransactions(ApiKey key, ApiKeyEntity entity, long latestId) {
-            return getTransactions(key, entity, 1000, latestId);
+            return getTransactions(key, entity, 2000, latestId);
         }
 
         public IEnumerable<Transaction> GetAllTransactions(ApiKey key, ApiKeyEntity entity,
@@ -74,34 +74,10 @@ namespace eZet.EveProfiteer.Services {
                     newTransaction.ApiKeyEntity_Id = apiKeyEntity.Id;
                     transactions.Add(Mapper.Map(transaction, newTransaction));
                 }
-                if (res.Result.Transactions.Count < rowLimit)
-                    break;
+
                 res = entity.GetWalletTransactions(rowLimit, sortedList.Last().TransactionId);
             }
             return transactions;
         }
-
-        //private static IEnumerable<Transaction> getTransactions(ApiKey key, ApiKeyEntity ApiKeyEntity, int rowLimit,
-        //    long limitId = 0) {
-        //    var list = new List<Transaction>();
-        //    var ckey = new CharacterKey(key.ApiKeyId, key.VCode);
-        //    EveApiResponse<WalletTransactions> res =
-        //        ckey.Characters.Single(c => c.CharacterId == ApiKeyEntity.EntityId).GetWalletTransactions(rowLimit);
-        //    IEnumerable<WalletTransactions.Transaction> transactions =
-        //        res.Result.Transactions.Where(f => f.TransactionId > limitId);
-        //    IList<WalletTransactions.Transaction> enumerable = transactions as IList<WalletTransactions.Transaction> ??
-        //                                                       transactions.ToList();
-        //    int count;
-        //    do {
-        //        count = res.Result.Transactions.Count();
-        //        foreach (WalletTransactions.Transaction t in enumerable) {
-        //            var transaction = new Transaction();
-        //            transaction.ApiKeyEntity_Id = ApiKeyEntity.Id;
-        //            list.Add(Mapper.Map(t, transaction));
-        //        }
-        //        res = res.Result.GetOlder(rowLimit);
-        //    } while (res.Result.Transactions.Count() != 0 && enumerable.Count() == count);
-        //    return list;
-        //}
     }
 }
