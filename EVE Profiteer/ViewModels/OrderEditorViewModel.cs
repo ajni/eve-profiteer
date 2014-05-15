@@ -70,12 +70,16 @@ namespace eZet.EveProfiteer.ViewModels {
                 _orderEditorService.AddOrders(e.NewItems.OfType<Order>());
             if (e.OldItems != null)
                 _orderEditorService.DeleteOrders(e.OldItems.OfType<Order>());
-            _orderEditorService.SaveChanges();
         }
+
 
         protected override void OnInitialize() {
             Orders.AddRange(_orderEditorService.GetOrders().ToList());
             Orders.CollectionChanged += OrdersOnCollectionChanged;
+        }
+
+        public void SaveChanges() {
+            _orderEditorService.SaveChanges();
         }
 
         public void UpdateMarketData() {

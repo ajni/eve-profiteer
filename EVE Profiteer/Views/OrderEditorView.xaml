@@ -11,6 +11,7 @@
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Left">
             <Button Margin="5" Name="Import">Import</Button>
             <Button Margin="5" Name="Export">Export</Button>
+            <Button Margin="5" Name="SaveChanges">Save</Button>
             <Button Margin="5" Name="EditOrdersDialog">Edit</Button>
             <Button Margin="5" Name="SetPriceLimits">Set price limits</Button>
             <Button Margin="5" Name="UpdateMarketData">Update Market Data</Button>

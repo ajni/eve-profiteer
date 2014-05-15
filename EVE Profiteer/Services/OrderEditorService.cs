@@ -115,7 +115,7 @@ namespace eZet.EveProfiteer.Services {
 
         private static BuyOrderCollection ToBuyOrderCollection(IEnumerable<Order> orders) {
             var buyOrders = new BuyOrderCollection();
-            foreach (Order order in orders.Where(order => order.IsBuyOrder)) {
+            foreach (Order order in orders.Where(order => order.BuyQuantity > 0)) {
                 buyOrders.Add(ToBuyOrder(order));
             }
             return buyOrders;
@@ -123,7 +123,7 @@ namespace eZet.EveProfiteer.Services {
 
         private static SellOrderCollection ToSellOrderCollection(IEnumerable<Order> orders) {
             var sellOrders = new SellOrderCollection();
-            foreach (Order order in orders.Where(order => order.IsSellOrder)) {
+            foreach (Order order in orders.Where(order => order.MinSellQuantity > 0)) {
                 sellOrders.Add(ToSellOrder(order));
             }
             return sellOrders;

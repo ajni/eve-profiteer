@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Caliburn.Micro;
 using DevExpress.Xpf.Mvvm;
-using eZet.Eve.EveProfiteer.Entities;
 using eZet.Eve.EveProfiteer.ViewModels;
 using eZet.EveOnlineDbModels;
 using eZet.EveProfiteer.Events;
