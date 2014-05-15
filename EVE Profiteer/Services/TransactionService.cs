@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Data.Entity;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Linq;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Repository;
@@ -16,24 +16,34 @@ namespace eZet.EveProfiteer.Services {
 
         public long GetLatestId(ApiKeyEntity entity) {
             return (from t in Repository.All()
-                where t.ApiKeyEntity.Id == entity.Id
-                orderby t.TransactionId descending
-                select t.TransactionId).FirstOrDefault();
+                    where t.ApiKeyEntity.Id == entity.Id
+                    orderby t.TransactionId descending
+                    select t.TransactionId).FirstOrDefault();
         }
 
         public IEnumerable<Transaction> RemoveAll(ApiKeyEntity entity) {
             return Repository.RemoveRange(Repository.All().Where(i => i.ApiKeyEntity.Id == entity.Id));
         }
 
-        public IEnumerable<Transaction> AddNew(IEnumerable<Transaction> list) {
-            var db = (DbContext) Repository;
-            IList<Transaction> addNew = list as IList<Transaction> ?? list.ToList();
-            db.Configuration.ValidateOnSaveEnabled = false;
-            db.Configuration.AutoDetectChangesEnabled = false;
-            Repository.AddRange(addNew);
-            db.SaveChanges();
+        public void BulkInsert(IEnumerable<Transaction> transactions) {
+            var db =
+                (Repository as DbContextRepository<Transaction, EveProfiteerDbEntities>);
+            db.DbContext.Configuration.AutoDetectChangesEnabled = false;
+            db.DbContext.Configuration.ValidateOnSaveEnabled = false;
+            IList<Transaction> list = transactions as IList<Transaction> ?? transactions.ToList();
+            int count = 0;
+            foreach (var transaction in list) {
+                ++count;if (count % 2000 == 0) {
+                    Repository.SaveChanges();
+                    //db.CreateNewContext();
+                }
+                Repository.Add(transaction);
+            }
+            Repository.SaveChanges();
+            db.DbContext.Configuration.AutoDetectChangesEnabled = true;
+            db.DbContext.Configuration.ValidateOnSaveEnabled = true;
+            Debug.WriteLine("Finished inserting transactions: " + list.Count());
             //BulkInsert((db.DbContext.Database.Connection.ConnectionString, "dbo.Transactions", addNew);
-            return addNew;
         }
 
         public static void BulkInsert<T>(string connection, string tableName, IList<T> list) {
@@ -42,7 +52,7 @@ namespace eZet.EveProfiteer.Services {
                 bulkCopy.DestinationTableName = tableName;
 
                 var table = new DataTable();
-                PropertyDescriptor[] props = TypeDescriptor.GetProperties(typeof (T))
+                PropertyDescriptor[] props = TypeDescriptor.GetProperties(typeof(T))
                     //Dirty hack to make sure we only have system data types 
                     //i.e. filter out the relationships/collections
                     .Cast<PropertyDescriptor>()

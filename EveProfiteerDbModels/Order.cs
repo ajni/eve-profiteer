@@ -29,6 +29,7 @@ namespace eZet.EveProfiteer.Models
         public Nullable<int> ApiKeyEntity_Id { get; set; }
         public bool IsSellOrder { get; set; }
         public bool IsBuyOrder { get; set; }
+        public string Notes { get; set; }
     
         public virtual ApiKeyEntity ApiKeyEntity { get; set; }
     }

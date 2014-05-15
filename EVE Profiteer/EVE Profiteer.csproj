@@ -118,11 +118,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Bootstrapper.cs" />
-    <Compile Include="ColorValueConverter.cs" />
+    <Compile Include="Models\TradeAnalyzerItem.cs" />
+    <Compile Include="Ui\ColorValueConverter.cs" />
     <Compile Include="Events\AddToOrdersEvent.cs" />
     <Compile Include="Framework\IShell.cs" />
-    <Compile Include="Models\ItemDetail.cs" />
-    <Compile Include="Models\ItemProfit.cs" />
     <Compile Include="Models\MarketAnalyzer.cs" />
     <Compile Include="Models\Station.cs" />
     <Compile Include="Models\MarketAnalyzerEntry.cs" />
@@ -141,11 +140,11 @@
     <Compile Include="ViewModels\EditKeyViewModel.cs" />
     <Compile Include="ViewModels\AddKeyViewModel.cs" />
     <Compile Include="ViewModels\EditOrderDialogViewModel.cs" />
-    <Compile Include="ViewModels\ItemDetailsViewModel.cs" />
     <Compile Include="ViewModels\JournalViewModel.cs" />
     <Compile Include="ViewModels\ManageKeysViewModel.cs" />
     <Compile Include="ViewModels\OrderEditorViewModel.cs" />
     <Compile Include="Events\OrdersAddedEvent.cs" />
+    <Compile Include="ViewModels\TradeAnalyzerViewModel.cs" />
     <Compile Include="Views\EditOrderDialogView.xaml.cs">
       <DependentUpon>EditOrderDialogView.xaml</DependentUpon>
     </Compile>
@@ -167,17 +166,11 @@
     <Compile Include="Views\AddKeyView.xaml.cs">
       <DependentUpon>AddKeyView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ItemDetailsView.xaml.cs">
-      <DependentUpon>ItemDetailsView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\JournalView.xaml.cs">
       <DependentUpon>JournalView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\OrderEditorView.xaml.cs">
       <DependentUpon>OrderEditorView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ProfitView.xaml.cs">
-      <DependentUpon>ProfitView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MarketAnalyzerView.xaml.cs">
       <DependentUpon>MarketAnalyzerView.xaml</DependentUpon>
@@ -190,6 +183,9 @@
     </Compile>
     <Compile Include="Views\ShellView.xaml.cs">
       <DependentUpon>ShellView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TradeAnalyzerView.xaml.cs">
+      <DependentUpon>TradeAnalyzerView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\TransactionsView.xaml.cs">
       <DependentUpon>TransactionsView.xaml</DependentUpon>
@@ -210,19 +206,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\ItemDetailsView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\JournalView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\OrderEditorView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\ProfitView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -239,6 +227,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\ShellView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\TradeAnalyzerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

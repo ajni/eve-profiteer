@@ -7,24 +7,35 @@
     xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
     mc:Ignorable="d"
     d:DesignHeight="300" d:DesignWidth="900">
+
     <DockPanel>
-        <StackPanel Orientation="Horizontal">
-            <Button Name="UpdateAction" />
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+            <Button Name="UpdateAction">Update</Button>
         </StackPanel>
 
-        <dxg:GridControl AutoGenerateColumns="None" ItemsSource="{Binding Transactions}">
+        <dxg:GridControl AutoGenerateColumns="None" ItemsSource="{Binding Transactions}" GroupSummaryGeneratorTemplate="{DynamicResource DataTemplate1}">
             <dxg:GridControl.View>
                 <dxg:TableView AllowEditing="False" NavigationStyle="Row" ShowAutoFilterRow="True"
-                               PrintTotalSummary="True" IsTotalSummaryMenuEnabled="True" ShowSearchPanelMode="Default"
+                               PrintTotalSummary="True" IsTotalSummaryMenuEnabled="True"
+                               ShowTotalSummary="False" ShowFixedTotalSummary="True" ShowSearchPanelMode="Default"
                                ShowGroupPanel="False" />
             </dxg:GridControl.View>
+            <dxg:GridControl.TotalSummary>
+                <dxg:GridSummaryItem SummaryType="Count" Alignment="Right" />
+                <dxg:GridSummaryItem FieldName="Profit" SummaryType="Sum"
+                                     DisplayFormat="Profit: {0:N0} isk" Alignment="Left" />
+            </dxg:GridControl.TotalSummary>
+            <dxg:GridControl.GroupSummary>
+                <dxg:GridSummaryItem DisplayFormat="Max: {0:c2}" FieldName="Profit:" 
+        ShowInColumn="" SummaryType="Custom" />
+            </dxg:GridControl.GroupSummary>
             <dxg:GridControl.Columns>
                 <dxg:GridColumn FieldName="TransactionDate" Header="Date" />
                 <dxg:GridColumn FieldName="TransactionType" Header="Transaction Type" />
                 <dxg:GridColumn FieldName="TypeName" Header="Item" />
                 <dxg:GridColumn FieldName="Quantity" />
                 <dxg:GridColumn FieldName="Price" />
-                <dxg:GridColumn FieldName="Total" />
+                <dxg:GridColumn FieldName="Total" UnboundType="Decimal" UnboundExpression="[Quantity] * [Price]"/>
                 <dxg:GridColumn FieldName="ClientName" Header="Client" />
                 <dxg:GridColumn FieldName="StationName" Header="Station" />
             </dxg:GridControl.Columns>

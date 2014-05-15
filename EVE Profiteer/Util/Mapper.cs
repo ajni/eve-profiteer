@@ -8,15 +8,15 @@ namespace eZet.EveProfiteer.Util {
             target.TransactionDate = source.TransactionDate;
             target.Quantity = source.Quantity;
             target.TypeName = source.TypeName;
-            target.TypeId = source.TypeId;
-            target.Price = source.Price;
+            target.TypeId = source.TypeId;target.Price = source.Price;
             target.ClientId = source.ClientId;
             target.ClientName = source.ClientName;
             target.StationId = source.StationId;
             target.StationName = source.StationName;
-            // TODO add conversion
-            //target.TransactionType = source.TransactionType;
+            target.TransactionType = source.TransactionType.ToString();
             target.TransactionFor = source.TransactionFor;
+            target.JournalTransactionId = source.JournalTransactionId;
+            target.ClientTypeId = source.ClientTypeId;
             return target;
         }
 

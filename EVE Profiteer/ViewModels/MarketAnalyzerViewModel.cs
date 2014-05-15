@@ -154,11 +154,9 @@ namespace eZet.EveProfiteer.ViewModels {
             LoadOrderData(res.Result);
             MarketAnalyzerResults = res.Result;
         }
-
         private async Task<MarketAnalyzer> GetMarketAnalyzer(ICollection<InvType> items) {
             return await
-                Task.Run(
-                    () => _eveMarketService.GetMarketAnalyzer(SelectedStation, items, DayLimit));
+                Task.Run(() => _eveMarketService.GetMarketAnalyzer(SelectedStation, items, DayLimit));
         }
 
         private ICollection<InvMarketGroup> buildTree() {

@@ -28,7 +28,7 @@ namespace eZet.EveProfiteer.Models
         public virtual DbSet<ApiKeyEntity> ApiKeyEntities { get; set; }
         public virtual DbSet<ApiKey> ApiKeys { get; set; }
         public virtual DbSet<JournalEntry> JournalEntries { get; set; }
-        public virtual DbSet<Transaction> Transactions { get; set; }
         public virtual DbSet<Order> Orders { get; set; }
+        public virtual DbSet<Transaction> Transactions { get; set; }
     }
 }

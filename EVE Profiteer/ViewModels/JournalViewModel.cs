@@ -42,7 +42,7 @@ namespace eZet.EveProfiteer.ViewModels {
         public void Update() {
             long latest = 0;
             latest = (from t in _dbEntities.JournalEntries
-                //where t.Entity.Id == Entity.Id
+                //where t.ApiKeyEntity.Id == ApiKeyEntity.Id
                 orderby t.RefId descending
                 select t.RefId).FirstOrDefault();
             IList<JournalEntry> list = eveApi.GetNewJournalEntries(ApiKey, Entity, latest);

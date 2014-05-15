@@ -36,7 +36,7 @@ namespace eZet.EveProfiteer {
 
 
             // Services
-            _container.Singleton<EveApiService>();
+            _container.PerRequest<EveApiService>();
             _container.PerRequest<TransactionService>();
             _container.PerRequest<EveMarketService>();
             _container.PerRequest<EveOnlineStaticDataService>();
@@ -56,8 +56,8 @@ namespace eZet.EveProfiteer {
             _container.PerRequest<TransactionsViewModel>();
             _container.PerRequest<MarketAnalyzerViewModel>();
             _container.PerRequest<JournalViewModel>();
-            _container.PerRequest<ItemDetailsViewModel>();
             _container.PerRequest<OrderEditorViewModel>();
+            _container.PerRequest<TradeAnalyzerViewModel>();
         }
 
         protected override object GetInstance(Type service, string key) {

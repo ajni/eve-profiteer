@@ -3,7 +3,7 @@ using System.Data.Entity;
 using System.Linq;
 
 namespace eZet.EveProfiteer.Repository {
-    public class DbContextRepository<T, TContext> : IRepository<T> where T : class where TContext : DbContext {
+    public class DbContextRepository<T, TContext> : IRepository<T> where T : class where TContext : DbContext, new() {
         public DbContextRepository(TContext dbContext) {
             DbContext = dbContext;
         }
@@ -50,6 +50,10 @@ namespace eZet.EveProfiteer.Repository {
 
         public void Dispose() {
             DbContext.Dispose();
+        }
+
+        public void CreateNewContext() {
+            DbContext = new TContext();
         }
     }
 }

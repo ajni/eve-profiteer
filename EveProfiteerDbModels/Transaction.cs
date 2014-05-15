@@ -21,14 +21,15 @@ namespace eZet.EveProfiteer.Models
         public string TypeName { get; set; }
         public long TypeId { get; set; }
         public decimal Price { get; set; }
-        public decimal Total { get; set; }
         public long ClientId { get; set; }
         public string ClientName { get; set; }
         public long StationId { get; set; }
         public string StationName { get; set; }
-        public int TransactionType { get; set; }
+        public string TransactionType { get; set; }
         public string TransactionFor { get; set; }
         public Nullable<int> ApiKeyEntity_Id { get; set; }
+        public long JournalTransactionId { get; set; }
+        public int ClientTypeId { get; set; }
     
         public virtual ApiKeyEntity ApiKeyEntity { get; set; }
     }
