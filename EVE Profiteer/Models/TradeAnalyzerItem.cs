@@ -35,7 +35,6 @@ namespace eZet.EveProfiteer.Models {
                 AvgBuyPrice = Out / QuantityBought;
             if (QuantitySold > 0)
                 AvgSellPrice = In / QuantitySold;
-            //int units = QuantitySold < QuantityBought ? QuantitySold : QuantityBought;
             Profit = QuantitySold * AvgSellPrice - QuantitySold * AvgBuyPrice;
         }
 

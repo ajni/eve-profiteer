@@ -47,7 +47,7 @@ namespace eZet.EveProfiteer {
             _container.PerRequest<RepositoryService<ApiKeyEntity>>();
 
 
-            // Models
+            // View Models
             _container.PerRequest<IShell, ShellViewModel>();
             _container.PerRequest<ManageKeysViewModel>();
             _container.PerRequest<AddKeyViewModel>();
@@ -58,6 +58,7 @@ namespace eZet.EveProfiteer {
             _container.PerRequest<JournalViewModel>();
             _container.PerRequest<OrderEditorViewModel>();
             _container.PerRequest<TradeAnalyzerViewModel>();
+            _container.PerRequest<ItemDetailsViewModel>();
         }
 
         protected override object GetInstance(Type service, string key) {

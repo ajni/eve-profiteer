@@ -44,6 +44,7 @@ namespace eZet.EveProfiteer.ViewModels {
 
             Items.Add(IoC.Get<OrderEditorViewModel>());
             Items.Add(IoC.Get<TradeAnalyzerViewModel>());
+            Items.Add(IoC.Get<ItemDetailsViewModel>());
 
             //Items.Add(IoC.Get<ItemDetailsViewModel>());
             //Items.Add(IoC.Get<ProfitViewModel>());

@@ -1,0 +1,35 @@
+﻿<UserControl x:Class="eZet.EveProfiteer.Views.ItemDetailsView" 
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
+             xmlns:Models="clr-namespace:eZet.EveProfiteer.Models;assembly=EveProfiteerDbModels"
+             xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
+             xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/charts" 
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <DockPanel>
+        <dxc:ChartControl Name="ItemChart" DataSource="{Binding ItemData.ChartEntries}">
+            <dxc:ChartControl.Legend>
+                <dxc:Legend BorderThickness="0" HorizontalPosition="Center" VerticalPosition="BottomOutside"/>
+            </dxc:ChartControl.Legend>
+            <dxc:ChartControl.Titles>
+                <dxc:Title Content="Financial Chart" HorizontalAlignment="Center"/>
+            </dxc:ChartControl.Titles>
+            <dxc:XYDiagram2D>
+                <dxc:XYDiagram2D.AxisY>
+                    <dxc:AxisY2D>
+                        <dxc:AxisY2D.Range>
+                            <dxc:AxisRange dxc:AxisY.AlwaysShowZeroLevel="False"/>
+                        </dxc:AxisY2D.Range>
+                    </dxc:AxisY2D>
+                </dxc:XYDiagram2D.AxisY>
+                <dxc:LineSeries2D DisplayName="Buy Total" ArgumentDataMember="Date" ValueDataMember="BuyTotal"/>
+                <dxc:LineSeries2D DisplayName="Sell Total" ArgumentDataMember="Date" ValueDataMember="SellTotal"/>
+                <dxc:LineSeries2D DisplayName="Balance" ArgumentDataMember="Date" ValueDataMember="Balance"/>
+            </dxc:XYDiagram2D>
+        </dxc:ChartControl>
+    </DockPanel>
+
+</UserControl>

@@ -12,9 +12,11 @@ namespace eZet.EveProfiteer.ViewModels {
         public enum ViewPeriodEnum {
             LastDay,
             LastWeek,
+            LastTwoWeeks,
             LastMonth,
             All,
-            Custom
+            CustomDaySpan,
+            CustomPeriod
         }
 
         private readonly IWindowManager _windowMananger;
@@ -35,7 +37,6 @@ namespace eZet.EveProfiteer.ViewModels {
             set { _selectedViewPeriod = value; NotifyOfPropertyChange(() => SelectedViewPeriod); }
         }
 
-
         public BindableCollection<TradeAnalyzerItem> Items { get; private set; }
 
         public TradeAnalyzerViewModel(IWindowManager windowMananger, IEventAggregator eventAggregator, TradeAnalyzerService tradeAnalyzerService) {
@@ -46,8 +47,9 @@ namespace eZet.EveProfiteer.ViewModels {
             Items = new BindableCollection<TradeAnalyzerItem>();
         }
 
+        public int CustomDaySpan { get; set; }
+
         public async Task ViewPeriod() {
-            Items.Clear();
             ViewEnd = DateTime.UtcNow;
             switch (SelectedViewPeriod) {
                 case ViewPeriodEnum.All:
@@ -59,8 +61,14 @@ namespace eZet.EveProfiteer.ViewModels {
                 case ViewPeriodEnum.LastWeek:
                     ViewStart = DateTime.UtcNow.AddDays(-7);
                     break;
+                case ViewPeriodEnum.LastTwoWeeks:
+                    ViewStart = DateTime.UtcNow.AddDays(-14);
+                    break;
                 case ViewPeriodEnum.LastMonth:
                     ViewStart = DateTime.UtcNow.AddMonths(-7);
+                    break;
+                case ViewPeriodEnum.CustomDaySpan:
+                    ViewStart = DateTime.UtcNow.AddDays(-CustomDaySpan);
                     break;
             }
             await Task.Run(() => load());
@@ -75,6 +83,7 @@ namespace eZet.EveProfiteer.ViewModels {
                 var typeId = transactionCollection.First().TypeId;
                 items.Add(new TradeAnalyzerItem(typeId, transactionCollection.First().TypeName, transactionCollection, orderLookup[typeId].SingleOrDefault()));
             }
+            Items.Clear();
             Items.AddRange(items);
         }
     }
