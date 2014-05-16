@@ -20,7 +20,7 @@ namespace eZet.EveProfiteer.Repository {
 
         public bool Validate { get; set; }
 
-        public IQueryable<T> All() {
+        public IQueryable<T> Queryable() {
             return Set;
         }
 

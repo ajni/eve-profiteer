@@ -159,12 +159,12 @@ namespace eZet.EveProfiteer.ViewModels {
                 eventArgs.SetError("Invalid item.");
             }
             else {
-                if (Orders.SingleOrDefault(order => order.InvTypeId == item.TypeId) != null) {
+                if (Orders.SingleOrDefault(order => order.TypeId == item.TypeId) != null) {
                     eventArgs.IsValid = false;
                     eventArgs.SetError("Item has already been added.");
                 }
                 else {
-                    ((Order) eventArgs.Row).InvTypeId = item.TypeId;
+                    ((Order) eventArgs.Row).TypeId = item.TypeId;
                 }
             }
         }

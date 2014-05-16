@@ -15,14 +15,14 @@ namespace eZet.EveProfiteer.Services {
         }
 
         public long GetLatestId(ApiKeyEntity entity) {
-            return (from t in Repository.All()
+            return (from t in Repository.Queryable()
                     where t.ApiKeyEntity.Id == entity.Id
                     orderby t.TransactionId descending
                     select t.TransactionId).FirstOrDefault();
         }
 
         public IEnumerable<Transaction> RemoveAll(ApiKeyEntity entity) {
-            return Repository.RemoveRange(Repository.All().Where(i => i.ApiKeyEntity.Id == entity.Id));
+            return Repository.RemoveRange(Repository.Queryable().Where(i => i.ApiKeyEntity.Id == entity.Id));
         }
 
         public void BulkInsert(IEnumerable<Transaction> transactions) {

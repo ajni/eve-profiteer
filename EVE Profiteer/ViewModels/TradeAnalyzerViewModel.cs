@@ -19,7 +19,7 @@ namespace eZet.EveProfiteer.ViewModels {
 
         private readonly IWindowManager _windowMananger;
         private readonly IEventAggregator _eventAggregator;
-        private readonly TransactionService _transactionService;
+        private readonly TradeAnalyzerService _tradeAnalyzerService;
         private ViewPeriodEnum _selectedViewPeriod;
 
         public DateTime ViewStart { get; set; }
@@ -38,10 +38,10 @@ namespace eZet.EveProfiteer.ViewModels {
 
         public BindableCollection<TradeAnalyzerItem> Items { get; private set; }
 
-        public TradeAnalyzerViewModel(IWindowManager windowMananger, IEventAggregator eventAggregator, TransactionService transactionService) {
+        public TradeAnalyzerViewModel(IWindowManager windowMananger, IEventAggregator eventAggregator, TradeAnalyzerService tradeAnalyzerService) {
             _windowMananger = windowMananger;
             _eventAggregator = eventAggregator;
-            _transactionService = transactionService;
+            _tradeAnalyzerService = tradeAnalyzerService;
             DisplayName = "Trade Analyzer";
             Items = new BindableCollection<TradeAnalyzerItem>();
         }
@@ -60,17 +60,20 @@ namespace eZet.EveProfiteer.ViewModels {
                     ViewStart = DateTime.UtcNow.AddDays(-7);
                     break;
                 case ViewPeriodEnum.LastMonth:
-                    ViewStart = DateTime.UtcNow.AddDays(-7);
+                    ViewStart = DateTime.UtcNow.AddMonths(-7);
                     break;
             }
             await Task.Run(() => load());
         }
 
         private void load() {
-            var transactions = _transactionService.Transactions().Where(t => t.TransactionDate >= ViewStart && t.TransactionDate <= ViewEnd).GroupBy(t => t.TypeId);
+            var orders = _tradeAnalyzerService.Orders().ToList();
+            var orderLookup = orders.ToLookup(order => order.TypeId);
+            var transactions = _tradeAnalyzerService.Transactions().Where(t => t.TransactionDate >= ViewStart && t.TransactionDate <= ViewEnd).GroupBy(t => t.TypeId);
             var items = new List<TradeAnalyzerItem>();
             foreach (var transactionCollection in transactions.Select(x => x.ToList())) {
-                items.Add(new TradeAnalyzerItem(transactionCollection.First().TypeId, transactionCollection.First().TypeName, transactionCollection));
+                var typeId = transactionCollection.First().TypeId;
+                items.Add(new TradeAnalyzerItem(typeId, transactionCollection.First().TypeName, transactionCollection, orderLookup[typeId].SingleOrDefault()));
             }
             Items.AddRange(items);
         }

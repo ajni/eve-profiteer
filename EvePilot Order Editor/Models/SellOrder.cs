@@ -7,10 +7,10 @@ namespace eZet.Eve.OrderIoHelper.Models {
     public class SellOrder {
 
         [DataMember(Name = "itemName", IsRequired = true, Order = 0)]
-        public string ItemName { get; set; }
+        public string TypeName { get; set; }
 
         [DataMember(Name = "itemID", IsRequired = true, Order = 1)]
-        public int ItemId { get; set; }
+        public int TypeId { get; set; }
 
         [DataMember(Name = "minPrice", IsRequired = true, Order = 2)]
         public long MinPrice { get; set; }

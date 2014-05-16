@@ -35,7 +35,7 @@ namespace eZet.EveProfiteer.Services {
                     OrderInstallerIoService.ReadBuyOrders(path + Path.DirectorySeparatorChar + BuyOrdersFileName);
                 SellOrderCollection sellOrders =
                     OrderInstallerIoService.ReadSellOrders(path + Path.DirectorySeparatorChar + SellOrdersFileName);
-                ILookup<int, SellOrder> sellOrderLookup = sellOrders.ToLookup(f => f.ItemId);
+                ILookup<int, SellOrder> sellOrderLookup = sellOrders.ToLookup(f => f.TypeId);
                 foreach (BuyOrder buyOrder in buyOrders) {
                     SellOrder sellOrder = sellOrderLookup[buyOrder.ItemId].SingleOrDefault();
                     sellOrders.Remove(sellOrder);
@@ -52,29 +52,29 @@ namespace eZet.EveProfiteer.Services {
         }
 
         public IQueryable<Order> GetOrders() {
-            IQueryable<Order> orders = _ordersRepository.All();
+            IQueryable<Order> orders = _ordersRepository.Queryable();
             loadType(orders);
             return orders;
         }
 
         private void loadType(IEnumerable<Order> orders) {
-            //order.InvType = _eveDbContext.InvTypes.Find(order.InvTypeId);
+            //order.InvType = _eveDbContext.InvTypes.Find(order.TypeId);
             var enumerable = orders as IList<Order> ?? orders.ToList();
-            var orderIds = enumerable.Select(f => f.InvTypeId);
+            var orderIds = enumerable.Select(f => f.TypeId);
             var types = _eveDbContext.InvTypes.Where(f => orderIds.Contains(f.TypeId));
             var lookup = types.ToLookup(f => f.TypeId);
             foreach (var order in enumerable) {
-                order.InvType = lookup[order.InvTypeId].Single();
+                order.InvType = lookup[order.TypeId].Single();
             }
         }
 
         private void loadType(Order order) {
-            order.InvType = _eveDbContext.InvTypes.Find(order.InvTypeId);
+            order.InvType = _eveDbContext.InvTypes.Find(order.TypeId);
         }
 
         public void AddOrders(IEnumerable<Order> orders) {
             foreach (Order order in orders) {
-                if (!_ordersRepository.All().Any(f => f.InvTypeId == order.InvTypeId))
+                if (!_ordersRepository.Queryable().Any(f => f.TypeId == order.TypeId))
                     _ordersRepository.Add(order);
             }
         }
@@ -91,14 +91,14 @@ namespace eZet.EveProfiteer.Services {
             if (orders.Count == 0) return;
             var historyOptions = new EveMarketDataOptions();
             foreach (Order order in orders) {
-                historyOptions.Items.Add(order.InvTypeId);
+                historyOptions.Items.Add(order.TypeId);
             }
             historyOptions.AgeSpan = TimeSpan.FromDays(dayLimit);
             historyOptions.Regions.Add(region);
             EveMarketDataResponse<ItemHistory> history = EveMarketData.GetItemHistory(historyOptions);
             ILookup<long, ItemHistory.ItemHistoryEntry> historyLookup = history.Result.History.ToLookup(f => f.TypeId);
             foreach (Order order in orders) {
-                List<ItemHistory.ItemHistoryEntry> itemHistory = historyLookup[order.InvTypeId].ToList();
+                List<ItemHistory.ItemHistoryEntry> itemHistory = historyLookup[order.TypeId].ToList();
                 if (!itemHistory.IsEmpty()) {
                     order.AvgPrice = itemHistory.Average(f => f.AvgPrice);
                     order.AvgVolume = itemHistory.Average(f => f.Volume);
@@ -132,8 +132,8 @@ namespace eZet.EveProfiteer.Services {
 
         public static SellOrder ToSellOrder(Order order) {
             var sellOrder = new SellOrder {
-                ItemName = order.InvType.TypeName,
-                ItemId = order.InvTypeId,
+                TypeName = order.InvType.TypeName,
+                TypeId = order.TypeId,
                 MinPrice = (long) order.MinSellPrice,
                 MaxQuantity = order.MaxSellQuantity,
                 Quantity = order.MinSellQuantity,
@@ -145,7 +145,7 @@ namespace eZet.EveProfiteer.Services {
         public static BuyOrder ToBuyOrder(Order order) {
             var buyOrder = new BuyOrder {
                 ItemName = order.InvType.TypeName,
-                ItemId = order.InvTypeId,
+                ItemId = order.TypeId,
                 MaxPrice = (long) order.MaxBuyPrice,
                 Quantity = order.BuyQuantity,
                 //UpdateTime = DateTime.UtcNow,
@@ -155,7 +155,7 @@ namespace eZet.EveProfiteer.Services {
 
         public Order CreateOrder(BuyOrder buyOrder, SellOrder sellOrder) {
             var order = new Order();
-            order.InvTypeId = sellOrder != null ? sellOrder.ItemId : buyOrder.ItemId;
+            order.TypeId = sellOrder != null ? sellOrder.TypeId : buyOrder.ItemId;
             if (sellOrder != null) {
                 order.IsSellOrder = true;
                 order.MinSellPrice = sellOrder.MinPrice;
@@ -173,7 +173,7 @@ namespace eZet.EveProfiteer.Services {
 
         public Order CreateOrder(int invTypeId) {
             var order = new Order();
-            order.InvTypeId = invTypeId;
+            order.TypeId = invTypeId;
             loadType(order);
             return order;
         }

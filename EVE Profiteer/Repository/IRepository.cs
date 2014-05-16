@@ -7,7 +7,7 @@ namespace eZet.EveProfiteer.Repository {
         bool Validate { get; set; }
         T Create();
 
-        IQueryable<T> All();
+        IQueryable<T> Queryable();
 
         T Add(T entity);
 

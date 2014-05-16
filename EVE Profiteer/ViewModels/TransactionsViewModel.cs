@@ -1,23 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
+﻿using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading.Tasks;
 using Caliburn.Micro;
-using DevExpress.Xpf.Ribbon.Customization;
 using eZet.EveProfiteer.Models;
-using eZet.EveProfiteer.Services;
 
 namespace eZet.EveProfiteer.ViewModels {
     public class TransactionsViewModel : Screen {
-        private readonly EveApiService _eveApi;
-        private readonly TransactionService _transactionService;
+        private readonly Services.TransactionService _transactionService;
         private ObservableCollection<Transaction> _transactions;
 
-        public TransactionsViewModel(TransactionService transactionService, EveApiService eveApi) {
+        public TransactionsViewModel(Services.TransactionService transactionService) {
             _transactionService = transactionService;
-            _eveApi = eveApi;
             DisplayName = "Transactions";
         }
 

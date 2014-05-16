@@ -42,7 +42,7 @@ namespace eZet.EveProfiteer {
             _container.PerRequest<EveOnlineStaticDataService>();
             _container.PerRequest<OrderEditorService>();
             _container.Singleton<KeyManagementService>();
-
+            _container.Singleton<TradeAnalyzerService>();
             _container.PerRequest<RepositoryService<ApiKey>>();
             _container.PerRequest<RepositoryService<ApiKeyEntity>>();
 

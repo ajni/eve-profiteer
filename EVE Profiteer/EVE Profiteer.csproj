@@ -134,7 +134,7 @@
     <Compile Include="Services\OrderEditorService.cs" />
     <Compile Include="Services\RepositoryService.cs" />
     <Compile Include="Services\TransactionService.cs" />
-    <Compile Include="Util\Mapper.cs" />
+    <Compile Include="Util\ApiEntityMapper.cs" />
     <Compile Include="Util\ProgressType.cs" />
     <Compile Include="ViewModels\AnalyzerProgressViewModel.cs" />
     <Compile Include="ViewModels\EditKeyViewModel.cs" />
@@ -144,6 +144,7 @@
     <Compile Include="ViewModels\ManageKeysViewModel.cs" />
     <Compile Include="ViewModels\OrderEditorViewModel.cs" />
     <Compile Include="Events\OrdersAddedEvent.cs" />
+    <Compile Include="Services\TradeAnalyzerService.cs" />
     <Compile Include="ViewModels\TradeAnalyzerViewModel.cs" />
     <Compile Include="Views\EditOrderDialogView.xaml.cs">
       <DependentUpon>EditOrderDialogView.xaml</DependentUpon>

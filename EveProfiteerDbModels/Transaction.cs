@@ -19,7 +19,7 @@ namespace eZet.EveProfiteer.Models
         public long TransactionId { get; set; }
         public int Quantity { get; set; }
         public string TypeName { get; set; }
-        public long TypeId { get; set; }
+        public int TypeId { get; set; }
         public decimal Price { get; set; }
         public long ClientId { get; set; }
         public string ClientName { get; set; }

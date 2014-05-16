@@ -14,16 +14,17 @@
                     <ComboBox Margin ="5" Width="100" HorizontalAlignment="Left" ItemsSource="{Binding ViewPeriodValues}" SelectedItem="{Binding SelectedViewPeriod}">
                     </ComboBox>
                     <Button Margin="5" Name="ViewPeriod">View</Button>
+                    <CheckBox Name="FilterOrders" Content="Only orders" Checked="FilterOrders_OnChecked" Unchecked="FilterOrders_OnChecked"></CheckBox>
                 </ToolBar>
 
             </ToolBarTray>
 
             <dxg:GridControl Name="TradeAnalyzerGrid" AutoGenerateColumns="None" ItemsSource="{Binding Items}"
-                                SelectionMode="None">
+                                SelectionMode="None" CustomRowFilter="TradeAnalyzerGrid_OnCustomRowFilter">
                 <dxg:GridControl.View>
                     <dxg:SelectionView ShowAutoFilterRow="True" ShowTotalSummary="True" ShowFixedTotalSummary="True"
                                    ShowGroupPanel="False"
-                                   NavigationStyle="Row" ShowSearchPanelMode="Default"/>
+                                   NavigationStyle="Row" ShowSearchPanelMode="Default" SearchColumns="TypeName" SearchPanelCriteriaOperatorType="And"/>
                 </dxg:GridControl.View>
                 <dxg:GridControl.TotalSummary>
                     <dxg:GridSummaryItem FieldName="Profit" SummaryType="Sum" DisplayFormat="N2"/>
@@ -84,6 +85,8 @@
                             <dxe:TextEditSettings DisplayFormat="N2" />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
+                    <dxg:GridColumn FieldName="FirstTransactionDate"/>
+                    <dxg:GridColumn FieldName="LastTransactionDate"/>
                 </dxg:GridControl.Columns>
             </dxg:GridControl>
 

@@ -10,12 +10,12 @@ using eZet.EveProfiteer.Services;
 namespace eZet.EveProfiteer.ViewModels {
     public class ShellViewModel : Conductor<IScreen>.Collection.OneActive, IShell {
         private readonly KeyManagementService _keyManagementService;
-        private readonly TransactionService _transactionService;
+        private readonly Services.TransactionService _transactionService;
         private readonly EveApiService _eveApiService;
         private readonly IWindowManager _windowManager;
         private readonly IEventAggregator _eventAggregator;
 
-        public ShellViewModel(IWindowManager windowManager, IEventAggregator eventAggregator, KeyManagementService keyManagementService, TransactionService transactionService, EveApiService eveApiService) {
+        public ShellViewModel(IWindowManager windowManager, IEventAggregator eventAggregator, KeyManagementService keyManagementService, Services.TransactionService transactionService, EveApiService eveApiService) {
             _windowManager = windowManager;
             _eventAggregator = eventAggregator;
             _keyManagementService = keyManagementService;

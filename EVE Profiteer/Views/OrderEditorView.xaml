@@ -25,7 +25,7 @@
                                    NavigationStyle="Cell" NewItemRowPosition="Top"
                                    ShowingEditor="GridViewBase_OnShowingEditor" InitNewRow="TableView_OnInitNewRow"
                                    ValidateRow="GridViewBase_OnValidateRow"
-                                   InvalidRowException="GridViewBase_OnInvalidRowException" ShowSearchPanelMode="Default"/>
+                                   InvalidRowException="GridViewBase_OnInvalidRowException"  ShowSearchPanelMode="Default" SearchColumns="TypeName" SearchPanelCriteriaOperatorType="And"/>
             </dxg:GridControl.View>
             <dxg:GridControl.TotalSummary>
                 <dxg:GridSummaryItem SummaryType="Count" Alignment="Right" />

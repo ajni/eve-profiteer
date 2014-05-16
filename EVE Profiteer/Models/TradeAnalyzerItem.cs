@@ -5,15 +5,22 @@ namespace eZet.EveProfiteer.Models {
     public class TradeAnalyzerItem {
         public IEnumerable<Transaction> Transactions { get; set; }
 
-        public TradeAnalyzerItem(long typeId, string typeName, IEnumerable<Transaction> transactions) {
+        public TradeAnalyzerItem(long typeId, string typeName, IEnumerable<Transaction> transactions, Order order) {
             Transactions = transactions;
             TypeName = typeName;
             TypeId = typeId;
+            Order = order;
             analyze();
         }
 
         private void analyze() {
-            foreach (var transaction in Transactions) {
+            FirstTransactionDate = DateTime.MaxValue;
+            LastTransactionDate = DateTime.MinValue;foreach (var transaction in Transactions) {
+                if (transaction.TransactionDate < FirstTransactionDate)
+                    FirstTransactionDate = transaction.TransactionDate;
+                if (transaction.TransactionDate  > LastTransactionDate)
+                    LastTransactionDate = transaction.TransactionDate;
+
                 if (transaction.TransactionType == "Sell") {
                     QuantitySold += transaction.Quantity;
                     In += transaction.Price * transaction.Quantity;
@@ -28,8 +35,8 @@ namespace eZet.EveProfiteer.Models {
                 AvgBuyPrice = Out / QuantityBought;
             if (QuantitySold > 0)
                 AvgSellPrice = In / QuantitySold;
-            int units = QuantitySold < QuantityBought ? QuantitySold : QuantityBought;
-            Profit = units * AvgSellPrice - units * AvgBuyPrice;
+            //int units = QuantitySold < QuantityBought ? QuantitySold : QuantityBought;
+            Profit = QuantitySold * AvgSellPrice - QuantitySold * AvgBuyPrice;
         }
 
         public long TypeId { get; private set; }
@@ -50,12 +57,15 @@ namespace eZet.EveProfiteer.Models {
 
         public int QuantityBought { get; private set; }
 
-
         public decimal AvgBuyPrice { get; private set; }
 
         public decimal AvgSellPrice { get; private set; }
 
+        public Order Order { get; private set; }
 
+        public DateTime FirstTransactionDate { get; private set; }
+
+        public DateTime LastTransactionDate { get; private set; }
 
     }
 }

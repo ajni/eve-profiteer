@@ -15,6 +15,7 @@ namespace eZet.EveProfiteer.Models
     public partial class Order
     {
         public int Id { get; set; }
+        public int TypeId { get; set; }
         public int BuyQuantity { get; set; }
         public decimal MaxBuyPrice { get; set; }
         public int MinSellQuantity { get; set; }
@@ -25,7 +26,6 @@ namespace eZet.EveProfiteer.Models
         public decimal CurrentBuyPrice { get; set; }
         public decimal CurrentSellPrice { get; set; }
         public decimal AvgPrice { get; set; }
-        public int InvTypeId { get; set; }
         public Nullable<int> ApiKeyEntity_Id { get; set; }
         public bool IsSellOrder { get; set; }
         public bool IsBuyOrder { get; set; }

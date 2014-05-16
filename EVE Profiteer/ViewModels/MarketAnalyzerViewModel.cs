@@ -113,8 +113,8 @@ namespace eZet.EveProfiteer.ViewModels {
             IQueryable<Order> orders = _orderEditorService.GetOrders();
             ILookup<int, MarketAnalyzerEntry> lookup = items.ToLookup(f => f.InvTypeData.TypeId);
             foreach (Order order in orders) {
-                if (lookup.Contains(order.InvTypeId)) {
-                    lookup[order.InvTypeId].Single().Order = order;
+                if (lookup.Contains(order.TypeId)) {
+                    lookup[order.TypeId].Single().Order = order;
                 }
             }
         }
@@ -147,7 +147,7 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         public async Task LoadOrders() {
-            var orders = _orderEditorService.GetOrders().Select(item => item.InvTypeId).ToList();
+            var orders = _orderEditorService.GetOrders().Select(item => item.TypeId).ToList();
             List<InvType> items =
                 _eveOnlineStaticDataService.GetTypes().Where(item => orders.Contains(item.TypeId)).ToList();
             MarketAnalyzer res = await GetMarketAnalyzer(items);
@@ -216,8 +216,8 @@ namespace eZet.EveProfiteer.ViewModels {
         private void ordersAddedHandler(OrdersAddedEvent ordersAddedEvent) {
             ILookup<int, MarketAnalyzerEntry> lookup = MarketAnalyzerResults.ToLookup(f => f.InvTypeData.TypeId);
             foreach (Order order in ordersAddedEvent.Orders) {
-                if (lookup.Contains(order.InvTypeId))
-                    lookup[order.InvTypeId].Single().Order = order;
+                if (lookup.Contains(order.TypeId))
+                    lookup[order.TypeId].Single().Order = order;
             }
         }
     }

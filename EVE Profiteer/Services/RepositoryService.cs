@@ -24,7 +24,7 @@ namespace eZet.EveProfiteer.Services {
         }
 
         public IQueryable<T> Transactions() {
-            return Repository.All();
+            return Repository.Queryable();
         }
 
         public T Add(T entity) {

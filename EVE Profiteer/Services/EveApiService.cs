@@ -52,7 +52,7 @@ namespace eZet.EveProfiteer.Services {
                 foreach (WalletJournal.JournalEntry t in enumerable) {
                     var transaction = new JournalEntry();
                     transaction.ApiKeyEntity = entity;
-                    list.Add(Mapper.Map(t, transaction));
+                    list.Add(ApiEntityMapper.Map(t, transaction));
                 }
                 res = res.Result.GetOlder(rowLimit);
             } while (res.Result.Journal.Count() != 0 && enumerable.Count() == count);
@@ -72,7 +72,7 @@ namespace eZet.EveProfiteer.Services {
                         return transactions;
                     var newTransaction = new Transaction();
                     newTransaction.ApiKeyEntity_Id = apiKeyEntity.Id;
-                    transactions.Add(Mapper.Map(transaction, newTransaction));
+                    transactions.Add(ApiEntityMapper.Map(transaction, newTransaction));
                 }
 
                 res = entity.GetWalletTransactions(rowLimit, sortedList.Last().TransactionId);

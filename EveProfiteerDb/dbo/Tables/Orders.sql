@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[Orders] (
     [Id]                INT             IDENTITY (1, 1) NOT NULL,
-    [InvTypeId]            BIGINT          NOT NULL,
+    [TypeId]            INT          NOT NULL,
     [BuyQuantity]       INT             NOT NULL,
     [MaxBuyPrice]       DECIMAL (18, 2) NOT NULL,
     [MinSellQuantity]   INT             NOT NULL,
@@ -17,5 +17,6 @@
     [Notes] TEXT NULL, 
     CONSTRAINT [PK_dbo.Orders] PRIMARY KEY CLUSTERED ([Id] ASC), 
     CONSTRAINT [FK_Orders_ToApiKeyEntities] FOREIGN KEY ([ApiKeyEntity_Id]) REFERENCES [ApiKeyEntities]([Id]), 
+	UNIQUE ([TypeId])
 );
 

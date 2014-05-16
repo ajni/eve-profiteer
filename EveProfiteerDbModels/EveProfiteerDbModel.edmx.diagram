@@ -5,15 +5,15 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="0caaf97a5753493f83222f2e2bfc00a4" Name="Diagram1">
-        <EntityTypeShape EntityType="EveProfiteerDbModel.ApiKeyEntity" Width="1.5" PointX="0.75" PointY="6" IsExpanded="true" />
-        <EntityTypeShape EntityType="EveProfiteerDbModel.ApiKey" Width="1.5" PointX="3" PointY="1.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="EveProfiteerDbModel.JournalEntry" Width="1.5" PointX="3" PointY="4.125" IsExpanded="true" />
-        <AssociationConnector Association="EveProfiteerDbModel.FK_dbo_JournalEntries_dbo_ApiKeyEntities_ApiKeyEntity_Id" ManuallyRouted="false" />
-        <AssociationConnector Association="EveProfiteerDbModel.ApiKeyApiKeyEntities" ManuallyRouted="false" />
-        <EntityTypeShape EntityType="EveProfiteerDbModel.Order" Width="1.5" PointX="5.375" PointY="0.75" />
-        <AssociationConnector Association="EveProfiteerDbModel.FK_Orders_ToApiKeyEntities" />
-        <EntityTypeShape EntityType="EveProfiteerDbModel.Transaction" Width="1.5" PointX="3" PointY="9.375" />
+        <EntityTypeShape EntityType="EveProfiteerDbModel.ApiKeyEntity" Width="1.5" PointX="0.75" PointY="8.75" />
+        <EntityTypeShape EntityType="EveProfiteerDbModel.ApiKey" Width="1.5" PointX="3" PointY="6.75" />
+        <EntityTypeShape EntityType="EveProfiteerDbModel.JournalEntry" Width="1.5" PointX="3" PointY="1.625" />
+        <EntityTypeShape EntityType="EveProfiteerDbModel.Order" Width="1.5" PointX="3" PointY="14.5" />
+        <EntityTypeShape EntityType="EveProfiteerDbModel.Transaction" Width="1.5" PointX="3" PointY="9.5" />
+        <AssociationConnector Association="EveProfiteerDbModel.FK_dbo_JournalEntries_dbo_ApiKeyEntities_ApiKeyEntity_Id" />
         <AssociationConnector Association="EveProfiteerDbModel.FK_dbo_Transactions_dbo_ApiKeyEntities_ApiKeyEntity_Id" />
+        <AssociationConnector Association="EveProfiteerDbModel.FK_Orders_ToApiKeyEntities" />
+        <AssociationConnector Association="EveProfiteerDbModel.ApiKeyApiKeyEntities" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

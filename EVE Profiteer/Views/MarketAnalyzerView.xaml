@@ -77,7 +77,7 @@
                     <dxg:GridControl.View>
                         <dxg:TableView AllowEditing="False" NavigationStyle="Row" ShowAutoFilterRow="True"
                                        ShowFixedTotalSummary="True" IsTotalSummaryMenuEnabled="True"
-                                       ShowGroupPanel="False" RowStyle="{StaticResource BackgroundStyle}" ShowSearchPanelMode="Default">
+                                       ShowGroupPanel="False" RowStyle="{StaticResource BackgroundStyle}"  ShowSearchPanelMode="Default" SearchColumns="TypeName" SearchPanelCriteriaOperatorType="And">
                             <dxg:TableView.RowCellMenuCustomizations>
                                 <dxb:BarButtonItem Name="AddOrderItem" Content="Add to orders"
                                                    Command="{Binding Path=(dxb:GridPopupMenuBase.GridMenuInfo).View.DataContext.AddToOrdersCommand, RelativeSource={RelativeSource Self}}"

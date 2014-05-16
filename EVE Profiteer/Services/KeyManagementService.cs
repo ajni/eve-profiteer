@@ -17,7 +17,7 @@ namespace eZet.EveProfiteer.Services {
 
         public ApiKey AddKey(ApiKey key, IEnumerable<ApiKeyEntity> entities) {
             foreach (ApiKeyEntity c in entities) {
-                ApiKeyEntity entity = ApiKeyEntityRepository.All().SingleOrDefault(e => e.EntityId == c.EntityId);
+                ApiKeyEntity entity = ApiKeyEntityRepository.Queryable().SingleOrDefault(e => e.EntityId == c.EntityId);
                 if (entity != null) {
                     entity.IsActive = c.IsActive;
                 }
@@ -39,7 +39,7 @@ namespace eZet.EveProfiteer.Services {
         }
 
         public IQueryable<ApiKey> AllApiKeys() {
-            return ApiKeyRepository.All();
+            return ApiKeyRepository.Queryable();
         }
 
         public ApiKey CreateApiKey() {

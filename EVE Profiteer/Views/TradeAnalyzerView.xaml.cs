@@ -1,17 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using DevExpress.Xpf.Grid;
+using eZet.EveProfiteer.Models;
 
 namespace eZet.EveProfiteer.Views {
     /// <summary>
@@ -20,6 +11,17 @@ namespace eZet.EveProfiteer.Views {
     public partial class TradeAnalyzerView : UserControl {
         public TradeAnalyzerView() {
             InitializeComponent();
+        }
+
+        private void TradeAnalyzerGrid_OnCustomRowFilter(object sender, RowFilterEventArgs e) {
+            int rowHandle = TradeAnalyzerGrid.GetRowHandleByListIndex(e.ListSourceRowIndex);
+            var row = e.Source.GetRow(rowHandle) as TradeAnalyzerItem;
+            if (FilterOrders.IsChecked.Value && row.Order == null)e.Visible = false;
+            e.Handled = !e.Visible;
+        }
+
+        private void FilterOrders_OnChecked(object sender, RoutedEventArgs e) {
+            TradeAnalyzerGrid.RefreshData();
         }
     }
 }
