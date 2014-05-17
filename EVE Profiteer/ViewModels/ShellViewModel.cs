@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Controls.Primitives;
 using Caliburn.Micro;
 using eZet.EveProfiteer.Framework;
 using eZet.EveProfiteer.Models;
@@ -9,13 +8,15 @@ using eZet.EveProfiteer.Services;
 
 namespace eZet.EveProfiteer.ViewModels {
     public class ShellViewModel : Conductor<IScreen>.Collection.OneActive, IShell {
-        private readonly KeyManagementService _keyManagementService;
-        private readonly Services.TransactionService _transactionService;
         private readonly EveApiService _eveApiService;
-        private readonly IWindowManager _windowManager;
         private readonly IEventAggregator _eventAggregator;
+        private readonly KeyManagementService _keyManagementService;
+        private readonly TransactionService _transactionService;
+        private readonly IWindowManager _windowManager;
 
-        public ShellViewModel(IWindowManager windowManager, IEventAggregator eventAggregator, KeyManagementService keyManagementService, Services.TransactionService transactionService, EveApiService eveApiService) {
+        public ShellViewModel(IWindowManager windowManager, IEventAggregator eventAggregator,
+            KeyManagementService keyManagementService,
+            TransactionService transactionService, EveApiService eveApiService) {
             _windowManager = windowManager;
             _eventAggregator = eventAggregator;
             _keyManagementService = keyManagementService;
@@ -34,14 +35,13 @@ namespace eZet.EveProfiteer.ViewModels {
             Items.Clear();
 
             Items.Add(IoC.Get<OverviewViewModel>());
-            var transactions = IoC.Get<TransactionsViewModel>();
-            Items.Add(transactions);
 
-            var journal = IoC.Get<JournalViewModel>();
-            Items.Add(journal);
+            //var transactions = IoC.Get<TransactionsViewModel>();
+            //Items.Add(transactions);
+            //var journal = IoC.Get<JournalViewModel>();
+            //Items.Add(journal);
 
             Items.Add(IoC.Get<MarketAnalyzerViewModel>());
-
             Items.Add(IoC.Get<OrderEditorViewModel>());
             Items.Add(IoC.Get<TradeAnalyzerViewModel>());
             Items.Add(IoC.Get<ItemDetailsViewModel>());
@@ -50,7 +50,7 @@ namespace eZet.EveProfiteer.ViewModels {
             //Items.Add(IoC.Get<ProfitViewModel>());
 
             if (ActiveKey != null) {
-                 transactions.Initialize(ActiveKey, ActiveKeyEntity);
+                //transactions.Initialize(ActiveKey, ActiveKeyEntity);
                 // journal.Initialize(ActiveKey, ActiveKeyEntity);
             }
         }
@@ -63,9 +63,8 @@ namespace eZet.EveProfiteer.ViewModels {
             long latest = 0;
             latest = _transactionService.GetLatestId(ActiveKeyEntity);
             IEnumerable<Transaction> list = _eveApiService.GetNewTransactions(ActiveKey, ActiveKeyEntity, latest);
-            var transactions = list as IList<Transaction> ?? list.ToList();
+            IList<Transaction> transactions = list as IList<Transaction> ?? list.ToList();
             await Task.Run(() => _transactionService.BulkInsert(transactions));
-            //NotifyOfPropertyChange(() => Transactions);
         }
     }
 }

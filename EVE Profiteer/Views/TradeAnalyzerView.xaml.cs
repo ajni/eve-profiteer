@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using DevExpress.Xpf.Grid;
@@ -17,7 +18,11 @@ namespace eZet.EveProfiteer.Views {
         private void TradeAnalyzerGrid_OnCustomRowFilter(object sender, RowFilterEventArgs e) {
             int rowHandle = TradeAnalyzerGrid.GetRowHandleByListIndex(e.ListSourceRowIndex);
             var row = e.Source.GetRow(rowHandle) as TradeAnalyzerItem;
+            if (row == null)
+                throw new InvalidOperationException();
             if (FilterOrders.IsChecked.Value && row.Order == null)e.Visible = false;
+            if (FilterInactiveOrders.IsChecked.Value && (row.Order == null || row.Order.BuyQuantity == 0)) e.Visible = false;
+
             e.Handled = !e.Visible;
         }
 

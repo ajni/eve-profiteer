@@ -21,7 +21,7 @@ namespace eZet.EveProfiteer.ViewModels {
 
         private readonly IWindowManager _windowMananger;
         private readonly IEventAggregator _eventAggregator;
-        private readonly TradeAnalyzerService _tradeAnalyzerService;
+        private readonly AnalyzerService _analyzerService;
         private ViewPeriodEnum _selectedViewPeriod;
 
         public DateTime ViewStart { get; set; }
@@ -39,10 +39,10 @@ namespace eZet.EveProfiteer.ViewModels {
 
         public BindableCollection<TradeAnalyzerItem> Items { get; private set; }
 
-        public TradeAnalyzerViewModel(IWindowManager windowMananger, IEventAggregator eventAggregator, TradeAnalyzerService tradeAnalyzerService) {
+        public TradeAnalyzerViewModel(IWindowManager windowMananger, IEventAggregator eventAggregator, AnalyzerService analyzerService) {
             _windowMananger = windowMananger;
             _eventAggregator = eventAggregator;
-            _tradeAnalyzerService = tradeAnalyzerService;
+            _analyzerService = analyzerService;
             DisplayName = "Trade Analyzer";
             Items = new BindableCollection<TradeAnalyzerItem>();
         }
@@ -75,9 +75,9 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         private void load() {
-            var orders = _tradeAnalyzerService.Orders().ToList();
+            var orders = _analyzerService.Orders().ToList();
             var orderLookup = orders.ToLookup(order => order.TypeId);
-            var transactions = _tradeAnalyzerService.Transactions().Where(t => t.TransactionDate >= ViewStart && t.TransactionDate <= ViewEnd).GroupBy(t => t.TypeId);
+            var transactions = _analyzerService.Transactions().Where(t => t.TransactionDate >= ViewStart && t.TransactionDate <= ViewEnd).GroupBy(t => t.TypeId);
             var items = new List<TradeAnalyzerItem>();
             foreach (var transactionCollection in transactions.Select(x => x.ToList())) {
                 var typeId = transactionCollection.First().TypeId;

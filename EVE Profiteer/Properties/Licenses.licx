@@ -3,3 +3,4 @@ DevExpress.Xpf.Bars.BarManager, DevExpress.Xpf.Core.v13.2, Version=13.2.5.0, Cul
 DevExpress.Xpf.Grid.GridControl, DevExpress.Xpf.Grid.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a
 DevExpress.Xpf.WindowsUI.NavigationFrame, DevExpress.Xpf.Controls.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a
 DevExpress.Xpf.Charts.ChartControl, DevExpress.Xpf.Charts.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a
+DevExpress.Xpf.Core.DXTabControl, DevExpress.Xpf.Core.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a

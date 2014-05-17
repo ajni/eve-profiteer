@@ -1,15 +1,15 @@
-﻿<UserControl 
+﻿<UserControl x:Class="eZet.EveProfiteer.Views.TradeAnalyzerView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
              xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
              xmlns:ui="clr-namespace:eZet.EveProfiteer.Ui"
              xmlns:viewModels="clr-namespace:eZet.EveProfiteer.ViewModels"
-             xmlns:dxwui="http://schemas.devexpress.com/winfx/2008/xaml/windowsui" x:Class="eZet.EveProfiteer.Views.TradeAnalyzerView"
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="500">
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="500"
+             d:DataContext="{d:DesignInstance Type=viewModels:TradeAnalyzerViewModel, IsDesignTimeCreatable=False}">
     <UserControl.Resources>
         <ui:ViewPeriodToVisibilityConverter x:Key="ViewPeriodToVisibilityConverter" />
     </UserControl.Resources>
@@ -19,46 +19,57 @@
                 <ToolBar>
                     <ToolBarPanel Orientation="Horizontal">
 
-                        <ComboBox x:Name="ViewPeriodSelector" Margin ="5" Width="100" HorizontalAlignment="Left"
-							ItemsSource="{Binding ViewPeriodValues}" SelectedItem="{Binding SelectedViewPeriod}"/>
+                        <ComboBox x:Name="ViewPeriodSelector" Margin="5" Width="100" HorizontalAlignment="Left"
+                                  ItemsSource="{Binding ViewPeriodValues}" SelectedItem="{Binding SelectedViewPeriod}" />
                     </ToolBarPanel>
-                    <ToolBarPanel Orientation="Horizontal" IsEnabled="{Binding SelectedViewPeriod, ConverterParameter=CustomDaySpan, Converter={StaticResource ViewPeriodToVisibilityConverter}}" VerticalAlignment="Center">
-                        <TextBlock><Run Text="Days:"/></TextBlock>
-                        <TextBox x:Name="CustomDaySelector" Text="{Binding CustomDaySpan}" Margin="5 0" Width="20"/>
+                    <ToolBarPanel Orientation="Horizontal"
+                                  IsEnabled="{Binding SelectedViewPeriod, ConverterParameter=CustomDaySpan, Converter={StaticResource ViewPeriodToVisibilityConverter}}"
+                                  VerticalAlignment="Center">
+                        <TextBlock Text="Days:" />
+                        <TextBox x:Name="CustomDaySelector" Text="{Binding CustomDaySpan}" Margin="5 0" Width="20" />
                     </ToolBarPanel>
                     <ToolBarPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <Button Margin="5" x:Name="ViewPeriod" Content="View"/>
+                        <Button Margin="5" x:Name="ViewPeriod" Content="View" />
                     </ToolBarPanel>
                 </ToolBar>
                 <ToolBar>
                     <ToolBarPanel VerticalAlignment="Center">
-                        <CheckBox x:Name="FilterOrders" Content="Only orders" Checked="FilterOrders_OnChecked" Unchecked="FilterOrders_OnChecked"/>
+                        <CheckBox x:Name="FilterOrders" Content="Only orders" Checked="FilterOrders_OnChecked"
+                                  Unchecked="FilterOrders_OnChecked" />
+                        <CheckBox x:Name="FilterInactiveOrders" Content="Only active orders" Checked="FilterOrders_OnChecked"
+                                  Unchecked="FilterOrders_OnChecked" />
                     </ToolBarPanel>
                 </ToolBar>
 
             </ToolBarTray>
 
             <dxg:GridControl x:Name="TradeAnalyzerGrid" AutoGenerateColumns="None" ItemsSource="{Binding Items}"
-				SelectionMode="None" CustomRowFilter="TradeAnalyzerGrid_OnCustomRowFilter">
+                             SelectionMode="None" CustomRowFilter="TradeAnalyzerGrid_OnCustomRowFilter">
                 <dxg:GridControl.View>
                     <dxg:SelectionView ShowAutoFilterRow="True" ShowTotalSummary="True" ShowFixedTotalSummary="True"
-						ShowGroupPanel="False"
-						NavigationStyle="Row" ShowSearchPanelMode="Default" SearchColumns="TypeName" SearchPanelCriteriaOperatorType="And"/>
+                                       ShowGroupPanel="False"
+                                       NavigationStyle="Row" ShowSearchPanelMode="Default" SearchColumns="TypeName"
+                                       SearchPanelCriteriaOperatorType="And" />
                 </dxg:GridControl.View>
                 <dxg:GridControl.TotalSummary>
-                    <dxg:GridSummaryItem FieldName="Profit" SummaryType="Sum" DisplayFormat="N2"/>
-                    <dxg:GridSummaryItem FieldName="Balance" SummaryType="Sum" DisplayFormat="N2"/>
-                    <dxg:GridSummaryItem FieldName="In" SummaryType="Sum" DisplayFormat="N2"/>
-                    <dxg:GridSummaryItem FieldName="Out" SummaryType="Sum" DisplayFormat="N2"/>
-                    <dxg:GridSummaryItem FieldName="Transactions.Count" SummaryType="Sum" DisplayFormat="N0"/>
-                    <dxg:GridSummaryItem FieldName="QuantitySold" SummaryType="Sum" DisplayFormat="N0"/>
-                    <dxg:GridSummaryItem FieldName="QuantityBought" SummaryType="Sum" DisplayFormat="N0"/>
+                    <dxg:GridSummaryItem FieldName="Profit" SummaryType="Sum" DisplayFormat="N2" />
+                    <dxg:GridSummaryItem FieldName="Balance" SummaryType="Sum" DisplayFormat="N2" />
+                    <dxg:GridSummaryItem FieldName="SellTotal" SummaryType="Sum" DisplayFormat="N2" />
+                    <dxg:GridSummaryItem FieldName="BuyTotal" SummaryType="Sum" DisplayFormat="N2" />
+                    <dxg:GridSummaryItem FieldName="Transactions.Count" SummaryType="Sum" DisplayFormat="N0" />
+                    <dxg:GridSummaryItem FieldName="QuantitySold" SummaryType="Sum" DisplayFormat="N0" />
+                    <dxg:GridSummaryItem FieldName="QuantityBought" SummaryType="Sum" DisplayFormat="N0" />
 
                     <dxg:GridSummaryItem SummaryType="Count" Alignment="Right" DisplayFormat="Items: {0:N0}" />
                 </dxg:GridControl.TotalSummary>
                 <dxg:GridControl.Columns>
-                    <dxg:GridColumn FieldName="TypeName" Header="Item"/>
+                    <dxg:GridColumn FieldName="TypeName" Header="Item" />
                     <dxg:GridColumn FieldName="Profit">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N2" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn FieldName="AvgProfitPerDay">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="N2" />
                         </dxg:GridColumn.EditSettings>
@@ -68,17 +79,17 @@
                             <dxe:TextEditSettings DisplayFormat="N2" />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="In">
+                    <dxg:GridColumn FieldName="SellTotal">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="N2" />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="Out">
+                    <dxg:GridColumn FieldName="BuyTotal">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="N2" />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="Transactions.Count" Header="Transactions"/>
+                    <dxg:GridColumn FieldName="Transactions.Count" Header="Transactions" />
                     <dxg:GridColumn FieldName="StockDelta">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="N0" />
@@ -104,12 +115,10 @@
                             <dxe:TextEditSettings DisplayFormat="N2" />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="FirstTransactionDate"/>
-                    <dxg:GridColumn FieldName="LastTransactionDate"/>
+                    <dxg:GridColumn FieldName="FirstTransactionDate" />
+                    <dxg:GridColumn FieldName="LastTransactionDate" />
                 </dxg:GridControl.Columns>
             </dxg:GridControl>
-
-            <dxwui:NavigationFrame Content="NavigationFrame" Height="263" VerticalAlignment="Top" Width="100"/>
 
         </DockPanel>
     </Grid>

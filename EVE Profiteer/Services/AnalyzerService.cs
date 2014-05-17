@@ -3,11 +3,11 @@ using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Repository;
 
 namespace eZet.EveProfiteer.Services {
-    public class TradeAnalyzerService {
+    public class AnalyzerService {
         private readonly IRepository<Transaction> _transactionRepository;
         private readonly IRepository<Order> _orderRepository;
 
-        public TradeAnalyzerService(IRepository<Transaction> transactionRepository, IRepository<Order> orderRepository) {
+        public AnalyzerService(IRepository<Transaction> transactionRepository, IRepository<Order> orderRepository) {
             _transactionRepository = transactionRepository;
             _orderRepository = orderRepository;
         }

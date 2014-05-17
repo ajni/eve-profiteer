@@ -34,7 +34,7 @@
             </dxg:GridControl.TotalSummary>
             <dxg:GridControl.Columns>
                 <dxg:SelectAllColumn />
-                <dxg:GridColumn FieldName="InvType.TypeName" Header="Item" Validate="GridColumn_OnValidate" />
+                <dxg:GridColumn FieldName="SellTotalvType.TypeName" Header="Item" Validate="GridColumn_OnValidate" />
                 <dxg:GridColumn FieldName="BuyQuantity" Width="50" />
                 <dxg:GridColumn FieldName="MaxBuyPrice">
                     <dxg:GridColumn.EditSettings>

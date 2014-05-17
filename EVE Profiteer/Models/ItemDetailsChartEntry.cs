@@ -6,9 +6,10 @@ namespace eZet.EveProfiteer.Models {
         public DateTime Date { get; set; }
         public IEnumerable<Transaction> Transactions { get; set; }
 
-        public ItemDetailsChartEntry(DateTime date, IEnumerable<Transaction> transactions) {
+        public ItemDetailsChartEntry(DateTime date, IEnumerable<Transaction> transactions, int stock) {
             Date = date;
             Transactions = transactions;
+            Stock = stock;
             initialize();
         }
 
@@ -30,6 +31,11 @@ namespace eZet.EveProfiteer.Models {
 
         public int StockDelta { get; private set; }
 
+        public int Stock { get; private set; }
+
+        public decimal StockValue { get; private set; }
+
+
         private void initialize() {
             foreach (var transaction in Transactions) {
                 if (transaction.TransactionType == "Sell") {
@@ -41,14 +47,17 @@ namespace eZet.EveProfiteer.Models {
                 } else {
                     throw new NotImplementedException();
                 }
-                if (BuyQuantity > 0)
-                    AvgBuyPrice = BuyTotal/BuyQuantity;
-                if (SellQuantity > 0)
-                    AvgSellPrice = SellTotal/SellQuantity;
-                Balance = SellTotal - BuyTotal;
-                Profit = SellQuantity*AvgSellPrice - SellQuantity*AvgBuyPrice;
-                StockDelta = BuyQuantity - SellQuantity;
             }
+            if (BuyQuantity > 0)
+                AvgBuyPrice = BuyTotal / BuyQuantity;
+            if (SellQuantity > 0)
+                AvgSellPrice = SellTotal / SellQuantity;
+            Balance = SellTotal - BuyTotal;
+            Profit = SellQuantity * AvgSellPrice - SellQuantity * AvgBuyPrice;
+            StockDelta = BuyQuantity - SellQuantity;
+            Stock += StockDelta;
+            Stock = Stock < 0 ? 0 : Stock;
+            StockValue = Stock * AvgBuyPrice;
 
         }
 

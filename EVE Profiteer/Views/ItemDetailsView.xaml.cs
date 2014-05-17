@@ -12,12 +12,13 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using DevExpress.Xpf.Core.DataSources;
 
 namespace eZet.EveProfiteer.Views {
     /// <summary>
     /// Interaction logic for ItemDetailsView.xaml
     /// </summary>
-    public partial class ItemDetailsView : UserControl {
+    public partial class ItemDetailsView {
         public ItemDetailsView() {
             InitializeComponent();
         }
