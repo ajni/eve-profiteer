@@ -123,10 +123,11 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Bootstrapper.cs" />
+    <Compile Include="Events\ViewTradeDetailsEventArgs.cs" />
     <Compile Include="Models\ItemDetailsChartEntry.cs" />
     <Compile Include="Models\TradeAnalyzerItem.cs" />
-    <Compile Include="Ui\ColorValueConverter.cs" />
-    <Compile Include="Events\AddToOrdersEvent.cs" />
+    <Compile Include="Ui\Converters\OrderToColorConverter.cs" />
+    <Compile Include="Events\AddToOrdersEventArgs.cs" />
     <Compile Include="Framework\IShell.cs" />
     <Compile Include="Models\MarketAnalyzer.cs" />
     <Compile Include="Models\Station.cs" />
@@ -140,7 +141,7 @@
     <Compile Include="Services\OrderEditorService.cs" />
     <Compile Include="Services\RepositoryService.cs" />
     <Compile Include="Services\TransactionService.cs" />
-    <Compile Include="Ui\ViewPeriodToVisibilityConverter.cs" />
+    <Compile Include="Ui\Converters\ViewPeriodToEnabledConverter.cs" />
     <Compile Include="Util\ApiEntityMapper.cs" />
     <Compile Include="Util\ProgressType.cs" />
     <Compile Include="ViewModels\AnalyzerProgressViewModel.cs" />
@@ -152,7 +153,7 @@
     <Compile Include="ViewModels\JournalViewModel.cs" />
     <Compile Include="ViewModels\ManageKeysViewModel.cs" />
     <Compile Include="ViewModels\OrderEditorViewModel.cs" />
-    <Compile Include="Events\OrdersAddedEvent.cs" />
+    <Compile Include="Events\OrdersAddedEventArgs.cs" />
     <Compile Include="Services\AnalyzerService.cs" />
     <Compile Include="ViewModels\TradeAnalyzerViewModel.cs" />
     <Compile Include="Views\EditOrderDialogView.xaml.cs">

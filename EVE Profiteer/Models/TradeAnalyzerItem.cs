@@ -5,7 +5,7 @@ namespace eZet.EveProfiteer.Models {
     public class TradeAnalyzerItem {
         public IEnumerable<Transaction> Transactions { get; set; }
 
-        public TradeAnalyzerItem(long typeId, string typeName, IEnumerable<Transaction> transactions, Order order) {
+        public TradeAnalyzerItem(int typeId, string typeName, IEnumerable<Transaction> transactions, Order order) {
             Transactions = transactions;
             TypeName = typeName;
             TypeId = typeId;
@@ -42,7 +42,7 @@ namespace eZet.EveProfiteer.Models {
                 AvgProfitPerDay /= span;
         }
 
-        public long TypeId { get; private set; }
+        public int TypeId { get; private set; }
 
         public string TypeName { get; private set; }
 

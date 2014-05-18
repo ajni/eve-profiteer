@@ -2,8 +2,8 @@
 using eZet.EveProfiteer.Models;
 
 namespace eZet.EveProfiteer.Events {
-    public class AddToOrdersEvent {
-        public AddToOrdersEvent(IList<MarketAnalyzerEntry> items) {
+    public class AddToOrdersEventArgs {
+        public AddToOrdersEventArgs(IList<MarketAnalyzerEntry> items) {
             Items = items;
         }
 

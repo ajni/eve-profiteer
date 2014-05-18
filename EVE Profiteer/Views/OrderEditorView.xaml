@@ -5,8 +5,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
              xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+             xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
+             xmlns:viewModels="clr-namespace:eZet.EveProfiteer.ViewModels"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="300"
+             d:DataContext="{d:DesignInstance d:Type=viewModels:OrderEditorViewModel, IsDesignTimeCreatable=False}">
     <DockPanel>
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Left">
             <Button Margin="5" Name="Import">Import</Button>
@@ -25,7 +28,16 @@
                                    NavigationStyle="Cell" NewItemRowPosition="Top"
                                    ShowingEditor="GridViewBase_OnShowingEditor" InitNewRow="TableView_OnInitNewRow"
                                    ValidateRow="GridViewBase_OnValidateRow"
-                                   InvalidRowException="GridViewBase_OnInvalidRowException"  ShowSearchPanelMode="Default" SearchColumns="TypeName" SearchPanelCriteriaOperatorType="And"/>
+                                   InvalidRowException="GridViewBase_OnInvalidRowException"
+                                   ShowSearchPanelMode="Default" SearchColumns="TypeName"
+                                   SearchPanelCriteriaOperatorType="And">
+                    <dxg:SelectionView.RowCellMenuCustomizations>
+                        <dxb:BarButtonItem Content="View trade details"
+                                           Command="{Binding View.DataContext.ViewTradeDetailsCommand}"
+                                           CommandParameter="{Binding View.DataControl.CurrentItem}" />
+                    </dxg:SelectionView.RowCellMenuCustomizations>
+                </dxg:SelectionView>
+
             </dxg:GridControl.View>
             <dxg:GridControl.TotalSummary>
                 <dxg:GridSummaryItem SummaryType="Count" Alignment="Right" />
@@ -34,7 +46,7 @@
             </dxg:GridControl.TotalSummary>
             <dxg:GridControl.Columns>
                 <dxg:SelectAllColumn />
-                <dxg:GridColumn FieldName="SellTotalvType.TypeName" Header="Item" Validate="GridColumn_OnValidate" />
+                <dxg:GridColumn FieldName="InvType.TypeName" Header="Item" Validate="GridColumn_OnValidate" />
                 <dxg:GridColumn FieldName="BuyQuantity" Width="50" />
                 <dxg:GridColumn FieldName="MaxBuyPrice">
                     <dxg:GridColumn.EditSettings>

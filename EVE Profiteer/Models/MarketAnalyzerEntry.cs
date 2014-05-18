@@ -11,7 +11,7 @@ namespace eZet.EveProfiteer.Models {
 
         public MarketAnalyzerEntry(InvType invType, ItemPrices.ItemPriceEntry sellOrder,
             ItemPrices.ItemPriceEntry buyOrder, IEnumerable<ItemHistory.ItemHistoryEntry> history) {
-            InvTypeData = invType;
+            InvType = invType;
             History = history;
             Updated = sellOrder.Updated;
             BuyPrice = buyOrder.Price;
@@ -19,7 +19,7 @@ namespace eZet.EveProfiteer.Models {
             Calculate();
         }
 
-        public InvType InvTypeData { get; set; }
+        public InvType InvType { get; set; }
 
         public string OrderType { get; set; }
 

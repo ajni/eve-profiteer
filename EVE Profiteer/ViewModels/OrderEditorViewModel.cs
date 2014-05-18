@@ -3,8 +3,10 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Windows.Forms;
+using System.Windows.Input;
 using Caliburn.Micro;
 using DevExpress.Xpf.Grid;
+using DevExpress.Xpf.Mvvm;
 using DevExpress.Xpf.Ribbon.Customization;
 using eZet.EveOnlineDbModels;
 using eZet.EveProfiteer.Events;
@@ -14,7 +16,7 @@ using eZet.EveProfiteer.Views;
 using Screen = Caliburn.Micro.Screen;
 
 namespace eZet.EveProfiteer.ViewModels {
-    public class OrderEditorViewModel : Screen, IHandle<AddToOrdersEvent>, IHandle<GridCellValidationEventArgs> {
+    public class OrderEditorViewModel : Screen, IHandle<AddToOrdersEventArgs>, IHandle<GridCellValidationEventArgs> {
         private readonly EveOnlineStaticDataService _eveOnlineStaticDataService;
         private readonly IEventAggregator _eventAggregator;
         private readonly OrderEditorService _orderEditorService;
@@ -41,7 +43,9 @@ namespace eZet.EveProfiteer.ViewModels {
             DayLimit = 10;
             BuyOrderAvgOffset = 2;
             SellOrderAvgOffset = 2;
-        }
+            ViewTradeDetailsCommand = new DelegateCommand<Order>(order => _eventAggregator.Publish(new ViewTradeDetailsEventArgs(order.TypeId)));}
+
+        public ICommand ViewTradeDetailsCommand { get; private set; }
 
         public int DayLimit { get; set; }
 
@@ -112,8 +116,8 @@ namespace eZet.EveProfiteer.ViewModels {
 
         public void SetPriceLimits() {
             foreach (Order order in SelectedOrders) {
-                order.MaxBuyPrice = order.AvgPrice + order.AvgPrice*(decimal) (BuyOrderAvgOffset/100.0);
-                order.MinSellPrice = order.AvgPrice - order.AvgPrice*(decimal) (SellOrderAvgOffset/100.0);
+                order.MaxBuyPrice = order.AvgPrice + order.AvgPrice * (decimal)(BuyOrderAvgOffset / 100.0);
+                order.MinSellPrice = order.AvgPrice - order.AvgPrice * (decimal)(SellOrderAvgOffset / 100.0);
             }
             refreshOrders();
         }
@@ -124,16 +128,16 @@ namespace eZet.EveProfiteer.ViewModels {
             if (_windowManager.ShowDialog(vm) != true) return;
             foreach (Order order in SelectedOrders) {
                 if (vm.SetBuyOrderTotal && order.MaxBuyPrice != 0) {
-                    order.BuyQuantity = (int) (vm.BuyOrderTotal/order.MaxBuyPrice);
+                    order.BuyQuantity = (int)(vm.BuyOrderTotal / order.MaxBuyPrice);
                     if (vm.BuyOrderTotal <= order.MaxBuyPrice)
                         order.BuyQuantity = 1;
                 }
                 if (vm.SetMinSellOrderTotal && order.MinSellPrice != 0) {
-                    order.MinSellQuantity = (int) (vm.MinSellOrderTotal/order.MinSellPrice);
+                    order.MinSellQuantity = (int)(vm.MinSellOrderTotal / order.MinSellPrice);
                 }
 
                 if (vm.SetMaxSellOrderTotal && order.MinSellPrice != 0) {
-                    order.MaxSellQuantity = (int) (vm.MaxSellOrderTotal/order.MinSellPrice);
+                    order.MaxSellQuantity = (int)(vm.MaxSellOrderTotal / order.MinSellPrice);
                     if (order.MaxSellQuantity == 0)
                         order.MaxSellQuantity = 1;
                 }
@@ -141,14 +145,14 @@ namespace eZet.EveProfiteer.ViewModels {
             refreshOrders();
         }
 
-        public void Handle(AddToOrdersEvent e) {
+        public void Handle(AddToOrdersEventArgs e) {
             var orders = new List<Order>();
             foreach (MarketAnalyzerEntry item in e.Items) {
-                orders.Add(_orderEditorService.CreateOrder(item.InvTypeData.TypeId));
+                orders.Add(_orderEditorService.CreateOrder(item.InvType.TypeId));
             }
             _orderEditorService.LoadMarketData(orders, DayLimit);
             Orders.AddRange(orders);
-            _eventAggregator.Publish(new OrdersAddedEvent(orders));
+            _eventAggregator.Publish(new OrdersAddedEventArgs(orders));
         }
 
         public void Handle(GridCellValidationEventArgs eventArgs) {
@@ -157,14 +161,12 @@ namespace eZet.EveProfiteer.ViewModels {
             if (item == null) {
                 eventArgs.IsValid = false;
                 eventArgs.SetError("Invalid item.");
-            }
-            else {
+            } else {
                 if (Orders.SingleOrDefault(order => order.TypeId == item.TypeId) != null) {
                     eventArgs.IsValid = false;
                     eventArgs.SetError("Item has already been added.");
-                }
-                else {
-                    ((Order) eventArgs.Row).TypeId = item.TypeId;
+                } else {
+                    ((Order)eventArgs.Row).TypeId = item.TypeId;
                 }
             }
         }

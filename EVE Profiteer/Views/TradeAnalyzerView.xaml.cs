@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using DevExpress.Xpf.Grid;
 using eZet.EveProfiteer.Models;
-using eZet.EveProfiteer.ViewModels;
 
 namespace eZet.EveProfiteer.Views {
     /// <summary>

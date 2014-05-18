@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using Caliburn.Micro;
@@ -10,7 +9,7 @@ using eZet.EveProfiteer.Services;
 using MoreLinq;
 
 namespace eZet.EveProfiteer.ViewModels {
-    public class ItemDetailsViewModel : Screen, IHandle<OrdersAddedEvent> {
+    public class ItemDetailsViewModel : Screen, IHandle<OrdersAddedEventArgs>, IHandle<ViewTradeDetailsEventArgs> {
         private readonly IEventAggregator _eventAggregator;
         private readonly AnalyzerService _analyzerService;
         private readonly EveOnlineStaticDataService _eveDbService;
@@ -58,7 +57,7 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
 
-        public void Handle(OrdersAddedEvent message) {
+        public void Handle(OrdersAddedEventArgs message) {
             LoadSelectableItems();
         }
 
@@ -67,5 +66,8 @@ namespace eZet.EveProfiteer.ViewModels {
                 _analyzerService.Orders().DistinctBy(order => order.TypeId).Select(order => order.TypeId);
             SelectableItems = _eveDbService.GetTypes().Where(type => types.Contains(type.TypeId)).ToList();
         }
+
+        public void Handle(ViewTradeDetailsEventArgs message) {
+            SelectedItem = _eveDbService.GetTypes().Single(item => item.TypeId == message.TypeId);}
     }
 }

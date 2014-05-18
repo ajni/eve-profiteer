@@ -7,11 +7,13 @@
              xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
              xmlns:ui="clr-namespace:eZet.EveProfiteer.Ui"
              xmlns:viewModels="clr-namespace:eZet.EveProfiteer.ViewModels"
+             xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
+             xmlns:converters="clr-namespace:eZet.EveProfiteer.Ui.Converters"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="500"
              d:DataContext="{d:DesignInstance Type=viewModels:TradeAnalyzerViewModel, IsDesignTimeCreatable=False}">
     <UserControl.Resources>
-        <ui:ViewPeriodToVisibilityConverter x:Key="ViewPeriodToVisibilityConverter" />
+        <converters:ViewPeriodToEnabledConverter x:Key="ViewPeriodToVisibilityConverter" />
     </UserControl.Resources>
     <Grid>
         <DockPanel>
@@ -36,7 +38,8 @@
                     <ToolBarPanel VerticalAlignment="Center">
                         <CheckBox x:Name="FilterOrders" Content="Only orders" Checked="FilterOrders_OnChecked"
                                   Unchecked="FilterOrders_OnChecked" />
-                        <CheckBox x:Name="FilterInactiveOrders" Content="Only active orders" Checked="FilterOrders_OnChecked"
+                        <CheckBox x:Name="FilterInactiveOrders" Content="Only active orders"
+                                  Checked="FilterOrders_OnChecked"
                                   Unchecked="FilterOrders_OnChecked" />
                     </ToolBarPanel>
                 </ToolBar>
@@ -47,10 +50,17 @@
                              SelectionMode="None" CustomRowFilter="TradeAnalyzerGrid_OnCustomRowFilter">
                 <dxg:GridControl.View>
                     <dxg:SelectionView ShowAutoFilterRow="True" ShowTotalSummary="True" ShowFixedTotalSummary="True"
-                                       ShowGroupPanel="False"
+                                       ShowGroupPanel="False" IsRowCellMenuEnabled="True"
                                        NavigationStyle="Row" ShowSearchPanelMode="Default" SearchColumns="TypeName"
-                                       SearchPanelCriteriaOperatorType="And" />
+                                       SearchPanelCriteriaOperatorType="And">
+                        <dxg:SelectionView.RowCellMenuCustomizations>
+                            <dxb:BarButtonItem Content="View trade details"
+                                               Command="{Binding View.DataContext.ViewTradeDetailsCommand}"
+                                               CommandParameter="{Binding View.DataControl.CurrentItem}" />
+                        </dxg:SelectionView.RowCellMenuCustomizations>
+                    </dxg:SelectionView>
                 </dxg:GridControl.View>
+
                 <dxg:GridControl.TotalSummary>
                     <dxg:GridSummaryItem FieldName="Profit" SummaryType="Sum" DisplayFormat="N2" />
                     <dxg:GridSummaryItem FieldName="Balance" SummaryType="Sum" DisplayFormat="N2" />

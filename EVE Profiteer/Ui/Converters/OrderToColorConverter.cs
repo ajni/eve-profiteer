@@ -4,11 +4,16 @@ using System.Windows.Data;
 using System.Windows.Markup;
 using System.Windows.Media;
 
-namespace eZet.EveProfiteer {
-    public class ColorValueConverter : MarkupExtension, IValueConverter {
+namespace eZet.EveProfiteer.Ui.Converters {
+    public class OrderToColorConverter : MarkupExtension, IValueConverter {
+
+        public OrderToColorConverter() : base() {
+            
+        }
+
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
             if (value != null)
-                return Brushes.DarkSeaGreen;
+                return Brushes.IndianRed;
             return null;
         }
 

@@ -2,12 +2,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Caliburn.Micro;
+using eZet.EveProfiteer.Events;
 using eZet.EveProfiteer.Framework;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
 
 namespace eZet.EveProfiteer.ViewModels {
-    public class ShellViewModel : Conductor<IScreen>.Collection.OneActive, IShell {
+    public class ShellViewModel : Conductor<IScreen>.Collection.OneActive, IShell, IHandle<ViewTradeDetailsEventArgs> {
         private readonly EveApiService _eveApiService;
         private readonly IEventAggregator _eventAggregator;
         private readonly KeyManagementService _keyManagementService;
@@ -23,6 +24,7 @@ namespace eZet.EveProfiteer.ViewModels {
             _transactionService = transactionService;
             _eveApiService = eveApiService;
             ActiveKey = keyManagementService.AllApiKeys().FirstOrDefault();
+            _eventAggregator.Subscribe(this);
             if (ActiveKey != null) ActiveKeyEntity = ActiveKey.ApiKeyEntities.Single(f => f.EntityId == 977615922);
             SelectKey();
         }
@@ -54,7 +56,6 @@ namespace eZet.EveProfiteer.ViewModels {
                 // journal.Initialize(ActiveKey, ActiveKeyEntity);
             }
         }
-
         public void ManageKeys() {
             _windowManager.ShowDialog(IoC.Get<ManageKeysViewModel>());
         }
@@ -65,6 +66,10 @@ namespace eZet.EveProfiteer.ViewModels {
             IEnumerable<Transaction> list = _eveApiService.GetNewTransactions(ActiveKey, ActiveKeyEntity, latest);
             IList<Transaction> transactions = list as IList<Transaction> ?? list.ToList();
             await Task.Run(() => _transactionService.BulkInsert(transactions));
+        }
+
+        public void Handle(ViewTradeDetailsEventArgs message) {
+            ActivateItem(Items.Single(item => item.GetType() == typeof(ItemDetailsViewModel)));
         }
     }
 }

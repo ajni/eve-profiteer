@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using eZet.EveProfiteer.Models;
 
 namespace eZet.EveProfiteer.Events {
-    public class OrdersAddedEvent {
-        public OrdersAddedEvent(List<Order> orders) {
+    public class OrdersAddedEventArgs {
+        public OrdersAddedEventArgs(List<Order> orders) {
             Orders = orders;
         }
 
