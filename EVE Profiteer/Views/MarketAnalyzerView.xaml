@@ -11,6 +11,7 @@
              xmlns:eveOnlineDbModels="clr-namespace:eZet.EveOnlineDbModels;assembly=EveOnlineDbModels"
              xmlns:viewModels="clr-namespace:eZet.EveProfiteer.ViewModels"
              xmlns:converters="clr-namespace:eZet.EveProfiteer.Ui.Converters"
+             xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
              d:DesignHeight="300" d:DesignWidth="500"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=viewModels:MarketAnalyzerViewModel, IsDesignTimeCreatable=False}">
@@ -25,133 +26,160 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <DockPanel LastChildFill="True">
-        <ToolBarTray DockPanel.Dock="Top">
+    <dxlc:DockLayoutControl>
+        <dxb:BarManager dxlc:DockLayoutControl.Dock="Top">
+            <dxb:BarManager.Items>
+                <dxb:BarButtonItem Name="Analyze" Content="Analyze" Command="{Binding AnalyzeCommand}"/>
+                <dxb:BarButtonItem Name="LoadOrders" Content="Load orders" Command="{Binding LoadOrdersCommand}"/>
+                <dxb:BarEditItem Name="StationSelect" EditValue="{Binding SelectedStation}" EditWidth="150">
+                    <dxb:BarEditItem.EditSettings>
+                        <dxe:ComboBoxEditSettings ItemsSource="{Binding Stations}" DisplayMember="StationName">
+                        </dxe:ComboBoxEditSettings>
+                    </dxb:BarEditItem.EditSettings>
+                </dxb:BarEditItem>
+                <dxb:BarEditItem Name="DayLimit" EditValue="{Binding DayLimit, Converter={converters:DoubleToIntConverter}}" EditWidth="80" Content2="{Binding DayLimit}">
+                    <dxb:BarEditItem.EditSettings>
+                        <dxe:TrackBarEditSettings Minimum="1" Maximum="30" TickFrequency="2" SmallStep="1" LargeStep="5"></dxe:TrackBarEditSettings>
+                    </dxb:BarEditItem.EditSettings>
+                </dxb:BarEditItem>
+                
+                    
+            </dxb:BarManager.Items>
+            <dxb:BarManager.Bars>
+                <dxb:Bar>
+                    <dxb:Bar.DockInfo>
+                        <dxb:BarDockInfo ContainerType="Top"></dxb:BarDockInfo>
+                    </dxb:Bar.DockInfo>
+                    <dxb:Bar.ItemLinks>
+                        <dxb:BarButtonItemLink BarItemName="Analyze"></dxb:BarButtonItemLink>
+                        <dxb:BarEditItemLink BarItemName="StationSelect"></dxb:BarEditItemLink>
+                        <dxb:BarEditItemLink BarItemName="DayLimit"></dxb:BarEditItemLink>
+                    </dxb:Bar.ItemLinks>
+                </dxb:Bar>
+                <dxb:Bar>
+                    <dxb:Bar.DockInfo>
+                        <dxb:BarDockInfo ContainerType="Top"></dxb:BarDockInfo>
+                    </dxb:Bar.DockInfo>
+                    <dxb:Bar.ItemLinks>
+                        <dxb:BarButtonItemLink BarItemName="LoadOrders"></dxb:BarButtonItemLink>
+                    </dxb:Bar.ItemLinks>
+                </dxb:Bar>
+            </dxb:BarManager.Bars>
+            
+            
+        </dxb:BarManager>
+        
+        
+        <!--<ToolBarTray dxlc:DockLayoutControl.Dock="Top">
             <ToolBar>
-                <Button Content="Analyze" cal:Message.Attach="AnalyzeAction" Margin="10 0" Padding="5" />
-                <Button Content="IGB Link" cal:Message.Attach="ScannerLinkAction" Margin="10 0" Padding="5" />
+                
+                <Button Content="Analyze" cal:Message.Attach="Analyze" Margin="10 0" Padding="5" />
                 <Button Content="Load Orders" cal:Message.Attach="LoadOrders" Margin="10 0" Padding="5" />
-                <Label>Station:</Label>
+                <TextBlock Text="Station: "/>
                 <ComboBox Width="150" ItemsSource="{Binding Stations}" DisplayMemberPath="StationName"
                           SelectedItem="{Binding SelectedStation}" />
-                <Label>Days:</Label>
+                <TextBlock Text="Days: "/>
                 <Slider Minimum="1" Maximum="20" Value="{Binding DayLimit}" Width="80" SmallChange="1"
                         TickPlacement="TopLeft" LargeChange="5" TickFrequency="2" />
                 <Label Content="{Binding DayLimit}" />
             </ToolBar>
+        </ToolBarTray>-->
 
 
-        </ToolBarTray>
 
-        <Grid Name="MainGrid" Margin="10">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="200" />
-                <ColumnDefinition Width="auto" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-
-
-            <TreeView Grid.Column="0" Name="ItemsTreeView" VirtualizingPanel.IsVirtualizing="True" Width="Auto"
+        <TreeView Name="ItemsTreeView" dxlc:DockLayoutControl.Dock="Left" dxlc:DockLayoutControl.AllowHorizontalSizing="True" VirtualizingPanel.IsVirtualizing="True"
                       VerticalAlignment="Stretch" VerticalContentAlignment="Stretch"
-                      ItemsSource="{Binding TreeRootNodes}">
-                <TreeView.Resources>
-                    <HierarchicalDataTemplate DataType="{x:Type eveOnlineDbModels:InvMarketGroup}"
+                      ItemsSource="{Binding TreeRootNodes}" >
+            <TreeView.Resources>
+                <HierarchicalDataTemplate DataType="{x:Type eveOnlineDbModels:InvMarketGroup}"
                                               ItemsSource="{Binding Children}">
-                        <StackPanel Orientation="Horizontal">
-                            <CheckBox IsChecked="{Binding IsChecked}" Focusable="False" />
-                            <ContentPresenter Content="{Binding MarketGroupName}" />
-                        </StackPanel>
-                    </HierarchicalDataTemplate>
-                    <DataTemplate DataType="{x:Type eveOnlineDbModels:InvType}">
-                        <StackPanel Orientation="Horizontal">
-                            <CheckBox IsChecked="{Binding IsChecked}" Focusable="False" />
-                            <TextBlock Text="{Binding TypeName}" />
-                        </StackPanel>
-                    </DataTemplate>
-                </TreeView.Resources>
-            </TreeView>
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox IsChecked="{Binding IsChecked}" Focusable="False" />
+                        <ContentPresenter Content="{Binding MarketGroupName}" />
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+                <DataTemplate DataType="{x:Type eveOnlineDbModels:InvType}">
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox IsChecked="{Binding IsChecked}" Focusable="False" />
+                        <TextBlock Text="{Binding TypeName}" />
+                    </StackPanel>
+                </DataTemplate>
+            </TreeView.Resources>
+        </TreeView>
 
-            <GridSplitter Name="Splitter" Grid.Column="1" Margin="3" VerticalAlignment="Stretch" Width="5"
-                          ResizeBehavior="PreviousAndNext" Focusable="False" IsTabStop="False" Background="#FFD1DAEE" />
 
-            <DockPanel LastChildFill="True" Grid.Column="2">
-                <dxg:GridControl AutoGenerateColumns="None" ItemsSource="{Binding MarketAnalyzerResults}" Name="MarketAnalyzerGridControl">
-                    <dxg:GridControl.View>
-                        <dxg:TableView AllowEditing="False" NavigationStyle="Row" ShowAutoFilterRow="True"
+        <dxg:GridControl dxlc:DockLayoutControl.Dock="Client" dxlc:DockLayoutControl.AllowVerticalSizing="True" AutoGenerateColumns="None" ItemsSource="{Binding MarketAnalyzerResults}" >
+            <dxg:GridControl.View>
+                <dxg:TableView AllowEditing="False" NavigationStyle="Row" ShowAutoFilterRow="True"
                                        ShowFixedTotalSummary="True" IsTotalSummaryMenuEnabled="True"
                                        ShowGroupPanel="False" RowStyle="{StaticResource BackgroundStyle}"
                                        ShowSearchPanelMode="Default" SearchColumns="TypeName"
                                        SearchPanelCriteriaOperatorType="And">
-                            <dxg:TableView.RowCellMenuCustomizations>
-                                <dxb:BarButtonItem Content="Add to orders"
+                    <dxg:TableView.RowCellMenuCustomizations>
+                        <dxb:BarButtonItem Content="Add to orders"
                                                    Command="{Binding View.DataContext.AddToOrdersCommand}"
                                                    CommandParameter="{Binding View.DataControl.SelectedItems}" />
-                            </dxg:TableView.RowCellMenuCustomizations>
-                        </dxg:TableView>
-                    </dxg:GridControl.View>
-                    <dxg:GridControl.TotalSummary>
-                        <dxg:GridSummaryItem SummaryType="Count" Alignment="Right" />
-                    </dxg:GridControl.TotalSummary>
-                    <dxg:GridControl.Columns>
-                        <dxg:GridColumn FieldName="InvType.TypeName" />
-                        <dxg:GridColumn FieldName="BuyPrice">
-                            <dxg:GridColumn.EditSettings>
-                                <dxe:TextEditSettings DisplayFormat="N2" />
-                            </dxg:GridColumn.EditSettings>
-                        </dxg:GridColumn>
-                        <dxg:GridColumn FieldName="SellPrice">
-                            <dxg:GridColumn.EditSettings>
-                                <dxe:TextEditSettings DisplayFormat="N2" />
-                            </dxg:GridColumn.EditSettings>
-                        </dxg:GridColumn>
-                        <dxg:GridColumn FieldName="ProfitPerItem">
-                            <dxg:GridColumn.EditSettings>
-                                <dxe:TextEditSettings DisplayFormat="N2" />
-                            </dxg:GridColumn.EditSettings>
-                        </dxg:GridColumn>
-                        <dxg:GridColumn FieldName="DailyVolumeMedian">
-                            <dxg:GridColumn.EditSettings>
-                                <dxe:TextEditSettings DisplayFormat="N0" />
-                            </dxg:GridColumn.EditSettings>
-                        </dxg:GridColumn>
-                        <dxg:GridColumn FieldName="DailyProfit">
-                            <dxg:GridColumn.EditSettings>
-                                <dxe:TextEditSettings DisplayFormat="N2" />
-                            </dxg:GridColumn.EditSettings>
-                        </dxg:GridColumn>
-                        <dxg:GridColumn FieldName="Margin">
-                            <dxg:GridColumn.EditSettings>
-                                <dxe:TextEditSettings DisplayFormat="P2" />
-                            </dxg:GridColumn.EditSettings>
-                        </dxg:GridColumn>
-                        <dxg:GridColumn Visible="False" FieldName="DailyVolumeAdjustedAverage">
-                            <dxg:GridColumn.EditSettings>
-                                <dxe:TextEditSettings DisplayFormat="N0" />
-                            </dxg:GridColumn.EditSettings>
-                        </dxg:GridColumn>
-                        <dxg:GridColumn Visible="False" FieldName="DailyVolumeAverage">
-                            <dxg:GridColumn.EditSettings>
-                                <dxe:TextEditSettings DisplayFormat="N0" />
-                            </dxg:GridColumn.EditSettings>
-                        </dxg:GridColumn>
-                        <dxg:GridColumn Visible="False" FieldName="VolumeStandardDeviation">
-                            <dxg:GridColumn.EditSettings>
-                                <dxe:TextEditSettings DisplayFormat="N2" />
-                            </dxg:GridColumn.EditSettings>
-                        </dxg:GridColumn>
-                        <dxg:GridColumn Visible="False" FieldName="VolumeVariance">
-                            <dxg:GridColumn.EditSettings>
-                                <dxe:TextEditSettings DisplayFormat="N2" />
-                            </dxg:GridColumn.EditSettings>
-                        </dxg:GridColumn>
-                        <dxg:GridColumn FieldName="Updated" />
-                    </dxg:GridControl.Columns>
-                </dxg:GridControl>
-            </DockPanel>
-        </Grid>
-    </DockPanel>
+                    </dxg:TableView.RowCellMenuCustomizations>
+                </dxg:TableView>
+            </dxg:GridControl.View>
+            <dxg:GridControl.TotalSummary>
+                <dxg:GridSummaryItem SummaryType="Count" Alignment="Right" />
+            </dxg:GridControl.TotalSummary>
+            <dxg:GridControl.Columns>
+                <dxg:GridColumn FieldName="InvType.TypeName" />
+                <dxg:GridColumn FieldName="BuyPrice">
+                    <dxg:GridColumn.EditSettings>
+                        <dxe:TextEditSettings DisplayFormat="N2" />
+                    </dxg:GridColumn.EditSettings>
+                </dxg:GridColumn>
+                <dxg:GridColumn FieldName="SellPrice">
+                    <dxg:GridColumn.EditSettings>
+                        <dxe:TextEditSettings DisplayFormat="N2" />
+                    </dxg:GridColumn.EditSettings>
+                </dxg:GridColumn>
+                <dxg:GridColumn FieldName="ProfitPerItem">
+                    <dxg:GridColumn.EditSettings>
+                        <dxe:TextEditSettings DisplayFormat="N2" />
+                    </dxg:GridColumn.EditSettings>
+                </dxg:GridColumn>
+                <dxg:GridColumn FieldName="DailyVolumeMedian">
+                    <dxg:GridColumn.EditSettings>
+                        <dxe:TextEditSettings DisplayFormat="N0" />
+                    </dxg:GridColumn.EditSettings>
+                </dxg:GridColumn>
+                <dxg:GridColumn FieldName="DailyProfit">
+                    <dxg:GridColumn.EditSettings>
+                        <dxe:TextEditSettings DisplayFormat="N2" />
+                    </dxg:GridColumn.EditSettings>
+                </dxg:GridColumn>
+                <dxg:GridColumn FieldName="Margin">
+                    <dxg:GridColumn.EditSettings>
+                        <dxe:TextEditSettings DisplayFormat="P2" />
+                    </dxg:GridColumn.EditSettings>
+                </dxg:GridColumn>
+                <dxg:GridColumn Visible="False" FieldName="DailyVolumeAdjustedAverage">
+                    <dxg:GridColumn.EditSettings>
+                        <dxe:TextEditSettings DisplayFormat="N0" />
+                    </dxg:GridColumn.EditSettings>
+                </dxg:GridColumn>
+                <dxg:GridColumn Visible="False" FieldName="DailyVolumeAverage">
+                    <dxg:GridColumn.EditSettings>
+                        <dxe:TextEditSettings DisplayFormat="N0" />
+                    </dxg:GridColumn.EditSettings>
+                </dxg:GridColumn>
+                <dxg:GridColumn Visible="False" FieldName="VolumeStandardDeviation">
+                    <dxg:GridColumn.EditSettings>
+                        <dxe:TextEditSettings DisplayFormat="N2" />
+                    </dxg:GridColumn.EditSettings>
+                </dxg:GridColumn>
+                <dxg:GridColumn Visible="False" FieldName="VolumeVariance">
+                    <dxg:GridColumn.EditSettings>
+                        <dxe:TextEditSettings DisplayFormat="N2" />
+                    </dxg:GridColumn.EditSettings>
+                </dxg:GridColumn>
+                <dxg:GridColumn FieldName="Updated" />
+            </dxg:GridControl.Columns>
+        </dxg:GridControl>
+    </dxlc:DockLayoutControl>
 
 </UserControl>

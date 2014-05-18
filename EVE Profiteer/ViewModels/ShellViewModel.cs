@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using Caliburn.Micro;
+using DevExpress.Xpf.Mvvm;
 using eZet.EveProfiteer.Events;
 using eZet.EveProfiteer.Framework;
 using eZet.EveProfiteer.Models;
@@ -26,8 +28,16 @@ namespace eZet.EveProfiteer.ViewModels {
             ActiveKey = keyManagementService.AllApiKeys().FirstOrDefault();
             _eventAggregator.Subscribe(this);
             if (ActiveKey != null) ActiveKeyEntity = ActiveKey.ApiKeyEntities.Single(f => f.EntityId == 977615922);
+
+            ManageKeysCommand = new DelegateCommand(ManageKeys);
+            UpdateTransactionsCommand = new DelegateCommand(UpdateTransactions);
+
             SelectKey();
         }
+
+        public ICommand ManageKeysCommand { get; private set; }
+
+        public ICommand UpdateTransactionsCommand { get; private set; }
 
         public ApiKey ActiveKey { get; private set; }
 
@@ -60,7 +70,7 @@ namespace eZet.EveProfiteer.ViewModels {
             _windowManager.ShowDialog(IoC.Get<ManageKeysViewModel>());
         }
 
-        public async Task UpdateTransactions() {
+        public async void UpdateTransactions() {
             long latest = 0;
             latest = _transactionService.GetLatestId(ActiveKeyEntity);
             IEnumerable<Transaction> list = _eveApiService.GetNewTransactions(ActiveKey, ActiveKeyEntity, latest);

@@ -45,7 +45,7 @@ namespace eZet.EveProfiteer.Services {
                     orders.Add(CreateOrder(null, sellOrder));
                 }
             }
-            catch (FileNotFoundException e) {
+            catch (FileNotFoundException) {
             }
             loadType(orders);
             return orders;

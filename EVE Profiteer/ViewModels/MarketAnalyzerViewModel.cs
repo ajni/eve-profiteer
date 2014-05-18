@@ -12,7 +12,6 @@ using eZet.EveOnlineDbModels;
 using eZet.EveProfiteer.Events;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
-using eZet.EveProfiteer.Views;
 using Xceed.Wpf.Toolkit;
 
 namespace eZet.EveProfiteer.ViewModels {
@@ -41,8 +40,9 @@ namespace eZet.EveProfiteer.ViewModels {
 
             SelectedItems = new BindableCollection<InvType>();
 
-
+            AnalyzeCommand = new DelegateCommand(Analyze, () => SelectedItems.Count != 0);
             AddToOrdersCommand = new DelegateCommand<ICollection<object>>(AddToOrders, CanAddToOrders);
+            LoadOrdersCommand = new DelegateCommand(LoadOrders);
 
         }
 
@@ -53,10 +53,14 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
 
-        public ICommand AddToOrdersCommand { get; set; }
+        public ICommand AddToOrdersCommand { get; private set; }
+
+        public ICommand AnalyzeCommand { get; private set; }
+
+        public ICommand LoadOrdersCommand { get; private set; }
 
 
-        public ICollection<InvMarketGroup> TreeRootNodes { get; private set; }
+        public BindableCollection<InvMarketGroup> TreeRootNodes { get; private set; }
 
         public ICollection<Station> Stations { get; private set; }
 
@@ -87,21 +91,16 @@ namespace eZet.EveProfiteer.ViewModels {
                 NotifyOfPropertyChange(() => MarketAnalyzerResults);
             }
         }
-
         public int DayLimit {
             get { return _dayLimit; }
-            private set {
+            set {
                 if (_dayLimit == value) return;
                 _dayLimit = value;
                 NotifyOfPropertyChange(() => DayLimit);
             }
         }
 
-        public bool CanAnalyzeAction {
-            get { return SelectedItems.Count != 0; }
-        }
-
-        public async Task AnalyzeAction() {
+        private async void Analyze() {
             var busy = new BusyIndicator { IsBusy = true };
             var cts = new CancellationTokenSource();
             var progressVm = new AnalyzerProgressViewModel(cts);
@@ -150,7 +149,7 @@ namespace eZet.EveProfiteer.ViewModels {
             _eventAggregator.Publish(new AddToOrdersEventArgs(items));
         }
 
-        public async Task LoadOrders() {
+        public async void LoadOrders() {
             var orders = _orderEditorService.GetOrders().Select(item => item.TypeId).ToList();
             List<InvType> items =
                 _eveOnlineDbService.GetTypes().Where(item => orders.Contains(item.TypeId)).ToList();
@@ -163,8 +162,8 @@ namespace eZet.EveProfiteer.ViewModels {
                 Task.Run(() => _eveMarketService.GetMarketAnalyzer(SelectedStation, items, DayLimit));
         }
 
-        private ICollection<InvMarketGroup> buildTree() {
-            var rootList = new List<InvMarketGroup>();
+        private BindableCollection<InvMarketGroup> buildTree() {
+            var rootList = new BindableCollection<InvMarketGroup>();
             _eveOnlineDbService.SetLazyLoad(false);
             List<InvType> items = _eveOnlineDbService.GetTypes().Where(p => p.MarketGroupId.HasValue).ToList();
             List<InvMarketGroup> groupList = _eveOnlineDbService.GetMarketGroups().ToList();
@@ -202,7 +201,7 @@ namespace eZet.EveProfiteer.ViewModels {
                     throw new NotImplementedException();
                 }
             }
-            NotifyOfPropertyChange(() => CanAnalyzeAction);
+            TreeRootNodes.NotifyOfPropertyChange();
         }
 
         private ICollection<Station> getStations() {
@@ -218,10 +217,11 @@ namespace eZet.EveProfiteer.ViewModels {
         public void Handle(OrdersAddedEventArgs ordersAddedEventArgs) {
             ILookup<int, MarketAnalyzerEntry> lookup = MarketAnalyzerResults.ToLookup(f => f.InvType.TypeId);
             foreach (Order order in ordersAddedEventArgs.Orders) {
-                if (lookup.Contains(order.TypeId))
+                if (lookup.Contains(order.TypeId)) {
                     lookup[order.TypeId].Single().Order = order;
+                    MarketAnalyzerResults.NotifyOfPropertyChange();
+                }
             }
-            ((MarketAnalyzerView)GetView()).MarketAnalyzerGridControl.RefreshData();
         }
     }
 }
