@@ -43,7 +43,8 @@ namespace eZet.EveProfiteer.ViewModels {
             DayLimit = 10;
             BuyOrderAvgOffset = 2;
             SellOrderAvgOffset = 2;
-            ViewTradeDetailsCommand = new DelegateCommand<Order>(order => _eventAggregator.Publish(new ViewTradeDetailsEventArgs(order.TypeId)));}
+            ViewTradeDetailsCommand = new DelegateCommand<Order>(order => _eventAggregator.Publish(new ViewTradeDetailsEventArgs(order.TypeId)));
+        }
 
         public ICommand ViewTradeDetailsCommand { get; private set; }
 
@@ -129,11 +130,17 @@ namespace eZet.EveProfiteer.ViewModels {
             foreach (Order order in SelectedOrders) {
                 if (vm.SetBuyOrderTotal && order.MaxBuyPrice != 0) {
                     order.BuyQuantity = (int)(vm.BuyOrderTotal / order.MaxBuyPrice);
-                    if (vm.BuyOrderTotal <= order.MaxBuyPrice)
+                    if (order.MaxBuyPrice > vm.BuyOrderTotal) 
                         order.BuyQuantity = 1;
+
+                    // set total as close to target as possible
+                    var total = order.MaxBuyPrice*order.BuyQuantity;
+                    if (vm.BuyOrderTotal - total > total + order.MaxBuyPrice - vm.BuyOrderTotal)
+                        order.BuyQuantity += 1;
                 }
                 if (vm.SetMinSellOrderTotal && order.MinSellPrice != 0) {
                     order.MinSellQuantity = (int)(vm.MinSellOrderTotal / order.MinSellPrice);
+                    if (order.MinSellQuantity == 1) order.MinSellQuantity = 0;
                 }
 
                 if (vm.SetMaxSellOrderTotal && order.MinSellPrice != 0) {

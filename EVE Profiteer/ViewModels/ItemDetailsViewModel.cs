@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using Caliburn.Micro;
 using eZet.EveOnlineDbModels;
@@ -32,8 +33,13 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         private void LoadItem(InvType type) {
-            List<Transaction> transactions = _analyzerService.Transactions().Where(f => f.TypeId == type.TypeId).ToList();
-            ItemData = new ItemDetailsData(transactions.First().TypeId, transactions.First().TypeName, transactions);
+            if (type == null) 
+                return;
+            List<Transaction> transactions =
+                _analyzerService.Transactions().Where(f => f.TypeId == type.TypeId).ToList();
+            if (transactions.Any())
+                ItemData = new ItemDetailsData(transactions.First().TypeId, transactions.First().TypeName,
+                    transactions);
         }
 
         public ItemDetailsData ItemData {
@@ -68,6 +74,10 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         public void Handle(ViewTradeDetailsEventArgs message) {
-            SelectedItem = _eveDbService.GetTypes().Single(item => item.TypeId == message.TypeId);}
+            var item = _eveDbService.GetTypes().SingleOrDefault(type => type.TypeId == message.TypeId);
+            Debug.Assert(item != null, "Attempted to view invalid type.");
+            SelectedItem = item;
+        }
+
     }
 }

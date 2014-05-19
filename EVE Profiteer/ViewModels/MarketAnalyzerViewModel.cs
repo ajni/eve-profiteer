@@ -43,13 +43,9 @@ namespace eZet.EveProfiteer.ViewModels {
             AnalyzeCommand = new DelegateCommand(Analyze, () => SelectedItems.Count != 0);
             AddToOrdersCommand = new DelegateCommand<ICollection<object>>(AddToOrders, CanAddToOrders);
             LoadOrdersCommand = new DelegateCommand(LoadOrders);
-
-        }
-
-        protected override void OnInitialize() {
-            TreeRootNodes = buildTree();
-            Stations = getStations();
-            SelectedStation = Stations.Single(f => f.StationId == 60003760);
+            ViewTradeDetailsCommand =
+                new DelegateCommand<MarketAnalyzerEntry>(entry => _eventAggregator.Publish(new ViewTradeDetailsEventArgs(entry.InvType.TypeId)),
+                    entry => entry != null && entry.Order != null);
         }
 
 
@@ -58,6 +54,8 @@ namespace eZet.EveProfiteer.ViewModels {
         public ICommand AnalyzeCommand { get; private set; }
 
         public ICommand LoadOrdersCommand { get; private set; }
+
+        public ICommand ViewTradeDetailsCommand { get; private set; }
 
 
         public BindableCollection<InvMarketGroup> TreeRootNodes { get; private set; }
@@ -91,6 +89,7 @@ namespace eZet.EveProfiteer.ViewModels {
                 NotifyOfPropertyChange(() => MarketAnalyzerResults);
             }
         }
+
         public int DayLimit {
             get { return _dayLimit; }
             set {
@@ -100,8 +99,24 @@ namespace eZet.EveProfiteer.ViewModels {
             }
         }
 
+        public void Handle(OrdersAddedEventArgs ordersAddedEventArgs) {
+            ILookup<int, MarketAnalyzerEntry> lookup = MarketAnalyzerResults.ToLookup(f => f.InvType.TypeId);
+            foreach (Order order in ordersAddedEventArgs.Orders) {
+                if (lookup.Contains(order.TypeId)) {
+                    lookup[order.TypeId].Single().Order = order;
+                    MarketAnalyzerResults.NotifyOfPropertyChange();
+                }
+            }
+        }
+
+        protected override void OnInitialize() {
+            TreeRootNodes = buildTree();
+            Stations = getStations();
+            SelectedStation = Stations.Single(f => f.StationId == 60003760);
+        }
+
         private async void Analyze() {
-            var busy = new BusyIndicator { IsBusy = true };
+            var busy = new BusyIndicator {IsBusy = true};
             var cts = new CancellationTokenSource();
             var progressVm = new AnalyzerProgressViewModel(cts);
             MarketAnalyzer res = await GetMarketAnalyzer(SelectedItems);
@@ -138,25 +153,26 @@ namespace eZet.EveProfiteer.ViewModels {
         private bool CanAddToOrders(ICollection<object> objects) {
             if (objects == null || !objects.Any())
                 return false;
-            List<MarketAnalyzerEntry> items = objects.Select(item => (MarketAnalyzerEntry)item).ToList();
+            List<MarketAnalyzerEntry> items = objects.Select(item => (MarketAnalyzerEntry) item).ToList();
             return items.All(item => item.Order == null);
         }
 
         private void AddToOrders(ICollection<object> objects) {
             if (objects == null || !objects.Any())
                 return;
-            List<MarketAnalyzerEntry> items = objects.Select(item => (MarketAnalyzerEntry)item).ToList();
+            List<MarketAnalyzerEntry> items = objects.Select(item => (MarketAnalyzerEntry) item).ToList();
             _eventAggregator.Publish(new AddToOrdersEventArgs(items));
         }
 
         public async void LoadOrders() {
-            var orders = _orderEditorService.GetOrders().Select(item => item.TypeId).ToList();
+            List<int> orders = _orderEditorService.GetOrders().Select(item => item.TypeId).ToList();
             List<InvType> items =
                 _eveOnlineDbService.GetTypes().Where(item => orders.Contains(item.TypeId)).ToList();
             MarketAnalyzer res = await GetMarketAnalyzer(items);
             LoadOrderData(res.Result);
             MarketAnalyzerResults = new BindableCollection<MarketAnalyzerEntry>(res.Result);
         }
+
         private async Task<MarketAnalyzer> GetMarketAnalyzer(ICollection<InvType> items) {
             return await
                 Task.Run(() => _eveMarketService.GetMarketAnalyzer(SelectedStation, items, DayLimit));
@@ -182,7 +198,8 @@ namespace eZet.EveProfiteer.ViewModels {
                     int id = key.Value.ParentGroupId ?? default(int);
                     groups.TryGetValue(id, out group);
                     group.Children.Add(key.Value);
-                } else {
+                }
+                else {
                     rootList.Add(key.Value);
                 }
             }
@@ -195,7 +212,8 @@ namespace eZet.EveProfiteer.ViewModels {
             if (e.PropertyName == "IsChecked") {
                 if (item.IsChecked == true) {
                     SelectedItems.Add(item);
-                } else if (item.IsChecked == false)
+                }
+                else if (item.IsChecked == false)
                     SelectedItems.Remove(item);
                 else {
                     throw new NotImplementedException();
@@ -212,16 +230,6 @@ namespace eZet.EveProfiteer.ViewModels {
                 RegionId = 10000002
             });
             return list;
-        }
-
-        public void Handle(OrdersAddedEventArgs ordersAddedEventArgs) {
-            ILookup<int, MarketAnalyzerEntry> lookup = MarketAnalyzerResults.ToLookup(f => f.InvType.TypeId);
-            foreach (Order order in ordersAddedEventArgs.Orders) {
-                if (lookup.Contains(order.TypeId)) {
-                    lookup[order.TypeId].Single().Order = order;
-                    MarketAnalyzerResults.NotifyOfPropertyChange();
-                }
-            }
         }
     }
 }

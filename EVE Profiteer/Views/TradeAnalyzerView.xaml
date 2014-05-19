@@ -62,7 +62,9 @@
                 </dxg:GridControl.View>
 
                 <dxg:GridControl.TotalSummary>
+                    <dxg:GridSummaryItem FieldName="TypeName" SummaryType="None" DisplayFormat="Summary" />
                     <dxg:GridSummaryItem FieldName="Profit" SummaryType="Sum" DisplayFormat="N2" />
+                    <dxg:GridSummaryItem FieldName="AvgProfitPerDay" SummaryType="Sum" DisplayFormat="N2" />
                     <dxg:GridSummaryItem FieldName="Balance" SummaryType="Sum" DisplayFormat="N2" />
                     <dxg:GridSummaryItem FieldName="SellTotal" SummaryType="Sum" DisplayFormat="N2" />
                     <dxg:GridSummaryItem FieldName="BuyTotal" SummaryType="Sum" DisplayFormat="N2" />

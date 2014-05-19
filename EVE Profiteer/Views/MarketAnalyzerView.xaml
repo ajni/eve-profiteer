@@ -29,39 +29,38 @@
     <dxlc:DockLayoutControl>
         <dxb:BarManager dxlc:DockLayoutControl.Dock="Top">
             <dxb:BarManager.Items>
-                <dxb:BarButtonItem Name="Analyze" Content="Analyze" Command="{Binding AnalyzeCommand}"/>
-                <dxb:BarButtonItem Name="LoadOrders" Content="Load orders" Command="{Binding LoadOrdersCommand}"/>
-                <dxb:BarEditItem Name="StationSelect" EditValue="{Binding SelectedStation}" EditWidth="150">
+                <dxb:BarButtonItem Name="Analyze" Content="Analyze" Command="{Binding AnalyzeCommand}" Hint="Analyze market."/>
+                <dxb:BarButtonItem Name="LoadOrders" Content="Load orders" Command="{Binding LoadOrdersCommand}" Hint="Analyze your current orders."/>
+                <dxb:BarEditItem Name="StationSelect" EditValue="{Binding SelectedStation}" EditWidth="300" Hint="Station to analyze.">
                     <dxb:BarEditItem.EditSettings>
-                        <dxe:ComboBoxEditSettings ItemsSource="{Binding Stations}" DisplayMember="StationName">
-                        </dxe:ComboBoxEditSettings>
+                        <dxe:ComboBoxEditSettings ItemsSource="{Binding Stations}" DisplayMember="StationName"/>
                     </dxb:BarEditItem.EditSettings>
                 </dxb:BarEditItem>
-                <dxb:BarEditItem Name="DayLimit" EditValue="{Binding DayLimit, Converter={converters:DoubleToIntConverter}}" EditWidth="80" Content2="{Binding DayLimit}">
+                <dxb:BarEditItem Name="DayLimit" EditValue="{Binding DayLimit, Converter={converters:DoubleToIntConverter}}" EditWidth="80" Content2="{Binding DayLimit}" Hint="Number of recent days to analyze.">
                     <dxb:BarEditItem.EditSettings>
-                        <dxe:TrackBarEditSettings Minimum="1" Maximum="30" TickFrequency="2" SmallStep="1" LargeStep="5"></dxe:TrackBarEditSettings>
+                        <dxe:TrackBarEditSettings Minimum="1" Maximum="30" TickFrequency="2" SmallStep="1" LargeStep="5"/>
                     </dxb:BarEditItem.EditSettings>
                 </dxb:BarEditItem>
                 
                     
             </dxb:BarManager.Items>
             <dxb:BarManager.Bars>
-                <dxb:Bar>
+                <dxb:Bar Caption="Analyze">
                     <dxb:Bar.DockInfo>
-                        <dxb:BarDockInfo ContainerType="Top"></dxb:BarDockInfo>
+                        <dxb:BarDockInfo ContainerType="Top"/>
                     </dxb:Bar.DockInfo>
                     <dxb:Bar.ItemLinks>
-                        <dxb:BarButtonItemLink BarItemName="Analyze"></dxb:BarButtonItemLink>
-                        <dxb:BarEditItemLink BarItemName="StationSelect"></dxb:BarEditItemLink>
-                        <dxb:BarEditItemLink BarItemName="DayLimit"></dxb:BarEditItemLink>
+                        <dxb:BarButtonItemLink BarItemName="Analyze"/>
+                        <dxb:BarEditItemLink BarItemName="StationSelect"/>
+                        <dxb:BarEditItemLink BarItemName="DayLimit"/>
                     </dxb:Bar.ItemLinks>
                 </dxb:Bar>
-                <dxb:Bar>
+                <dxb:Bar Caption="Load">
                     <dxb:Bar.DockInfo>
-                        <dxb:BarDockInfo ContainerType="Top"></dxb:BarDockInfo>
+                        <dxb:BarDockInfo ContainerType="Top"/>
                     </dxb:Bar.DockInfo>
                     <dxb:Bar.ItemLinks>
-                        <dxb:BarButtonItemLink BarItemName="LoadOrders"></dxb:BarButtonItemLink>
+                        <dxb:BarButtonItemLink BarItemName="LoadOrders"/>
                     </dxb:Bar.ItemLinks>
                 </dxb:Bar>
             </dxb:BarManager.Bars>
@@ -69,24 +68,6 @@
             
         </dxb:BarManager>
         
-        
-        <!--<ToolBarTray dxlc:DockLayoutControl.Dock="Top">
-            <ToolBar>
-                
-                <Button Content="Analyze" cal:Message.Attach="Analyze" Margin="10 0" Padding="5" />
-                <Button Content="Load Orders" cal:Message.Attach="LoadOrders" Margin="10 0" Padding="5" />
-                <TextBlock Text="Station: "/>
-                <ComboBox Width="150" ItemsSource="{Binding Stations}" DisplayMemberPath="StationName"
-                          SelectedItem="{Binding SelectedStation}" />
-                <TextBlock Text="Days: "/>
-                <Slider Minimum="1" Maximum="20" Value="{Binding DayLimit}" Width="80" SmallChange="1"
-                        TickPlacement="TopLeft" LargeChange="5" TickFrequency="2" />
-                <Label Content="{Binding DayLimit}" />
-            </ToolBar>
-        </ToolBarTray>-->
-
-
-
         <TreeView Name="ItemsTreeView" dxlc:DockLayoutControl.Dock="Left" dxlc:DockLayoutControl.AllowHorizontalSizing="True" VirtualizingPanel.IsVirtualizing="True"
                       VerticalAlignment="Stretch" VerticalContentAlignment="Stretch"
                       ItemsSource="{Binding TreeRootNodes}" >
@@ -119,6 +100,10 @@
                         <dxb:BarButtonItem Content="Add to orders"
                                                    Command="{Binding View.DataContext.AddToOrdersCommand}"
                                                    CommandParameter="{Binding View.DataControl.SelectedItems}" />
+                        <dxb:BarItemSeparator></dxb:BarItemSeparator>
+                        <dxb:BarButtonItem Content="View trade details"
+                                                   Command="{Binding View.DataContext.ViewTradeDetailsCommand}"
+                                                   CommandParameter="{Binding View.DataControl.CurrentItem}" />
                     </dxg:TableView.RowCellMenuCustomizations>
                 </dxg:TableView>
             </dxg:GridControl.View>

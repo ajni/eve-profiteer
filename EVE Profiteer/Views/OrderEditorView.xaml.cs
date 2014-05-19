@@ -17,7 +17,7 @@ namespace eZet.EveProfiteer.Views {
 
         private void GridViewBase_OnShowingEditor(object sender, ShowingEditorEventArgs e) {
             var view = sender as SelectionView;
-            if (Orders.CurrentColumn.FieldName == "ItemName") {
+            if (Orders.CurrentColumn.FieldName == "InvType.TypeName") {
                 if (Orders.View.FocusedRowHandle != GridControl.NewItemRowHandle) {
                     e.Cancel = true;
                 }
@@ -36,7 +36,7 @@ namespace eZet.EveProfiteer.Views {
             throw new NotImplementedException();
         }
 
-        private void GridColumn_OnValidate(object sender, GridCellValidationEventArgs e) {
+        private void TypeName_OnValidate(object sender, GridCellValidationEventArgs e) {
             _eventAggregator.Publish(e);
         }
     }
