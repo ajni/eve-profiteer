@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using DevExpress.Xpf.Bars;
 using DevExpress.Xpf.Grid;
 using eZet.EveProfiteer.Models;
+using eZet.EveProfiteer.ViewModels;
 
 namespace eZet.EveProfiteer.Views {
     /// <summary>
@@ -18,7 +20,7 @@ namespace eZet.EveProfiteer.Views {
             var row = e.Source.GetRow(rowHandle) as TradeAnalyzerItem;
             if (row == null)
                 throw new InvalidOperationException();
-            if (FilterOrders.IsChecked.Value && row.Order == null)e.Visible = false;
+            if (FilterOrders.IsChecked.Value && row.Order == null) e.Visible = false;
             if (FilterInactiveOrders.IsChecked.Value && (row.Order == null || row.Order.BuyQuantity == 0)) e.Visible = false;
 
             e.Handled = !e.Visible;
@@ -26,6 +28,20 @@ namespace eZet.EveProfiteer.Views {
 
         private void FilterOrders_OnChecked(object sender, RoutedEventArgs e) {
             TradeAnalyzerGrid.RefreshData();
+        }
+
+        private void ViewPeriodSelector_OnEditValueChanged(object sender, RoutedEventArgs e) {
+            var value = (TradeAnalyzerViewModel.ViewPeriodEnum)((BarEditItem)sender).EditValue;
+            if (value == TradeAnalyzerViewModel.ViewPeriodEnum.Period) {
+                StartDate.IsEnabled = true;
+                EndDate.IsEnabled = true;
+            } else if (value == TradeAnalyzerViewModel.ViewPeriodEnum.Since) {
+                StartDate.IsEnabled = true;
+                EndDate.IsEnabled = false;
+            } else {
+                StartDate.IsEnabled = false;
+                EndDate.IsEnabled = false;
+            }
         }
     }
 }

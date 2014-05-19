@@ -25,7 +25,8 @@
         </StackPanel>
 
         <dxg:GridControl Name="Orders" AutoGenerateColumns="None" ItemsSource="{Binding Orders}"
-                         SelectedItems="{Binding SelectedOrders}" SelectionMode="Row">
+                         SelectedItems="{Binding SelectedOrders}" SelectionMode="Row"
+                         CustomSummary="Orders_OnCustomSummary">
             <dxg:GridControl.View>
                 <dxg:SelectionView ShowAutoFilterRow="False" ShowTotalSummary="False" ShowFixedTotalSummary="True"
                                    ShowGroupPanel="False" AutoWidth="True"
@@ -49,7 +50,9 @@
 
             </dxg:GridControl.View>
             <dxg:GridControl.TotalSummary>
-                <dxg:GridSummaryItem SummaryType="Count" Alignment="Right" />
+                <dxg:GridSummaryItem FieldName="IsBuyOrder" SummaryType="Custom" Alignment="Right" DisplayFormat="Buying: {0}"/>
+                <dxg:GridSummaryItem FieldName="IsSellOrder" SummaryType="Custom" Alignment="Right" DisplayFormat="Selling: {0}" />
+                <dxg:GridSummaryItem SummaryType="Count" Alignment="Right" DisplayFormat="Total: {0}"/>
                 <dxg:GridSummaryItem FieldName="TotalMaxBuyPrice" SummaryType="Sum"
                                      DisplayFormat="Buyorder total: {0:N0} isk" Alignment="Left" />
             </dxg:GridControl.TotalSummary>

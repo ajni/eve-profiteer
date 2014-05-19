@@ -7,22 +7,62 @@
              xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
              xmlns:viewModels="clr-namespace:eZet.EveProfiteer.ViewModels"
              xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
-             xmlns:converters="clr-namespace:eZet.EveProfiteer.Ui.Converters"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="500"
              d:DataContext="{d:DesignInstance Type=viewModels:TradeAnalyzerViewModel, IsDesignTimeCreatable=False}">
-    <UserControl.Resources>
-        <converters:ViewPeriodToEnabledConverter x:Key="ViewPeriodToVisibilityConverter" />
-    </UserControl.Resources>
+
     <Grid>
         <DockPanel>
-            <ToolBarTray DockPanel.Dock="Top">
+            <dxb:BarManager DockPanel.Dock="Top">
+                <dxb:BarManager.Items>
+                    <dxb:BarEditItem Name="ViewPeriodSelector" EditValue="{Binding SelectedViewPeriod}" EditWidth="100" Hint="Station to analyze." EditValueChanged="ViewPeriodSelector_OnEditValueChanged">
+                        <dxb:BarEditItem.EditSettings>
+                            <dxe:ComboBoxEditSettings ItemsSource="{Binding ViewPeriodValues}"/>
+                        </dxb:BarEditItem.EditSettings>
+                    </dxb:BarEditItem>
+                    <dxb:BarEditItem  Name="StartDate" Content="From" EditValue="{Binding PeriodSelectorStart}">
+                        <dxb:BarEditItem.EditSettings>
+                            <dxe:DateEditSettings/>
+                        </dxb:BarEditItem.EditSettings>
+
+                    </dxb:BarEditItem>
+                    <dxb:BarEditItem  Name="EndDate" Content="To" EditValue="{Binding PeriodSelectorEnd}">
+                        <dxb:BarEditItem.EditSettings>
+                            <dxe:DateEditSettings/>
+                        </dxb:BarEditItem.EditSettings>
+                    </dxb:BarEditItem>
+                    <dxb:BarCheckItem Name="FilterOrders" CheckedChanged="FilterOrders_OnChecked" Description="Description" Content="Orders"/>
+                    <dxb:BarCheckItem Name="FilterInactiveOrders" CheckedChanged="FilterOrders_OnChecked" Content="Active Orders"/>
+                    <dxb:BarButtonItem Name="ViewButton" Content="View" Command="{Binding ViewPeriodCommand}"></dxb:BarButtonItem>
+
+                </dxb:BarManager.Items>
+
+                <dxb:BarManager.Bars>
+                    <dxb:Bar>
+                        <dxb:BarButtonItemLink BarItemName="ViewButton"></dxb:BarButtonItemLink>
+                        <dxb:BarEditItemLink BarItemName="ViewPeriodSelector"></dxb:BarEditItemLink>
+                        <dxb:BarEditItemLink BarItemName="StartDate"></dxb:BarEditItemLink>
+                        <dxb:BarEditItemLink BarItemName="EndDate"></dxb:BarEditItemLink>
+                    </dxb:Bar>
+                    <dxb:Bar>
+                        <dxb:BarCheckItemLink BarItemName="FilterOrders"></dxb:BarCheckItemLink>
+                        <dxb:BarCheckItemLink BarItemName="FilterInactiveOrders"></dxb:BarCheckItemLink>
+                    </dxb:Bar>
+
+                </dxb:BarManager.Bars>
+
+            </dxb:BarManager>
+
+
+
+            <!--<ToolBarTray DockPanel.Dock="Top">
                 <ToolBar>
                     <ToolBarPanel Orientation="Horizontal">
 
                         <ComboBox x:Name="ViewPeriodSelector" Margin="5" Width="100" HorizontalAlignment="Left"
                                   ItemsSource="{Binding ViewPeriodValues}" SelectedItem="{Binding SelectedViewPeriod}" />
                     </ToolBarPanel>
+            
                     <ToolBarPanel Orientation="Horizontal"
                                   IsEnabled="{Binding SelectedViewPeriod, ConverterParameter=CustomDaySpan, Converter={StaticResource ViewPeriodToVisibilityConverter}}"
                                   VerticalAlignment="Center">
@@ -43,7 +83,7 @@
                     </ToolBarPanel>
                 </ToolBar>
 
-            </ToolBarTray>
+            </ToolBarTray>-->
 
             <dxg:GridControl x:Name="TradeAnalyzerGrid" AutoGenerateColumns="None" ItemsSource="{Binding Items}"
                              SelectionMode="None" CustomRowFilter="TradeAnalyzerGrid_OnCustomRowFilter">

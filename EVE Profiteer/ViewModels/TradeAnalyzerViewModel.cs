@@ -12,13 +12,13 @@ using eZet.EveProfiteer.Services;
 namespace eZet.EveProfiteer.ViewModels {
     public class TradeAnalyzerViewModel : Screen {
         public enum ViewPeriodEnum {
-            LastDay,
-            LastWeek,
-            LastTwoWeeks,
-            LastMonth,
+            Today,
+            Yesterday,
+            Week,
+            Month,
             All,
-            CustomDaySpan,
-            CustomPeriod
+            Since,
+            Period
         }
 
         private readonly AnalyzerService _analyzerService;
@@ -34,6 +34,9 @@ namespace eZet.EveProfiteer.ViewModels {
             DisplayName = "Trade Analyzer";
             Items = new BindableCollection<TradeAnalyzerItem>();
             ViewTradeDetailsCommand = new DelegateCommand<TradeAnalyzerItem>(ViewTradeDetails, CanViewTradeDetails);
+            ViewPeriodCommand = new DelegateCommand(ViewPeriod);
+            PeriodSelectorStart = DateTime.UtcNow.AddMonths(-1);
+            PeriodSelectorEnd = DateTime.UtcNow;
         }
 
         private bool CanViewTradeDetails(TradeAnalyzerItem tradeAnalyzerItem) {
@@ -48,11 +51,17 @@ namespace eZet.EveProfiteer.ViewModels {
             }
         }
 
-        public DateTime ViewStart { get; set; }
+        public DateTime ActualViewStart { get; private set; }
 
-        public DateTime ViewEnd { get; set; }
+        public DateTime ActualViewEnd { get; private set; }
+
+        public DateTime PeriodSelectorStart { get; set; }
+
+        public DateTime PeriodSelectorEnd { get; set; }
 
         public ICommand ViewTradeDetailsCommand { get; private set; }
+
+        public ICommand ViewPeriodCommand { get; private set; }
 
         public IEnumerable<ViewPeriodEnum> ViewPeriodValues {
             get { return Enum.GetValues(typeof(ViewPeriodEnum)).Cast<ViewPeriodEnum>(); }
@@ -71,26 +80,36 @@ namespace eZet.EveProfiteer.ViewModels {
 
         public int CustomDaySpan { get; set; }
 
-        public async Task ViewPeriod() {
-            ViewEnd = DateTime.UtcNow;
+        public async void ViewPeriod() {
+            ActualViewEnd = DateTime.UtcNow;
             switch (SelectedViewPeriod) {
                 case ViewPeriodEnum.All:
-                    ViewStart = DateTime.MinValue;
+                    ActualViewStart = DateTime.MinValue;
+                    ActualViewEnd = DateTime.MaxValue;
                     break;
-                case ViewPeriodEnum.LastDay:
-                    ViewStart = DateTime.UtcNow.AddDays(-1);
+                case ViewPeriodEnum.Today:
+                    ActualViewStart = DateTime.UtcNow.Date;
+                    ActualViewEnd = DateTime.MaxValue;
                     break;
-                case ViewPeriodEnum.LastWeek:
-                    ViewStart = DateTime.UtcNow.AddDays(-7);
+                case ViewPeriodEnum.Yesterday:
+                    ActualViewStart = DateTime.UtcNow.AddDays(-1).Date;
+                    ActualViewEnd = DateTime.UtcNow.Date;
                     break;
-                case ViewPeriodEnum.LastTwoWeeks:
-                    ViewStart = DateTime.UtcNow.AddDays(-14);
+                case ViewPeriodEnum.Week:
+                    ActualViewStart = DateTime.UtcNow.AddDays(-7);
+                    ActualViewEnd = DateTime.MaxValue;
                     break;
-                case ViewPeriodEnum.LastMonth:
-                    ViewStart = DateTime.UtcNow.AddMonths(-7);
+                case ViewPeriodEnum.Month:
+                    ActualViewStart = DateTime.UtcNow.AddMonths(-1);
+                    ActualViewEnd = DateTime.MaxValue;
                     break;
-                case ViewPeriodEnum.CustomDaySpan:
-                    ViewStart = DateTime.UtcNow.AddDays(-CustomDaySpan);
+                case ViewPeriodEnum.Since:
+                    ActualViewStart = PeriodSelectorStart;
+                    ActualViewEnd = DateTime.MaxValue;
+                    break;
+                case ViewPeriodEnum.Period:
+                    ActualViewStart = PeriodSelectorStart;
+                    ActualViewEnd = PeriodSelectorEnd;
                     break;
             }
             await Task.Run(() => load());
@@ -101,7 +120,7 @@ namespace eZet.EveProfiteer.ViewModels {
             ILookup<int, Order> orderLookup = orders.ToLookup(order => order.TypeId);
             IQueryable<IGrouping<int, Transaction>> transactions =
                 _analyzerService.Transactions()
-                    .Where(t => t.TransactionDate >= ViewStart && t.TransactionDate <= ViewEnd)
+                    .Where(t => t.TransactionDate >= ActualViewStart && t.TransactionDate <= ActualViewEnd)
                     .GroupBy(t => t.TypeId);
             var items = new List<TradeAnalyzerItem>();
             foreach (var transactionCollection in transactions.Select(x => x.ToList())) {
