@@ -10,14 +10,14 @@ using eZet.EveProfiteer.Services;
 using MoreLinq;
 
 namespace eZet.EveProfiteer.ViewModels {
-    public class ItemDetailsViewModel : Screen, IHandle<OrdersAddedEventArgs>, IHandle<ViewTradeDetailsEventArgs> {
+    public class TradeDetailsViewModel : Screen, IHandle<OrdersAddedEventArgs>, IHandle<ViewTradeDetailsEventArgs> {
         private readonly IEventAggregator _eventAggregator;
         private readonly AnalyzerService _analyzerService;
         private readonly EveOnlineStaticDataService _eveDbService;
         private InvType _selectedItem;
-        private ItemDetailsData _itemData;
+        private TradeDetailsData _tradeData;
 
-        public ItemDetailsViewModel(IEventAggregator eventAggregator, AnalyzerService analyzerService, EveOnlineStaticDataService eveDbService) {
+        public TradeDetailsViewModel(IEventAggregator eventAggregator, AnalyzerService analyzerService, EveOnlineStaticDataService eveDbService) {
             _eventAggregator = eventAggregator;
             _analyzerService = analyzerService;
             _eveDbService = eveDbService;
@@ -33,21 +33,22 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         private void LoadItem(InvType type) {
+            // TODO Fix loading NULL type
             if (type == null) 
                 return;
             List<Transaction> transactions =
                 _analyzerService.Transactions().Where(f => f.TypeId == type.TypeId).ToList();
             if (transactions.Any())
-                ItemData = new ItemDetailsData(transactions.First().TypeId, transactions.First().TypeName,
+                TradeData = new TradeDetailsData(transactions.First().TypeId, transactions.First().TypeName,
                     transactions);
         }
 
-        public ItemDetailsData ItemData {
-            get { return _itemData; }
+        public TradeDetailsData TradeData {
+            get { return _tradeData; }
             set {
-                if (Equals(value, _itemData)) return;
-                _itemData = value;
-                NotifyOfPropertyChange(() => ItemData);
+                if (Equals(value, _tradeData)) return;
+                _tradeData = value;
+                NotifyOfPropertyChange(() => TradeData);
             }
         }
 
@@ -70,7 +71,7 @@ namespace eZet.EveProfiteer.ViewModels {
         private void LoadSelectableItems() {
             IEnumerable<int> types =
                 _analyzerService.Orders().DistinctBy(order => order.TypeId).Select(order => order.TypeId);
-            SelectableItems = _eveDbService.GetTypes().Where(type => types.Contains(type.TypeId)).ToList();
+            SelectableItems = _eveDbService.GetTypes().Where(type => types.Contains(type.TypeId)).OrderBy(type => type.TypeName).ToList();
         }
 
         public void Handle(ViewTradeDetailsEventArgs message) {

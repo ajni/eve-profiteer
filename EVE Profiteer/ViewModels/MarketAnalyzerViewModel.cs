@@ -44,7 +44,8 @@ namespace eZet.EveProfiteer.ViewModels {
             AddToOrdersCommand = new DelegateCommand<ICollection<object>>(AddToOrders, CanAddToOrders);
             LoadOrdersCommand = new DelegateCommand(LoadOrders);
             ViewTradeDetailsCommand =
-                new DelegateCommand<MarketAnalyzerEntry>(entry => _eventAggregator.Publish(new ViewTradeDetailsEventArgs(entry.InvType.TypeId)),
+                new DelegateCommand<MarketAnalyzerEntry>(
+                    entry => _eventAggregator.Publish(new ViewTradeDetailsEventArgs(entry.InvType.TypeId)),
                     entry => entry != null && entry.Order != null);
         }
 

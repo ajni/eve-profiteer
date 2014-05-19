@@ -4,18 +4,18 @@ using System.Linq;
 using MoreLinq;
 
 namespace eZet.EveProfiteer.Models {
-    public class ItemDetailsData {
-        public ItemDetailsData(int typeId, string typeName, IEnumerable<Transaction> transactions) {
+    public class TradeDetailsData {
+        public TradeDetailsData(int typeId, string typeName, IEnumerable<Transaction> transactions) {
             TypeId = typeId;
             TypeName = typeName;
             Transactions = transactions;
-            ChartEntries = new List<ItemDetailsChartEntry>();
+            ChartEntries = new List<TradeDetailsChartPoint>();
             initialize();
         }
 
         public IEnumerable<Transaction> Transactions { get; set; }
 
-        public ICollection<ItemDetailsChartEntry> ChartEntries { get; set; }
+        public ICollection<TradeDetailsChartPoint> ChartEntries { get; set; }
 
         public int TypeId { get; private set; }
 
@@ -36,6 +36,14 @@ namespace eZet.EveProfiteer.Models {
         public decimal AvgBuyPrice { get; private set; }
 
         public decimal AvgSellPrice { get; private set; }
+
+        public decimal MinBuyPrice { get; private set; }
+
+        public decimal MaxBuyPrice { get; private set; }
+
+        public decimal MinSellPrice { get; private set; }
+
+        public decimal MaxSellPrice { get; private set; }
 
         public decimal Profit { get; private set; }
 
@@ -58,7 +66,7 @@ namespace eZet.EveProfiteer.Models {
             LastTrade = DateTime.MinValue;
             var stock = 0;
             foreach (var transactions in sortedGroups) {
-                var entry = new ItemDetailsChartEntry(transactions.First().TransactionDate.Date, transactions, stock);
+                var entry = new TradeDetailsChartPoint(transactions.First().TransactionDate.Date, transactions, stock);
                 stock = entry.Stock;
                 ChartEntries.Add(entry);
                 Balance += entry.Balance;

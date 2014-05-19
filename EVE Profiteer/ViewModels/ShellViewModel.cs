@@ -56,9 +56,10 @@ namespace eZet.EveProfiteer.ViewModels {
             Items.Add(IoC.Get<MarketAnalyzerViewModel>());
             Items.Add(IoC.Get<OrderEditorViewModel>());
             Items.Add(IoC.Get<TradeAnalyzerViewModel>());
-            Items.Add(IoC.Get<ItemDetailsViewModel>());
+            Items.Add(IoC.Get<TradeDetailsViewModel>());
+            Items.Add(IoC.Get<MarketBrowserViewModel>());
 
-            //Items.Add(IoC.Get<ItemDetailsViewModel>());
+            //Items.Add(IoC.Get<TradeDetailsViewModel>());
             //Items.Add(IoC.Get<ProfitViewModel>());
 
             if (ActiveKey != null) {
@@ -79,7 +80,7 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         public void Handle(ViewTradeDetailsEventArgs message) {
-            ActivateItem(Items.Single(item => item.GetType() == typeof(ItemDetailsViewModel)));
+            ActivateItem(Items.Single(item => item.GetType() == typeof(TradeDetailsViewModel)));
         }
     }
 }

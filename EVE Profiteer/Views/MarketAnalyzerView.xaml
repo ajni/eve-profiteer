@@ -29,51 +29,58 @@
     <dxlc:DockLayoutControl>
         <dxb:BarManager dxlc:DockLayoutControl.Dock="Top">
             <dxb:BarManager.Items>
-                <dxb:BarButtonItem Name="Analyze" Content="Analyze" Command="{Binding AnalyzeCommand}" Hint="Analyze market."/>
-                <dxb:BarButtonItem Name="LoadOrders" Content="Load orders" Command="{Binding LoadOrdersCommand}" Hint="Analyze your current orders."/>
-                <dxb:BarEditItem Name="StationSelect" EditValue="{Binding SelectedStation}" EditWidth="300" Hint="Station to analyze.">
+                <dxb:BarButtonItem Name="Analyze" Content="Analyze" Command="{Binding AnalyzeCommand}"
+                                   Hint="Analyze market." />
+                <dxb:BarButtonItem Name="LoadOrders" Content="Load orders" Command="{Binding LoadOrdersCommand}"
+                                   Hint="Analyze your current orders." />
+                <dxb:BarEditItem Name="StationSelect" EditValue="{Binding SelectedStation}" EditWidth="300"
+                                 Hint="Station to analyze.">
                     <dxb:BarEditItem.EditSettings>
-                        <dxe:ComboBoxEditSettings ItemsSource="{Binding Stations}" DisplayMember="StationName"/>
+                        <dxe:ComboBoxEditSettings ItemsSource="{Binding Stations}" DisplayMember="StationName" />
                     </dxb:BarEditItem.EditSettings>
                 </dxb:BarEditItem>
-                <dxb:BarEditItem Name="DayLimit" EditValue="{Binding DayLimit, Converter={converters:DoubleToIntConverter}}" EditWidth="80" Content2="{Binding DayLimit}" Hint="Number of recent days to analyze.">
+                <dxb:BarEditItem Name="DayLimit"
+                                 EditValue="{Binding DayLimit, Converter={converters:DoubleToIntConverter}}"
+                                 EditWidth="80" Content2="{Binding DayLimit}" Hint="Number of recent days to analyze.">
                     <dxb:BarEditItem.EditSettings>
-                        <dxe:TrackBarEditSettings Minimum="1" Maximum="30" TickFrequency="2" SmallStep="1" LargeStep="5"/>
+                        <dxe:TrackBarEditSettings Minimum="1" Maximum="30" TickFrequency="2" SmallStep="1"
+                                                  LargeStep="5" />
                     </dxb:BarEditItem.EditSettings>
                 </dxb:BarEditItem>
-                
-                    
+
+
             </dxb:BarManager.Items>
             <dxb:BarManager.Bars>
                 <dxb:Bar Caption="Analyze">
                     <dxb:Bar.DockInfo>
-                        <dxb:BarDockInfo ContainerType="Top"/>
+                        <dxb:BarDockInfo ContainerType="Top" />
                     </dxb:Bar.DockInfo>
                     <dxb:Bar.ItemLinks>
-                        <dxb:BarButtonItemLink BarItemName="Analyze"/>
-                        <dxb:BarEditItemLink BarItemName="StationSelect"/>
-                        <dxb:BarEditItemLink BarItemName="DayLimit"/>
+                        <dxb:BarButtonItemLink BarItemName="Analyze" />
+                        <dxb:BarEditItemLink BarItemName="StationSelect" />
+                        <dxb:BarEditItemLink BarItemName="DayLimit" />
                     </dxb:Bar.ItemLinks>
                 </dxb:Bar>
                 <dxb:Bar Caption="Load">
                     <dxb:Bar.DockInfo>
-                        <dxb:BarDockInfo ContainerType="Top"/>
+                        <dxb:BarDockInfo ContainerType="Top" />
                     </dxb:Bar.DockInfo>
                     <dxb:Bar.ItemLinks>
-                        <dxb:BarButtonItemLink BarItemName="LoadOrders"/>
+                        <dxb:BarButtonItemLink BarItemName="LoadOrders" />
                     </dxb:Bar.ItemLinks>
                 </dxb:Bar>
             </dxb:BarManager.Bars>
-            
-            
+
+
         </dxb:BarManager>
-        
-        <TreeView Name="ItemsTreeView" dxlc:DockLayoutControl.Dock="Left" dxlc:DockLayoutControl.AllowHorizontalSizing="True" VirtualizingPanel.IsVirtualizing="True"
-                      VerticalAlignment="Stretch" VerticalContentAlignment="Stretch"
-                      ItemsSource="{Binding TreeRootNodes}" >
+
+        <TreeView Name="ItemsTreeView" dxlc:DockLayoutControl.Dock="Left"
+                  dxlc:DockLayoutControl.AllowHorizontalSizing="True" VirtualizingPanel.IsVirtualizing="True"
+                  VerticalAlignment="Stretch" VerticalContentAlignment="Stretch"
+                  ItemsSource="{Binding TreeRootNodes}">
             <TreeView.Resources>
                 <HierarchicalDataTemplate DataType="{x:Type eveOnlineDbModels:InvMarketGroup}"
-                                              ItemsSource="{Binding Children}">
+                                          ItemsSource="{Binding Children}">
                     <StackPanel Orientation="Horizontal">
                         <CheckBox IsChecked="{Binding IsChecked}" Focusable="False" />
                         <ContentPresenter Content="{Binding MarketGroupName}" />
@@ -89,21 +96,22 @@
         </TreeView>
 
 
-        <dxg:GridControl dxlc:DockLayoutControl.Dock="Client" dxlc:DockLayoutControl.AllowVerticalSizing="True" AutoGenerateColumns="None" ItemsSource="{Binding MarketAnalyzerResults}" >
+        <dxg:GridControl dxlc:DockLayoutControl.Dock="Client" dxlc:DockLayoutControl.AllowVerticalSizing="True"
+                         AutoGenerateColumns="None" ItemsSource="{Binding MarketAnalyzerResults}">
             <dxg:GridControl.View>
                 <dxg:TableView AllowEditing="False" NavigationStyle="Row" ShowAutoFilterRow="True"
-                                       ShowFixedTotalSummary="True" IsTotalSummaryMenuEnabled="True"
-                                       ShowGroupPanel="False" RowStyle="{StaticResource BackgroundStyle}"
-                                       ShowSearchPanelMode="Default" SearchColumns="TypeName"
-                                       SearchPanelCriteriaOperatorType="And">
+                               ShowFixedTotalSummary="True" IsTotalSummaryMenuEnabled="True"
+                               ShowGroupPanel="False" RowStyle="{StaticResource BackgroundStyle}"
+                               ShowSearchPanelMode="Default" SearchColumns="TypeName"
+                               SearchPanelCriteriaOperatorType="And" ShowFilterPanelMode="ShowAlways">
                     <dxg:TableView.RowCellMenuCustomizations>
                         <dxb:BarButtonItem Content="Add to orders"
-                                                   Command="{Binding View.DataContext.AddToOrdersCommand}"
-                                                   CommandParameter="{Binding View.DataControl.SelectedItems}" />
-                        <dxb:BarItemSeparator></dxb:BarItemSeparator>
+                                           Command="{Binding View.DataContext.AddToOrdersCommand}"
+                                           CommandParameter="{Binding View.DataControl.SelectedItems}" />
+                        <dxb:BarItemSeparator />
                         <dxb:BarButtonItem Content="View trade details"
-                                                   Command="{Binding View.DataContext.ViewTradeDetailsCommand}"
-                                                   CommandParameter="{Binding View.DataControl.CurrentItem}" />
+                                           Command="{Binding View.DataContext.ViewTradeDetailsCommand}"
+                                           CommandParameter="{Binding View.DataControl.CurrentItem}" />
                     </dxg:TableView.RowCellMenuCustomizations>
                 </dxg:TableView>
             </dxg:GridControl.View>

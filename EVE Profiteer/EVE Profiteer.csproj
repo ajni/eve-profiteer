@@ -128,7 +128,9 @@
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Events\DeleteOrdersEventArgs.cs" />
     <Compile Include="Events\ViewTradeDetailsEventArgs.cs" />
-    <Compile Include="Models\ItemDetailsChartEntry.cs" />
+    <Compile Include="Models\TradeDetailsChartPoint.cs" />
+    <Compile Include="Models\MarketBrowserItem.cs" />
+    <Compile Include="Models\MarketOrder.cs" />
     <Compile Include="Models\TradeAnalyzerItem.cs" />
     <Compile Include="Ui\Converters\DoubleToIntConverter.cs" />
     <Compile Include="Ui\Converters\OrderToColorConverter.cs" />
@@ -146,16 +148,18 @@
     <Compile Include="Services\OrderEditorService.cs" />
     <Compile Include="Services\RepositoryService.cs" />
     <Compile Include="Services\TransactionService.cs" />
+    <Compile Include="Ui\Converters\RoutedPropertyChangedEventArgsConverter.cs" />
     <Compile Include="Util\ApiEntityMapper.cs" />
     <Compile Include="Util\ProgressType.cs" />
     <Compile Include="ViewModels\AnalyzerProgressViewModel.cs" />
     <Compile Include="ViewModels\EditKeyViewModel.cs" />
     <Compile Include="ViewModels\AddKeyViewModel.cs" />
     <Compile Include="ViewModels\EditOrderDialogViewModel.cs" />
-    <Compile Include="Models\ItemDetailsData.cs" />
-    <Compile Include="ViewModels\ItemDetailsViewModel.cs" />
+    <Compile Include="Models\TradeDetailsData.cs" />
+    <Compile Include="ViewModels\TradeDetailsViewModel.cs" />
     <Compile Include="ViewModels\JournalViewModel.cs" />
     <Compile Include="ViewModels\ManageKeysViewModel.cs" />
+    <Compile Include="ViewModels\MarketBrowserViewModel.cs" />
     <Compile Include="ViewModels\OrderEditorViewModel.cs" />
     <Compile Include="Events\OrdersAddedEventArgs.cs" />
     <Compile Include="Services\AnalyzerService.cs" />
@@ -181,11 +185,14 @@
     <Compile Include="Views\AddKeyView.xaml.cs">
       <DependentUpon>AddKeyView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ItemDetailsView.xaml.cs">
-      <DependentUpon>ItemDetailsView.xaml</DependentUpon>
+    <Compile Include="Views\TradeDetailsView.xaml.cs">
+      <DependentUpon>TradeDetailsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\JournalView.xaml.cs">
       <DependentUpon>JournalView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MarketBrowserView.xaml.cs">
+      <DependentUpon>MarketBrowserView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\OrderEditorView.xaml.cs">
       <DependentUpon>OrderEditorView.xaml</DependentUpon>
@@ -227,11 +234,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\ItemDetailsView.xaml">
+    <Page Include="Views\TradeDetailsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\JournalView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MarketBrowserView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

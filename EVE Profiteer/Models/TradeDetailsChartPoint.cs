@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 
 namespace eZet.EveProfiteer.Models {
-    public class ItemDetailsChartEntry {
+    public class TradeDetailsChartPoint {
         public DateTime Date { get; set; }
         public IEnumerable<Transaction> Transactions { get; set; }
 
-        public ItemDetailsChartEntry(DateTime date, IEnumerable<Transaction> transactions, int stock) {
+        public TradeDetailsChartPoint(DateTime date, IEnumerable<Transaction> transactions, int stock) {
             Date = date;
             Transactions = transactions;
             Stock = stock;
@@ -25,9 +25,17 @@ namespace eZet.EveProfiteer.Models {
 
         public int BuyQuantity { get; private set; }
 
-        public decimal AvgBuyPrice { get; private set; }
+        public decimal? AvgBuyPrice { get; private set; }
 
-        public decimal AvgSellPrice { get; private set; }
+        public decimal? AvgSellPrice { get; private set; }
+
+        public decimal? MinBuyPrice { get; private set; }
+
+        public decimal? MaxBuyPrice { get; private set; }
+
+        public decimal? MinSellPrice { get; private set; }
+
+        public decimal? MaxSellPrice { get; private set; }
 
         public int StockDelta { get; private set; }
 
@@ -37,11 +45,17 @@ namespace eZet.EveProfiteer.Models {
 
 
         private void initialize() {
+            MinSellPrice = decimal.MaxValue;
+            MinBuyPrice = decimal.MaxValue;
             foreach (var transaction in Transactions) {
                 if (transaction.TransactionType == "Sell") {
+                    MinSellPrice = Math.Min(MinSellPrice.GetValueOrDefault(), transaction.Price);
+                    MaxSellPrice = Math.Max(MaxSellPrice.GetValueOrDefault(), transaction.Price);
                     SellQuantity += transaction.Quantity;
                     SellTotal += transaction.Quantity * transaction.Price;
                 } else if (transaction.TransactionType == "Buy") {
+                    MinBuyPrice = Math.Min(MinBuyPrice.GetValueOrDefault(), transaction.Price);
+                    MaxBuyPrice = Math.Max(MaxBuyPrice.GetValueOrDefault(), transaction.Price);
                     BuyQuantity += transaction.Quantity;
                     BuyTotal += transaction.Quantity * transaction.Price;
                 } else {
@@ -53,11 +67,16 @@ namespace eZet.EveProfiteer.Models {
             if (SellQuantity > 0)
                 AvgSellPrice = SellTotal / SellQuantity;
             Balance = SellTotal - BuyTotal;
-            Profit = SellQuantity * AvgSellPrice - SellQuantity * AvgBuyPrice;
+            Profit = SellQuantity * AvgSellPrice.GetValueOrDefault() - SellQuantity * AvgBuyPrice.GetValueOrDefault();
             StockDelta = BuyQuantity - SellQuantity;
             Stock += StockDelta;
+            StockValue = Stock * AvgBuyPrice.GetValueOrDefault();
             Stock = Stock < 0 ? 0 : Stock;
-            StockValue = Stock * AvgBuyPrice;
+
+            MinSellPrice = MinSellPrice == decimal.MaxValue ? null : MinSellPrice;
+            MaxSellPrice = MaxSellPrice == default(decimal) ? null : MaxSellPrice;
+            MaxBuyPrice = MaxBuyPrice == default(decimal) ? null : MaxBuyPrice;
+            MinBuyPrice = MinBuyPrice == decimal.MaxValue ? null : MinBuyPrice;
 
         }
 

@@ -15,6 +15,9 @@
     </UserControl.Resources>
     
     <DockPanel>
+        
+        
+        
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Left">
             <Button Margin="5" Name="Import">Import</Button>
             <Button Margin="5" Name="Export">Export</Button>

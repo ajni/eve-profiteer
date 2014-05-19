@@ -58,7 +58,8 @@ namespace eZet.EveProfiteer {
             _container.PerRequest<JournalViewModel>();
             _container.PerRequest<OrderEditorViewModel>();
             _container.PerRequest<TradeAnalyzerViewModel>();
-            _container.PerRequest<ItemDetailsViewModel>();
+            _container.PerRequest<TradeDetailsViewModel>();
+            _container.PerRequest<MarketBrowserViewModel>();
         }
 
         protected override object GetInstance(Type service, string key) {
