@@ -5,7 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
              xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
-             xmlns:ui="clr-namespace:eZet.EveProfiteer.Ui"
              xmlns:viewModels="clr-namespace:eZet.EveProfiteer.ViewModels"
              xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
              xmlns:converters="clr-namespace:eZet.EveProfiteer.Ui.Converters"

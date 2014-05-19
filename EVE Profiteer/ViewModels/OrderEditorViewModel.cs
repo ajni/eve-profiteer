@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Input;
 using Caliburn.Micro;
+using DevExpress.Xpf.Core;
 using DevExpress.Xpf.Grid;
 using DevExpress.Xpf.Mvvm;
 using DevExpress.Xpf.Ribbon.Customization;
@@ -13,10 +15,11 @@ using eZet.EveProfiteer.Events;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
 using eZet.EveProfiteer.Views;
+using DialogService = DevExpress.Xpf.Printing.DialogService;
 using Screen = Caliburn.Micro.Screen;
 
 namespace eZet.EveProfiteer.ViewModels {
-    public class OrderEditorViewModel : Screen, IHandle<AddToOrdersEventArgs>, IHandle<GridCellValidationEventArgs> {
+    public class OrderEditorViewModel : Screen, IHandle<AddToOrdersEventArgs>, IHandle<GridCellValidationEventArgs>, IHandle<DeleteOrdersEventArgs> {
         private readonly EveOnlineStaticDataService _eveOnlineStaticDataService;
         private readonly IEventAggregator _eventAggregator;
         private readonly OrderEditorService _orderEditorService;
@@ -35,7 +38,6 @@ namespace eZet.EveProfiteer.ViewModels {
             _orderEditorService = orderEditorService;
             _eveOnlineStaticDataService = eveOnlineStaticDataService;
             DisplayName = "Order Editor";
-
             _eventAggregator.Subscribe(this);
 
             SelectedOrders = new ObservableCollection<Order>();
@@ -44,9 +46,23 @@ namespace eZet.EveProfiteer.ViewModels {
             BuyOrderAvgOffset = 2;
             SellOrderAvgOffset = 2;
             ViewTradeDetailsCommand = new DelegateCommand<Order>(order => _eventAggregator.Publish(new ViewTradeDetailsEventArgs(order.TypeId)));
+            DeleteOrdersCommand = new DelegateCommand<ICollection<object>>(DeleteOrders) ;
+        }
+
+        private void DeleteOrders(ICollection<object> collection) {
+
+
+            var orders = collection.Select(order => (Order) order).ToList();
+            foreach (var order in orders) {
+                Orders.Remove(order);
+            }
+            _orderEditorService.DeleteOrders(orders);
+            _orderEditorService.SaveChanges();
         }
 
         public ICommand ViewTradeDetailsCommand { get; private set; }
+
+        public ICommand DeleteOrdersCommand { get; private set; }
 
         public int DayLimit { get; set; }
 
@@ -182,6 +198,10 @@ namespace eZet.EveProfiteer.ViewModels {
             var view = GetView() as OrderEditorView;
             if (view != null)
                 view.Orders.RefreshData();
+        }
+
+        public void Handle(DeleteOrdersEventArgs message) {
+            throw new System.NotImplementedException();
         }
     }
 }

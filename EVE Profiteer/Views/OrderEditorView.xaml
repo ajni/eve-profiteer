@@ -39,6 +39,9 @@
                         <dxb:BarButtonItem Content="View trade details"
                                            Command="{Binding View.DataContext.ViewTradeDetailsCommand}"
                                            CommandParameter="{Binding View.DataControl.CurrentItem}" />
+                        <dxb:BarButtonItem Content="Delete orders"
+                                           Command="{Binding View.DataContext.DeleteOrdersCommand}"
+                                           CommandParameter="{Binding View.DataControl.SelectedItems}" />
                     </dxg:SelectionView.RowCellMenuCustomizations>
                   
                 </dxg:SelectionView>

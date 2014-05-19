@@ -14,6 +14,7 @@ namespace eZet.EveProfiteer.Models {
         }
 
         private void analyze() {
+            // TODO Add LIFO or some other cost price calculation
             FirstTransactionDate = DateTime.MaxValue;
             LastTransactionDate = DateTime.MinValue; foreach (var transaction in Transactions) {
                 if (transaction.TransactionDate < FirstTransactionDate)
@@ -35,7 +36,7 @@ namespace eZet.EveProfiteer.Models {
                 AvgBuyPrice = BuyTotal / QuantityBought;
             if (QuantitySold > 0)
                 AvgSellPrice = SellTotal / QuantitySold;
-            Profit = QuantitySold * AvgSellPrice - QuantitySold * AvgBuyPrice;
+            Profit = AvgBuyPrice != 0 ? QuantitySold*AvgSellPrice - QuantitySold*AvgBuyPrice : 0;
             int span = (LastTransactionDate - FirstTransactionDate).Days;
             AvgProfitPerDay = Profit;
             if (span > 0)
