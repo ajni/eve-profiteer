@@ -103,7 +103,7 @@
                                ShowFixedTotalSummary="True" IsTotalSummaryMenuEnabled="True"
                                ShowGroupPanel="False" RowStyle="{StaticResource BackgroundStyle}"
                                ShowSearchPanelMode="Default" SearchColumns="TypeName"
-                               SearchPanelCriteriaOperatorType="And" ShowFilterPanelMode="ShowAlways">
+                               SearchPanelCriteriaOperatorType="And" ShowFilterPanelMode="ShowAlways" AutoWidth="True" AutoScrollOnSorting="False">
                     <dxg:TableView.RowCellMenuCustomizations>
                         <dxb:BarButtonItem Content="Add to orders"
                                            Command="{Binding View.DataContext.AddToOrdersCommand}"

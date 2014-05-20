@@ -45,6 +45,7 @@ namespace eZet.EveProfiteer {
             _container.PerRequest<RepositoryService<ApiKeyEntity>>();
             _container.Singleton<KeyManagementService>();
             _container.Singleton<AnalyzerService>();
+            _container.Singleton<MarketBrowserService>();
 
 
             // View Models

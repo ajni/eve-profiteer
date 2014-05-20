@@ -11,7 +11,7 @@
         d:DataContext="{d:DesignInstance Type=viewModels:ShellViewModel, IsDesignTimeCreatable=False}"
         Loaded="Window_Loaded">
 
-    <Grid>
+    <Grid UseLayoutRounding="True">
         <dxb:BarManager>
             <dxb:BarManager.Bars>
                 <dxb:Bar Caption="File" IsMainMenu="True">

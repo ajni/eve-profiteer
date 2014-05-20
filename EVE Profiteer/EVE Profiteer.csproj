@@ -128,10 +128,12 @@
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Events\DeleteOrdersEventArgs.cs" />
     <Compile Include="Events\ViewTradeDetailsEventArgs.cs" />
+    <Compile Include="Models\MarketHistoryEntry.cs" />
     <Compile Include="Models\TradeDetailsChartPoint.cs" />
     <Compile Include="Models\MarketBrowserItem.cs" />
     <Compile Include="Models\MarketOrder.cs" />
     <Compile Include="Models\TradeAnalyzerItem.cs" />
+    <Compile Include="Services\MarketBrowserService.cs" />
     <Compile Include="Ui\Converters\DoubleToIntConverter.cs" />
     <Compile Include="Ui\Converters\OrderToColorConverter.cs" />
     <Compile Include="Events\AddToOrdersEventArgs.cs" />
@@ -313,6 +315,10 @@
     <ProjectReference Include="..\..\EVE Library\EveLib.EveCentral\EveLib.EveCentral.csproj">
       <Project>{FCD48E90-6605-4BC1-B761-0B37DF390990}</Project>
       <Name>EveLib.EveCentral</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\EVE Library\EveLib.EveCrest\EveLib.EveCrest.csproj">
+      <Project>{F81627B3-99AF-4B4F-926A-685D21569451}</Project>
+      <Name>EveLib.EveCrest</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\EVE Library\EveLib.EveMarketData\EveLib.EveMarketData.csproj">
       <Project>{185E2271-BBA1-4071-AC46-BF47153BDB7A}</Project>

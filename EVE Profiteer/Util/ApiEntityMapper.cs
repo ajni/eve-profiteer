@@ -1,4 +1,6 @@
-﻿using eZet.EveLib.Modules.Models.Character;
+﻿using System.Windows;
+using eZet.EveLib.Modules.Models;
+using eZet.EveLib.Modules.Models.Character;
 using eZet.EveProfiteer.Models;
 
 namespace eZet.EveProfiteer.Util {
@@ -36,6 +38,33 @@ namespace eZet.EveProfiteer.Util {
             target.Reason = source.Reason;
             target.TaxReceiverId = source.TaxReceiverId;
             target.TaxAmount = source.TaxAmount;
+            return target;
+        }
+
+        public static MarketOrder Map(ItemOrders.ItemOrderEntry source, MarketOrder target) {
+            target.TypeId = source.TypeId;
+            target.StationId = source.StationId;
+            target.SolarSystemId = source.SolarSystemId;
+            target.RegionId = source.RegionId;
+            target.Price = source.Price;
+            target.OrderId = source.OrderId;
+            target.VolEntered = source.VolEntered;
+            target.VolRemaining = source.VolRemaining;
+            target.MinVolume = source.MinVolume;
+            target.Range = source.Range;
+            target.ExpiresDate = source.ExpiresDate;
+            target.IssuedDate = source.IssuedDate;
+            target.CreatedDate = source.CreatedDate;
+            return target;
+        }
+
+        public static MarketHistoryEntry Map(MarketHistoryResponse.MarketHistoryEntry source, MarketHistoryEntry target) {
+            target.Volume = source.Volume;
+            target.OrderCount = source.OrderCount;
+            target.LowPrice = source.LowPrice;
+            target.HighPrice = source.HighPrice;
+            target.AvgPrice = source.AvgPrice;
+            target.Date = source.Date;
             return target;
         }
     }
