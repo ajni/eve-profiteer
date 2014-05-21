@@ -14,14 +14,7 @@
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance Type=viewModels:TradeDetailsViewModel, IsDesignTimeCreatable=False}">
-    <UserControl.Resources>
-        <dx:IEnumerableDataSource x:Key="IEnumerableDataSource" ItemsSource="{Binding TradeData.ChartEntries}">
-            <dx:DesignDataManager.DesignData>
-                <dx:DesignDataSettings DataObjectType="{x:Type models:TradeDetailsChartPoint}" />
-            </dx:DesignDataManager.DesignData>
-        </dx:IEnumerableDataSource>
 
-    </UserControl.Resources>
     <Grid>
         <DockPanel>
             <dxb:BarManager DockPanel.Dock="Top">
@@ -33,18 +26,19 @@
                                                       MaskAutoComplete="Optimistic" DisplayMember="TypeName" />
                         </dxb:BarEditItem.EditSettings>
                     </dxb:BarEditItem>
-
+                    <dxb:BarButtonItem Name="ViewMarketDetails" Content="Market Details" Command="{Binding ViewMarketDetailsCommand}"></dxb:BarButtonItem>
                 </dxb:BarManager.Items>
 
                 <dxb:BarManager.Bars>
-                    <dxb:Bar>
-
+                    <dxb:Bar Caption="Trade Details">
                         <dxb:BarEditItemLink BarItemName="ItemSelector" />
                     </dxb:Bar>
-
-
+                    
+                    <dxb:Bar>
+                        <dxb:BarButtonItemLink dxb:BarItemName="ViewMarketDetails"></dxb:BarButtonItemLink>
+                    </dxb:Bar>
                 </dxb:BarManager.Bars>
-
+                
             </dxb:BarManager>
 
             <dxlc:DockLayoutControl>
@@ -202,7 +196,6 @@
                 <dx:DXTabControl dxlc:DockLayoutControl.Dock="Client"
                                  dxlc:DockLayoutControl.AllowHorizontalSizing="True">
                     <dx:DXTabItem Header="Total">
-                        <!--<dxc:ChartControl x:Name="TotalChart" DataSource="{Binding ItemsSource, Source={StaticResource IEnumerableDataSource}}">-->
                         <dxc:ChartControl x:Name="TotalChart" DataSource="{Binding TradeData.ChartEntries}">
                             <dxc:ChartControl.CrosshairOptions>
                                 <dxc:CrosshairOptions />

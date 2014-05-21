@@ -24,7 +24,7 @@ namespace eZet.EveProfiteer {
             _container.Singleton<IEventAggregator, EventAggregator>();
 
             // DbContexts
-            _container.PerRequest<EveProfiteerDbEntities>();
+            _container.Singleton<EveProfiteerDbEntities>();
             _container.PerRequest<EveDbContext>();
 
             // Repositories
@@ -32,7 +32,9 @@ namespace eZet.EveProfiteer {
             _container.PerRequest<IRepository<JournalEntry>, DbContextRepository<JournalEntry, EveProfiteerDbEntities>>();
             _container.PerRequest<IRepository<ApiKey>, DbContextRepository<ApiKey, EveProfiteerDbEntities>>();
             _container.PerRequest<IRepository<ApiKeyEntity>, DbContextRepository<ApiKeyEntity, EveProfiteerDbEntities>>();
+            _container.PerRequest<IRepository<OrderData>, DbContextRepository<OrderData, EveProfiteerDbEntities>>();
             _container.PerRequest<IRepository<Order>, DbContextRepository<Order, EveProfiteerDbEntities>>();
+            _container.PerRequest<IRepository<TransactionData>, DbContextRepository<TransactionData, EveProfiteerDbEntities>>();
 
 
             // Services

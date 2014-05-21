@@ -23,9 +23,9 @@ namespace eZet.EveProfiteer.ViewModels {
         private readonly IWindowManager _windowManager;
 
 
-        private ObservableCollection<Order> _orders;
+        private ObservableCollection<OrderData> _orders;
 
-        private ObservableCollection<Order> _selectedOrders;
+        private ObservableCollection<OrderData> _selectedOrders;
         private string _selectedPath = @"C:\Users\Lars Kristian\AppData\Local\MacroLab\Eve Pilot\Client_1\EVETrader";
 
         public OrderEditorViewModel(IWindowManager windowManager, IEventAggregator eventAggregator,
@@ -37,19 +37,19 @@ namespace eZet.EveProfiteer.ViewModels {
             DisplayName = "Order Editor";
             _eventAggregator.Subscribe(this);
 
-            SelectedOrders = new ObservableCollection<Order>();
-            Orders = new ObservableCollection<Order>();
+            SelectedOrders = new ObservableCollection<OrderData>();
+            Orders = new ObservableCollection<OrderData>();
             DayLimit = 10;
             BuyOrderAvgOffset = 2;
             SellOrderAvgOffset = 2;
-            ViewTradeDetailsCommand = new DelegateCommand<Order>(order => _eventAggregator.Publish(new ViewTradeDetailsEventArgs(order.TypeId)));
+            ViewTradeDetailsCommand = new DelegateCommand<OrderData>(order => _eventAggregator.Publish(new ViewTradeDetailsEventArgs(order.TypeId)));
             DeleteOrdersCommand = new DelegateCommand<ICollection<object>>(DeleteOrders) ;
         }
 
         private void DeleteOrders(ICollection<object> collection) {
 
 
-            var orders = collection.Select(order => (Order) order).ToList();
+            var orders = collection.Select(order => (OrderData) order).ToList();
             foreach (var order in orders) {
                 Orders.Remove(order);
             }
@@ -67,7 +67,7 @@ namespace eZet.EveProfiteer.ViewModels {
 
         public int SellOrderAvgOffset { get; set; }
 
-        public ObservableCollection<Order> Orders {
+        public ObservableCollection<OrderData> Orders {
             get { return _orders; }
             private set {
                 _orders = value;
@@ -75,7 +75,7 @@ namespace eZet.EveProfiteer.ViewModels {
             }
         }
 
-        public ObservableCollection<Order> SelectedOrders {
+        public ObservableCollection<OrderData> SelectedOrders {
             get { return _selectedOrders; }
             set {
                 _selectedOrders = value;
@@ -85,9 +85,9 @@ namespace eZet.EveProfiteer.ViewModels {
 
         private void OrdersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
             if (e.NewItems != null)
-                _orderEditorService.AddOrders(e.NewItems.OfType<Order>());
+                _orderEditorService.AddOrders(e.NewItems.OfType<OrderData>());
             if (e.OldItems != null)
-                _orderEditorService.DeleteOrders(e.OldItems.OfType<Order>());
+                _orderEditorService.DeleteOrders(e.OldItems.OfType<OrderData>());
         }
 
 
@@ -110,7 +110,7 @@ namespace eZet.EveProfiteer.ViewModels {
             dialog.ShowNewFolderButton = false;
             dialog.SelectedPath = _selectedPath;
             if (dialog.ShowDialog() == DialogResult.OK) {
-                ICollection<Order> orders = _orderEditorService.LoadOrdersFromDisk(dialog.SelectedPath);
+                ICollection<OrderData> orders = _orderEditorService.LoadOrdersFromDisk(dialog.SelectedPath);
                 _orderEditorService.LoadMarketData(orders, DayLimit);
                 Orders.Clear();
                 Orders.AddRange(orders);
@@ -129,7 +129,7 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         public void SetPriceLimits() {
-            foreach (Order order in SelectedOrders) {
+            foreach (OrderData order in SelectedOrders) {
                 order.MaxBuyPrice = order.AvgPrice + order.AvgPrice * (decimal)(BuyOrderAvgOffset / 100.0);
                 order.MinSellPrice = order.AvgPrice - order.AvgPrice * (decimal)(SellOrderAvgOffset / 100.0);
             }
@@ -140,7 +140,7 @@ namespace eZet.EveProfiteer.ViewModels {
         public void EditOrdersDialog() {
             var vm = new EditOrderDialogViewModel();
             if (_windowManager.ShowDialog(vm) != true) return;
-            foreach (Order order in SelectedOrders) {
+            foreach (OrderData order in SelectedOrders) {
                 if (vm.SetBuyOrderTotal && order.MaxBuyPrice != 0) {
                     order.BuyQuantity = (int)(vm.BuyOrderTotal / order.MaxBuyPrice);
                     if (order.MaxBuyPrice > vm.BuyOrderTotal) 
@@ -166,7 +166,7 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         public void Handle(AddToOrdersEventArgs e) {
-            var orders = new List<Order>();
+            var orders = new List<OrderData>();
             foreach (MarketAnalyzerEntry item in e.Items) {
                 orders.Add(_orderEditorService.CreateOrder(item.InvType.TypeId));
             }
@@ -186,7 +186,7 @@ namespace eZet.EveProfiteer.ViewModels {
                     eventArgs.IsValid = false;
                     eventArgs.SetError("Item has already been added.");
                 } else {
-                    ((Order)eventArgs.Row).TypeId = item.TypeId;
+                    ((OrderData)eventArgs.Row).TypeId = item.TypeId;
                 }
             }
         }

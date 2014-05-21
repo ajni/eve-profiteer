@@ -12,7 +12,7 @@ namespace eZet.EveProfiteer.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Transaction
+    public partial class TransactionData
     {
         public int Id { get; set; }
         public System.DateTime TransactionDate { get; set; }
@@ -29,6 +29,7 @@ namespace eZet.EveProfiteer.Models
         public Nullable<int> ApiKeyEntity_Id { get; set; }
         public long JournalTransactionId { get; set; }
         public int ClientTypeId { get; set; }
-        public string TypeName { get; set; }
+    
+        public virtual ApiKeyEntity ApiKeyEntity { get; set; }
     }
 }

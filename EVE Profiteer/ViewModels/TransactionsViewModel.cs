@@ -6,14 +6,14 @@ using eZet.EveProfiteer.Models;
 namespace eZet.EveProfiteer.ViewModels {
     public class TransactionsViewModel : Screen {
         private readonly Services.TransactionService _transactionService;
-        private ObservableCollection<Transaction> _transactions;
+        private ObservableCollection<TransactionData> _transactions;
 
         public TransactionsViewModel(Services.TransactionService transactionService) {
             _transactionService = transactionService;
             DisplayName = "Transactions";
         }
 
-        public ObservableCollection<Transaction> Transactions {
+        public ObservableCollection<TransactionData> Transactions {
             get { return _transactions; }
             set {
                 _transactions = value;
@@ -27,7 +27,7 @@ namespace eZet.EveProfiteer.ViewModels {
         public void Initialize(ApiKey key, ApiKeyEntity entity) {
             ApiKey = key;
             ApiKeyEntity = entity;
-            Transactions = new ObservableCollection<Transaction>(_transactionService.Transactions().Where(t => t.ApiKeyEntity.Id == entity.Id).ToList());
+            Transactions = new ObservableCollection<TransactionData>(_transactionService.Transactions().Where(t => t.ApiKeyEntity.Id == entity.Id).ToList());
         }
 
         protected override void OnInitialize() {

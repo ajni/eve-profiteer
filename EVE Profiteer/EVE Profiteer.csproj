@@ -166,6 +166,7 @@
     <Compile Include="Events\OrdersAddedEventArgs.cs" />
     <Compile Include="Services\AnalyzerService.cs" />
     <Compile Include="ViewModels\TradeAnalyzerViewModel.cs" />
+    <Compile Include="ViewModels\ViewMarketDetailsEventArgs.cs" />
     <Compile Include="Views\EditOrderDialogView.xaml.cs">
       <DependentUpon>EditOrderDialogView.xaml</DependentUpon>
     </Compile>

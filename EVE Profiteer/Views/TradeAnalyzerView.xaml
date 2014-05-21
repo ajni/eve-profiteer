@@ -53,38 +53,6 @@
 
             </dxb:BarManager>
 
-
-
-            <!--<ToolBarTray DockPanel.Dock="Top">
-                <ToolBar>
-                    <ToolBarPanel Orientation="Horizontal">
-
-                        <ComboBox x:Name="ViewPeriodSelector" Margin="5" Width="100" HorizontalAlignment="Left"
-                                  ItemsSource="{Binding ViewPeriodValues}" SelectedItem="{Binding SelectedViewPeriod}" />
-                    </ToolBarPanel>
-            
-                    <ToolBarPanel Orientation="Horizontal"
-                                  IsEnabled="{Binding SelectedViewPeriod, ConverterParameter=CustomDaySpan, Converter={StaticResource ViewPeriodToVisibilityConverter}}"
-                                  VerticalAlignment="Center">
-                        <TextBlock Text="Days:" />
-                        <TextBox x:Name="CustomDaySelector" Text="{Binding CustomDaySpan}" Margin="5 0" Width="20" />
-                    </ToolBarPanel>
-                    <ToolBarPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <Button Margin="5" x:Name="ViewPeriod" Content="View" />
-                    </ToolBarPanel>
-                </ToolBar>
-                <ToolBar>
-                    <ToolBarPanel VerticalAlignment="Center">
-                        <CheckBox x:Name="FilterOrders" Content="Only orders" Checked="FilterOrders_OnChecked"
-                                  Unchecked="FilterOrders_OnChecked" />
-                        <CheckBox x:Name="FilterInactiveOrders" Content="Only active orders"
-                                  Checked="FilterOrders_OnChecked"
-                                  Unchecked="FilterOrders_OnChecked" />
-                    </ToolBarPanel>
-                </ToolBar>
-
-            </ToolBarTray>-->
-
             <dxg:GridControl x:Name="TradeAnalyzerGrid" AutoGenerateColumns="None" ItemsSource="{Binding Items}"
                              SelectionMode="None" CustomRowFilter="TradeAnalyzerGrid_OnCustomRowFilter">
                 <dxg:GridControl.View>
@@ -95,6 +63,9 @@
                         <dxg:SelectionView.RowCellMenuCustomizations>
                             <dxb:BarButtonItem Content="View trade details"
                                                Command="{Binding View.DataContext.ViewTradeDetailsCommand}"
+                                               CommandParameter="{Binding View.DataControl.CurrentItem}" />
+                            <dxb:BarButtonItem Content="View market details"
+                                               Command="{Binding View.DataContext.ViewMarketDetailsCommand}"
                                                CommandParameter="{Binding View.DataControl.CurrentItem}" />
                         </dxg:SelectionView.RowCellMenuCustomizations>
                     </dxg:SelectionView>

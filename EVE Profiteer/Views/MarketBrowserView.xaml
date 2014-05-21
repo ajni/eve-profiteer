@@ -20,14 +20,11 @@
 
     <UserControl.Resources>
 
-        <ResourceDictionary>
- 
-
-        </ResourceDictionary>
+        <ResourceDictionary />
     </UserControl.Resources>
 
     <dxlc:DockLayoutControl>
-        
+
         <dxb:BarManager dxlc:DockLayoutControl.Dock="Top">
             <dxb:BarManager.Items>
                 <dxb:BarEditItem Name="RegionSelector" EditValue="{Binding SelectedRegion}" EditWidth="200">
@@ -36,22 +33,26 @@
                                                   AutoComplete="True" />
                     </dxb:BarEditItem.EditSettings>
                 </dxb:BarEditItem>
-                <dxb:BarCheckItem Name="DonchianChannel" Content="Donchian Channel" IsChecked="{Binding ShowDonchianChannel}"></dxb:BarCheckItem>
-                <dxb:BarCheckItem Name="AveragePrice" Content="Average Price" IsChecked="{Binding ShowAveragePrice}"></dxb:BarCheckItem>
-                <dxb:BarCheckItem Name="Moving5DayAverage" Content="5 Day Average" IsChecked="{Binding Show5DayAverage}"></dxb:BarCheckItem>
-                <dxb:BarCheckItem Name="Moving20DayAverage" Content="20 Day Average" IsChecked="{Binding Show20DayAverage}"></dxb:BarCheckItem>
-                <dxb:BarCheckItem Name="DonchianCenter" Content="Donchian Center" IsChecked="{Binding ShowDonchianCenter}"></dxb:BarCheckItem>
+                <dxb:BarCheckItem Name="DonchianChannel" Content="Donchian Channel"
+                                  IsChecked="{Binding ShowDonchianChannel}" />
+                <dxb:BarCheckItem Name="AveragePrice" Content="Average Price" IsChecked="{Binding ShowAveragePrice}" />
+                <dxb:BarCheckItem Name="Moving5DayAverage" Content="5 Day Average"
+                                  IsChecked="{Binding Show5DayAverage}" />
+                <dxb:BarCheckItem Name="Moving20DayAverage" Content="20 Day Average"
+                                  IsChecked="{Binding Show20DayAverage}" />
+                <dxb:BarCheckItem Name="DonchianCenter" Content="Donchian Center"
+                                  IsChecked="{Binding ShowDonchianCenter}" />
             </dxb:BarManager.Items>
             <dxb:BarManager.Bars>
                 <dxb:Bar Caption="Market Browser">
                     <dxb:BarEditItemLink BarItemName="RegionSelector" />
                 </dxb:Bar>
                 <dxb:Bar Caption="Chart Options">
-                    <dxb:BarCheckItemLink BarItemName="AveragePrice"></dxb:BarCheckItemLink>
-                    <dxb:BarCheckItemLink BarItemName="Moving5DayAverage"></dxb:BarCheckItemLink>
-                    <dxb:BarCheckItemLink BarItemName="Moving20DayAverage"></dxb:BarCheckItemLink>
-                    <dxb:BarCheckItemLink BarItemName="DonchianChannel"></dxb:BarCheckItemLink>
-                    <dxb:BarCheckItemLink BarItemName="DonchianCenter"></dxb:BarCheckItemLink>
+                    <dxb:BarCheckItemLink BarItemName="AveragePrice" />
+                    <dxb:BarCheckItemLink BarItemName="Moving5DayAverage" />
+                    <dxb:BarCheckItemLink BarItemName="Moving20DayAverage" />
+                    <dxb:BarCheckItemLink BarItemName="DonchianChannel" />
+                    <dxb:BarCheckItemLink BarItemName="DonchianCenter" />
                 </dxb:Bar>
             </dxb:BarManager.Bars>
 
@@ -79,6 +80,10 @@
                 </dxmvvm:EventToCommand>
             </dxmvvm:Interaction.Triggers>
         </TreeView>
+        
+        <dxlc:GroupBox dxlc:DockLayoutControl.Dock="Top" dxlc:DockLayoutControl.AllowHorizontalSizing="True" Header="{Binding MarketBrowserItem.InvType.TypeName}" ShowShadow="Always" MinimizeElementVisibility="Visible">
+            <Label Content="{Binding MarketBrowserItem.InvType.Description}"></Label>
+        </dxlc:GroupBox>
 
         <dx:DXTabControl dxlc:DockLayoutControl.Dock="Client" dxlc:DockLayoutControl.AllowVerticalSizing="True">
 
@@ -86,17 +91,17 @@
                 <dxg:GridControl ItemsSource="{Binding MarketBrowserItem.SellOrders}">
                     <dxg:GridControl.View>
                         <dxg:TableView NavigationStyle="Row"
-                                           ShowFixedTotalSummary="True" IsTotalSummaryMenuEnabled="True"
-                                           ShowGroupPanel="False"
-                                           ShowSearchPanelMode="Never" AutoWidth="True">
+                                       ShowFixedTotalSummary="True" IsTotalSummaryMenuEnabled="True"
+                                       ShowGroupPanel="False"
+                                       ShowSearchPanelMode="Never" AutoWidth="True">
                             <dxg:TableView.RowCellMenuCustomizations>
                                 <dxb:BarButtonItem Content="Add to orders"
-                                                       Command="{Binding View.DataContext.AddToOrdersCommand}"
-                                                       CommandParameter="{Binding View.DataControl.SelectedItems}" />
+                                                   Command="{Binding View.DataContext.AddToOrdersCommand}"
+                                                   CommandParameter="{Binding View.DataControl.SelectedItems}" />
                                 <dxb:BarItemSeparator />
                                 <dxb:BarButtonItem Content="View trade details"
-                                                       Command="{Binding View.DataContext.ViewTradeDetailsCommand}"
-                                                       CommandParameter="{Binding View.DataControl.CurrentItem}" />
+                                                   Command="{Binding View.DataContext.ViewTradeDetailsCommand}"
+                                                   CommandParameter="{Binding View.DataControl.CurrentItem}" />
                             </dxg:TableView.RowCellMenuCustomizations>
                         </dxg:TableView>
                     </dxg:GridControl.View>
@@ -124,17 +129,17 @@
                 <dxg:GridControl ItemsSource="{Binding MarketBrowserItem.BuyOrders}">
                     <dxg:GridControl.View>
                         <dxg:TableView NavigationStyle="Row"
-                                           ShowFixedTotalSummary="True" IsTotalSummaryMenuEnabled="True"
-                                           ShowGroupPanel="False"
-                                           ShowSearchPanelMode="Never" AutoWidth="True">
+                                       ShowFixedTotalSummary="True" IsTotalSummaryMenuEnabled="True"
+                                       ShowGroupPanel="False"
+                                       ShowSearchPanelMode="Never" AutoWidth="True">
                             <dxg:TableView.RowCellMenuCustomizations>
                                 <dxb:BarButtonItem Content="Add to orders"
-                                                       Command="{Binding View.DataContext.AddToOrdersCommand}"
-                                                       CommandParameter="{Binding View.DataControl.SelectedItems}" />
+                                                   Command="{Binding View.DataContext.AddToOrdersCommand}"
+                                                   CommandParameter="{Binding View.DataControl.SelectedItems}" />
                                 <dxb:BarItemSeparator />
                                 <dxb:BarButtonItem Content="View trade details"
-                                                       Command="{Binding View.DataContext.ViewTradeDetailsCommand}"
-                                                       CommandParameter="{Binding View.DataControl.CurrentItem}" />
+                                                   Command="{Binding View.DataContext.ViewTradeDetailsCommand}"
+                                                   CommandParameter="{Binding View.DataControl.CurrentItem}" />
                             </dxg:TableView.RowCellMenuCustomizations>
                         </dxg:TableView>
                     </dxg:GridControl.View>
@@ -158,15 +163,14 @@
                 </dxg:GridControl>
 
             </dx:DXTabItem>
-            
+
             <dx:DXTabItem Header="History (Table)">
                 <dxg:GridControl ItemsSource="{Binding MarketBrowserItem.MarketHistory}">
                     <dxg:GridControl.View>
                         <dxg:TableView NavigationStyle="Row"
-                                           ShowFixedTotalSummary="True" IsTotalSummaryMenuEnabled="True"
-                                           ShowGroupPanel="False" 
-                                           ShowSearchPanelMode="Never" AutoWidth="True">
-                        </dxg:TableView>
+                                       ShowFixedTotalSummary="True" IsTotalSummaryMenuEnabled="True"
+                                       ShowGroupPanel="False"
+                                       ShowSearchPanelMode="Never" AutoWidth="True" />
                     </dxg:GridControl.View>
                     <dxg:GridControl.TotalSummary>
                         <dxg:GridSummaryItem SummaryType="Count" Alignment="Right" />
@@ -194,31 +198,32 @@
                 </dxg:GridControl>
 
             </dx:DXTabItem>
-            
+
             <dx:DXTabItem Header="History (Chart)">
                 <dxc:ChartControl x:Name="HistoryChart" DataSource="{Binding MarketBrowserItem.MarketHistory}">
                     <dxc:ChartControl.CrosshairOptions>
-                        <dxc:CrosshairOptions ShowArgumentLabels="True" SnapMode="NearestArgument" ArgumentLineBrush="#FF3F3F3F">
+                        <dxc:CrosshairOptions ShowArgumentLabels="True" SnapMode="NearestArgument"
+                                              ArgumentLineBrush="#FF3F3F3F">
                             <dxc:CrosshairOptions.CommonLabelPosition>
-                                <dxc:CrosshairFreePosition/>
+                                <dxc:CrosshairFreePosition />
                             </dxc:CrosshairOptions.CommonLabelPosition>
                         </dxc:CrosshairOptions>
                     </dxc:ChartControl.CrosshairOptions>
-                       <dxc:ChartControl.Legend>
+                    <dxc:ChartControl.Legend>
                         <dxc:Legend BorderThickness="1" HorizontalPosition="Center"
-                                            VerticalPosition="BottomOutside" Orientation="Horizontal"/>
+                                    VerticalPosition="BottomOutside" Orientation="Horizontal" />
                     </dxc:ChartControl.Legend>
                     <dxc:XYDiagram2D EnableAxisXNavigation="True">
                         <dxc:XYDiagram2D.SecondaryAxesY>
-                            <dxc:SecondaryAxisY2D GridLinesVisible="False" Interlaced="False"/>
+                            <dxc:SecondaryAxisY2D Name="VolumeAxisY" />
                         </dxc:XYDiagram2D.SecondaryAxesY>
                         <dxc:XYDiagram2D.NavigationOptions>
-                            <dxc:NavigationOptions/>
+                            <dxc:NavigationOptions />
                         </dxc:XYDiagram2D.NavigationOptions>
                         <dxc:XYDiagram2D.AxisX>
                             <dxc:AxisX2D>
                                 <dxc:AxisX2D.DateTimeOptions>
-                                    <dxc:DateTimeOptions/>
+                                    <dxc:DateTimeOptions />
                                 </dxc:AxisX2D.DateTimeOptions>
                             </dxc:AxisX2D>
                         </dxc:XYDiagram2D.AxisX>
@@ -229,16 +234,20 @@
                                 </dxc:AxisY2D.NumericOptions>
                                 <dxc:AxisY2D.Range>
                                     <dxc:AxisRange dxc:AxisY.AlwaysShowZeroLevel="False"
-                                                           SideMarginsEnabled="True" dxc:AxisY2D.AlwaysShowZeroLevel="False" />
+                                                   SideMarginsEnabled="True" dxc:AxisY2D.AlwaysShowZeroLevel="False" />
                                 </dxc:AxisY2D.Range>
                             </dxc:AxisY2D>
                         </dxc:XYDiagram2D.AxisY>
-                        <dxc:RangeAreaSeries2D DisplayName="Donchian Channel" Visible="{Binding ShowDonchianChannel}" Marker1Visible="False" Marker2Visible="False" ValueDataMember="DonchianLow" Value2DataMember="DonchianHigh" ArgumentDataMember="Date" ColorEach="False" Brush="#FFDAF9FD" ArgumentScaleType="DateTime">
+                        <dxc:RangeAreaSeries2D DisplayName="Donchian Channel" Visible="{Binding ShowDonchianChannel}"
+                                               Marker1Visible="False" Marker2Visible="False"
+                                               ValueDataMember="DonchianLow" Value2DataMember="DonchianHigh"
+                                               ArgumentDataMember="Date" Brush="#FFDAF9FD"
+                                               ArgumentScaleType="DateTime">
                             <dxc:RangeAreaSeries2D.Border2>
-                                <dxc:SeriesBorder Brush="#FF94CBDA"/>
+                                <dxc:SeriesBorder Brush="#FF94CBDA" />
                             </dxc:RangeAreaSeries2D.Border2>
                             <dxc:RangeAreaSeries2D.Border1>
-                                <dxc:SeriesBorder Brush="#FF94CBDA"/>
+                                <dxc:SeriesBorder Brush="#FF94CBDA" />
                             </dxc:RangeAreaSeries2D.Border1>
                             <!--<dxc:SeriesPoint Argument="1" Value="6.5" dxc:RangeAreaSeries2D.Value2="2.5"/>
                             <dxc:SeriesPoint Argument="2" Value="5.5" dxc:RangeAreaSeries2D.Value2="3.5"/>
@@ -246,13 +255,19 @@
                             <dxc:SeriesPoint Argument="4" Value="11.5" dxc:RangeAreaSeries2D.Value2="15.5"/>
                             <dxc:SeriesPoint Argument="5" Value="18.5" dxc:RangeAreaSeries2D.Value2="20.5"/>-->
                         </dxc:RangeAreaSeries2D>
-                        <dxc:PointSeries2D DisplayName="Price Average" Visible="{Binding ShowAveragePrice}" MarkerSize="3" ValueDataMember="AvgPrice" ArgumentDataMember="Date" Brush="#FFF3E164" ColorEach="False" ArgumentScaleType="DateTime">
+                        <dxc:PointSeries2D DisplayName="Price Average" Visible="{Binding ShowAveragePrice}"
+                                           MarkerSize="3" ValueDataMember="AvgPrice" ArgumentDataMember="Date"
+                                           Brush="#FFF3E164" ArgumentScaleType="DateTime">
                             <dxc:PointSeries2D.MarkerModel>
-                                <dxc:SquareMarker2DModel/>
+                                <dxc:SquareMarker2DModel />
                             </dxc:PointSeries2D.MarkerModel>
                             <dxc:PointSeries2D.Indicators>
-                                <dxc:SimpleMovingAverage Visible="{Binding Show5DayAverage}" LegendText="5 Day Moving Average" ShowInLegend="True" PointsCount="5" Brush="#FFEA0000"/>
-                                <dxc:SimpleMovingAverage Visible="{Binding Show20DayAverage}" LegendText="20 Day Moving Average" ShowInLegend="True" PointsCount="20" Brush="#FF1BC906"/>
+                                <dxc:SimpleMovingAverage Visible="{Binding Show5DayAverage}"
+                                                         LegendText="5 Day Moving Average" ShowInLegend="True"
+                                                         PointsCount="5" Brush="#FFEA0000" />
+                                <dxc:SimpleMovingAverage Visible="{Binding Show20DayAverage}"
+                                                         LegendText="20 Day Moving Average" ShowInLegend="True"
+                                                         PointsCount="20" Brush="#FF1BC906" />
                             </dxc:PointSeries2D.Indicators>
                             <!--<dxc:SeriesPoint Argument="1" Value="6.5"/>
                             <dxc:SeriesPoint Argument="2" Value="5.5"/>
@@ -260,9 +275,12 @@
                             <dxc:SeriesPoint Argument="4" Value="11.5"/>
                             <dxc:SeriesPoint Argument="5" Value="18.5"/>-->
                         </dxc:PointSeries2D>
-                        <dxc:LineSeries2D DisplayName="Donchian Center" Visible="{Binding ShowDonchianCenter}" MarkerVisible="False" LabelsVisibility="False" Brush="#FF4C70FF" ShowInLegend="False" ValueDataMember="DonchianCenter" ArgumentDataMember="Date" CrosshairLabelVisibility="True" ArgumentScaleType="DateTime">
+                        <dxc:LineSeries2D DisplayName="Donchian Center" Visible="{Binding ShowDonchianCenter}"
+                                          MarkerVisible="False" Brush="#FF4C70FF"
+                                          ShowInLegend="True" ValueDataMember="DonchianCenter"
+                                          ArgumentDataMember="Date" ArgumentScaleType="DateTime">
                             <dxc:LineSeries2D.MarkerModel>
-                                <dxc:CircleMarker2DModel/>
+                                <dxc:CircleMarker2DModel />
                             </dxc:LineSeries2D.MarkerModel>
                             <!--<dxc:SeriesPoint Argument="1" Value="6.5"/>
                             <dxc:SeriesPoint Argument="2" Value="5.5"/>
@@ -270,12 +288,13 @@
                             <dxc:SeriesPoint Argument="4" Value="11.5"/>
                             <dxc:SeriesPoint Argument="5" Value="18.5"/>-->
                         </dxc:LineSeries2D>
-                        <dxc:BarSideBySideSeries2D DisplayName="Volume">
-                            <dxc:SeriesPoint Argument="1" Value="6.5"/>
-                            <dxc:SeriesPoint Argument="2" Value="5.5"/>
-                            <dxc:SeriesPoint Argument="3" Value="12.5"/>
-                            <dxc:SeriesPoint Argument="4" Value="11.5"/>
-                            <dxc:SeriesPoint Argument="5" Value="18.5"/>
+                        <dxc:BarSideBySideSeries2D DisplayName="Volume"
+                                                   dxc:XYDiagram2D.SeriesAxisY="{Binding ElementName=VolumeAxisY}" ArgumentDataMember="Date" ValueDataMember="Volume">
+                            <!--<dxc:SeriesPoint Argument="1" Value="6.5" />
+                            <dxc:SeriesPoint Argument="2" Value="5.5" />
+                            <dxc:SeriesPoint Argument="3" Value="12.5" />
+                            <dxc:SeriesPoint Argument="4" Value="11.5" />
+                            <dxc:SeriesPoint Argument="5" Value="18.5" />-->
                         </dxc:BarSideBySideSeries2D>
 
 

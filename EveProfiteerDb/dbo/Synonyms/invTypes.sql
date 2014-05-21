@@ -1,1 +1,1 @@
-﻿--CREATE SYNONYM [dbo].[invTypes] FOR [EveDb].[dbo].[invTypes]
+﻿CREATE SYNONYM [dbo].[invTypes] FOR [EveDb].[dbo].[invTypes]

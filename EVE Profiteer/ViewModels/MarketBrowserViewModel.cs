@@ -11,7 +11,7 @@ using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
 
 namespace eZet.EveProfiteer.ViewModels {
-    public class MarketBrowserViewModel : Screen {
+    public class MarketBrowserViewModel : Screen, IHandle<ViewMarketDetailsEventArgs> {
         private readonly EveOnlineStaticDataService _eveOnlineDbService;
         private readonly MarketBrowserService _marketBrowserService;
         private readonly IEventAggregator _eventAggregator;
@@ -64,7 +64,7 @@ namespace eZet.EveProfiteer.ViewModels {
             ViewTradeDetailsCommand =
                 new DelegateCommand<MarketAnalyzerEntry>(
                     entry => _eventAggregator.Publish(new ViewTradeDetailsEventArgs(entry.InvType.TypeId)),
-                    entry => entry != null && entry.Order != null);
+                    entry => entry != null && entry.OrderData != null);
             PropertyChanged += OnPropertyChanged;
         }
 
@@ -173,7 +173,7 @@ namespace eZet.EveProfiteer.ViewModels {
             if (objects == null || !objects.Any())
                 return false;
             List<MarketAnalyzerEntry> items = objects.Select(item => (MarketAnalyzerEntry)item).ToList();
-            return items.All(item => item.Order == null);
+            return items.All(item => item.OrderData == null);
         }
 
         private void AddToOrders(ICollection<object> objects) {
@@ -224,6 +224,10 @@ namespace eZet.EveProfiteer.ViewModels {
                 RegionId = 10000002
             });
             return list;
+        }
+
+        public void Handle(ViewMarketDetailsEventArgs message) {
+            LoadMarketDetails(message.InvType);
         }
     }
 

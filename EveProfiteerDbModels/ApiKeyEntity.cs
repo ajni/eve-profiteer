@@ -17,9 +17,9 @@ namespace eZet.EveProfiteer.Models
         public ApiKeyEntity()
         {
             this.JournalEntries = new HashSet<JournalEntry>();
-            this.Transactions = new HashSet<Transaction>();
-            this.Orders = new HashSet<Order>();
             this.ApiKeys = new HashSet<ApiKey>();
+            this.OrderDatas = new HashSet<OrderData>();
+            this.TransactionDatas = new HashSet<TransactionData>();
         }
     
         public int Id { get; set; }
@@ -30,8 +30,8 @@ namespace eZet.EveProfiteer.Models
         public bool IsActive { get; set; }
     
         public virtual ICollection<JournalEntry> JournalEntries { get; set; }
-        public virtual ICollection<Transaction> Transactions { get; set; }
-        public virtual ICollection<Order> Orders { get; set; }
         public virtual ICollection<ApiKey> ApiKeys { get; set; }
+        public virtual ICollection<OrderData> OrderDatas { get; set; }
+        public virtual ICollection<TransactionData> TransactionDatas { get; set; }
     }
 }

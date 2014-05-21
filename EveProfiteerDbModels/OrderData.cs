@@ -12,7 +12,7 @@ namespace eZet.EveProfiteer.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Order
+    public partial class OrderData
     {
         public int Id { get; set; }
         public int TypeId { get; set; }
@@ -30,6 +30,7 @@ namespace eZet.EveProfiteer.Models
         public bool IsSellOrder { get; set; }
         public bool IsBuyOrder { get; set; }
         public string Notes { get; set; }
-        public string TypeName { get; set; }
+    
+        public virtual ApiKeyEntity ApiKeyEntity { get; set; }
     }
 }

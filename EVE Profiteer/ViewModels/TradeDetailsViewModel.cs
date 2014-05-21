@@ -2,7 +2,9 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Windows.Input;
 using Caliburn.Micro;
+using DevExpress.Xpf.Mvvm;
 using eZet.EveOnlineDbModels;
 using eZet.EveProfiteer.Events;
 using eZet.EveProfiteer.Models;
@@ -21,11 +23,15 @@ namespace eZet.EveProfiteer.ViewModels {
             _eventAggregator = eventAggregator;
             _analyzerService = analyzerService;
             _eveDbService = eveDbService;
-            DisplayName = "Item Details";
+            DisplayName = "Trade Details";
             eventAggregator.Subscribe(this);
             PropertyChanged += OnPropertyChanged;
             LoadSelectableItems();
+            ViewMarketDetailsCommand = new DelegateCommand(() => _eventAggregator.Publish(new ViewMarketDetailsEventArgs(SelectedItem)), () => SelectedItem != null);
         }
+
+
+        public ICommand ViewMarketDetailsCommand { get; private set; }
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs) {
             if (propertyChangedEventArgs.PropertyName == "SelectedItem")

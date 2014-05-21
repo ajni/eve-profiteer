@@ -46,7 +46,7 @@ namespace eZet.EveProfiteer.ViewModels {
             ViewTradeDetailsCommand =
                 new DelegateCommand<MarketAnalyzerEntry>(
                     entry => _eventAggregator.Publish(new ViewTradeDetailsEventArgs(entry.InvType.TypeId)),
-                    entry => entry != null && entry.Order != null);
+                    entry => entry != null && entry.OrderData != null);
         }
 
 
@@ -102,9 +102,9 @@ namespace eZet.EveProfiteer.ViewModels {
 
         public void Handle(OrdersAddedEventArgs ordersAddedEventArgs) {
             ILookup<int, MarketAnalyzerEntry> lookup = MarketAnalyzerResults.ToLookup(f => f.InvType.TypeId);
-            foreach (Order order in ordersAddedEventArgs.Orders) {
+            foreach (OrderData order in ordersAddedEventArgs.Orders) {
                 if (lookup.Contains(order.TypeId)) {
-                    lookup[order.TypeId].Single().Order = order;
+                    lookup[order.TypeId].Single().OrderData = order;
                     MarketAnalyzerResults.NotifyOfPropertyChange();
                 }
             }
@@ -127,11 +127,11 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         private void LoadOrderData(IEnumerable<MarketAnalyzerEntry> items) {
-            IQueryable<Order> orders = _orderEditorService.GetOrders();
+            IQueryable<OrderData> orders = _orderEditorService.GetOrders();
             ILookup<int, MarketAnalyzerEntry> lookup = items.ToLookup(f => f.InvType.TypeId);
-            foreach (Order order in orders) {
+            foreach (OrderData order in orders) {
                 if (lookup.Contains(order.TypeId)) {
-                    lookup[order.TypeId].Single().Order = order;
+                    lookup[order.TypeId].Single().OrderData = order;
                 }
             }
         }
@@ -155,7 +155,7 @@ namespace eZet.EveProfiteer.ViewModels {
             if (objects == null || !objects.Any())
                 return false;
             List<MarketAnalyzerEntry> items = objects.Select(item => (MarketAnalyzerEntry) item).ToList();
-            return items.All(item => item.Order == null);
+            return items.All(item => item.OrderData == null);
         }
 
         private void AddToOrders(ICollection<object> objects) {

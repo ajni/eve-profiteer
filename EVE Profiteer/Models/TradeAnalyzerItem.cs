@@ -1,22 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace eZet.EveProfiteer.Models {
     public class TradeAnalyzerItem {
         public IEnumerable<Transaction> Transactions { get; set; }
 
-        public TradeAnalyzerItem(int typeId, string typeName, IEnumerable<Transaction> transactions, Order order) {
+        public TradeAnalyzerItem(int typeId, string typeName, IEnumerable<Transaction> transactions, Order orderData) {
             Transactions = transactions;
             TypeName = typeName;
             TypeId = typeId;
-            Order = order;
-            analyze();
+            OrderData = orderData;
+            Analyze();
         }
 
-        private void analyze() {
+        public TradeAnalyzerItem(Order orderData, IEnumerable<Transaction> transactions) {
+            OrderData = orderData;
+            Transactions = transactions;
+        }
+
+        public TradeAnalyzerItem() {
+
+        }
+
+        public void Analyze() {
+            if (Transactions.Any()) {
+                TypeId = Transactions.First().TypeId;
+                TypeName = Transactions.First().TypeName;
+            }
             // TODO Add LIFO or some other cost price calculation
             FirstTransactionDate = DateTime.MaxValue;
-            LastTransactionDate = DateTime.MinValue; foreach (var transaction in Transactions) {
+            LastTransactionDate = DateTime.MinValue;
+            foreach (var transaction in Transactions) {
                 if (transaction.TransactionDate < FirstTransactionDate)
                     FirstTransactionDate = transaction.TransactionDate;
                 if (transaction.TransactionDate > LastTransactionDate)
@@ -36,7 +51,7 @@ namespace eZet.EveProfiteer.Models {
                 AvgBuyPrice = BuyTotal / QuantityBought;
             if (QuantitySold > 0)
                 AvgSellPrice = SellTotal / QuantitySold;
-            Profit = AvgBuyPrice != 0 ? QuantitySold*AvgSellPrice - QuantitySold*AvgBuyPrice : 0;
+            Profit = AvgBuyPrice != 0 ? QuantitySold * AvgSellPrice - QuantitySold * AvgBuyPrice : 0;
             int span = (LastTransactionDate - FirstTransactionDate).Days;
             AvgProfitPerDay = Profit;
             if (span > 0)
@@ -65,7 +80,7 @@ namespace eZet.EveProfiteer.Models {
 
         public decimal AvgSellPrice { get; private set; }
 
-        public Order Order { get; private set; }
+        public Order OrderData { get; set; }
 
         public DateTime FirstTransactionDate { get; private set; }
 

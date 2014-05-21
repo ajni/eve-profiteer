@@ -10,7 +10,7 @@ using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
 
 namespace eZet.EveProfiteer.ViewModels {
-    public class ShellViewModel : Conductor<IScreen>.Collection.OneActive, IShell, IHandle<ViewTradeDetailsEventArgs> {
+    public class ShellViewModel : Conductor<IScreen>.Collection.OneActive, IShell, IHandle<ViewTradeDetailsEventArgs>, IHandle<ViewMarketDetailsEventArgs> {
         private readonly EveApiService _eveApiService;
         private readonly IEventAggregator _eventAggregator;
         private readonly KeyManagementService _keyManagementService;
@@ -74,13 +74,17 @@ namespace eZet.EveProfiteer.ViewModels {
         public async void UpdateTransactions() {
             long latest = 0;
             latest = _transactionService.GetLatestId(ActiveKeyEntity);
-            IEnumerable<Transaction> list = _eveApiService.GetNewTransactions(ActiveKey, ActiveKeyEntity, latest);
-            IList<Transaction> transactions = list as IList<Transaction> ?? list.ToList();
+            IEnumerable<TransactionData> list = _eveApiService.GetNewTransactions(ActiveKey, ActiveKeyEntity, latest);
+            IList<TransactionData> transactions = list as IList<TransactionData> ?? list.ToList();
             await Task.Run(() => _transactionService.BulkInsert(transactions));
         }
 
         public void Handle(ViewTradeDetailsEventArgs message) {
             ActivateItem(Items.Single(item => item.GetType() == typeof(TradeDetailsViewModel)));
+        }
+
+        public void Handle(ViewMarketDetailsEventArgs message) {
+            ActivateItem(Items.Single(item => item.GetType() == typeof(MarketBrowserViewModel)));
         }
     }
 }

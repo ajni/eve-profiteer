@@ -34,13 +34,14 @@ namespace eZet.EveProfiteer.ViewModels {
             DisplayName = "Trade Analyzer";
             Items = new BindableCollection<TradeAnalyzerItem>();
             ViewTradeDetailsCommand = new DelegateCommand<TradeAnalyzerItem>(ViewTradeDetails, CanViewTradeDetails);
+            //ViewMarketDetailsCommand = new DelegateCommand<TradeAnalyzerItem>(item => item.I);
             ViewPeriodCommand = new DelegateCommand(ViewPeriod);
             PeriodSelectorStart = DateTime.UtcNow.AddMonths(-1);
             PeriodSelectorEnd = DateTime.UtcNow;
         }
 
         private bool CanViewTradeDetails(TradeAnalyzerItem tradeAnalyzerItem) {
-            if (tradeAnalyzerItem != null && tradeAnalyzerItem.Order != null)
+            if (tradeAnalyzerItem != null && tradeAnalyzerItem.OrderData != null)
                 return true;
             return false;
         }
@@ -60,6 +61,8 @@ namespace eZet.EveProfiteer.ViewModels {
         public DateTime PeriodSelectorEnd { get; set; }
 
         public ICommand ViewTradeDetailsCommand { get; private set; }
+
+        public ICommand ViewMarketDetailsCommand { get; private set; }
 
         public ICommand ViewPeriodCommand { get; private set; }
 
@@ -116,18 +119,14 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         private void load() {
-            List<Order> orders = _analyzerService.Orders().ToList();
-            ILookup<int, Order> orderLookup = orders.ToLookup(order => order.TypeId);
-            IQueryable<IGrouping<int, Transaction>> transactions =
-                _analyzerService.Transactions()
-                    .Where(t => t.TransactionDate >= ActualViewStart && t.TransactionDate <= ActualViewEnd)
-                    .GroupBy(t => t.TypeId);
-            var items = new List<TradeAnalyzerItem>();
-            foreach (var transactionCollection in transactions.Select(x => x.ToList())) {
-                int typeId = transactionCollection.First().TypeId;
-                items.Add(new TradeAnalyzerItem(typeId, transactionCollection.First().TypeName, transactionCollection,
-                    orderLookup[typeId].SingleOrDefault()));
-            }
+            var items = _analyzerService.Orders().GroupJoin(_analyzerService.Transactions().Where(t => t.TransactionDate >= ActualViewStart && t.TransactionDate <= ActualViewEnd), order => order.TypeId,
+                       transaction => transaction.TypeId,
+                       (order, enumerable) =>
+                           new TradeAnalyzerItem {
+                               OrderData = order,
+                               Transactions = enumerable.ToList()
+                           }).Where(item => item.Transactions.Any()).ToList();
+            items.Apply(item => item.Analyze());
             Items.Clear();
             Items.AddRange(items);
         }

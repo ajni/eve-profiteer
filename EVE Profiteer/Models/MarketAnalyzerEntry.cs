@@ -45,7 +45,7 @@ namespace eZet.EveProfiteer.Models {
 
         public string Updated { get; set; }
 
-        public Order Order { get; set; }
+        public OrderData OrderData { get; set; }
 
         public void Calculate() {
             ProfitPerItem = SellPrice - BuyPrice;

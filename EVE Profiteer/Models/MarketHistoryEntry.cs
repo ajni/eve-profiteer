@@ -17,6 +17,7 @@ namespace eZet.EveProfiteer.Models {
         public decimal DonchianHigh { get; set; }
 
         public decimal DonchianLow { get; set; }
+
         public decimal DonchianCenter { get; set; }
 
     }

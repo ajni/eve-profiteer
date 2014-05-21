@@ -73,15 +73,21 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>EveProfiteerDbModel.edmx</DependentUpon>
     </Compile>
-    <Compile Include="Extensions\Order.cs" />
+    <Compile Include="Extensions\OrderData.cs" />
     <Compile Include="JournalEntry.cs">
       <DependentUpon>EveProfiteerDbModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Order.cs">
       <DependentUpon>EveProfiteerDbModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="OrderData.cs">
+      <DependentUpon>EveProfiteerDbModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Transaction.cs">
+      <DependentUpon>EveProfiteerDbModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TransactionData.cs">
       <DependentUpon>EveProfiteerDbModel.tt</DependentUpon>
     </Compile>
   </ItemGroup>

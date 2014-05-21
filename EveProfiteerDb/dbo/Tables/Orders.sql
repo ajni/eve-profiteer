@@ -1,4 +1,4 @@
-﻿CREATE TABLE [dbo].[Orders] (
+﻿CREATE TABLE [dbo].[OrderData] (
     [Id]                INT             IDENTITY (1, 1) NOT NULL,
     [TypeId]            INT          NOT NULL,
     [BuyQuantity]       INT             NOT NULL,
@@ -15,7 +15,7 @@
     [IsSellOrder] BIT NOT NULL, 
     [IsBuyOrder] BIT NOT NULL, 
     [Notes] TEXT NULL, 
-    CONSTRAINT [PK_dbo.Orders] PRIMARY KEY CLUSTERED ([Id] ASC), 
+    CONSTRAINT [PK_dbo.OrderData] PRIMARY KEY CLUSTERED ([Id] ASC), 
     CONSTRAINT [FK_Orders_ToApiKeyEntities] FOREIGN KEY ([ApiKeyEntity_Id]) REFERENCES [ApiKeyEntities]([Id]), 
 	UNIQUE ([TypeId])
 );
