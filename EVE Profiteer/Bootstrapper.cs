@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using Caliburn.Micro;
-using eZet.EveOnlineDbModels;
 using eZet.EveProfiteer.Framework;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Repository;
@@ -25,17 +24,16 @@ namespace eZet.EveProfiteer {
 
             // DbContexts
             _container.Singleton<EveProfiteerDbEntities>();
-            _container.PerRequest<EveDbContext>();
+            //_container.PerRequest<EveProfiteerDbEntities>();
 
             // Repositories
             _container.PerRequest<IRepository<Transaction>, DbContextRepository<Transaction, EveProfiteerDbEntities>>();
             _container.PerRequest<IRepository<JournalEntry>, DbContextRepository<JournalEntry, EveProfiteerDbEntities>>();
             _container.PerRequest<IRepository<ApiKey>, DbContextRepository<ApiKey, EveProfiteerDbEntities>>();
             _container.PerRequest<IRepository<ApiKeyEntity>, DbContextRepository<ApiKeyEntity, EveProfiteerDbEntities>>();
-            _container.PerRequest<IRepository<OrderData>, DbContextRepository<OrderData, EveProfiteerDbEntities>>();
             _container.PerRequest<IRepository<Order>, DbContextRepository<Order, EveProfiteerDbEntities>>();
-            _container.PerRequest<IRepository<TransactionData>, DbContextRepository<TransactionData, EveProfiteerDbEntities>>();
 
+            //_container.PerRequest<IRepository<Order>, DbContextRepository<Order, EveProfiteerDbEntities>>();
 
             // Services
             _container.PerRequest<EveApiService>();
@@ -45,7 +43,7 @@ namespace eZet.EveProfiteer {
             _container.PerRequest<OrderEditorService>();
             _container.PerRequest<RepositoryService<ApiKey>>();
             _container.PerRequest<RepositoryService<ApiKeyEntity>>();
-            _container.Singleton<KeyManagementService>();
+            _container.PerRequest<KeyManagementService>();
             _container.Singleton<AnalyzerService>();
             _container.Singleton<MarketBrowserService>();
 

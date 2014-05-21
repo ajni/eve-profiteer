@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using eZet.EveLib.Modules;
-using eZet.EveOnlineDbModels;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Util;
 
@@ -16,7 +15,7 @@ namespace eZet.EveProfiteer.Services {
 
         public EveMarketData EveMarketData { get; private set; }
 
-        public MarketBrowserItem GetDetails(MapRegion region, InvType invType) {
+        public MarketBrowserItem GetDetails(mapRegion region, InvType invType) {
             var options = new EveMarketDataOptions();
             options.Items.Add(invType.TypeId);
             options.Regions.Add(region.RegionId);

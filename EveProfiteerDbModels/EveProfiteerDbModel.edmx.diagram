@@ -10,13 +10,18 @@
         <EntityTypeShape EntityType="EveProfiteerDbModel.JournalEntry" Width="1.5" PointX="3" PointY="1.625" />
         <AssociationConnector Association="EveProfiteerDbModel.FK_dbo_JournalEntries_dbo_ApiKeyEntities_ApiKeyEntity_Id" />
         <AssociationConnector Association="EveProfiteerDbModel.ApiKeyApiKeyEntities" />
-        <EntityTypeShape EntityType="EveProfiteerDbModel.OrderData" Width="1.5" PointX="3" PointY="15.125" />
+        <EntityTypeShape EntityType="EveProfiteerDbModel.InvMarketGroup" Width="1.5" PointX="8.625" PointY="10.125" />
+        <EntityTypeShape EntityType="EveProfiteerDbModel.InvType" Width="1.5" PointX="6.5" PointY="10.125" />
+        <EntityTypeShape EntityType="EveProfiteerDbModel.mapRegion" Width="1.5" PointX="7.125" PointY="5.875" />
+        <AssociationConnector Association="EveProfiteerDbModel.invMarketGroupinvType" />
+        <AssociationConnector Association="EveProfiteerDbModel.invMarketGroupinvMarketGroup" />
+        <EntityTypeShape EntityType="EveProfiteerDbModel.Order" Width="1.5" PointX="3" PointY="11" />
+        <EntityTypeShape EntityType="EveProfiteerDbModel.Transaction" Width="1.5" PointX="3" PointY="15.625" />
+        <AssociationConnector Association="EveProfiteerDbModel.FK_dbo_Transactions_dbo_ApiKeyEntities_ApiKeyEntity_Id" />
         <AssociationConnector Association="EveProfiteerDbModel.FK_Orders_ToApiKeyEntities" />
-        <EntityTypeShape EntityType="EveProfiteerDbModel.Order" Width="1.5" PointX="5.375" PointY="0.75" />
-        <EntityTypeShape EntityType="EveProfiteerDbModel.TransactionData" Width="1.5" PointX="3" PointY="9.5" />
-        <AssociationConnector Association="EveProfiteerDbModel.FK_dbo_Transactions_dbo_ApiKeyEntities_ApiKeyEntity_Id1" />
-        <EntityTypeShape EntityType="EveProfiteerDbModel.Transaction" Width="1.5" PointX="5.375" PointY="6.75" />
-      </Diagram>
+        <AssociationConnector Association="EveProfiteerDbModel.FK_Orders_ToInvTypes" />
+        <AssociationConnector Association="EveProfiteerDbModel.FK_Transaction_ToInvType" />
+        </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
 </edmx:Edmx>

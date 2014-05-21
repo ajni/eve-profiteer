@@ -5,7 +5,6 @@ using System.Linq;
 using System.Windows.Input;
 using Caliburn.Micro;
 using DevExpress.Xpf.Mvvm;
-using eZet.EveOnlineDbModels;
 using eZet.EveProfiteer.Events;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
@@ -45,7 +44,7 @@ namespace eZet.EveProfiteer.ViewModels {
             List<Transaction> transactions =
                 _analyzerService.Transactions().Where(f => f.TypeId == type.TypeId).ToList();
             if (transactions.Any())
-                TradeData = new TradeDetailsData(transactions.First().TypeId, transactions.First().TypeName,
+                TradeData = new TradeDetailsData(transactions.First().TypeId, transactions.First().InvType.TypeName,
                     transactions);
         }
 

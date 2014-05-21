@@ -7,12 +7,12 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace eZet.EveOnlineDbModels
+namespace eZet.EveProfiteer.Models
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class MapRegion
+    public partial class mapRegion
     {
         public int RegionId { get; set; }
         public string RegionName { get; set; }

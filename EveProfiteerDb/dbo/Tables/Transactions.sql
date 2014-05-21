@@ -1,4 +1,4 @@
-﻿CREATE TABLE [dbo].[TransactionData] (
+﻿CREATE TABLE [dbo].[Transactions] (
     [Id]              INT             IDENTITY (1, 1) NOT NULL,
     [TransactionDate] DATETIME        NOT NULL,
     [TransactionId]   BIGINT          NOT NULL,
@@ -14,15 +14,16 @@
     [ApiKeyEntity_Id] INT             NULL,
     [JournalTransactionId] BIGINT	  NOT NULL, 
     [ClientTypeId]	  INT NOT NULL, 
-    CONSTRAINT [PK_dbo.TransactionData] PRIMARY KEY CLUSTERED ([Id] ASC),
-    CONSTRAINT [FK_dbo.TransactionData_dbo.ApiKeyEntities_ApiKeyEntity_Id] FOREIGN KEY ([ApiKeyEntity_Id]) REFERENCES [dbo].[ApiKeyEntities] ([Id]), 
+    CONSTRAINT [PK_dbo.Transactions] PRIMARY KEY CLUSTERED ([Id] ASC),
+    CONSTRAINT [FK_dbo.Transactions_dbo.ApiKeyEntities_ApiKeyEntity_Id] FOREIGN KEY ([ApiKeyEntity_Id]) REFERENCES [dbo].[ApiKeyEntities] ([Id]), 
+	CONSTRAINT [FK_Transaction_ToInvType] FOREIGN KEY ([TypeId]) REFERENCES [invTypes]([typeID]), 
     UNIQUE ([TransactionId]),
 );
 
 GO
 CREATE NONCLUSTERED INDEX [IX_ApiKeyEntity_Id]
-    ON [dbo].[TransactionData]([ApiKeyEntity_Id] ASC);
+    ON [dbo].[Transactions]([ApiKeyEntity_Id] ASC);
 
 GO
 CREATE NONCLUSTERED INDEX [IX_TypeId]
-    ON [dbo].[TransactionData]([TypeId] ASC);
+    ON [dbo].[Transactions]([TypeId] ASC);

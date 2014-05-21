@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using eZet.EveLib.Modules.Models;
-using eZet.EveOnlineDbModels;
 
 namespace eZet.EveProfiteer.Models {
     public class MarketAnalyzer {

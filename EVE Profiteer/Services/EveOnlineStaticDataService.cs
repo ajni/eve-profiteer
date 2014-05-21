@@ -1,13 +1,13 @@
 ﻿using System.Linq;
-using eZet.EveOnlineDbModels;
+using eZet.EveProfiteer.Models;
 
 namespace eZet.EveProfiteer.Services {
     public class EveOnlineStaticDataService {
-        public EveOnlineStaticDataService(EveDbContext repository) {
+        public EveOnlineStaticDataService(EveProfiteerDbEntities repository) {
             Repository = repository;
         }
 
-        private EveDbContext Repository { get; set; }
+        private EveProfiteerDbEntities Repository { get; set; }
 
         public void SetLazyLoad(bool val) {
             Repository.Configuration.LazyLoadingEnabled = val;
@@ -39,8 +39,8 @@ namespace eZet.EveProfiteer.Services {
             return query;
         }
 
-        public IQueryable<MapRegion> GetRegions() {
-            IOrderedQueryable<MapRegion> query = from row in Repository.MapRegions
+        public IQueryable<mapRegion> GetRegions() {
+            IOrderedQueryable<mapRegion> query = from row in Repository.mapRegions
                 where row.RegionId < 11000001
                 orderby row.RegionName
                 select row;

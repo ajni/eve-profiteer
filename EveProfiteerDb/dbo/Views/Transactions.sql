@@ -1,2 +1,18 @@
-﻿CREATE VIEW [dbo].[Transactions]
-	AS SELECT TD.*, T.typeName Name FROM [TransactionData] TD LEFT JOIN [$(EveDb)].[dbo].[invTypes] T ON TD.TypeId = T.typeID;
+﻿--CREATE VIEW [dbo].[Transactions] WITH SCHEMABINDING
+--	AS SELECT TD.[Id]
+--      ,TD.[TransactionDate]
+--      ,TD.[TransactionId]
+--      ,TD.[Quantity]
+--      ,TD.[TypeId]
+--      ,TD.[Price]
+--      ,TD.[ClientId]
+--      ,TD.[ClientName]
+--      ,TD.[StationId]
+--      ,TD.[StationName]
+--      ,TD.[TransactionType]
+--      ,TD.[TransactionFor]
+--      ,TD.[ApiKeyEntity_Id]
+--      ,TD.[JournalTransactionId]
+--      ,TD.[ClientTypeId], T.[typeName] [TypeName] FROM [dbo].[TransactionData] TD INNER JOIN [dbo].[invTypes] T ON TD.TypeId = T.typeID;
+--	GO;
+--	--CREATE UNIQUE CLUSTERED INDEX [IDX_dbo.TypeId] ON [dbo].[Transactions] ([TypeId]);

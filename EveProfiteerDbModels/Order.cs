@@ -30,6 +30,8 @@ namespace eZet.EveProfiteer.Models
         public bool IsSellOrder { get; set; }
         public bool IsBuyOrder { get; set; }
         public string Notes { get; set; }
-        public string TypeName { get; set; }
+    
+        public virtual ApiKeyEntity ApiKeyEntity { get; set; }
+        public virtual InvType InvType { get; set; }
     }
 }

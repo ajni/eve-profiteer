@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 
-
-namespace eZet.EveOnlineDbModels {
+namespace eZet.EveProfiteer.Models {
     public partial class InvMarketGroup : TreeNode {
 
         private ICollection<TreeNode> _children = new List<TreeNode>();

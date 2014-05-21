@@ -1,4 +1,4 @@
-﻿using eZet.EveOnlineDbModels;
+﻿using eZet.EveProfiteer.Models;
 
 namespace eZet.EveProfiteer.ViewModels {
     public class ViewMarketDetailsEventArgs {

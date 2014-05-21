@@ -8,7 +8,6 @@ using System.Windows.Input;
 using Caliburn.Micro;
 using DevExpress.Xpf.Mvvm;
 using eZet.Eve.EveProfiteer.ViewModels;
-using eZet.EveOnlineDbModels;
 using eZet.EveProfiteer.Events;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
@@ -46,7 +45,7 @@ namespace eZet.EveProfiteer.ViewModels {
             ViewTradeDetailsCommand =
                 new DelegateCommand<MarketAnalyzerEntry>(
                     entry => _eventAggregator.Publish(new ViewTradeDetailsEventArgs(entry.InvType.TypeId)),
-                    entry => entry != null && entry.OrderData != null);
+                    entry => entry != null && entry.Order != null);
         }
 
 
@@ -101,13 +100,13 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         public void Handle(OrdersAddedEventArgs ordersAddedEventArgs) {
-            ILookup<int, MarketAnalyzerEntry> lookup = MarketAnalyzerResults.ToLookup(f => f.InvType.TypeId);
-            foreach (OrderData order in ordersAddedEventArgs.Orders) {
-                if (lookup.Contains(order.TypeId)) {
-                    lookup[order.TypeId].Single().OrderData = order;
-                    MarketAnalyzerResults.NotifyOfPropertyChange();
-                }
-            }
+            //ILookup<int, MarketAnalyzerEntry> lookup = MarketAnalyzerResults.ToLookup(f => f.InvType.TypeId);
+            //foreach (Order order in ordersAddedEventArgs.Orders) {
+            //    if (lookup.Contains(order.TypeId)) {
+            //        lookup[order.TypeId].Single().Order = order;
+            //        MarketAnalyzerResults.NotifyOfPropertyChange();
+            //    }
+            //}
         }
 
         protected override void OnInitialize() {
@@ -127,13 +126,13 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         private void LoadOrderData(IEnumerable<MarketAnalyzerEntry> items) {
-            IQueryable<OrderData> orders = _orderEditorService.GetOrders();
-            ILookup<int, MarketAnalyzerEntry> lookup = items.ToLookup(f => f.InvType.TypeId);
-            foreach (OrderData order in orders) {
-                if (lookup.Contains(order.TypeId)) {
-                    lookup[order.TypeId].Single().OrderData = order;
-                }
-            }
+            //IQueryable<Order> orders = _orderEditorService.GetOrders();
+            //ILookup<int, MarketAnalyzerEntry> lookup = items.ToLookup(f => f.InvType.TypeId);
+            //foreach (Order order in orders) {
+            //    if (lookup.Contains(order.TypeId)) {
+            //        lookup[order.TypeId].Single().Order = order;
+            //    }
+            //}
         }
 
         public bool CanScannerLinkAction() {
@@ -155,7 +154,7 @@ namespace eZet.EveProfiteer.ViewModels {
             if (objects == null || !objects.Any())
                 return false;
             List<MarketAnalyzerEntry> items = objects.Select(item => (MarketAnalyzerEntry) item).ToList();
-            return items.All(item => item.OrderData == null);
+            return items.All(item => item.Order == null);
         }
 
         private void AddToOrders(ICollection<object> objects) {
@@ -166,12 +165,12 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         public async void LoadOrders() {
-            List<int> orders = _orderEditorService.GetOrders().Select(item => item.TypeId).ToList();
-            List<InvType> items =
-                _eveOnlineDbService.GetTypes().Where(item => orders.Contains(item.TypeId)).ToList();
-            MarketAnalyzer res = await GetMarketAnalyzer(items);
-            LoadOrderData(res.Result);
-            MarketAnalyzerResults = new BindableCollection<MarketAnalyzerEntry>(res.Result);
+            //List<int> orders = _orderEditorService.GetOrders().Select(item => item.TypeId).ToList();
+            //List<InvType> items =
+            //    _eveOnlineDbService.GetTypes().Where(item => orders.Contains(item.TypeId)).ToList();
+            //MarketAnalyzer res = await GetMarketAnalyzer(items);
+            //LoadOrderData(res.Result);
+            //MarketAnalyzerResults = new BindableCollection<MarketAnalyzerEntry>(res.Result);
         }
 
         private async Task<MarketAnalyzer> GetMarketAnalyzer(ICollection<InvType> items) {

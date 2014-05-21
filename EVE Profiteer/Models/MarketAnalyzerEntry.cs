@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using eZet.EveLib.Modules.Models;
-using eZet.EveOnlineDbModels;
 
 namespace eZet.EveProfiteer.Models {
     public class MarketAnalyzerEntry {
@@ -45,7 +44,7 @@ namespace eZet.EveProfiteer.Models {
 
         public string Updated { get; set; }
 
-        public OrderData OrderData { get; set; }
+        public Order Order { get; set; }
 
         public void Calculate() {
             ProfitPerItem = SellPrice - BuyPrice;

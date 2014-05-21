@@ -4,6 +4,7 @@ using eZet.EveProfiteer.Repository;
 
 namespace eZet.EveProfiteer.Services {
     public class RepositoryService<T> where T : class {
+
         protected readonly IRepository<T> Repository;
 
         public RepositoryService(IRepository<T> repository) {

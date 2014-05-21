@@ -9,8 +9,8 @@ using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Repository;
 
 namespace eZet.EveProfiteer.Services {
-    public class TransactionService : RepositoryService<TransactionData> {
-        public TransactionService(IRepository<TransactionData> repository)
+    public class TransactionService : RepositoryService<Transaction> {
+        public TransactionService(IRepository<Transaction> repository)
             : base(repository) {
         }
 
@@ -21,16 +21,16 @@ namespace eZet.EveProfiteer.Services {
                     select t.TransactionId).FirstOrDefault();
         }
 
-        public IEnumerable<TransactionData> RemoveAll(ApiKeyEntity entity) {
+        public IEnumerable<Transaction> RemoveAll(ApiKeyEntity entity) {
             return Repository.RemoveRange(Repository.Queryable().Where(i => i.ApiKeyEntity.Id == entity.Id));
         }
 
-        public void BulkInsert(IEnumerable<TransactionData> transactions) {
+        public void BulkInsert(IEnumerable<Transaction> transactions) {
             var db =
-                (Repository as DbContextRepository<TransactionData, EveProfiteerDbEntities>);
+                (Repository as DbContextRepository<Transaction, EveProfiteerDbEntities>);
             db.DbContext.Configuration.AutoDetectChangesEnabled = false;
             db.DbContext.Configuration.ValidateOnSaveEnabled = false;
-            IList<TransactionData> list = transactions as IList<TransactionData> ?? transactions.ToList();
+            IList<Transaction> list = transactions as IList<Transaction> ?? transactions.ToList();
             int count = 0;
             foreach (var transaction in list) {
                 ++count;if (count % 2000 == 0) {

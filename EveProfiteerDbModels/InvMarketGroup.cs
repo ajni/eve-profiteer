@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace eZet.EveOnlineDbModels
+namespace eZet.EveProfiteer.Models
 {
     using System;
     using System.Collections.Generic;
@@ -16,8 +16,8 @@ namespace eZet.EveOnlineDbModels
     {
         public InvMarketGroup()
         {
-            this.Items = new HashSet<InvType>();
-            this.SubGroups = new HashSet<InvMarketGroup>();
+            this.InvTypes = new HashSet<InvType>();
+            this.ChildGroups = new HashSet<InvMarketGroup>();
         }
     
         public int MarketGroupId { get; set; }
@@ -27,8 +27,8 @@ namespace eZet.EveOnlineDbModels
         public Nullable<int> IconId { get; set; }
         public Nullable<bool> HasTypes { get; set; }
     
-        public virtual ICollection<InvType> Items { get; set; }
+        public virtual ICollection<InvType> InvTypes { get; set; }
+        public virtual ICollection<InvMarketGroup> ChildGroups { get; set; }
         public virtual InvMarketGroup ParentGroup { get; set; }
-        public virtual ICollection<InvMarketGroup> SubGroups { get; set; }
     }
 }

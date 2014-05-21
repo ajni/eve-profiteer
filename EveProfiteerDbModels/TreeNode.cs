@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Linq;
 
-namespace eZet.EveOnlineDbModels {
+namespace eZet.EveProfiteer.Models {
 
     public abstract class TreeNode : INotifyPropertyChanged {
 

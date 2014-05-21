@@ -5,7 +5,7 @@ using eZet.EveProfiteer.Models;
 
 namespace eZet.EveProfiteer.Util {
     public static class ApiEntityMapper {
-        public static TransactionData Map(WalletTransactions.Transaction source, TransactionData target) {
+        public static Transaction Map(WalletTransactions.Transaction source, Transaction target) {
             target.TransactionId = source.TransactionId;
             target.TransactionDate = source.TransactionDate;
             target.Quantity = source.Quantity;

@@ -7,13 +7,19 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace eZet.EveOnlineDbModels
+namespace eZet.EveProfiteer.Models
 {
     using System;
     using System.Collections.Generic;
     
     public partial class InvType
     {
+        public InvType()
+        {
+            this.Orders = new HashSet<Order>();
+            this.Transactions = new HashSet<Transaction>();
+        }
+    
         public int TypeId { get; set; }
         public Nullable<int> GroupId { get; set; }
         public string TypeName { get; set; }
@@ -26,8 +32,10 @@ namespace eZet.EveOnlineDbModels
         public Nullable<decimal> BasePrice { get; set; }
         public Nullable<bool> Published { get; set; }
         public Nullable<int> MarketGroupId { get; set; }
-        public Nullable<double> chanceOfDuplicating { get; set; }
+        public Nullable<double> ChanceOfDuplicating { get; set; }
     
-        public virtual InvMarketGroup ParentGroup { get; set; }
+        public virtual InvMarketGroup InvMarketGroup { get; set; }
+        public virtual ICollection<Order> Orders { get; set; }
+        public virtual ICollection<Transaction> Transactions { get; set; }
     }
 }

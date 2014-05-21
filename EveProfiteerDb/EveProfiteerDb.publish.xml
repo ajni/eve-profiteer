@@ -4,15 +4,11 @@
     <IncludeCompositeObjects>True</IncludeCompositeObjects>
     <TargetDatabaseName>EveProfiteerDb</TargetDatabaseName>
     <DeployScriptFileName>EveProfiteerDb.sql</DeployScriptFileName>
-    <TargetConnectionString>Data Source=EZLAP\SQLEXPRESS;Integrated Security=True;Pooling=False</TargetConnectionString>
+    <TargetConnectionString>Data Source=.\SQLEXPRESS;Integrated Security=True;Pooling=False</TargetConnectionString>
     <ProfileVersionNumber>1</ProfileVersionNumber>
+    <BlockWhenDriftDetected>False</BlockWhenDriftDetected>
+    <RegisterDataTierApplication>False</RegisterDataTierApplication>
     <ScriptDatabaseOptions>True</ScriptDatabaseOptions>
-    <BlockOnPossibleDataLoss>False</BlockOnPossibleDataLoss>
-    <DropObjectsNotInSource>True</DropObjectsNotInSource>
+    <BlockOnPossibleDataLoss>True</BlockOnPossibleDataLoss>
   </PropertyGroup>
-  <ItemGroup>
-    <SqlCmdVariable Include="EveDb">
-      <Value>EveDb</Value>
-    </SqlCmdVariable>
-  </ItemGroup>
 </Project>

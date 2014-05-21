@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Caliburn.Micro;
 using DevExpress.Xpf.Mvvm;
-using eZet.EveOnlineDbModels;
 using eZet.EveProfiteer.Events;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
@@ -45,9 +44,9 @@ namespace eZet.EveProfiteer.ViewModels {
 
         public BindableCollection<MarketOrder> CurrentOrders { get; private set; }
 
-        public BindableCollection<MapRegion> Regions { get; private set; }
+        public BindableCollection<mapRegion> Regions { get; private set; }
 
-        public MapRegion SelectedRegion { get; private set; }
+        public mapRegion SelectedRegion { get; private set; }
 
         public MarketBrowserViewModel(IWindowManager windowManager, IEventAggregator eventAggregator,
             EveOnlineStaticDataService eveOnlineDbService,
@@ -64,7 +63,7 @@ namespace eZet.EveProfiteer.ViewModels {
             ViewTradeDetailsCommand =
                 new DelegateCommand<MarketAnalyzerEntry>(
                     entry => _eventAggregator.Publish(new ViewTradeDetailsEventArgs(entry.InvType.TypeId)),
-                    entry => entry != null && entry.OrderData != null);
+                    entry => entry != null && entry.Order != null);
             PropertyChanged += OnPropertyChanged;
         }
 
@@ -164,7 +163,7 @@ namespace eZet.EveProfiteer.ViewModels {
 
         protected override void OnInitialize() {
             TreeRootNodes = buildTree();
-            Regions = new BindableCollection<MapRegion>(_eveOnlineDbService.GetRegions().ToList());
+            Regions = new BindableCollection<mapRegion>(_eveOnlineDbService.GetRegions().ToList());
             SelectedRegion = Regions.Single(region => region.RegionId == 10000002);
         }
 
@@ -173,7 +172,7 @@ namespace eZet.EveProfiteer.ViewModels {
             if (objects == null || !objects.Any())
                 return false;
             List<MarketAnalyzerEntry> items = objects.Select(item => (MarketAnalyzerEntry)item).ToList();
-            return items.All(item => item.OrderData == null);
+            return items.All(item => item.Order == null);
         }
 
         private void AddToOrders(ICollection<object> objects) {
@@ -183,7 +182,7 @@ namespace eZet.EveProfiteer.ViewModels {
             _eventAggregator.Publish(new AddToOrdersEventArgs(items));
         }
 
-        private async Task<MarketBrowserItem> GetMarketDetails(MapRegion region, InvType invType) {
+        private async Task<MarketBrowserItem> GetMarketDetails(mapRegion region, InvType invType) {
             return await
                 Task.Run(() => _marketBrowserService.GetDetails(region, invType));
         }

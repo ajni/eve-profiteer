@@ -26,7 +26,7 @@ namespace eZet.EveProfiteer.Models {
         public void Analyze() {
             if (Transactions.Any()) {
                 TypeId = Transactions.First().TypeId;
-                TypeName = Transactions.First().TypeName;
+                TypeName = Transactions.First().InvType.TypeName;
             }
             // TODO Add LIFO or some other cost price calculation
             FirstTransactionDate = DateTime.MaxValue;

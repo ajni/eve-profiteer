@@ -61,7 +61,6 @@
     <Folder Include="Properties" />
     <Folder Include="dbo\" />
     <Folder Include="dbo\Tables\" />
-    <Folder Include="dbo\Synonyms" />
     <Folder Include="dbo\Views" />
   </ItemGroup>
   <ItemGroup>
@@ -71,8 +70,6 @@
     <Build Include="dbo\Tables\JournalEntries.sql" />
     <Build Include="dbo\Tables\Orders.sql" />
     <Build Include="dbo\Tables\ApiKeyApiKeyEntities.sql" />
-    <Build Include="dbo\Synonyms\invTypes.sql" />
-    <Build Include="dbo\LinkedServer.sql" />
     <Build Include="dbo\Views\Orders.sql" />
     <Build Include="dbo\Views\Transactions.sql" />
   </ItemGroup>
@@ -80,19 +77,13 @@
     <RefactorLog Include="EveProfiteerDb.refactorlog" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="EveProfiteerDb.publish.xml" />
+    <None Include="EveProfiteerDb_1.publish.xml" />
+  </ItemGroup>
+  <ItemGroup>
     <ArtifactReference Include="EveDb.dacpac">
       <HintPath>EveDb.dacpac</HintPath>
-      <SuppressMissingDependenciesErrors>True</SuppressMissingDependenciesErrors>
-      <DatabaseSqlCmdVariable>EveDb</DatabaseSqlCmdVariable>
+      <SuppressMissingDependenciesErrors>False</SuppressMissingDependenciesErrors>
     </ArtifactReference>
-  </ItemGroup>
-  <ItemGroup>
-    <SqlCmdVariable Include="EveDb">
-      <DefaultValue>EveDb</DefaultValue>
-      <Value>$(SqlCmdVar__1)</Value>
-    </SqlCmdVariable>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="EveProfiteerDb.publish.xml" />
   </ItemGroup>
 </Project>

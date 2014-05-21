@@ -310,7 +310,9 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\EVE Library\EveLib.EveCentral\EveLib.EveCentral.csproj">
@@ -329,16 +331,12 @@
       <Project>{655CA737-CD94-4128-B2B5-DCE37EA6E7F8}</Project>
       <Name>EveLib.EveOnline</Name>
     </ProjectReference>
-    <ProjectReference Include="..\EveOnlineDbModels\EveOnlineDbModels.csproj">
-      <Project>{7759033a-8095-44be-91a3-84911019b5a3}</Project>
-      <Name>EveOnlineDbModels</Name>
-    </ProjectReference>
     <ProjectReference Include="..\EvePilot Order Editor\Order Editor Service.csproj">
       <Project>{0FD4CF67-093D-465C-9AFD-EFB9A2F159F6}</Project>
       <Name>Order Editor Service</Name>
     </ProjectReference>
     <ProjectReference Include="..\EveProfiteerDbModels\EveProfiteerDbModels.csproj">
-      <Project>{87f63027-90fc-4f87-8840-52c2fc5406b7}</Project>
+      <Project>{87F63027-90FC-4F87-8840-52C2FC5406B7}</Project>
       <Name>EveProfiteerDbModels</Name>
     </ProjectReference>
   </ItemGroup>

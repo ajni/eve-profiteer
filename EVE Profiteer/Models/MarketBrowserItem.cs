@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using eZet.EveOnlineDbModels;
 
 namespace eZet.EveProfiteer.Models {
     public class MarketBrowserItem {

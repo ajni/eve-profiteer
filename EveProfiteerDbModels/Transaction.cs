@@ -29,6 +29,8 @@ namespace eZet.EveProfiteer.Models
         public Nullable<int> ApiKeyEntity_Id { get; set; }
         public long JournalTransactionId { get; set; }
         public int ClientTypeId { get; set; }
-        public string TypeName { get; set; }
+    
+        public virtual ApiKeyEntity ApiKeyEntity { get; set; }
+        public virtual InvType InvType { get; set; }
     }
 }

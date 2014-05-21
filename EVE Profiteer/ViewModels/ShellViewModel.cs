@@ -74,8 +74,8 @@ namespace eZet.EveProfiteer.ViewModels {
         public async void UpdateTransactions() {
             long latest = 0;
             latest = _transactionService.GetLatestId(ActiveKeyEntity);
-            IEnumerable<TransactionData> list = _eveApiService.GetNewTransactions(ActiveKey, ActiveKeyEntity, latest);
-            IList<TransactionData> transactions = list as IList<TransactionData> ?? list.ToList();
+            IEnumerable<Transaction> list = _eveApiService.GetNewTransactions(ActiveKey, ActiveKeyEntity, latest);
+            IList<Transaction> transactions = list as IList<Transaction> ?? list.ToList();
             await Task.Run(() => _transactionService.BulkInsert(transactions));
         }
 

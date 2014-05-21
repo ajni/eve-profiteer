@@ -19,12 +19,12 @@ namespace eZet.EveProfiteer.Services {
             return list;
         }
 
-        public IEnumerable<TransactionData> GetNewTransactions(ApiKey key, ApiKeyEntity entity, long latestId) {
+        public IEnumerable<Transaction> GetNewTransactions(ApiKey key, ApiKeyEntity entity, long latestId) {
             return getTransactions(key, entity, 2000, latestId);
         }
 
-        public IEnumerable<TransactionData> GetAllTransactions(ApiKey key, ApiKeyEntity entity,
-            Func<TransactionData> transactionFactory) {
+        public IEnumerable<Transaction> GetAllTransactions(ApiKey key, ApiKeyEntity entity,
+            Func<Transaction> transactionFactory) {
             return getTransactions(key, entity, 5000);
         }
 
@@ -59,9 +59,9 @@ namespace eZet.EveProfiteer.Services {
             return list;
         }
 
-        private static IEnumerable<TransactionData> getTransactions(ApiKey key, ApiKeyEntity apiKeyEntity, int rowLimit,
+        private static IEnumerable<Transaction> getTransactions(ApiKey key, ApiKeyEntity apiKeyEntity, int rowLimit,
     long limitId = 0) {
-            var transactions = new List<TransactionData>();
+            var transactions = new List<Transaction>();
             var ckey = new CharacterKey(key.ApiKeyId, key.VCode);
             var entity = ckey.Characters.Single(c => c.CharacterId == apiKeyEntity.EntityId);
             EveApiResponse<WalletTransactions> res = entity.GetWalletTransactions(rowLimit);
@@ -70,7 +70,7 @@ namespace eZet.EveProfiteer.Services {
                 foreach (var transaction in sortedList) {
                     if (transaction.TransactionId == limitId)
                         return transactions;
-                    var newTransaction = new TransactionData();
+                    var newTransaction = new Transaction();
                     newTransaction.ApiKeyEntity_Id = apiKeyEntity.Id;
                     transactions.Add(ApiEntityMapper.Map(transaction, newTransaction));
                 }

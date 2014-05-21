@@ -3,10 +3,10 @@ using eZet.EveProfiteer.Models;
 
 namespace eZet.EveProfiteer.Events {
     public class OrdersAddedEventArgs {
-        public OrdersAddedEventArgs(List<OrderData> orders) {
+        public OrdersAddedEventArgs(List<Order> orders) {
             Orders = orders;
         }
 
-        public ICollection<OrderData> Orders { get; private set; }
+        public ICollection<Order> Orders { get; private set; }
     }
 }

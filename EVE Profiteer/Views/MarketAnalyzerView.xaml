@@ -8,10 +8,10 @@
              xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
              xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
              xmlns:dxgt="http://schemas.devexpress.com/winfx/2008/xaml/grid/themekeys"
-             xmlns:eveOnlineDbModels="clr-namespace:eZet.EveOnlineDbModels;assembly=EveOnlineDbModels"
              xmlns:viewModels="clr-namespace:eZet.EveProfiteer.ViewModels"
              xmlns:converters="clr-namespace:eZet.EveProfiteer.Ui.Converters"
              xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
+             xmlns:models="clr-namespace:eZet.EveProfiteer.Models;assembly=EveProfiteerDbModels"
              d:DesignHeight="300" d:DesignWidth="500"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=viewModels:MarketAnalyzerViewModel, IsDesignTimeCreatable=False}">
@@ -79,14 +79,14 @@
                   VerticalAlignment="Stretch" VerticalContentAlignment="Stretch"
                   ItemsSource="{Binding TreeRootNodes}">
             <TreeView.Resources>
-                <HierarchicalDataTemplate DataType="{x:Type eveOnlineDbModels:InvMarketGroup}"
+                <HierarchicalDataTemplate DataType="{x:Type models:InvMarketGroup}"
                                           ItemsSource="{Binding Children}">
                     <StackPanel Orientation="Horizontal">
                         <CheckBox IsChecked="{Binding IsChecked}" Focusable="False" />
                         <ContentPresenter Content="{Binding MarketGroupName}" />
                     </StackPanel>
                 </HierarchicalDataTemplate>
-                <DataTemplate DataType="{x:Type eveOnlineDbModels:InvType}">
+                <DataTemplate DataType="{x:Type models:InvType}">
                     <StackPanel Orientation="Horizontal">
                         <CheckBox IsChecked="{Binding IsChecked}" Focusable="False" />
                         <TextBlock Text="{Binding TypeName}" />

@@ -33,6 +33,35 @@
           <Property Name="VCode" Type="nvarchar(max)" />
           <Property Name="KeyType" Type="nvarchar(max)" />
         </EntityType>
+        <EntityType Name="invMarketGroups">
+          <Key>
+            <PropertyRef Name="marketGroupID" />
+          </Key>
+          <Property Name="marketGroupID" Type="int" Nullable="false" />
+          <Property Name="parentGroupID" Type="int" />
+          <Property Name="marketGroupName" Type="nvarchar" MaxLength="100" />
+          <Property Name="description" Type="nvarchar" MaxLength="3000" />
+          <Property Name="iconID" Type="int" />
+          <Property Name="hasTypes" Type="bit" />
+        </EntityType>
+        <EntityType Name="invTypes">
+          <Key>
+            <PropertyRef Name="typeID" />
+          </Key>
+          <Property Name="typeID" Type="int" Nullable="false" />
+          <Property Name="groupID" Type="int" />
+          <Property Name="typeName" Type="nvarchar" MaxLength="100" />
+          <Property Name="description" Type="nvarchar" MaxLength="3000" />
+          <Property Name="mass" Type="float" />
+          <Property Name="volume" Type="float" />
+          <Property Name="capacity" Type="float" />
+          <Property Name="portionSize" Type="int" />
+          <Property Name="raceID" Type="tinyint" />
+          <Property Name="basePrice" Type="money" />
+          <Property Name="published" Type="bit" />
+          <Property Name="marketGroupID" Type="int" />
+          <Property Name="chanceOfDuplicating" Type="float" />
+        </EntityType>
         <EntityType Name="JournalEntries">
           <Key>
             <PropertyRef Name="Id" />
@@ -54,67 +83,29 @@
           <Property Name="TaxAmount" Type="nvarchar(max)" />
           <Property Name="ApiKeyEntity_Id" Type="int" />
         </EntityType>
-        <EntityType Name="OrderData">
+        <EntityType Name="mapRegions">
           <Key>
-            <PropertyRef Name="Id" />
+            <PropertyRef Name="regionID" />
           </Key>
-          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="TypeId" Type="int" Nullable="false" />
-          <Property Name="BuyQuantity" Type="int" Nullable="false" />
-          <Property Name="MaxBuyPrice" Type="decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="MinSellQuantity" Type="int" Nullable="false" />
-          <Property Name="MinSellPrice" Type="decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="MaxSellQuantity" Type="int" Nullable="false" />
-          <Property Name="UpdateTime" Type="datetime" Nullable="false" />
-          <Property Name="AvgVolume" Type="float" Nullable="false" />
-          <Property Name="CurrentBuyPrice" Type="decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="CurrentSellPrice" Type="decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="AvgPrice" Type="decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="ApiKeyEntity_Id" Type="int" />
-          <Property Name="IsSellOrder" Type="bit" Nullable="false" />
-          <Property Name="IsBuyOrder" Type="bit" Nullable="false" />
-          <Property Name="Notes" Type="text" />
+          <Property Name="regionID" Type="int" Nullable="false" />
+          <Property Name="regionName" Type="nvarchar" MaxLength="100" />
+          <Property Name="x" Type="float" />
+          <Property Name="y" Type="float" />
+          <Property Name="z" Type="float" />
+          <Property Name="xMin" Type="float" />
+          <Property Name="xMax" Type="float" />
+          <Property Name="yMin" Type="float" />
+          <Property Name="yMax" Type="float" />
+          <Property Name="zMin" Type="float" />
+          <Property Name="zMax" Type="float" />
+          <Property Name="factionID" Type="int" />
+          <Property Name="radius" Type="float" />
         </EntityType>
-        <EntityType Name="TransactionData">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="TransactionDate" Type="datetime" Nullable="false" />
-          <Property Name="TransactionId" Type="bigint" Nullable="false" />
-          <Property Name="Quantity" Type="int" Nullable="false" />
-          <Property Name="TypeId" Type="int" Nullable="false" />
-          <Property Name="Price" Type="decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="ClientId" Type="bigint" Nullable="false" />
-          <Property Name="ClientName" Type="nvarchar(max)" />
-          <Property Name="StationId" Type="bigint" Nullable="false" />
-          <Property Name="StationName" Type="nvarchar(max)" />
-          <Property Name="TransactionType" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="TransactionFor" Type="nvarchar(max)" />
-          <Property Name="ApiKeyEntity_Id" Type="int" />
-          <Property Name="JournalTransactionId" Type="bigint" Nullable="false" />
-          <Property Name="ClientTypeId" Type="int" Nullable="false" />
-        </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'EveProfiteerDb.dbo.Orders' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="Orders">
           <Key>
             <PropertyRef Name="Id" />
-            <PropertyRef Name="TypeId" />
-            <PropertyRef Name="BuyQuantity" />
-            <PropertyRef Name="MaxBuyPrice" />
-            <PropertyRef Name="MinSellQuantity" />
-            <PropertyRef Name="MinSellPrice" />
-            <PropertyRef Name="MaxSellQuantity" />
-            <PropertyRef Name="UpdateTime" />
-            <PropertyRef Name="AvgVolume" />
-            <PropertyRef Name="CurrentBuyPrice" />
-            <PropertyRef Name="CurrentSellPrice" />
-            <PropertyRef Name="AvgPrice" />
-            <PropertyRef Name="IsSellOrder" />
-            <PropertyRef Name="IsBuyOrder" />
           </Key>
-          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="TypeId" Type="int" Nullable="false" />
           <Property Name="BuyQuantity" Type="int" Nullable="false" />
           <Property Name="MaxBuyPrice" Type="decimal" Precision="18" Scale="2" Nullable="false" />
@@ -130,25 +121,12 @@ warning 6002: The table/view 'EveProfiteerDb.dbo.Orders' does not have a primary
           <Property Name="IsSellOrder" Type="bit" Nullable="false" />
           <Property Name="IsBuyOrder" Type="bit" Nullable="false" />
           <Property Name="Notes" Type="text" />
-          <Property Name="TypeName" Type="nvarchar" MaxLength="100" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'EveProfiteerDb.dbo.Transactions' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="Transactions">
           <Key>
             <PropertyRef Name="Id" />
-            <PropertyRef Name="TransactionDate" />
-            <PropertyRef Name="TransactionId" />
-            <PropertyRef Name="Quantity" />
-            <PropertyRef Name="TypeId" />
-            <PropertyRef Name="Price" />
-            <PropertyRef Name="ClientId" />
-            <PropertyRef Name="StationId" />
-            <PropertyRef Name="TransactionType" />
-            <PropertyRef Name="JournalTransactionId" />
-            <PropertyRef Name="ClientTypeId" />
           </Key>
-          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="TransactionDate" Type="datetime" Nullable="false" />
           <Property Name="TransactionId" Type="bigint" Nullable="false" />
           <Property Name="Quantity" Type="int" Nullable="false" />
@@ -163,7 +141,6 @@ warning 6002: The table/view 'EveProfiteerDb.dbo.Transactions' does not have a p
           <Property Name="ApiKeyEntity_Id" Type="int" />
           <Property Name="JournalTransactionId" Type="bigint" Nullable="false" />
           <Property Name="ClientTypeId" Type="int" Nullable="false" />
-          <Property Name="TypeName" Type="nvarchar" MaxLength="100" />
         </EntityType>
         <Association Name="FK_dbo_ApiKeyApiKeyEntities_dbo_ApiKeyEntities_ApiKeyEntity_Id">
           <End Role="ApiKeyEntities" Type="Self.ApiKeyEntities" Multiplicity="1">
@@ -207,25 +184,49 @@ warning 6002: The table/view 'EveProfiteerDb.dbo.Transactions' does not have a p
         </Association>
         <Association Name="FK_dbo_Transactions_dbo_ApiKeyEntities_ApiKeyEntity_Id">
           <End Role="ApiKeyEntities" Type="Self.ApiKeyEntities" Multiplicity="0..1" />
-          <End Role="TransactionData" Type="Self.TransactionData" Multiplicity="*" />
+          <End Role="Transactions" Type="Self.Transactions" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ApiKeyEntities">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="TransactionData">
+            <Dependent Role="Transactions">
               <PropertyRef Name="ApiKeyEntity_Id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Orders_ToApiKeyEntities">
           <End Role="ApiKeyEntities" Type="Self.ApiKeyEntities" Multiplicity="0..1" />
-          <End Role="OrderData" Type="Self.OrderData" Multiplicity="*" />
+          <End Role="Orders" Type="Self.Orders" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ApiKeyEntities">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="OrderData">
+            <Dependent Role="Orders">
               <PropertyRef Name="ApiKeyEntity_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Orders_ToInvTypes">
+          <End Role="invTypes" Type="Self.invTypes" Multiplicity="1" />
+          <End Role="Orders" Type="Self.Orders" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="invTypes">
+              <PropertyRef Name="typeID" />
+            </Principal>
+            <Dependent Role="Orders">
+              <PropertyRef Name="TypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Transaction_ToInvType">
+          <End Role="invTypes" Type="Self.invTypes" Multiplicity="1" />
+          <End Role="Transactions" Type="Self.Transactions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="invTypes">
+              <PropertyRef Name="typeID" />
+            </Principal>
+            <Dependent Role="Transactions">
+              <PropertyRef Name="TypeId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -233,50 +234,12 @@ warning 6002: The table/view 'EveProfiteerDb.dbo.Transactions' does not have a p
           <EntitySet Name="ApiKeyApiKeyEntities" EntityType="Self.ApiKeyApiKeyEntities" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ApiKeyEntities" EntityType="Self.ApiKeyEntities" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ApiKeys" EntityType="Self.ApiKeys" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="invMarketGroups" EntityType="Self.invMarketGroups" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="invTypes" EntityType="Self.invTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="JournalEntries" EntityType="Self.JournalEntries" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="OrderData" EntityType="Self.OrderData" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="TransactionData" EntityType="Self.TransactionData" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Orders" EntityType="Self.Orders" store:Type="Views" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [Orders].[Id] AS [Id], 
-    [Orders].[TypeId] AS [TypeId], 
-    [Orders].[BuyQuantity] AS [BuyQuantity], 
-    [Orders].[MaxBuyPrice] AS [MaxBuyPrice], 
-    [Orders].[MinSellQuantity] AS [MinSellQuantity], 
-    [Orders].[MinSellPrice] AS [MinSellPrice], 
-    [Orders].[MaxSellQuantity] AS [MaxSellQuantity], 
-    [Orders].[UpdateTime] AS [UpdateTime], 
-    [Orders].[AvgVolume] AS [AvgVolume], 
-    [Orders].[CurrentBuyPrice] AS [CurrentBuyPrice], 
-    [Orders].[CurrentSellPrice] AS [CurrentSellPrice], 
-    [Orders].[AvgPrice] AS [AvgPrice], 
-    [Orders].[ApiKeyEntity_Id] AS [ApiKeyEntity_Id], 
-    [Orders].[IsSellOrder] AS [IsSellOrder], 
-    [Orders].[IsBuyOrder] AS [IsBuyOrder], 
-    [Orders].[Notes] AS [Notes], 
-    [Orders].[TypeName] AS [TypeName]
-    FROM [dbo].[Orders] AS [Orders]</DefiningQuery>
-          </EntitySet>
-          <EntitySet Name="Transactions" EntityType="Self.Transactions" store:Type="Views" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [Transactions].[Id] AS [Id], 
-    [Transactions].[TransactionDate] AS [TransactionDate], 
-    [Transactions].[TransactionId] AS [TransactionId], 
-    [Transactions].[Quantity] AS [Quantity], 
-    [Transactions].[TypeId] AS [TypeId], 
-    [Transactions].[Price] AS [Price], 
-    [Transactions].[ClientId] AS [ClientId], 
-    [Transactions].[ClientName] AS [ClientName], 
-    [Transactions].[StationId] AS [StationId], 
-    [Transactions].[StationName] AS [StationName], 
-    [Transactions].[TransactionType] AS [TransactionType], 
-    [Transactions].[TransactionFor] AS [TransactionFor], 
-    [Transactions].[ApiKeyEntity_Id] AS [ApiKeyEntity_Id], 
-    [Transactions].[JournalTransactionId] AS [JournalTransactionId], 
-    [Transactions].[ClientTypeId] AS [ClientTypeId], 
-    [Transactions].[TypeName] AS [TypeName]
-    FROM [dbo].[Transactions] AS [Transactions]</DefiningQuery>
-          </EntitySet>
+          <EntitySet Name="mapRegions" EntityType="Self.mapRegions" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Orders" EntityType="Self.Orders" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Transactions" EntityType="Self.Transactions" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_dbo_ApiKeyApiKeyEntities_dbo_ApiKeyEntities_ApiKeyEntity_Id" Association="Self.FK_dbo_ApiKeyApiKeyEntities_dbo_ApiKeyEntities_ApiKeyEntity_Id">
             <End Role="ApiKeyEntities" EntitySet="ApiKeyEntities" />
             <End Role="ApiKeyApiKeyEntities" EntitySet="ApiKeyApiKeyEntities" />
@@ -291,11 +254,19 @@ warning 6002: The table/view 'EveProfiteerDb.dbo.Transactions' does not have a p
           </AssociationSet>
           <AssociationSet Name="FK_dbo_Transactions_dbo_ApiKeyEntities_ApiKeyEntity_Id" Association="Self.FK_dbo_Transactions_dbo_ApiKeyEntities_ApiKeyEntity_Id">
             <End Role="ApiKeyEntities" EntitySet="ApiKeyEntities" />
-            <End Role="TransactionData" EntitySet="TransactionData" />
+            <End Role="Transactions" EntitySet="Transactions" />
           </AssociationSet>
           <AssociationSet Name="FK_Orders_ToApiKeyEntities" Association="Self.FK_Orders_ToApiKeyEntities">
             <End Role="ApiKeyEntities" EntitySet="ApiKeyEntities" />
-            <End Role="OrderData" EntitySet="OrderData" />
+            <End Role="Orders" EntitySet="Orders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Orders_ToInvTypes" Association="Self.FK_Orders_ToInvTypes">
+            <End Role="invTypes" EntitySet="invTypes" />
+            <End Role="Orders" EntitySet="Orders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Transaction_ToInvType" Association="Self.FK_Transaction_ToInvType">
+            <End Role="invTypes" EntitySet="invTypes" />
+            <End Role="Transactions" EntitySet="Transactions" />
           </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -314,19 +285,36 @@ warning 6002: The table/view 'EveProfiteerDb.dbo.Transactions' does not have a p
             <End Role="ApiKeyEntity" EntitySet="ApiKeyEntities" />
             <End Role="ApiKey" EntitySet="ApiKeys" />
           </AssociationSet>
-          <EntitySet Name="OrderDatas" EntityType="EveProfiteerDbModel.OrderData" />
-          <AssociationSet Name="FK_Orders_ToApiKeyEntities" Association="EveProfiteerDbModel.FK_Orders_ToApiKeyEntities">
-            <End Role="ApiKeyEntity" EntitySet="ApiKeyEntities" />
-            <End Role="OrderData" EntitySet="OrderDatas" />
+          <EntitySet Name="InvMarketGroups" EntityType="EveProfiteerDbModel.InvMarketGroup" />
+          <EntitySet Name="InvTypes" EntityType="EveProfiteerDbModel.InvType" />
+          <EntitySet Name="mapRegions" EntityType="EveProfiteerDbModel.mapRegion" />
+          <AssociationSet Name="invMarketGroupinvType" Association="EveProfiteerDbModel.invMarketGroupinvType">
+            <End Role="invMarketGroup" EntitySet="InvMarketGroups" />
+            <End Role="invType" EntitySet="InvTypes" />
+          </AssociationSet>
+          <AssociationSet Name="invMarketGroupinvMarketGroup" Association="EveProfiteerDbModel.invMarketGroupinvMarketGroup">
+            <End Role="Child" EntitySet="InvMarketGroups" />
+            <End Role="Parent" EntitySet="InvMarketGroups" />
           </AssociationSet>
           <EntitySet Name="Orders" EntityType="EveProfiteerDbModel.Order" />
-          <EntitySet Name="TransactionDatas" EntityType="EveProfiteerDbModel.TransactionData" />
-          <AssociationSet Name="FK_dbo_Transactions_dbo_ApiKeyEntities_ApiKeyEntity_Id1" Association="EveProfiteerDbModel.FK_dbo_Transactions_dbo_ApiKeyEntities_ApiKeyEntity_Id1">
-            <End Role="ApiKeyEntity" EntitySet="ApiKeyEntities" />
-            <End Role="TransactionData" EntitySet="TransactionDatas" />
-          </AssociationSet>
           <EntitySet Name="Transactions" EntityType="EveProfiteerDbModel.Transaction" />
-        </EntityContainer>
+          <AssociationSet Name="FK_dbo_Transactions_dbo_ApiKeyEntities_ApiKeyEntity_Id" Association="EveProfiteerDbModel.FK_dbo_Transactions_dbo_ApiKeyEntities_ApiKeyEntity_Id">
+            <End Role="ApiKeyEntity" EntitySet="ApiKeyEntities" />
+            <End Role="Transaction" EntitySet="Transactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Orders_ToApiKeyEntities" Association="EveProfiteerDbModel.FK_Orders_ToApiKeyEntities">
+            <End Role="ApiKeyEntity" EntitySet="ApiKeyEntities" />
+            <End Role="Order" EntitySet="Orders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Orders_ToInvTypes" Association="EveProfiteerDbModel.FK_Orders_ToInvTypes">
+            <End Role="invType" EntitySet="InvTypes" />
+            <End Role="Order" EntitySet="Orders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Transaction_ToInvType" Association="EveProfiteerDbModel.FK_Transaction_ToInvType">
+            <End Role="invType" EntitySet="InvTypes" />
+            <End Role="Transaction" EntitySet="Transactions" />
+          </AssociationSet>
+          </EntityContainer>
         <EntityType Name="ApiKeyEntity">
           <Key>
             <PropertyRef Name="Id" />
@@ -339,8 +327,8 @@ warning 6002: The table/view 'EveProfiteerDb.dbo.Transactions' does not have a p
           <Property Name="IsActive" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="JournalEntries" Relationship="EveProfiteerDbModel.FK_dbo_JournalEntries_dbo_ApiKeyEntities_ApiKeyEntity_Id" FromRole="ApiKeyEntity" ToRole="JournalEntry" />
           <NavigationProperty Name="ApiKeys" Relationship="EveProfiteerDbModel.ApiKeyApiKeyEntities" FromRole="ApiKeyEntity" ToRole="ApiKey" />
-          <NavigationProperty Name="OrderDatas" Relationship="EveProfiteerDbModel.FK_Orders_ToApiKeyEntities" FromRole="ApiKeyEntity" ToRole="OrderData" />
-          <NavigationProperty Name="TransactionDatas" Relationship="EveProfiteerDbModel.FK_dbo_Transactions_dbo_ApiKeyEntities_ApiKeyEntity_Id1" FromRole="ApiKeyEntity" ToRole="TransactionData" />
+          <NavigationProperty Name="Transactions" Relationship="EveProfiteerDbModel.FK_dbo_Transactions_dbo_ApiKeyEntities_ApiKeyEntity_Id" FromRole="ApiKeyEntity" ToRole="Transaction" />
+          <NavigationProperty Name="Orders" Relationship="EveProfiteerDbModel.FK_Orders_ToApiKeyEntities" FromRole="ApiKeyEntity" ToRole="Order" />
         </EntityType>
         <EntityType Name="ApiKey">
           <Key>
@@ -390,58 +378,88 @@ warning 6002: The table/view 'EveProfiteerDb.dbo.Transactions' does not have a p
           <End Type="EveProfiteerDbModel.ApiKeyEntity" Role="ApiKeyEntity" Multiplicity="*" />
           <End Type="EveProfiteerDbModel.ApiKey" Role="ApiKey" Multiplicity="*" />
         </Association>
-        <EntityType Name="OrderData">
+        <EntityType Name="InvMarketGroup">
           <Key>
-            <PropertyRef Name="Id" />
+            <PropertyRef Name="MarketGroupId" />
           </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="TypeId" Type="Int32" Nullable="false" />
-          <Property Name="BuyQuantity" Type="Int32" Nullable="false" />
-          <Property Name="MaxBuyPrice" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
-          <Property Name="MinSellQuantity" Type="Int32" Nullable="false" />
-          <Property Name="MinSellPrice" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
-          <Property Name="MaxSellQuantity" Type="Int32" Nullable="false" />
-          <Property Name="UpdateTime" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="AvgVolume" Type="Double" Nullable="false" />
-          <Property Name="CurrentBuyPrice" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
-          <Property Name="CurrentSellPrice" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
-          <Property Name="AvgPrice" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
-          <Property Name="ApiKeyEntity_Id" Type="Int32" />
-          <Property Name="IsSellOrder" Type="Boolean" Nullable="false" />
-          <Property Name="IsBuyOrder" Type="Boolean" Nullable="false" />
-          <Property Name="Notes" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="ApiKeyEntity" Relationship="EveProfiteerDbModel.FK_Orders_ToApiKeyEntities" FromRole="OrderData" ToRole="ApiKeyEntity" />
+          <Property Name="MarketGroupId" Type="Int32" Nullable="false" />
+          <Property Name="ParentGroupId" Type="Int32" />
+          <Property Name="MarketGroupName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="3000" FixedLength="false" Unicode="true" />
+          <Property Name="IconId" Type="Int32" />
+          <Property Name="HasTypes" Type="Boolean" />
+          <NavigationProperty Name="InvTypes" Relationship="EveProfiteerDbModel.invMarketGroupinvType" FromRole="invMarketGroup" ToRole="invType" />
+          <NavigationProperty Name="ChildGroups" Relationship="EveProfiteerDbModel.invMarketGroupinvMarketGroup" FromRole="Child" ToRole="Parent" />
+          <NavigationProperty Name="ParentGroup" Relationship="EveProfiteerDbModel.invMarketGroupinvMarketGroup" FromRole="Parent" ToRole="Child" />
         </EntityType>
-        <Association Name="FK_Orders_ToApiKeyEntities">
-          <End Type="EveProfiteerDbModel.ApiKeyEntity" Role="ApiKeyEntity" Multiplicity="0..1" />
-          <End Type="EveProfiteerDbModel.OrderData" Role="OrderData" Multiplicity="*" />
+        <EntityType Name="InvType">
+          <Key>
+            <PropertyRef Name="TypeId" />
+          </Key>
+          <Property Name="TypeId" Type="Int32" Nullable="false" />
+          <Property Name="GroupId" Type="Int32" />
+          <Property Name="TypeName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="3000" FixedLength="false" Unicode="true" />
+          <Property Name="Mass" Type="Double" />
+          <Property Name="Volume" Type="Double" />
+          <Property Name="Capacity" Type="Double" />
+          <Property Name="PortionSize" Type="Int32" />
+          <Property Name="RaceId" Type="Byte" />
+          <Property Name="BasePrice" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="Published" Type="Boolean" />
+          <Property Name="MarketGroupId" Type="Int32" />
+          <Property Name="ChanceOfDuplicating" Type="Double" />
+          <NavigationProperty Name="InvMarketGroup" Relationship="EveProfiteerDbModel.invMarketGroupinvType" FromRole="invType" ToRole="invMarketGroup" />
+          <NavigationProperty Name="Orders" Relationship="EveProfiteerDbModel.FK_Orders_ToInvTypes" FromRole="invType" ToRole="Order" />
+          <NavigationProperty Name="Transactions" Relationship="EveProfiteerDbModel.FK_Transaction_ToInvType" FromRole="invType" ToRole="Transaction" />
+        </EntityType>
+        <EntityType Name="mapRegion">
+          <Key>
+            <PropertyRef Name="RegionId" />
+          </Key>
+          <Property Name="RegionId" Type="Int32" Nullable="false" />
+          <Property Name="RegionName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="X" Type="Double" />
+          <Property Name="Y" Type="Double" />
+          <Property Name="Z" Type="Double" />
+          <Property Name="XMin" Type="Double" />
+          <Property Name="XMax" Type="Double" />
+          <Property Name="YMin" Type="Double" />
+          <Property Name="YMax" Type="Double" />
+          <Property Name="ZMin" Type="Double" />
+          <Property Name="ZMax" Type="Double" />
+          <Property Name="FactionId" Type="Int32" />
+          <Property Name="Radius" Type="Double" />
+        </EntityType>
+        <Association Name="invMarketGroupinvType">
+          <End Type="EveProfiteerDbModel.InvMarketGroup" Role="invMarketGroup" Multiplicity="0..1" />
+          <End Type="EveProfiteerDbModel.InvType" Role="invType" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="ApiKeyEntity">
-              <PropertyRef Name="Id" />
+            <Principal Role="invMarketGroup">
+              <PropertyRef Name="MarketGroupId" />
             </Principal>
-            <Dependent Role="OrderData">
-              <PropertyRef Name="ApiKeyEntity_Id" />
+            <Dependent Role="invType">
+              <PropertyRef Name="MarketGroupId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="invMarketGroupinvMarketGroup">
+          <End Type="EveProfiteerDbModel.InvMarketGroup" Role="Child" Multiplicity="0..1" />
+          <End Type="EveProfiteerDbModel.InvMarketGroup" Role="Parent" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Child">
+              <PropertyRef Name="MarketGroupId" />
+            </Principal>
+            <Dependent Role="Parent">
+              <PropertyRef Name="ParentGroupId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <EntityType Name="Order">
           <Key>
             <PropertyRef Name="Id" />
-            <PropertyRef Name="TypeId" />
-            <PropertyRef Name="BuyQuantity" />
-            <PropertyRef Name="MaxBuyPrice" />
-            <PropertyRef Name="MinSellQuantity" />
-            <PropertyRef Name="MinSellPrice" />
-            <PropertyRef Name="MaxSellQuantity" />
-            <PropertyRef Name="UpdateTime" />
-            <PropertyRef Name="AvgVolume" />
-            <PropertyRef Name="CurrentBuyPrice" />
-            <PropertyRef Name="CurrentSellPrice" />
-            <PropertyRef Name="AvgPrice" />
-            <PropertyRef Name="IsSellOrder" />
-            <PropertyRef Name="IsBuyOrder" />
           </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="TypeId" Type="Int32" Nullable="false" />
           <Property Name="BuyQuantity" Type="Int32" Nullable="false" />
           <Property Name="MaxBuyPrice" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
@@ -457,9 +475,10 @@ warning 6002: The table/view 'EveProfiteerDb.dbo.Transactions' does not have a p
           <Property Name="IsSellOrder" Type="Boolean" Nullable="false" />
           <Property Name="IsBuyOrder" Type="Boolean" Nullable="false" />
           <Property Name="Notes" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="TypeName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ApiKeyEntity" Relationship="EveProfiteerDbModel.FK_Orders_ToApiKeyEntities" FromRole="Order" ToRole="ApiKeyEntity" />
+          <NavigationProperty Name="InvType" Relationship="EveProfiteerDbModel.FK_Orders_ToInvTypes" FromRole="Order" ToRole="invType" />
         </EntityType>
-        <EntityType Name="TransactionData">
+        <EntityType Name="Transaction">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
@@ -478,51 +497,57 @@ warning 6002: The table/view 'EveProfiteerDb.dbo.Transactions' does not have a p
           <Property Name="ApiKeyEntity_Id" Type="Int32" />
           <Property Name="JournalTransactionId" Type="Int64" Nullable="false" />
           <Property Name="ClientTypeId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="ApiKeyEntity" Relationship="EveProfiteerDbModel.FK_dbo_Transactions_dbo_ApiKeyEntities_ApiKeyEntity_Id1" FromRole="TransactionData" ToRole="ApiKeyEntity" />
+          <NavigationProperty Name="ApiKeyEntity" Relationship="EveProfiteerDbModel.FK_dbo_Transactions_dbo_ApiKeyEntities_ApiKeyEntity_Id" FromRole="Transaction" ToRole="ApiKeyEntity" />
+          <NavigationProperty Name="InvType" Relationship="EveProfiteerDbModel.FK_Transaction_ToInvType" FromRole="Transaction" ToRole="invType" />
         </EntityType>
-        <Association Name="FK_dbo_Transactions_dbo_ApiKeyEntities_ApiKeyEntity_Id1">
+        <Association Name="FK_dbo_Transactions_dbo_ApiKeyEntities_ApiKeyEntity_Id">
           <End Type="EveProfiteerDbModel.ApiKeyEntity" Role="ApiKeyEntity" Multiplicity="0..1" />
-          <End Type="EveProfiteerDbModel.TransactionData" Role="TransactionData" Multiplicity="*" />
+          <End Type="EveProfiteerDbModel.Transaction" Role="Transaction" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ApiKeyEntity">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="TransactionData">
+            <Dependent Role="Transaction">
               <PropertyRef Name="ApiKeyEntity_Id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="Transaction">
-          <Key>
-            <PropertyRef Name="Id" />
-            <PropertyRef Name="TransactionDate" />
-            <PropertyRef Name="TransactionId" />
-            <PropertyRef Name="Quantity" />
-            <PropertyRef Name="TypeId" />
-            <PropertyRef Name="Price" />
-            <PropertyRef Name="ClientId" />
-            <PropertyRef Name="StationId" />
-            <PropertyRef Name="TransactionType" />
-            <PropertyRef Name="JournalTransactionId" />
-            <PropertyRef Name="ClientTypeId" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" />
-          <Property Name="TransactionDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="TransactionId" Type="Int64" Nullable="false" />
-          <Property Name="Quantity" Type="Int32" Nullable="false" />
-          <Property Name="TypeId" Type="Int32" Nullable="false" />
-          <Property Name="Price" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
-          <Property Name="ClientId" Type="Int64" Nullable="false" />
-          <Property Name="ClientName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="StationId" Type="Int64" Nullable="false" />
-          <Property Name="StationName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="TransactionType" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="TransactionFor" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="ApiKeyEntity_Id" Type="Int32" />
-          <Property Name="JournalTransactionId" Type="Int64" Nullable="false" />
-          <Property Name="ClientTypeId" Type="Int32" Nullable="false" />
-          <Property Name="TypeName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-        </EntityType>
+        <Association Name="FK_Orders_ToApiKeyEntities">
+          <End Type="EveProfiteerDbModel.ApiKeyEntity" Role="ApiKeyEntity" Multiplicity="0..1" />
+          <End Type="EveProfiteerDbModel.Order" Role="Order" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ApiKeyEntity">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Order">
+              <PropertyRef Name="ApiKeyEntity_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Orders_ToInvTypes">
+          <End Type="EveProfiteerDbModel.InvType" Role="invType" Multiplicity="1" />
+          <End Type="EveProfiteerDbModel.Order" Role="Order" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="invType">
+              <PropertyRef Name="TypeId" />
+            </Principal>
+            <Dependent Role="Order">
+              <PropertyRef Name="TypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Transaction_ToInvType">
+          <End Type="EveProfiteerDbModel.InvType" Role="invType" Multiplicity="1" />
+          <End Type="EveProfiteerDbModel.Transaction" Role="Transaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="invType">
+              <PropertyRef Name="TypeId" />
+            </Principal>
+            <Dependent Role="Transaction">
+              <PropertyRef Name="TypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -581,32 +606,59 @@ warning 6002: The table/view 'EveProfiteerDb.dbo.Transactions' does not have a p
               <ScalarProperty Name="Id" ColumnName="ApiKeyEntity_Id" />
             </EndProperty>
           </AssociationSetMapping>
-          <EntitySetMapping Name="OrderDatas">
-            <EntityTypeMapping TypeName="EveProfiteerDbModel.OrderData">
-              <MappingFragment StoreEntitySet="OrderData">
-                <ScalarProperty Name="Notes" ColumnName="Notes" />
-                <ScalarProperty Name="IsBuyOrder" ColumnName="IsBuyOrder" />
-                <ScalarProperty Name="IsSellOrder" ColumnName="IsSellOrder" />
-                <ScalarProperty Name="ApiKeyEntity_Id" ColumnName="ApiKeyEntity_Id" />
-                <ScalarProperty Name="AvgPrice" ColumnName="AvgPrice" />
-                <ScalarProperty Name="CurrentSellPrice" ColumnName="CurrentSellPrice" />
-                <ScalarProperty Name="CurrentBuyPrice" ColumnName="CurrentBuyPrice" />
-                <ScalarProperty Name="AvgVolume" ColumnName="AvgVolume" />
-                <ScalarProperty Name="UpdateTime" ColumnName="UpdateTime" />
-                <ScalarProperty Name="MaxSellQuantity" ColumnName="MaxSellQuantity" />
-                <ScalarProperty Name="MinSellPrice" ColumnName="MinSellPrice" />
-                <ScalarProperty Name="MinSellQuantity" ColumnName="MinSellQuantity" />
-                <ScalarProperty Name="MaxBuyPrice" ColumnName="MaxBuyPrice" />
-                <ScalarProperty Name="BuyQuantity" ColumnName="BuyQuantity" />
-                <ScalarProperty Name="TypeId" ColumnName="TypeId" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
+          <EntitySetMapping Name="InvMarketGroups">
+            <EntityTypeMapping TypeName="EveProfiteerDbModel.InvMarketGroup">
+              <MappingFragment StoreEntitySet="invMarketGroups">
+                <ScalarProperty Name="HasTypes" ColumnName="hasTypes" />
+                <ScalarProperty Name="IconId" ColumnName="iconID" />
+                <ScalarProperty Name="Description" ColumnName="description" />
+                <ScalarProperty Name="MarketGroupName" ColumnName="marketGroupName" />
+                <ScalarProperty Name="ParentGroupId" ColumnName="parentGroupID" />
+                <ScalarProperty Name="MarketGroupId" ColumnName="marketGroupID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="InvTypes">
+            <EntityTypeMapping TypeName="EveProfiteerDbModel.InvType">
+              <MappingFragment StoreEntitySet="invTypes">
+                <ScalarProperty Name="ChanceOfDuplicating" ColumnName="chanceOfDuplicating" />
+                <ScalarProperty Name="MarketGroupId" ColumnName="marketGroupID" />
+                <ScalarProperty Name="Published" ColumnName="published" />
+                <ScalarProperty Name="BasePrice" ColumnName="basePrice" />
+                <ScalarProperty Name="RaceId" ColumnName="raceID" />
+                <ScalarProperty Name="PortionSize" ColumnName="portionSize" />
+                <ScalarProperty Name="Capacity" ColumnName="capacity" />
+                <ScalarProperty Name="Volume" ColumnName="volume" />
+                <ScalarProperty Name="Mass" ColumnName="mass" />
+                <ScalarProperty Name="Description" ColumnName="description" />
+                <ScalarProperty Name="TypeName" ColumnName="typeName" />
+                <ScalarProperty Name="GroupId" ColumnName="groupID" />
+                <ScalarProperty Name="TypeId" ColumnName="typeID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="mapRegions">
+            <EntityTypeMapping TypeName="EveProfiteerDbModel.mapRegion">
+              <MappingFragment StoreEntitySet="mapRegions">
+                <ScalarProperty Name="Radius" ColumnName="radius" />
+                <ScalarProperty Name="FactionId" ColumnName="factionID" />
+                <ScalarProperty Name="ZMax" ColumnName="zMax" />
+                <ScalarProperty Name="ZMin" ColumnName="zMin" />
+                <ScalarProperty Name="YMax" ColumnName="yMax" />
+                <ScalarProperty Name="YMin" ColumnName="yMin" />
+                <ScalarProperty Name="XMax" ColumnName="xMax" />
+                <ScalarProperty Name="XMin" ColumnName="xMin" />
+                <ScalarProperty Name="Z" ColumnName="z" />
+                <ScalarProperty Name="Y" ColumnName="y" />
+                <ScalarProperty Name="X" ColumnName="x" />
+                <ScalarProperty Name="RegionName" ColumnName="regionName" />
+                <ScalarProperty Name="RegionId" ColumnName="regionID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Orders">
             <EntityTypeMapping TypeName="EveProfiteerDbModel.Order">
               <MappingFragment StoreEntitySet="Orders">
-                <ScalarProperty Name="TypeName" ColumnName="TypeName" />
                 <ScalarProperty Name="Notes" ColumnName="Notes" />
                 <ScalarProperty Name="IsBuyOrder" ColumnName="IsBuyOrder" />
                 <ScalarProperty Name="IsSellOrder" ColumnName="IsSellOrder" />
@@ -622,27 +674,6 @@ warning 6002: The table/view 'EveProfiteerDb.dbo.Transactions' does not have a p
                 <ScalarProperty Name="MaxBuyPrice" ColumnName="MaxBuyPrice" />
                 <ScalarProperty Name="BuyQuantity" ColumnName="BuyQuantity" />
                 <ScalarProperty Name="TypeId" ColumnName="TypeId" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="TransactionDatas">
-            <EntityTypeMapping TypeName="EveProfiteerDbModel.TransactionData">
-              <MappingFragment StoreEntitySet="TransactionData">
-                <ScalarProperty Name="ClientTypeId" ColumnName="ClientTypeId" />
-                <ScalarProperty Name="JournalTransactionId" ColumnName="JournalTransactionId" />
-                <ScalarProperty Name="ApiKeyEntity_Id" ColumnName="ApiKeyEntity_Id" />
-                <ScalarProperty Name="TransactionFor" ColumnName="TransactionFor" />
-                <ScalarProperty Name="TransactionType" ColumnName="TransactionType" />
-                <ScalarProperty Name="StationName" ColumnName="StationName" />
-                <ScalarProperty Name="StationId" ColumnName="StationId" />
-                <ScalarProperty Name="ClientName" ColumnName="ClientName" />
-                <ScalarProperty Name="ClientId" ColumnName="ClientId" />
-                <ScalarProperty Name="Price" ColumnName="Price" />
-                <ScalarProperty Name="TypeId" ColumnName="TypeId" />
-                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
-                <ScalarProperty Name="TransactionId" ColumnName="TransactionId" />
-                <ScalarProperty Name="TransactionDate" ColumnName="TransactionDate" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -650,7 +681,6 @@ warning 6002: The table/view 'EveProfiteerDb.dbo.Transactions' does not have a p
           <EntitySetMapping Name="Transactions">
             <EntityTypeMapping TypeName="EveProfiteerDbModel.Transaction">
               <MappingFragment StoreEntitySet="Transactions">
-                <ScalarProperty Name="TypeName" ColumnName="TypeName" />
                 <ScalarProperty Name="ClientTypeId" ColumnName="ClientTypeId" />
                 <ScalarProperty Name="JournalTransactionId" ColumnName="JournalTransactionId" />
                 <ScalarProperty Name="ApiKeyEntity_Id" ColumnName="ApiKeyEntity_Id" />
@@ -669,7 +699,7 @@ warning 6002: The table/view 'EveProfiteerDb.dbo.Transactions' does not have a p
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-        </EntityContainerMapping>
+          </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
   </edmx:Runtime>

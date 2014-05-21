@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using eZet.EveLib.Modules;
 using eZet.EveLib.Modules.Models;
-using eZet.EveOnlineDbModels;
 using eZet.EveProfiteer.Models;
 using OrderType = eZet.EveLib.Modules.OrderType;
 
