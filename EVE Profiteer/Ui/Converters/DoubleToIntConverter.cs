@@ -6,6 +6,10 @@ using System.Windows.Markup;
 namespace eZet.EveProfiteer.Ui.Converters {
     public class DoubleToIntConverter : MarkupExtension, IValueConverter {
 
+        public DoubleToIntConverter() {
+            
+        }
+
         public override object ProvideValue(IServiceProvider serviceProvider) {
             return this;
         }

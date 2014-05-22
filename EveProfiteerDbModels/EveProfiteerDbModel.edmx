@@ -122,6 +122,29 @@
           <Property Name="IsBuyOrder" Type="bit" Nullable="false" />
           <Property Name="Notes" Type="text" />
         </EntityType>
+        <EntityType Name="staStations">
+          <Key>
+            <PropertyRef Name="stationID" />
+          </Key>
+          <Property Name="stationID" Type="int" Nullable="false" />
+          <Property Name="security" Type="smallint" />
+          <Property Name="dockingCostPerVolume" Type="float" />
+          <Property Name="maxShipVolumeDockable" Type="float" />
+          <Property Name="officeRentalCost" Type="int" />
+          <Property Name="operationID" Type="tinyint" />
+          <Property Name="stationTypeID" Type="int" />
+          <Property Name="corporationID" Type="int" />
+          <Property Name="solarSystemID" Type="int" />
+          <Property Name="constellationID" Type="int" />
+          <Property Name="regionID" Type="int" />
+          <Property Name="stationName" Type="nvarchar" MaxLength="100" />
+          <Property Name="x" Type="float" />
+          <Property Name="y" Type="float" />
+          <Property Name="z" Type="float" />
+          <Property Name="reprocessingEfficiency" Type="float" />
+          <Property Name="reprocessingStationsTake" Type="float" />
+          <Property Name="reprocessingHangarFlag" Type="tinyint" />
+        </EntityType>
         <EntityType Name="Transactions">
           <Key>
             <PropertyRef Name="Id" />
@@ -239,6 +262,7 @@
           <EntitySet Name="JournalEntries" EntityType="Self.JournalEntries" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="mapRegions" EntityType="Self.mapRegions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Orders" EntityType="Self.Orders" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="staStations" EntityType="Self.staStations" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Transactions" EntityType="Self.Transactions" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_dbo_ApiKeyApiKeyEntities_dbo_ApiKeyEntities_ApiKeyEntity_Id" Association="Self.FK_dbo_ApiKeyApiKeyEntities_dbo_ApiKeyEntities_ApiKeyEntity_Id">
             <End Role="ApiKeyEntities" EntitySet="ApiKeyEntities" />
@@ -313,6 +337,11 @@
           <AssociationSet Name="FK_Transaction_ToInvType" Association="EveProfiteerDbModel.FK_Transaction_ToInvType">
             <End Role="invType" EntitySet="InvTypes" />
             <End Role="Transaction" EntitySet="Transactions" />
+          </AssociationSet>
+          <EntitySet Name="StaStations" EntityType="EveProfiteerDbModel.StaStation" />
+          <AssociationSet Name="MapRegionStaStation" Association="EveProfiteerDbModel.MapRegionStaStation">
+            <End Role="MapRegion" EntitySet="MapRegions" />
+            <End Role="StaStation" EntitySet="StaStations" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="ApiKeyEntity">
@@ -430,6 +459,7 @@
           <Property Name="ZMax" Type="Double" />
           <Property Name="FactionId" Type="Int32" />
           <Property Name="Radius" Type="Double" />
+          <NavigationProperty Name="StaStations" Relationship="EveProfiteerDbModel.MapRegionStaStation" FromRole="MapRegion" ToRole="StaStation" />
         </EntityType>
         <Association Name="invMarketGroupinvType">
           <End Type="EveProfiteerDbModel.InvMarketGroup" Role="invMarketGroup" Multiplicity="0..1" />
@@ -545,6 +575,42 @@
             </Principal>
             <Dependent Role="Transaction">
               <PropertyRef Name="TypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="StaStation">
+          <Key>
+            <PropertyRef Name="StationId" />
+          </Key>
+          <Property Name="StationId" Type="Int32" Nullable="false" />
+          <Property Name="Security" Type="Int16" />
+          <Property Name="DockingCostPerVolume" Type="Double" />
+          <Property Name="MaxShipVolumeDockable" Type="Double" />
+          <Property Name="OfficeRentalCost" Type="Int32" />
+          <Property Name="OperationId" Type="Byte" />
+          <Property Name="StationTypeId" Type="Int32" />
+          <Property Name="CorporationId" Type="Int32" />
+          <Property Name="SolarSystemId" Type="Int32" />
+          <Property Name="ConstellationId" Type="Int32" />
+          <Property Name="RegionId" Type="Int32" />
+          <Property Name="StationName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="X" Type="Double" />
+          <Property Name="Y" Type="Double" />
+          <Property Name="Z" Type="Double" />
+          <Property Name="ReprocessingEfficiency" Type="Double" />
+          <Property Name="ReprocessingStationsTake" Type="Double" />
+          <Property Name="ReprocessingHangarFlag" Type="Byte" />
+          <NavigationProperty Name="MapRegion" Relationship="EveProfiteerDbModel.MapRegionStaStation" FromRole="StaStation" ToRole="MapRegion" />
+        </EntityType>
+        <Association Name="MapRegionStaStation">
+          <End Type="EveProfiteerDbModel.MapRegion" Role="MapRegion" Multiplicity="0..1" />
+          <End Type="EveProfiteerDbModel.StaStation" Role="StaStation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MapRegion">
+              <PropertyRef Name="RegionId" />
+            </Principal>
+            <Dependent Role="StaStation">
+              <PropertyRef Name="RegionId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -696,6 +762,30 @@
                 <ScalarProperty Name="TransactionId" ColumnName="TransactionId" />
                 <ScalarProperty Name="TransactionDate" ColumnName="TransactionDate" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StaStations">
+            <EntityTypeMapping TypeName="EveProfiteerDbModel.StaStation">
+              <MappingFragment StoreEntitySet="staStations">
+                <ScalarProperty Name="ReprocessingHangarFlag" ColumnName="reprocessingHangarFlag" />
+                <ScalarProperty Name="ReprocessingStationsTake" ColumnName="reprocessingStationsTake" />
+                <ScalarProperty Name="ReprocessingEfficiency" ColumnName="reprocessingEfficiency" />
+                <ScalarProperty Name="Z" ColumnName="z" />
+                <ScalarProperty Name="Y" ColumnName="y" />
+                <ScalarProperty Name="X" ColumnName="x" />
+                <ScalarProperty Name="StationName" ColumnName="stationName" />
+                <ScalarProperty Name="RegionId" ColumnName="regionID" />
+                <ScalarProperty Name="ConstellationId" ColumnName="constellationID" />
+                <ScalarProperty Name="SolarSystemId" ColumnName="solarSystemID" />
+                <ScalarProperty Name="CorporationId" ColumnName="corporationID" />
+                <ScalarProperty Name="StationTypeId" ColumnName="stationTypeID" />
+                <ScalarProperty Name="OperationId" ColumnName="operationID" />
+                <ScalarProperty Name="OfficeRentalCost" ColumnName="officeRentalCost" />
+                <ScalarProperty Name="MaxShipVolumeDockable" ColumnName="maxShipVolumeDockable" />
+                <ScalarProperty Name="DockingCostPerVolume" ColumnName="dockingCostPerVolume" />
+                <ScalarProperty Name="Security" ColumnName="security" />
+                <ScalarProperty Name="StationId" ColumnName="stationID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

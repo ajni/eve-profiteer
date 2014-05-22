@@ -33,10 +33,16 @@
                                    Hint="Analyze market." />
                 <dxb:BarButtonItem Name="LoadOrders" Content="Load orders" Command="{Binding LoadOrdersCommand}"
                                    Hint="Analyze your current orders." />
-                <dxb:BarEditItem Name="StationSelect" EditValue="{Binding SelectedStation}" EditWidth="300"
+                <dxb:BarEditItem Name="RegionSelector" EditValue="{Binding SelectedRegion}" EditWidth="300"
+                                 Hint="Region to analyze.">
+                    <dxb:BarEditItem.EditSettings>
+                        <dxe:ComboBoxEditSettings ItemsSource="{Binding Regions}" DisplayMember="RegionName" AutoComplete="True"/>
+                    </dxb:BarEditItem.EditSettings>
+                </dxb:BarEditItem>
+                <dxb:BarEditItem Name="StationSelector" EditValue="{Binding SelectedStation}" EditWidth="300"
                                  Hint="Station to analyze.">
                     <dxb:BarEditItem.EditSettings>
-                        <dxe:ComboBoxEditSettings ItemsSource="{Binding Stations}" DisplayMember="StationName" />
+                        <dxe:ComboBoxEditSettings ItemsSource="{Binding SelectedRegion.StationsAscending}" DisplayMember="StationName" AutoComplete="True" NullValueButtonPlacement="EditBox" NullText="-- All stations --"/>
                     </dxb:BarEditItem.EditSettings>
                 </dxb:BarEditItem>
                 <dxb:BarEditItem Name="DayLimit"
@@ -57,7 +63,8 @@
                     </dxb:Bar.DockInfo>
                     <dxb:Bar.ItemLinks>
                         <dxb:BarButtonItemLink BarItemName="Analyze" />
-                        <dxb:BarEditItemLink BarItemName="StationSelect" />
+                        <dxb:BarEditItemLink BarItemName="RegionSelector" />
+                        <dxb:BarEditItemLink BarItemName="StationSelector" />
                         <dxb:BarEditItemLink BarItemName="DayLimit" />
                     </dxb:Bar.ItemLinks>
                 </dxb:Bar>

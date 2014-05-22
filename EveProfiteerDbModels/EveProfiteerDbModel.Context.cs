@@ -33,5 +33,6 @@ namespace eZet.EveProfiteer.Models
         public virtual DbSet<MapRegion> MapRegions { get; set; }
         public virtual DbSet<Order> Orders { get; set; }
         public virtual DbSet<Transaction> Transactions { get; set; }
+        public virtual DbSet<StaStation> StaStations { get; set; }
     }
 }

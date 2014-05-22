@@ -20,12 +20,15 @@ namespace eZet.EveProfiteer.Services {
         private int Jita { get; set; }
 
 
-        public MarketAnalyzer GetMarketAnalyzer(Station station, ICollection<InvType> items, int dayLimit) {
+        public MarketAnalyzer GetMarketAnalyzer(MapRegion region, StaStation station, ICollection<InvType> items, int dayLimit) {
             var historyOptions = new EveMarketDataOptions();
             historyOptions.AgeSpan = TimeSpan.FromDays(dayLimit);
-            historyOptions.Regions.Add(station.RegionId);
+            historyOptions.Regions.Add(region.RegionId);
             var priceOptions = new EveMarketDataOptions();
-            priceOptions.Stations.Add(station.StationId);
+            if (station != null)
+                priceOptions.Stations.Add(station.StationId);
+            else
+                priceOptions.Regions.Add(region.RegionId);
             var sellOrders = new List<ItemPrices.ItemPriceEntry>();
             var buyOrders = new List<ItemPrices.ItemPriceEntry>();
             var history = new List<ItemHistory.ItemHistoryEntry>();
@@ -53,7 +56,7 @@ namespace eZet.EveProfiteer.Services {
         }
 
         public Uri GetScannerLink(ICollection<Int64> items) {
-            var options = new EveMarketDataOptions {Items = items};
+            var options = new EveMarketDataOptions { Items = items };
             return eveMarketData.GetScannerUri(options);
         }
 

@@ -129,6 +129,7 @@
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Events\DeleteOrdersEventArgs.cs" />
     <Compile Include="Events\ViewTradeDetailsEventArgs.cs" />
+    <Compile Include="Models\CharacterData.cs" />
     <Compile Include="Models\MarketHistoryEntry.cs" />
     <Compile Include="Models\TradeDetailsChartPoint.cs" />
     <Compile Include="Models\MarketBrowserItem.cs" />

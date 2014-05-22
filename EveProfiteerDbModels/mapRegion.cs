@@ -14,6 +14,11 @@ namespace eZet.EveProfiteer.Models
     
     public partial class MapRegion
     {
+        public MapRegion()
+        {
+            this.StaStations = new HashSet<StaStation>();
+        }
+    
         public int RegionId { get; set; }
         public string RegionName { get; set; }
         public Nullable<double> X { get; set; }
@@ -27,5 +32,7 @@ namespace eZet.EveProfiteer.Models
         public Nullable<double> ZMax { get; set; }
         public Nullable<int> FactionId { get; set; }
         public Nullable<double> Radius { get; set; }
+    
+        public virtual ICollection<StaStation> StaStations { get; set; }
     }
 }

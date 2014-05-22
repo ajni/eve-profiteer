@@ -23,7 +23,8 @@ namespace eZet.EveProfiteer.ViewModels {
         private int _dayLimit = 5;
         private BindableCollection<MarketAnalyzerEntry> _marketAnalyzerResults;
         private BindableCollection<InvType> _selectedItems;
-        private Station _selectedStation;
+        private MapRegion _selectedRegion;
+        private StaStation _selectedStation;
 
         public MarketAnalyzerViewModel(IWindowManager windowManager, IEventAggregator eventAggregator,
             EveProfiteerDataService dataService,
@@ -59,12 +60,23 @@ namespace eZet.EveProfiteer.ViewModels {
 
         public BindableCollection<InvMarketGroup> TreeRootNodes { get; private set; }
 
-        public ICollection<Station> Stations { get; private set; }
+        public ICollection<MapRegion> Regions { get; private set; }
 
-        public Station SelectedStation {
+        public ICollection<StaStation> Stations { get; private set; }
+
+        public MapRegion SelectedRegion {
+            get { return _selectedRegion; }
+            set {
+                if (Equals(_selectedRegion, value)) return;
+                _selectedRegion = value;
+                NotifyOfPropertyChange(() => SelectedRegion);
+            }
+        }
+
+        public StaStation SelectedStation {
             get { return _selectedStation; }
             set {
-                if (_selectedStation == value) return;
+                if (Equals(value, _selectedStation)) return;
                 _selectedStation = value;
                 NotifyOfPropertyChange(() => SelectedStation);
             }
@@ -73,7 +85,7 @@ namespace eZet.EveProfiteer.ViewModels {
         public BindableCollection<InvType> SelectedItems {
             get { return _selectedItems; }
             private set {
-                if (_selectedItems == value) return;
+                if (Equals(_selectedItems, value)) return;
                 _selectedItems = value;
                 NotifyOfPropertyChange(() => SelectedItems);
             }
@@ -83,7 +95,7 @@ namespace eZet.EveProfiteer.ViewModels {
         public BindableCollection<MarketAnalyzerEntry> MarketAnalyzerResults {
             get { return _marketAnalyzerResults; }
             private set {
-                if (_marketAnalyzerResults == value) return;
+                if (Equals(_marketAnalyzerResults, value)) return;
                 _marketAnalyzerResults = value;
                 NotifyOfPropertyChange(() => MarketAnalyzerResults);
             }
@@ -92,7 +104,7 @@ namespace eZet.EveProfiteer.ViewModels {
         public int DayLimit {
             get { return _dayLimit; }
             set {
-                if (_dayLimit == value) return;
+                if (Equals(_dayLimit, value)) return;
                 _dayLimit = value;
                 NotifyOfPropertyChange(() => DayLimit);
             }
@@ -110,8 +122,9 @@ namespace eZet.EveProfiteer.ViewModels {
 
         protected override void OnInitialize() {
             TreeRootNodes = _dataService.BuildMarketTree(treeViewCheckBox_PropertyChanged);
-            Stations = getStations();
-            SelectedStation = Stations.Single(f => f.StationId == 60003760);
+            Regions = _dataService.Db.MapRegions.OrderBy(region => region.RegionName).ToList();
+            SelectedRegion = Regions.Single(f => f.RegionId == 10000002);
+            SelectedStation = SelectedRegion.StaStations.Single(station => station.StationId == 60003760);
         }
 
         private async void Analyze() {
@@ -172,7 +185,7 @@ namespace eZet.EveProfiteer.ViewModels {
 
         private async Task<MarketAnalyzer> GetMarketAnalyzer(ICollection<InvType> items) {
             return await
-                Task.Run(() => _eveMarketService.GetMarketAnalyzer(SelectedStation, items, DayLimit));
+                Task.Run(() => _eveMarketService.GetMarketAnalyzer(SelectedRegion, SelectedStation, items, DayLimit));
         }
 
         private void treeViewCheckBox_PropertyChanged(object sender, PropertyChangedEventArgs e) {
@@ -190,14 +203,5 @@ namespace eZet.EveProfiteer.ViewModels {
             TreeRootNodes.NotifyOfPropertyChange();
         }
 
-        private ICollection<Station> getStations() {
-            var list = new List<Station>();
-            list.Add(new Station {
-                StationName = "Jita IV - Moon 4 - Caldari Navy Assembly Plant",
-                StationId = 60003760,
-                RegionId = 10000002
-            });
-            return list;
-        }
     }
 }

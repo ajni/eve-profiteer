@@ -10,6 +10,23 @@ using ApiKey = eZet.EveProfiteer.Models.ApiKey;
 
 namespace eZet.EveProfiteer.Services {
     public class EveApiService {
+
+        public CharacterData GetCharacterData(ApiKey key, ApiKeyEntity entity) {
+            var data = new CharacterData();
+            var ckey = new CharacterKey(key.ApiKeyId, key.VCode);
+            var character = ckey.Characters.Single(c => c.CharacterId == entity.EntityId);
+            var info  = character.GetCharacterInfo();
+
+
+            return data;
+        }
+
+        public string GetPortraint(ApiKeyEntity entity) {
+            return new Image().GetCharacterPortrait(entity.EntityId, Image.CharacterPortraitSize.X256);
+        }
+
+
+
         public IList<ApiKeyEntity> GetApiKeyEntities(ApiKey key) {
             var ckey = new CharacterKey(key.ApiKeyId, key.VCode);
             var list = new List<ApiKeyEntity>();
@@ -79,5 +96,6 @@ namespace eZet.EveProfiteer.Services {
             }
             return transactions;
         }
+
     }
 }
