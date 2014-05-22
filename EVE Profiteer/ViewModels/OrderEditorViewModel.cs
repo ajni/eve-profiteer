@@ -7,7 +7,6 @@ using System.Windows.Input;
 using Caliburn.Micro;
 using DevExpress.Xpf.Grid;
 using DevExpress.Xpf.Mvvm;
-using DevExpress.Xpf.Ribbon.Customization;
 using eZet.EveProfiteer.Events;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
@@ -16,28 +15,28 @@ using Screen = Caliburn.Micro.Screen;
 
 namespace eZet.EveProfiteer.ViewModels {
     public class OrderEditorViewModel : Screen, IHandle<AddToOrdersEventArgs>, IHandle<GridCellValidationEventArgs>, IHandle<DeleteOrdersEventArgs> {
-        private readonly EveOnlineStaticDataService _eveOnlineStaticDataService;
+        private readonly EveProfiteerDataService _dataService;
         private readonly IEventAggregator _eventAggregator;
-        private readonly OrderEditorService _orderEditorService;
+        private readonly OrderIoService _orderIoService;
         private readonly IWindowManager _windowManager;
 
 
-        private ObservableCollection<Order> _orders;
+        private BindableCollection<Order> _orders;
 
         private ObservableCollection<Order> _selectedOrders;
         private string _selectedPath = @"C:\Users\Lars Kristian\AppData\Local\MacroLab\Eve Pilot\Client_1\EVETrader";
 
         public OrderEditorViewModel(IWindowManager windowManager, IEventAggregator eventAggregator,
-            OrderEditorService orderEditorService, EveOnlineStaticDataService eveOnlineStaticDataService) {
+            OrderIoService orderIoService, EveProfiteerDataService dataService) {
             _windowManager = windowManager;
             _eventAggregator = eventAggregator;
-            _orderEditorService = orderEditorService;
-            _eveOnlineStaticDataService = eveOnlineStaticDataService;
+            _orderIoService = orderIoService;
+            _dataService = dataService;
             DisplayName = "Order Editor";
             _eventAggregator.Subscribe(this);
 
             SelectedOrders = new ObservableCollection<Order>();
-            Orders = new ObservableCollection<Order>();
+            Orders = new BindableCollection<Order>();
             DayLimit = 10;
             BuyOrderAvgOffset = 2;
             SellOrderAvgOffset = 2;
@@ -46,14 +45,12 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         private void DeleteOrders(ICollection<object> collection) {
-
-
             var orders = collection.Select(order => (Order) order).ToList();
             foreach (var order in orders) {
                 Orders.Remove(order);
             }
-            _orderEditorService.DeleteOrders(orders);
-            _orderEditorService.SaveChanges();
+            _dataService.Db.Orders.RemoveRange(orders);
+            _dataService.Db.SaveChanges();
         }
 
         public ICommand ViewTradeDetailsCommand { get; private set; }
@@ -66,7 +63,7 @@ namespace eZet.EveProfiteer.ViewModels {
 
         public int SellOrderAvgOffset { get; set; }
 
-        public ObservableCollection<Order> Orders {
+        public BindableCollection<Order> Orders {
             get { return _orders; }
             private set {
                 _orders = value;
@@ -84,24 +81,26 @@ namespace eZet.EveProfiteer.ViewModels {
 
         private void OrdersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
             if (e.NewItems != null)
-                _orderEditorService.AddOrders(e.NewItems.OfType<Order>());
+                _dataService.Db.Orders.AddRange(e.NewItems.OfType<Order>());
             if (e.OldItems != null)
-                _orderEditorService.DeleteOrders(e.OldItems.OfType<Order>());
+                _dataService.Db.Orders.RemoveRange(e.OldItems.OfType<Order>());
         }
 
 
         protected override void OnInitialize() {
-            Orders.AddRange(_orderEditorService.GetOrders().ToList());
+            Orders.AddRange(_dataService.Db.Orders.Where(order => order.ApiKeyEntity_Id == ShellViewModel.ActiveKeyEntity.Id).ToList());
             Orders.CollectionChanged += OrdersOnCollectionChanged;
         }
 
         public void SaveChanges() {
-            _orderEditorService.SaveChanges();
+            Orders.Apply(order => order.ApiKeyEntity_Id = ShellViewModel.ActiveKeyEntity.Id);
+            _dataService.Db.SaveChanges();
         }
 
         public void UpdateMarketData() {
-            _orderEditorService.LoadMarketData(Orders, DayLimit);
-            refreshOrders();
+            _orderIoService.LoadMarketData(Orders, DayLimit);
+            Orders.NotifyOfPropertyChange();
+            //refreshOrders();
         }
 
         public void Import() {
@@ -109,8 +108,8 @@ namespace eZet.EveProfiteer.ViewModels {
             dialog.ShowNewFolderButton = false;
             dialog.SelectedPath = _selectedPath;
             if (dialog.ShowDialog() == DialogResult.OK) {
-                ICollection<Order> orders = _orderEditorService.LoadOrdersFromDisk(dialog.SelectedPath);
-                _orderEditorService.LoadMarketData(orders, DayLimit);
+                ICollection<Order> orders = _orderIoService.LoadOrdersFromDisk(dialog.SelectedPath);
+                _orderIoService.LoadMarketData(orders, DayLimit);
                 Orders.Clear();
                 Orders.AddRange(orders);
                 _selectedPath = dialog.SelectedPath;
@@ -122,7 +121,7 @@ namespace eZet.EveProfiteer.ViewModels {
             dialog.ShowNewFolderButton = false;
             dialog.SelectedPath = _selectedPath;
             if (dialog.ShowDialog() == DialogResult.OK) {
-                _orderEditorService.SaveOrdersToDisk(dialog.SelectedPath, Orders);
+                _orderIoService.SaveOrdersToDisk(dialog.SelectedPath, Orders);
                 _selectedPath = dialog.SelectedPath;
             }
         }
@@ -167,16 +166,18 @@ namespace eZet.EveProfiteer.ViewModels {
         public void Handle(AddToOrdersEventArgs e) {
             var orders = new List<Order>();
             foreach (MarketAnalyzerEntry item in e.Items) {
-                orders.Add(_orderEditorService.CreateOrder(item.InvType.TypeId));
+                var order = _dataService.Db.Orders.Create();
+                order.InvType = item.InvType;
+                orders.Add(order);
             }
-            _orderEditorService.LoadMarketData(orders, DayLimit);
+            _orderIoService.LoadMarketData(orders, DayLimit);
             Orders.AddRange(orders);
             _eventAggregator.Publish(new OrdersAddedEventArgs(orders));
         }
 
         public void Handle(GridCellValidationEventArgs eventArgs) {
             string value = eventArgs.Value.ToString();
-            InvType item = _eveOnlineStaticDataService.GetTypes().SingleOrDefault(f => f.TypeName == value);
+            InvType item = _dataService.Db.InvTypes.SingleOrDefault(f => f.TypeName == value);
             if (item == null) {
                 eventArgs.IsValid = false;
                 eventArgs.SetError("Invalid item.");

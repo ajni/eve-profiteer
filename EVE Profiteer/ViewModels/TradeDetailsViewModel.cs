@@ -13,15 +13,13 @@ using MoreLinq;
 namespace eZet.EveProfiteer.ViewModels {
     public class TradeDetailsViewModel : Screen, IHandle<OrdersAddedEventArgs>, IHandle<ViewTradeDetailsEventArgs> {
         private readonly IEventAggregator _eventAggregator;
-        private readonly AnalyzerService _analyzerService;
-        private readonly EveOnlineStaticDataService _eveDbService;
+        private readonly EveProfiteerDataService _dataService;
         private InvType _selectedItem;
         private TradeDetailsData _tradeData;
 
-        public TradeDetailsViewModel(IEventAggregator eventAggregator, AnalyzerService analyzerService, EveOnlineStaticDataService eveDbService) {
+        public TradeDetailsViewModel(IEventAggregator eventAggregator, EveProfiteerDataService dataService) {
             _eventAggregator = eventAggregator;
-            _analyzerService = analyzerService;
-            _eveDbService = eveDbService;
+            _dataService = dataService;
             DisplayName = "Trade Details";
             eventAggregator.Subscribe(this);
             PropertyChanged += OnPropertyChanged;
@@ -42,7 +40,7 @@ namespace eZet.EveProfiteer.ViewModels {
             if (type == null) 
                 return;
             List<Transaction> transactions =
-                _analyzerService.Transactions().Where(f => f.TypeId == type.TypeId).ToList();
+                _dataService.Db.Transactions.Where(f => f.TypeId == type.TypeId).ToList();
             if (transactions.Any())
                 TradeData = new TradeDetailsData(transactions.First().TypeId, transactions.First().InvType.TypeName,
                     transactions);
@@ -74,13 +72,12 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         private void LoadSelectableItems() {
-            IEnumerable<int> types =
-                _analyzerService.Orders().DistinctBy(order => order.TypeId).Select(order => order.TypeId);
-            SelectableItems = _eveDbService.GetTypes().Where(type => types.Contains(type.TypeId)).OrderBy(type => type.TypeName).ToList();
+            SelectableItems =
+                _dataService.Db.Orders.DistinctBy(order => order.TypeId).Select(order => order.InvType).OrderBy(type => type.TypeName).ToList();
         }
 
         public void Handle(ViewTradeDetailsEventArgs message) {
-            var item = _eveDbService.GetTypes().SingleOrDefault(type => type.TypeId == message.TypeId);
+            var item = _dataService.Db.InvTypes.SingleOrDefault(type => type.TypeId == message.TypeId);
             Debug.Assert(item != null, "Attempted to view invalid type.");
             SelectedItem = item;
         }

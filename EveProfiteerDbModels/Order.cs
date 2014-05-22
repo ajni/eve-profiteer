@@ -26,7 +26,7 @@ namespace eZet.EveProfiteer.Models
         public decimal CurrentBuyPrice { get; set; }
         public decimal CurrentSellPrice { get; set; }
         public decimal AvgPrice { get; set; }
-        public Nullable<int> ApiKeyEntity_Id { get; set; }
+        public int ApiKeyEntity_Id { get; set; }
         public bool IsSellOrder { get; set; }
         public bool IsBuyOrder { get; set; }
         public string Notes { get; set; }

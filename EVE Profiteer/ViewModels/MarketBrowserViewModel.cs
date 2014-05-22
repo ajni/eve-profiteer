@@ -11,18 +11,36 @@ using eZet.EveProfiteer.Services;
 
 namespace eZet.EveProfiteer.ViewModels {
     public class MarketBrowserViewModel : Screen, IHandle<ViewMarketDetailsEventArgs> {
-        private readonly EveOnlineStaticDataService _eveOnlineDbService;
-        private readonly MarketBrowserService _marketBrowserService;
+        private readonly EveProfiteerDataService _dataService;
         private readonly IEventAggregator _eventAggregator;
+        private readonly MarketBrowserService _marketBrowserService;
         private readonly IWindowManager _windowManager;
         private int _dayLimit = 5;
-        private InvType _selectedItem;
         private MarketBrowserItem _marketBrowserItem;
-        private bool _showDonchianChannel;
-        private bool _showDonchianCenter;
-        private bool _show5DayAverage;
+        private InvType _selectedItem;
         private bool _show20DayAverage;
+        private bool _show5DayAverage;
         private bool _showAveragePrice;
+        private bool _showDonchianCenter;
+        private bool _showDonchianChannel;
+
+        public MarketBrowserViewModel(IWindowManager windowManager, IEventAggregator eventAggregator,
+            MarketBrowserService marketBrowserService, EveProfiteerDataService dataService) {
+            _marketBrowserService = marketBrowserService;
+            _dataService = dataService;
+            _windowManager = windowManager;
+            _eventAggregator = eventAggregator;
+            _eventAggregator.Subscribe(this);
+            DisplayName = "Market Browser";
+
+            SelectItemCommand = new DelegateCommand<InvType>(SelectItem);
+            AddToOrdersCommand = new DelegateCommand<ICollection<object>>(AddToOrders, CanAddToOrders);
+            ViewTradeDetailsCommand =
+                new DelegateCommand<MarketAnalyzerEntry>(
+                    entry => _eventAggregator.Publish(new ViewTradeDetailsEventArgs(entry.InvType.TypeId)),
+                    entry => entry != null && entry.Order != null);
+            PropertyChanged += OnPropertyChanged;
+        }
 
         public MarketBrowserItem MarketBrowserItem {
             get { return _marketBrowserItem; }
@@ -44,45 +62,9 @@ namespace eZet.EveProfiteer.ViewModels {
 
         public BindableCollection<MarketOrder> CurrentOrders { get; private set; }
 
-        public BindableCollection<mapRegion> Regions { get; private set; }
+        public BindableCollection<MapRegion> Regions { get; private set; }
 
-        public mapRegion SelectedRegion { get; private set; }
-
-        public MarketBrowserViewModel(IWindowManager windowManager, IEventAggregator eventAggregator,
-            EveOnlineStaticDataService eveOnlineDbService,
-            MarketBrowserService marketBrowserService) {
-            _eveOnlineDbService = eveOnlineDbService;
-            _marketBrowserService = marketBrowserService;
-            _windowManager = windowManager;
-            _eventAggregator = eventAggregator;
-            _eventAggregator.Subscribe(this);
-            DisplayName = "Market Browser";
-
-            SelectItemCommand = new DelegateCommand<InvType>(SelectItem);
-            AddToOrdersCommand = new DelegateCommand<ICollection<object>>(AddToOrders, CanAddToOrders);
-            ViewTradeDetailsCommand =
-                new DelegateCommand<MarketAnalyzerEntry>(
-                    entry => _eventAggregator.Publish(new ViewTradeDetailsEventArgs(entry.InvType.TypeId)),
-                    entry => entry != null && entry.Order != null);
-            PropertyChanged += OnPropertyChanged;
-        }
-
-    
-
-        private void OnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs) {
-            if (propertyChangedEventArgs.PropertyName == "SelectedItem")
-                LoadMarketDetails(SelectedItem);
-        }
-
-        private async void LoadMarketDetails(InvType invType) {
-            MarketBrowserItem = await GetMarketDetails(SelectedRegion, invType);
-
-        }
-
-        private void SelectItem(InvType invType) {
-            if (invType == null) return;
-            SelectedItem = invType;
-        }
+        public MapRegion SelectedRegion { get; private set; }
 
         public bool ShowDonchianChannel {
             get { return _showDonchianChannel; }
@@ -158,12 +140,30 @@ namespace eZet.EveProfiteer.ViewModels {
             }
         }
 
+        public void Handle(ViewMarketDetailsEventArgs message) {
+            LoadMarketDetails(message.InvType);
+        }
+
+        private void OnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs) {
+            if (propertyChangedEventArgs.PropertyName == "SelectedItem")
+                LoadMarketDetails(SelectedItem);
+        }
+
+        private async void LoadMarketDetails(InvType invType) {
+            MarketBrowserItem = await GetMarketDetails(SelectedRegion, invType);
+        }
+
+        private void SelectItem(InvType invType) {
+            if (invType == null) return;
+            SelectedItem = invType;
+        }
+
         public void Handle(OrdersAddedEventArgs ordersAddedEventArgs) {
-       }
+        }
 
         protected override void OnInitialize() {
-            TreeRootNodes = buildTree();
-            Regions = new BindableCollection<mapRegion>(_eveOnlineDbService.GetRegions().ToList());
+            TreeRootNodes = _dataService.BuildMarketTree(null);
+            Regions = new BindableCollection<MapRegion>(_dataService.Db.MapRegions.ToList());
             SelectedRegion = Regions.Single(region => region.RegionId == 10000002);
         }
 
@@ -171,49 +171,21 @@ namespace eZet.EveProfiteer.ViewModels {
         private bool CanAddToOrders(ICollection<object> objects) {
             if (objects == null || !objects.Any())
                 return false;
-            List<MarketAnalyzerEntry> items = objects.Select(item => (MarketAnalyzerEntry)item).ToList();
+            List<MarketAnalyzerEntry> items = objects.Select(item => (MarketAnalyzerEntry) item).ToList();
             return items.All(item => item.Order == null);
         }
 
         private void AddToOrders(ICollection<object> objects) {
             if (objects == null || !objects.Any())
                 return;
-            List<MarketAnalyzerEntry> items = objects.Select(item => (MarketAnalyzerEntry)item).ToList();
+            List<MarketAnalyzerEntry> items = objects.Select(item => (MarketAnalyzerEntry) item).ToList();
             _eventAggregator.Publish(new AddToOrdersEventArgs(items));
         }
 
-        private async Task<MarketBrowserItem> GetMarketDetails(mapRegion region, InvType invType) {
+        private async Task<MarketBrowserItem> GetMarketDetails(MapRegion region, InvType invType) {
             return await
                 Task.Run(() => _marketBrowserService.GetDetails(region, invType));
         }
-
-        private BindableCollection<InvMarketGroup> buildTree() {
-            var rootList = new BindableCollection<InvMarketGroup>();
-            _eveOnlineDbService.SetLazyLoad(false);
-            List<InvType> items = _eveOnlineDbService.GetTypes().Where(p => p.MarketGroupId.HasValue).ToList();
-            List<InvMarketGroup> groupList = _eveOnlineDbService.GetMarketGroups().ToList();
-            Dictionary<int, InvMarketGroup> groups = groupList.ToDictionary(t => t.MarketGroupId);
-
-            foreach (InvType item in items) {
-                InvMarketGroup group;
-                int id = item.MarketGroupId ?? default(int);
-                groups.TryGetValue(id, out group);
-                group.Children.Add(item);
-            }
-            foreach (var key in groups) {
-                if (key.Value.ParentGroupId.HasValue) {
-                    InvMarketGroup group;
-                    int id = key.Value.ParentGroupId ?? default(int);
-                    groups.TryGetValue(id, out group);
-                    group.Children.Add(key.Value);
-                } else {
-                    rootList.Add(key.Value);
-                }
-            }
-            _eveOnlineDbService.SetLazyLoad(true);
-            return rootList;
-        }
-
 
         private ICollection<Station> getStations() {
             var list = new List<Station>();
@@ -224,10 +196,5 @@ namespace eZet.EveProfiteer.ViewModels {
             });
             return list;
         }
-
-        public void Handle(ViewMarketDetailsEventArgs message) {
-            LoadMarketDetails(message.InvType);
-        }
     }
-
 }

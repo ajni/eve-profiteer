@@ -21,16 +21,16 @@ namespace eZet.EveProfiteer.ViewModels {
             Period
         }
 
-        private readonly AnalyzerService _analyzerService;
+        private readonly EveProfiteerDataService _dataService;
         private readonly IEventAggregator _eventAggregator;
         private readonly IWindowManager _windowMananger;
         private ViewPeriodEnum _selectedViewPeriod;
 
         public TradeAnalyzerViewModel(IWindowManager windowMananger, IEventAggregator eventAggregator,
-            AnalyzerService analyzerService) {
+            EveProfiteerDataService dataService) {
             _windowMananger = windowMananger;
             _eventAggregator = eventAggregator;
-            _analyzerService = analyzerService;
+            _dataService = dataService;
             DisplayName = "Trade Analyzer";
             Items = new BindableCollection<TradeAnalyzerItem>();
             ViewTradeDetailsCommand = new DelegateCommand<TradeAnalyzerItem>(ViewTradeDetails, CanViewTradeDetails);
@@ -119,7 +119,7 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         private void load() {
-            var items = _analyzerService.Orders().GroupJoin(_analyzerService.Transactions().Where(t => t.TransactionDate >= ActualViewStart && t.TransactionDate <= ActualViewEnd), order => order.TypeId,
+            var items = _dataService.Db.Orders.GroupJoin(_dataService.Db.Transactions.Where(t => t.TransactionDate >= ActualViewStart && t.TransactionDate <= ActualViewEnd), order => order.TypeId,
                        transaction => transaction.TypeId,
                        (order, enumerable) =>
                            new TradeAnalyzerItem {

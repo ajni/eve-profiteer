@@ -11,17 +11,15 @@ using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Repository;
 
 namespace eZet.EveProfiteer.Services {
-    public class OrderEditorService {
-        private readonly EveProfiteerDbEntities _eveDbContext;
-        private readonly IRepository<Order> _ordersRepository;
+    public class OrderIoService {
+        private readonly EveProfiteerDataService _dataService;
         public string BuyOrdersFileName = "BuyOrders.xml";
 
         public string SellOrdersFileName = "SellOrders.xml";
 
 
-        public OrderEditorService(EveProfiteerDbEntities eveDbContext, IRepository<Order> ordersRepository) {
-            _eveDbContext = eveDbContext;
-            _ordersRepository = ordersRepository;
+        public OrderIoService(EveProfiteerDataService dataService) {
+            _dataService = dataService;
             EveMarketData = new EveMarketData();
         }
 
@@ -50,40 +48,14 @@ namespace eZet.EveProfiteer.Services {
             return orders;
         }
 
-        public IQueryable<Order> GetOrders() {
-            IQueryable<Order> orders = _ordersRepository.Queryable();
-            loadType(orders);
-            return orders;
-        }
-
         private void loadType(IEnumerable<Order> orders) {
-            //order.InvType = _eveDbContext.InvTypes.Find(order.TypeId);
             var enumerable = orders as IList<Order> ?? orders.ToList();
             var orderIds = enumerable.Select(f => f.TypeId);
-            var types = _eveDbContext.InvTypes.Where(f => orderIds.Contains(f.TypeId));
+            var types = _dataService.Db.InvTypes.Where(f => orderIds.Contains(f.TypeId));
             var lookup = types.ToLookup(f => f.TypeId);
             foreach (var order in enumerable) {
                 order.InvType = lookup[order.TypeId].Single();
             }
-        }
-
-        private void loadType(Order order) {
-            order.InvType = _eveDbContext.InvTypes.Find(order.TypeId);
-        }
-
-        public void AddOrders(IEnumerable<Order> orders) {
-            foreach (Order order in orders) {
-                if (!_ordersRepository.Queryable().Any(f => f.TypeId == order.TypeId))
-                    _ordersRepository.Add(order);
-            }
-        }
-
-        public void DeleteOrders(IEnumerable<Order> orders) {
-            _ordersRepository.RemoveRange(orders);
-        }
-
-        public void SaveChanges() {
-            _ordersRepository.SaveChanges();
         }
 
         public void LoadMarketData(ICollection<Order> orders, int dayLimit, int region = 10000002) {
@@ -129,7 +101,7 @@ namespace eZet.EveProfiteer.Services {
         }
 
 
-        public static SellOrder ToSellOrder(Order order) {
+        private static SellOrder ToSellOrder(Order order) {
             var sellOrder = new SellOrder {
                 TypeName = order.InvType.TypeName,
                 TypeId = order.TypeId,
@@ -141,7 +113,7 @@ namespace eZet.EveProfiteer.Services {
             return sellOrder;
         }
 
-        public static BuyOrder ToBuyOrder(Order order) {
+        private static BuyOrder ToBuyOrder(Order order) {
             var buyOrder = new BuyOrder {
                 ItemName = order.InvType.TypeName,
                 ItemId = order.TypeId,
@@ -152,7 +124,7 @@ namespace eZet.EveProfiteer.Services {
             return buyOrder;
         }
 
-        public Order CreateOrder(BuyOrder buyOrder, SellOrder sellOrder) {
+        private static Order CreateOrder(BuyOrder buyOrder, SellOrder sellOrder) {
             var order = new Order();
             order.TypeId = sellOrder != null ? sellOrder.TypeId : buyOrder.ItemId;
             if (sellOrder != null) {
@@ -170,11 +142,5 @@ namespace eZet.EveProfiteer.Services {
             return order;
         }
 
-        public Order CreateOrder(int invTypeId) {
-            var order = new Order();
-            order.TypeId = invTypeId;
-            loadType(order);
-            return order;
-        }
     }
 }

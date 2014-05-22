@@ -15,7 +15,7 @@ namespace eZet.EveProfiteer.Services {
 
         public EveMarketData EveMarketData { get; private set; }
 
-        public MarketBrowserItem GetDetails(mapRegion region, InvType invType) {
+        public MarketBrowserItem GetDetails(MapRegion region, InvType invType) {
             var options = new EveMarketDataOptions();
             options.Items.Add(invType.TypeId);
             options.Regions.Add(region.RegionId);

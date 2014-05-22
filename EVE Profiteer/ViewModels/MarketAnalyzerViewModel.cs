@@ -15,10 +15,9 @@ using Xceed.Wpf.Toolkit;
 
 namespace eZet.EveProfiteer.ViewModels {
     public class MarketAnalyzerViewModel : Screen, IHandle<OrdersAddedEventArgs> {
+        private readonly EveProfiteerDataService _dataService;
         private readonly EveMarketService _eveMarketService;
-        private readonly EveOnlineStaticDataService _eveOnlineDbService;
         private readonly IEventAggregator _eventAggregator;
-        private readonly OrderEditorService _orderEditorService;
         private readonly IWindowManager _windowManager;
         private int _dayLimit = 5;
         private BindableCollection<MarketAnalyzerEntry> _marketAnalyzerResults;
@@ -26,13 +25,12 @@ namespace eZet.EveProfiteer.ViewModels {
         private Station _selectedStation;
 
         public MarketAnalyzerViewModel(IWindowManager windowManager, IEventAggregator eventAggregator,
-            EveOnlineStaticDataService eveOnlineDbService,
-            EveMarketService eveMarketService, OrderEditorService orderEditorService) {
-            _eveOnlineDbService = eveOnlineDbService;
+            EveProfiteerDataService dataService,
+            EveMarketService eveMarketService) {
             _eveMarketService = eveMarketService;
-            _orderEditorService = orderEditorService;
             _windowManager = windowManager;
             _eventAggregator = eventAggregator;
+            _dataService = dataService;
             _eventAggregator.Subscribe(this);
             DisplayName = "Market Analyzer";
 
@@ -100,17 +98,17 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         public void Handle(OrdersAddedEventArgs ordersAddedEventArgs) {
-            //ILookup<int, MarketAnalyzerEntry> lookup = MarketAnalyzerResults.ToLookup(f => f.InvType.TypeId);
-            //foreach (Order order in ordersAddedEventArgs.Orders) {
-            //    if (lookup.Contains(order.TypeId)) {
-            //        lookup[order.TypeId].Single().Order = order;
-            //        MarketAnalyzerResults.NotifyOfPropertyChange();
-            //    }
-            //}
+            ILookup<int, MarketAnalyzerEntry> lookup = MarketAnalyzerResults.ToLookup(f => f.InvType.TypeId);
+            foreach (Order order in ordersAddedEventArgs.Orders) {
+                if (lookup.Contains(order.TypeId)) {
+                    lookup[order.TypeId].Single().Order = order;
+                    MarketAnalyzerResults.NotifyOfPropertyChange();
+                }
+            }
         }
 
         protected override void OnInitialize() {
-            TreeRootNodes = buildTree();
+            TreeRootNodes = _dataService.BuildMarketTree(treeViewCheckBox_PropertyChanged);
             Stations = getStations();
             SelectedStation = Stations.Single(f => f.StationId == 60003760);
         }
@@ -126,13 +124,11 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         private void LoadOrderData(IEnumerable<MarketAnalyzerEntry> items) {
-            //IQueryable<Order> orders = _orderEditorService.GetOrders();
-            //ILookup<int, MarketAnalyzerEntry> lookup = items.ToLookup(f => f.InvType.TypeId);
-            //foreach (Order order in orders) {
-            //    if (lookup.Contains(order.TypeId)) {
-            //        lookup[order.TypeId].Single().Order = order;
-            //    }
-            //}
+            items.Apply(
+                item =>
+                    item.Order =
+                        item.InvType.Orders.SingleOrDefault(
+                            order => order.ApiKeyEntity_Id == ShellViewModel.ActiveKeyEntity.Id));
         }
 
         public bool CanScannerLinkAction() {
@@ -165,46 +161,17 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         public async void LoadOrders() {
-            //List<int> orders = _orderEditorService.GetOrders().Select(item => item.TypeId).ToList();
-            //List<InvType> items =
-            //    _eveOnlineDbService.GetTypes().Where(item => orders.Contains(item.TypeId)).ToList();
-            //MarketAnalyzer res = await GetMarketAnalyzer(items);
-            //LoadOrderData(res.Result);
-            //MarketAnalyzerResults = new BindableCollection<MarketAnalyzerEntry>(res.Result);
+            List<InvType> items =
+                _dataService.Db.Orders.Where(order => order.ApiKeyEntity_Id == ShellViewModel.ActiveKeyEntity.Id)
+                    .Select(order => order.InvType).ToList();
+            MarketAnalyzer res = await GetMarketAnalyzer(items);
+            LoadOrderData(res.Result);
+            MarketAnalyzerResults = new BindableCollection<MarketAnalyzerEntry>(res.Result);
         }
 
         private async Task<MarketAnalyzer> GetMarketAnalyzer(ICollection<InvType> items) {
             return await
                 Task.Run(() => _eveMarketService.GetMarketAnalyzer(SelectedStation, items, DayLimit));
-        }
-
-        private BindableCollection<InvMarketGroup> buildTree() {
-            var rootList = new BindableCollection<InvMarketGroup>();
-            _eveOnlineDbService.SetLazyLoad(false);
-            List<InvType> items = _eveOnlineDbService.GetTypes().Where(p => p.MarketGroupId.HasValue).ToList();
-            List<InvMarketGroup> groupList = _eveOnlineDbService.GetMarketGroups().ToList();
-            Dictionary<int, InvMarketGroup> groups = groupList.ToDictionary(t => t.MarketGroupId);
-
-            foreach (InvType item in items) {
-                InvMarketGroup group;
-                int id = item.MarketGroupId ?? default(int);
-                groups.TryGetValue(id, out group);
-                group.Children.Add(item);
-                item.PropertyChanged += treeViewCheckBox_PropertyChanged;
-            }
-            foreach (var key in groups) {
-                if (key.Value.ParentGroupId.HasValue) {
-                    InvMarketGroup group;
-                    int id = key.Value.ParentGroupId ?? default(int);
-                    groups.TryGetValue(id, out group);
-                    group.Children.Add(key.Value);
-                }
-                else {
-                    rootList.Add(key.Value);
-                }
-            }
-            _eveOnlineDbService.SetLazyLoad(true);
-            return rootList;
         }
 
         private void treeViewCheckBox_PropertyChanged(object sender, PropertyChangedEventArgs e) {

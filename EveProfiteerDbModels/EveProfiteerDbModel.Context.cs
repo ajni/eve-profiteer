@@ -30,7 +30,7 @@ namespace eZet.EveProfiteer.Models
         public virtual DbSet<JournalEntry> JournalEntries { get; set; }
         public virtual DbSet<InvMarketGroup> InvMarketGroups { get; set; }
         public virtual DbSet<InvType> InvTypes { get; set; }
-        public virtual DbSet<mapRegion> mapRegions { get; set; }
+        public virtual DbSet<MapRegion> MapRegions { get; set; }
         public virtual DbSet<Order> Orders { get; set; }
         public virtual DbSet<Transaction> Transactions { get; set; }
     }

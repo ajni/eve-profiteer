@@ -39,8 +39,8 @@ namespace eZet.EveProfiteer.Services {
             return query;
         }
 
-        public IQueryable<mapRegion> GetRegions() {
-            IOrderedQueryable<mapRegion> query = from row in Repository.mapRegions
+        public IQueryable<MapRegion> GetRegions() {
+            IOrderedQueryable<MapRegion> query = from row in Repository.MapRegions
                 where row.RegionId < 11000001
                 orderby row.RegionName
                 select row;

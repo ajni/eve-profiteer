@@ -11,7 +11,7 @@
     [CurrentBuyPrice]   DECIMAL (18, 2) NOT NULL,
     [CurrentSellPrice]  DECIMAL (18, 2) NOT NULL,
     [AvgPrice]          DECIMAL (18, 2) NOT NULL,
-    [ApiKeyEntity_Id] INT NULL, 
+    [ApiKeyEntity_Id] INT NOT NULL, 
     [IsSellOrder] BIT NOT NULL, 
     [IsBuyOrder] BIT NOT NULL, 
     [Notes] TEXT NULL, 

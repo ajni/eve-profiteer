@@ -39,9 +39,9 @@ namespace eZet.EveProfiteer.ViewModels {
 
         public ICommand UpdateTransactionsCommand { get; private set; }
 
-        public ApiKey ActiveKey { get; private set; }
+        public static ApiKey ActiveKey { get; private set; }
 
-        public ApiKeyEntity ActiveKeyEntity { get; private set; }
+        public static ApiKeyEntity ActiveKeyEntity { get; private set; }
 
         public void SelectKey() {
             Items.Clear();

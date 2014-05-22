@@ -84,7 +84,7 @@
     <Compile Include="JournalEntry.cs">
       <DependentUpon>EveProfiteerDbModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="mapRegion.cs">
+    <Compile Include="MapRegion.cs">
       <DependentUpon>EveProfiteerDbModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Order.cs">

@@ -12,7 +12,7 @@
         <AssociationConnector Association="EveProfiteerDbModel.ApiKeyApiKeyEntities" />
         <EntityTypeShape EntityType="EveProfiteerDbModel.InvMarketGroup" Width="1.5" PointX="8.625" PointY="10.125" />
         <EntityTypeShape EntityType="EveProfiteerDbModel.InvType" Width="1.5" PointX="6.5" PointY="10.125" />
-        <EntityTypeShape EntityType="EveProfiteerDbModel.mapRegion" Width="1.5" PointX="7.125" PointY="5.875" />
+        <EntityTypeShape EntityType="EveProfiteerDbModel.MapRegion" Width="1.5" PointX="7.125" PointY="5.875" />
         <AssociationConnector Association="EveProfiteerDbModel.invMarketGroupinvType" />
         <AssociationConnector Association="EveProfiteerDbModel.invMarketGroupinvMarketGroup" />
         <EntityTypeShape EntityType="EveProfiteerDbModel.Order" Width="1.5" PointX="3" PointY="11" />

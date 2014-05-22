@@ -24,6 +24,7 @@ namespace eZet.EveProfiteer {
 
             // DbContexts
             _container.Singleton<EveProfiteerDbEntities>();
+            _container.Singleton<EveProfiteerDataService>();
             //_container.PerRequest<EveProfiteerDbEntities>();
 
             // Repositories
@@ -40,7 +41,7 @@ namespace eZet.EveProfiteer {
             _container.PerRequest<TransactionService>();
             _container.PerRequest<EveMarketService>();
             _container.PerRequest<EveOnlineStaticDataService>();
-            _container.PerRequest<OrderEditorService>();
+            _container.PerRequest<OrderIoService>();
             _container.PerRequest<RepositoryService<ApiKey>>();
             _container.PerRequest<RepositoryService<ApiKeyEntity>>();
             _container.PerRequest<KeyManagementService>();

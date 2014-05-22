@@ -12,7 +12,7 @@ namespace eZet.EveProfiteer.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class mapRegion
+    public partial class MapRegion
     {
         public int RegionId { get; set; }
         public string RegionName { get; set; }

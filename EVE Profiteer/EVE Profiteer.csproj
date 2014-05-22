@@ -133,6 +133,7 @@
     <Compile Include="Models\MarketBrowserItem.cs" />
     <Compile Include="Models\MarketOrder.cs" />
     <Compile Include="Models\TradeAnalyzerItem.cs" />
+    <Compile Include="Services\EveProfiteerDataService.cs" />
     <Compile Include="Services\MarketBrowserService.cs" />
     <Compile Include="Ui\Converters\DoubleToIntConverter.cs" />
     <Compile Include="Ui\Converters\OrderToColorConverter.cs" />
@@ -147,7 +148,7 @@
     <Compile Include="Services\EveApiService.cs" />
     <Compile Include="Services\EveOnlineStaticDataService.cs" />
     <Compile Include="Services\EveMarketDataService.cs" />
-    <Compile Include="Services\OrderEditorService.cs" />
+    <Compile Include="Services\OrderIoService.cs" />
     <Compile Include="Services\RepositoryService.cs" />
     <Compile Include="Services\TransactionService.cs" />
     <Compile Include="Ui\Converters\RoutedPropertyChangedEventArgsConverter.cs" />
