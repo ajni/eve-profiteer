@@ -81,6 +81,7 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.Entity" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
@@ -153,6 +154,7 @@
     <Compile Include="Services\TransactionService.cs" />
     <Compile Include="Ui\Converters\RoutedPropertyChangedEventArgsConverter.cs" />
     <Compile Include="Util\ApiEntityMapper.cs" />
+    <Compile Include="Util\ApplicationHelper.cs" />
     <Compile Include="Util\ProgressType.cs" />
     <Compile Include="ViewModels\AnalyzerProgressViewModel.cs" />
     <Compile Include="ViewModels\EditKeyViewModel.cs" />
@@ -188,6 +190,9 @@
     </Compile>
     <Compile Include="Views\AddKeyView.xaml.cs">
       <DependentUpon>AddKeyView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\OverviewView.xaml.cs">
+      <DependentUpon>OverviewView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\TradeDetailsView.xaml.cs">
       <DependentUpon>TradeDetailsView.xaml</DependentUpon>
@@ -235,6 +240,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\AddKeyView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\OverviewView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

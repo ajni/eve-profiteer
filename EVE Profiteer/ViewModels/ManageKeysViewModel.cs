@@ -5,22 +5,22 @@ using eZet.EveProfiteer.Services;
 
 namespace eZet.EveProfiteer.ViewModels {
     public class ManageKeysViewModel : Screen {
-        private readonly KeyManagementService keyManagementService;
-        private readonly IWindowManager windowManager;
-        private BindableCollection<ApiKey> keys;
-        private ApiKey selectedKey;
+        private readonly KeyManagementService _keyManagementService;
+        private readonly IWindowManager _windowManager;
+        private BindableCollection<ApiKey> _keys;
+        private ApiKey _selectedKey;
 
         public ManageKeysViewModel(IWindowManager windowManager, KeyManagementService keyManagementService) {
-            this.windowManager = windowManager;
-            this.keyManagementService = keyManagementService;
+            this._windowManager = windowManager;
+            this._keyManagementService = keyManagementService;
             Keys = new BindableCollection<ApiKey>(keyManagementService.AllApiKeys().ToList());
         }
 
         public ApiKey SelectedKey {
-            get { return selectedKey; }
+            get { return _selectedKey; }
             set {
-                selectedKey = value;
-                NotifyOfPropertyChange(() => selectedKey);
+                _selectedKey = value;
+                NotifyOfPropertyChange(() => _selectedKey);
                 NotifyOfPropertyChange(() => CanEditKeyButton);
                 NotifyOfPropertyChange(() => CanDeleteKeyButton);
             }
@@ -35,16 +35,16 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         public BindableCollection<ApiKey> Keys {
-            get { return keys; }
+            get { return _keys; }
             set {
-                keys = value;
+                _keys = value;
                 NotifyOfPropertyChange(() => Keys);
             }
         }
 
         public void AddKeyButton() {
             var vm = IoC.Get<AddKeyViewModel>();
-            bool? result = windowManager.ShowDialog(vm);
+            bool? result = _windowManager.ShowDialog(vm);
             if (result.HasValue && result == true) {
                 Keys.Add(vm.Key);
             }
@@ -52,11 +52,11 @@ namespace eZet.EveProfiteer.ViewModels {
 
         public void EditKeyButton() {
             EditKeyViewModel vm = IoC.Get<EditKeyViewModel>().With(SelectedKey);
-            windowManager.ShowDialog(vm);
+            _windowManager.ShowDialog(vm);
         }
 
         public void DeleteKeyButton() {
-            keyManagementService.DeleteKey(SelectedKey);
+            _keyManagementService.DeleteKey(SelectedKey);
             Keys.Remove(SelectedKey);
             SelectedKey = null;
         }

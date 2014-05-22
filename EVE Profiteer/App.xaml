@@ -29,7 +29,6 @@
                     </DataTemplate>
                 </ResourceDictionary>
                 <ResourceDictionary>
-
                     <Style x:Key="ApiKeyEntityListBoxItemStyle" TargetType="{x:Type ListBoxItem}">
                         <Setter Property="IsSelected" Value="{Binding IsActive}" />
                     </Style>

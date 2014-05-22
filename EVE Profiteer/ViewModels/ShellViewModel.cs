@@ -8,6 +8,7 @@ using eZet.EveProfiteer.Events;
 using eZet.EveProfiteer.Framework;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
+using eZet.EveProfiteer.Util;
 
 namespace eZet.EveProfiteer.ViewModels {
     public class ShellViewModel : Conductor<IScreen>.Collection.OneActive, IShell, IHandle<ViewTradeDetailsEventArgs>, IHandle<ViewMarketDetailsEventArgs> {
@@ -25,14 +26,16 @@ namespace eZet.EveProfiteer.ViewModels {
             _keyManagementService = keyManagementService;
             _transactionService = transactionService;
             _eveApiService = eveApiService;
-            ActiveKey = keyManagementService.AllApiKeys().FirstOrDefault();
+            ActiveKey = _keyManagementService.AllApiKeys().FirstOrDefault();
             _eventAggregator.Subscribe(this);
-            if (ActiveKey != null) ActiveKeyEntity = ActiveKey.ApiKeyEntities.Single(f => f.EntityId == 977615922);
+            if (ActiveKey != null)
+                ActiveKeyEntity = ActiveKey.ApiKeyEntities.Single(f => f.EntityId == 977615922);
 
             ManageKeysCommand = new DelegateCommand(ManageKeys);
             UpdateTransactionsCommand = new DelegateCommand(UpdateTransactions);
-
+            DisplayName = "EVE Profiteer";
             SelectKey();
+
         }
 
         public ICommand ManageKeysCommand { get; private set; }
@@ -43,8 +46,29 @@ namespace eZet.EveProfiteer.ViewModels {
 
         public static ApiKeyEntity ActiveKeyEntity { get; private set; }
 
+        protected virtual IDocumentManagerService DocumentManagerService { get { return null; } }
+
+        Dictionary<string, IDocument> documents = new Dictionary<string, IDocument>();
+
+        public void ShowDocument(string p) {
+            string[] parameters = p.Split(';');
+            ShowDocumentCore(parameters[0], parameters[1]);
+        }
+        void ShowDocumentCore(string viewName, string title) {
+            IDocument document = null;
+            if (!documents.TryGetValue(viewName, out document)) {
+                document = DocumentManagerService.CreateDocument(viewName, null, this);
+                document.Title = title;
+                document.DestroyOnClose = false;
+                documents[viewName] = document;
+            }
+            document.Show();
+        }
+
         public void SelectKey() {
             Items.Clear();
+            ApplicationHelper.ActiveKeyEntity = ActiveKeyEntity;
+            //ApplicationHelper.ActiveKey = ActiveKey;
 
             Items.Add(IoC.Get<OverviewViewModel>());
 
@@ -65,6 +89,9 @@ namespace eZet.EveProfiteer.ViewModels {
             if (ActiveKey != null) {
                 //transactions.Initialize(ActiveKey, ActiveKeyEntity);
                 // journal.Initialize(ActiveKey, ActiveKeyEntity);
+
+                Items.NotifyOfPropertyChange("Items");
+                Items.NotifyOfPropertyChange(null);
             }
         }
         public void ManageKeys() {

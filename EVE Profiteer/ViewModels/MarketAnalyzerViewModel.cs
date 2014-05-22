@@ -11,6 +11,7 @@ using eZet.Eve.EveProfiteer.ViewModels;
 using eZet.EveProfiteer.Events;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
+using eZet.EveProfiteer.Util;
 using Xceed.Wpf.Toolkit;
 
 namespace eZet.EveProfiteer.ViewModels {
@@ -128,7 +129,7 @@ namespace eZet.EveProfiteer.ViewModels {
                 item =>
                     item.Order =
                         item.InvType.Orders.SingleOrDefault(
-                            order => order.ApiKeyEntity_Id == ShellViewModel.ActiveKeyEntity.Id));
+                            order => order.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id));
         }
 
         public bool CanScannerLinkAction() {
@@ -162,7 +163,7 @@ namespace eZet.EveProfiteer.ViewModels {
 
         public async void LoadOrders() {
             List<InvType> items =
-                _dataService.Db.Orders.Where(order => order.ApiKeyEntity_Id == ShellViewModel.ActiveKeyEntity.Id)
+                _dataService.Db.Orders.Where(order => order.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id)
                     .Select(order => order.InvType).ToList();
             MarketAnalyzer res = await GetMarketAnalyzer(items);
             LoadOrderData(res.Result);

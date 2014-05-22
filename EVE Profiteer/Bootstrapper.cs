@@ -7,6 +7,7 @@ using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Repository;
 using eZet.EveProfiteer.Services;
 using eZet.EveProfiteer.ViewModels;
+using eZet.EveProfiteer.Views;
 
 namespace eZet.EveProfiteer {
     public class Bootstrapper : BootstrapperBase {
@@ -62,6 +63,7 @@ namespace eZet.EveProfiteer {
             _container.PerRequest<TradeAnalyzerViewModel>();
             _container.PerRequest<TradeDetailsViewModel>();
             _container.PerRequest<MarketBrowserViewModel>();
+            //_container.PerRequest<EveProfiteerDbEntitiesViewModel>();
         }
 
         protected override object GetInstance(Type service, string key) {
@@ -82,6 +84,7 @@ namespace eZet.EveProfiteer {
 
         protected override void OnStartup(object sender, StartupEventArgs e) {
             DisplayRootViewFor<IShell>();
+            //DisplayRootViewFor<EveProfiteerDbEntitiesViewModel>();
         }
     }
 }

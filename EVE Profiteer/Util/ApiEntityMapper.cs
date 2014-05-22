@@ -66,5 +66,6 @@ namespace eZet.EveProfiteer.Util {
             target.Date = source.Date;
             return target;
         }
+
     }
 }

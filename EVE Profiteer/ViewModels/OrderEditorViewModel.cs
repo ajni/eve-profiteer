@@ -10,6 +10,7 @@ using DevExpress.Xpf.Mvvm;
 using eZet.EveProfiteer.Events;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
+using eZet.EveProfiteer.Util;
 using eZet.EveProfiteer.Views;
 using Screen = Caliburn.Micro.Screen;
 
@@ -88,12 +89,12 @@ namespace eZet.EveProfiteer.ViewModels {
 
 
         protected override void OnInitialize() {
-            Orders.AddRange(_dataService.Db.Orders.Where(order => order.ApiKeyEntity_Id == ShellViewModel.ActiveKeyEntity.Id).ToList());
+            Orders.AddRange(_dataService.Db.Orders.Where(order => order.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id).ToList());
             Orders.CollectionChanged += OrdersOnCollectionChanged;
         }
 
         public void SaveChanges() {
-            Orders.Apply(order => order.ApiKeyEntity_Id = ShellViewModel.ActiveKeyEntity.Id);
+            Orders.Apply(order => order.ApiKeyEntity_Id = ApplicationHelper.ActiveKeyEntity.Id);
             _dataService.Db.SaveChanges();
         }
 
