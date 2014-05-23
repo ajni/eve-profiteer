@@ -23,6 +23,7 @@
         <AssociationConnector Association="EveProfiteerDbModel.FK_Transaction_ToInvType" />
         <EntityTypeShape EntityType="EveProfiteerDbModel.StaStation" Width="1.5" PointX="8.875" PointY="1.25" />
         <AssociationConnector Association="EveProfiteerDbModel.MapRegionStaStation" />
+        <AssociationConnector Association="EveProfiteerDbModel.FK_Orders_ToStaStations" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

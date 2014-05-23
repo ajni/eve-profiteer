@@ -17,8 +17,9 @@ using Screen = Caliburn.Micro.Screen;
 namespace eZet.EveProfiteer.ViewModels {
     public class OrderEditorViewModel : Screen, IHandle<AddToOrdersEventArgs>, IHandle<GridCellValidationEventArgs>, IHandle<DeleteOrdersEventArgs> {
         private readonly EveProfiteerDataService _dataService;
+        private readonly EveMarketService _eveMarketService;
         private readonly IEventAggregator _eventAggregator;
-        private readonly OrderIoService _orderIoService;
+        private readonly OrderXmlService _orderXmlService;
         private readonly IWindowManager _windowManager;
 
 
@@ -28,11 +29,12 @@ namespace eZet.EveProfiteer.ViewModels {
         private string _selectedPath = @"C:\Users\Lars Kristian\AppData\Local\MacroLab\Eve Pilot\Client_1\EVETrader";
 
         public OrderEditorViewModel(IWindowManager windowManager, IEventAggregator eventAggregator,
-            OrderIoService orderIoService, EveProfiteerDataService dataService) {
+            OrderXmlService orderXmlService, EveProfiteerDataService dataService, EveMarketService eveMarketService) {
             _windowManager = windowManager;
             _eventAggregator = eventAggregator;
-            _orderIoService = orderIoService;
+            _orderXmlService = orderXmlService;
             _dataService = dataService;
+            _eveMarketService = eveMarketService;
             DisplayName = "Order Editor";
             _eventAggregator.Subscribe(this);
 
@@ -42,10 +44,10 @@ namespace eZet.EveProfiteer.ViewModels {
             BuyOrderAvgOffset = 2;
             SellOrderAvgOffset = 2;
             ViewTradeDetailsCommand = new DelegateCommand<Order>(order => _eventAggregator.Publish(new ViewTradeDetailsEventArgs(order.TypeId)));
-            DeleteOrdersCommand = new DelegateCommand<ICollection<object>>(DeleteOrders) ;
+            DeleteOrdersCommand = new DelegateCommand<ICollection<Order>>(DeleteOrders) ;
         }
 
-        private void DeleteOrders(ICollection<object> collection) {
+        private void DeleteOrders(ICollection<Order> collection) {
             var orders = collection.Select(order => (Order) order).ToList();
             foreach (var order in orders) {
                 Orders.Remove(order);
@@ -82,7 +84,7 @@ namespace eZet.EveProfiteer.ViewModels {
 
         private void OrdersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
             if (e.NewItems != null)
-                _dataService.Db.Orders.AddRange(e.NewItems.OfType<Order>());
+                _dataService.Db.Orders.Add(e.NewItems.OfType<Order>().Single());
             if (e.OldItems != null)
                 _dataService.Db.Orders.RemoveRange(e.OldItems.OfType<Order>());
         }
@@ -98,19 +100,15 @@ namespace eZet.EveProfiteer.ViewModels {
             _dataService.Db.SaveChanges();
         }
 
-        public void UpdateMarketData() {
-            _orderIoService.LoadMarketData(Orders, DayLimit);
-            Orders.NotifyOfPropertyChange();
-            //refreshOrders();
-        }
+  
 
         public void Import() {
             var dialog = new FolderBrowserDialog();
             dialog.ShowNewFolderButton = false;
             dialog.SelectedPath = _selectedPath;
             if (dialog.ShowDialog() == DialogResult.OK) {
-                ICollection<Order> orders = _orderIoService.LoadOrdersFromDisk(dialog.SelectedPath);
-                _orderIoService.LoadMarketData(orders, DayLimit);
+                ICollection<Order> orders = _orderXmlService.ImportOrders(dialog.SelectedPath);
+                _eveMarketService.LoadMarketData(orders, DayLimit);
                 Orders.Clear();
                 Orders.AddRange(orders);
                 _selectedPath = dialog.SelectedPath;
@@ -122,17 +120,23 @@ namespace eZet.EveProfiteer.ViewModels {
             dialog.ShowNewFolderButton = false;
             dialog.SelectedPath = _selectedPath;
             if (dialog.ShowDialog() == DialogResult.OK) {
-                _orderIoService.SaveOrdersToDisk(dialog.SelectedPath, Orders);
+                _orderXmlService.ExportOrders(dialog.SelectedPath, Orders);
                 _selectedPath = dialog.SelectedPath;
             }
         }
 
-        public void SetPriceLimits() {
+        public void UpdateMarketData() {
+            _eveMarketService.LoadMarketData(Orders, DayLimit);
+            Orders.Refresh();
+
+        }
+
+        public void UpdatePriceLimits() {
             foreach (Order order in SelectedOrders) {
                 order.MaxBuyPrice = order.AvgPrice + order.AvgPrice * (decimal)(BuyOrderAvgOffset / 100.0);
                 order.MinSellPrice = order.AvgPrice - order.AvgPrice * (decimal)(SellOrderAvgOffset / 100.0);
             }
-            refreshOrders();
+            Orders.Refresh();
         }
 
 
@@ -161,7 +165,7 @@ namespace eZet.EveProfiteer.ViewModels {
                         order.MaxSellQuantity = 1;
                 }
             }
-            refreshOrders();
+            Orders.NotifyOfPropertyChange();
         }
 
         public void Handle(AddToOrdersEventArgs e) {
@@ -171,7 +175,7 @@ namespace eZet.EveProfiteer.ViewModels {
                 order.InvType = item.InvType;
                 orders.Add(order);
             }
-            _orderIoService.LoadMarketData(orders, DayLimit);
+            _eveMarketService.LoadMarketData(orders, DayLimit);
             Orders.AddRange(orders);
             _eventAggregator.Publish(new OrdersAddedEventArgs(orders));
         }
@@ -187,15 +191,9 @@ namespace eZet.EveProfiteer.ViewModels {
                     eventArgs.IsValid = false;
                     eventArgs.SetError("Item has already been added.");
                 } else {
-                    ((Order)eventArgs.Row).TypeId = item.TypeId;
+                    ((Order)eventArgs.Row).InvType = item;
                 }
             }
-        }
-
-        private void refreshOrders() {
-            var view = GetView() as OrderEditorView;
-            if (view != null)
-                view.Orders.RefreshData();
         }
 
         public void Handle(DeleteOrdersEventArgs message) {

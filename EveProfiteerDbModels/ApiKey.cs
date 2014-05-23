@@ -20,7 +20,7 @@ namespace eZet.EveProfiteer.Models
         }
     
         public int Id { get; set; }
-        public long ApiKeyId { get; set; }
+        public int ApiKeyId { get; set; }
         public string VCode { get; set; }
         public string KeyType { get; set; }
     

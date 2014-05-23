@@ -14,6 +14,11 @@ namespace eZet.EveProfiteer.Models
     
     public partial class StaStation
     {
+        public StaStation()
+        {
+            this.Orders = new HashSet<Order>();
+        }
+    
         public int StationId { get; set; }
         public Nullable<short> Security { get; set; }
         public Nullable<double> DockingCostPerVolume { get; set; }
@@ -34,5 +39,6 @@ namespace eZet.EveProfiteer.Models
         public Nullable<byte> ReprocessingHangarFlag { get; set; }
     
         public virtual MapRegion MapRegion { get; set; }
+        public virtual ICollection<Order> Orders { get; set; }
     }
 }

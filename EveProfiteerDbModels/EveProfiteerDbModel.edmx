@@ -18,7 +18,7 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="EntityId" Type="bigint" Nullable="false" />
+          <Property Name="EntityId" Type="int" Nullable="false" />
           <Property Name="Name" Type="nvarchar(max)" />
           <Property Name="Type" Type="nvarchar(max)" />
           <Property Name="ImagePath" Type="nvarchar(max)" />
@@ -29,7 +29,7 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="ApiKeyId" Type="bigint" Nullable="false" />
+          <Property Name="ApiKeyId" Type="int" Nullable="false" />
           <Property Name="VCode" Type="nvarchar(max)" />
           <Property Name="KeyType" Type="nvarchar(max)" />
         </EntityType>
@@ -121,6 +121,7 @@
           <Property Name="IsSellOrder" Type="bit" Nullable="false" />
           <Property Name="IsBuyOrder" Type="bit" Nullable="false" />
           <Property Name="Notes" Type="text" />
+          <Property Name="StationId" Type="int" />
         </EntityType>
         <EntityType Name="staStations">
           <Key>
@@ -241,6 +242,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Orders_ToStaStations">
+          <End Role="staStations" Type="Self.staStations" Multiplicity="0..1" />
+          <End Role="Orders" Type="Self.Orders" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="staStations">
+              <PropertyRef Name="stationID" />
+            </Principal>
+            <Dependent Role="Orders">
+              <PropertyRef Name="StationId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Transaction_ToInvType">
           <End Role="invTypes" Type="Self.invTypes" Multiplicity="1" />
           <End Role="Transactions" Type="Self.Transactions" Multiplicity="*" />
@@ -286,6 +299,10 @@
           </AssociationSet>
           <AssociationSet Name="FK_Orders_ToInvTypes" Association="Self.FK_Orders_ToInvTypes">
             <End Role="invTypes" EntitySet="invTypes" />
+            <End Role="Orders" EntitySet="Orders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Orders_ToStaStations" Association="Self.FK_Orders_ToStaStations">
+            <End Role="staStations" EntitySet="staStations" />
             <End Role="Orders" EntitySet="Orders" />
           </AssociationSet>
           <AssociationSet Name="FK_Transaction_ToInvType" Association="Self.FK_Transaction_ToInvType">
@@ -343,6 +360,10 @@
             <End Role="MapRegion" EntitySet="MapRegions" />
             <End Role="StaStation" EntitySet="StaStations" />
           </AssociationSet>
+          <AssociationSet Name="FK_Orders_ToStaStations" Association="EveProfiteerDbModel.FK_Orders_ToStaStations">
+            <End Role="StaStation" EntitySet="StaStations" />
+            <End Role="Order" EntitySet="Orders" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="ApiKeyEntity">
           <Key>
@@ -364,7 +385,7 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ApiKeyId" Type="Int64" Nullable="false" />
+          <Property Name="ApiKeyId" Type="Int32" Nullable="false" />
           <Property Name="VCode" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="KeyType" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="ApiKeyEntities" Relationship="EveProfiteerDbModel.ApiKeyApiKeyEntities" FromRole="ApiKey" ToRole="ApiKeyEntity" />
@@ -507,6 +528,8 @@
           <Property Name="Notes" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="ApiKeyEntity" Relationship="EveProfiteerDbModel.FK_Orders_ToApiKeyEntities" FromRole="Order" ToRole="ApiKeyEntity" />
           <NavigationProperty Name="InvType" Relationship="EveProfiteerDbModel.FK_Orders_ToInvTypes" FromRole="Order" ToRole="invType" />
+          <Property Name="StationId" Type="Int32" />
+          <NavigationProperty Name="staStation" Relationship="EveProfiteerDbModel.FK_Orders_ToStaStations" FromRole="Order" ToRole="StaStation" />
         </EntityType>
         <EntityType Name="Transaction">
           <Key>
@@ -601,6 +624,7 @@
           <Property Name="ReprocessingStationsTake" Type="Double" />
           <Property Name="ReprocessingHangarFlag" Type="Byte" />
           <NavigationProperty Name="MapRegion" Relationship="EveProfiteerDbModel.MapRegionStaStation" FromRole="StaStation" ToRole="MapRegion" />
+          <NavigationProperty Name="Orders" Relationship="EveProfiteerDbModel.FK_Orders_ToStaStations" FromRole="StaStation" ToRole="Order" />
         </EntityType>
         <Association Name="MapRegionStaStation">
           <End Type="EveProfiteerDbModel.MapRegion" Role="MapRegion" Multiplicity="0..1" />
@@ -611,6 +635,18 @@
             </Principal>
             <Dependent Role="StaStation">
               <PropertyRef Name="RegionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Orders_ToStaStations">
+          <End Type="EveProfiteerDbModel.StaStation" Role="StaStation" Multiplicity="0..1" />
+          <End Type="EveProfiteerDbModel.Order" Role="Order" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="StaStation">
+              <PropertyRef Name="StationId" />
+            </Principal>
+            <Dependent Role="Order">
+              <PropertyRef Name="StationId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -725,6 +761,7 @@
           <EntitySetMapping Name="Orders">
             <EntityTypeMapping TypeName="EveProfiteerDbModel.Order">
               <MappingFragment StoreEntitySet="Orders">
+                <ScalarProperty Name="StationId" ColumnName="StationId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Notes" ColumnName="Notes" />
                 <ScalarProperty Name="IsBuyOrder" ColumnName="IsBuyOrder" />

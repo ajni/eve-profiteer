@@ -21,7 +21,7 @@ namespace eZet.EveProfiteer.Models
         public int MinSellQuantity { get; set; }
         public decimal MinSellPrice { get; set; }
         public int MaxSellQuantity { get; set; }
-        public System.DateTime UpdateTime { get; set; }
+        public DateTime UpdateTime { get; set; }
         public double AvgVolume { get; set; }
         public decimal CurrentBuyPrice { get; set; }
         public decimal CurrentSellPrice { get; set; }
@@ -30,8 +30,10 @@ namespace eZet.EveProfiteer.Models
         public bool IsSellOrder { get; set; }
         public bool IsBuyOrder { get; set; }
         public string Notes { get; set; }
+        public Nullable<int> StationId { get; set; }
     
         public virtual ApiKeyEntity ApiKeyEntity { get; set; }
         public virtual InvType InvType { get; set; }
+        public virtual StaStation staStation { get; set; }
     }
 }

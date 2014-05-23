@@ -6,7 +6,7 @@
     [MinSellQuantity]   INT             NOT NULL,
     [MinSellPrice]      DECIMAL (18, 2) NOT NULL,
     [MaxSellQuantity]   INT             NOT NULL,
-    [UpdateTime]        DATETIME        NOT NULL,
+    [UpdateTime]        DATETIME2        NOT NULL,
     [AvgVolume]         FLOAT (53)      NOT NULL,
     [CurrentBuyPrice]   DECIMAL (18, 2) NOT NULL,
     [CurrentSellPrice]  DECIMAL (18, 2) NOT NULL,
@@ -15,8 +15,10 @@
     [IsSellOrder] BIT NOT NULL, 
     [IsBuyOrder] BIT NOT NULL, 
     [Notes] TEXT NULL, 
+    StationId INT NULL, 
     CONSTRAINT [PK_dbo.Orders] PRIMARY KEY CLUSTERED ([Id] ASC), 
     CONSTRAINT [FK_Orders_ToApiKeyEntities] FOREIGN KEY ([ApiKeyEntity_Id]) REFERENCES [ApiKeyEntities]([Id]), 
     CONSTRAINT [FK_Orders_ToInvTypes] FOREIGN KEY ([TypeId]) REFERENCES [invTypes]([typeID]), 
+    CONSTRAINT [FK_Orders_ToStaStations] FOREIGN KEY ([StationId]) REFERENCES [staStations]([stationID]), 
 );
 

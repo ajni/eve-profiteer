@@ -30,18 +30,6 @@ namespace eZet.EveProfiteer.Views {
             }
         }
 
-        private void TableView_OnInitNewRow(object sender, InitNewRowEventArgs e) {
-            //throw new System.NotImplementedException();
-        }
-
-        private void GridViewBase_OnValidateRow(object sender, GridRowValidationEventArgs e) {
-            _eventAggregator.Publish(e);
-        }
-
-        private void GridViewBase_OnInvalidRowException(object sender, InvalidRowExceptionEventArgs e) {
-            throw new NotImplementedException();
-        }
-
         private void TypeName_OnValidate(object sender, GridCellValidationEventArgs e) {
             _eventAggregator.Publish(e);
         }

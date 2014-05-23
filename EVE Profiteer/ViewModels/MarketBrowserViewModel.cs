@@ -13,7 +13,7 @@ namespace eZet.EveProfiteer.ViewModels {
     public class MarketBrowserViewModel : Screen, IHandle<ViewMarketDetailsEventArgs> {
         private readonly EveProfiteerDataService _dataService;
         private readonly IEventAggregator _eventAggregator;
-        private readonly MarketBrowserService _marketBrowserService;
+        private readonly EveMarketService _eveMarketService;
         private readonly IWindowManager _windowManager;
         private int _dayLimit = 5;
         private MarketBrowserItem _marketBrowserItem;
@@ -25,8 +25,8 @@ namespace eZet.EveProfiteer.ViewModels {
         private bool _showDonchianChannel;
 
         public MarketBrowserViewModel(IWindowManager windowManager, IEventAggregator eventAggregator,
-            MarketBrowserService marketBrowserService, EveProfiteerDataService dataService) {
-            _marketBrowserService = marketBrowserService;
+            EveMarketService eveMarketService, EveProfiteerDataService dataService) {
+            _eveMarketService = eveMarketService;
             _dataService = dataService;
             _windowManager = windowManager;
             _eventAggregator = eventAggregator;
@@ -184,17 +184,8 @@ namespace eZet.EveProfiteer.ViewModels {
 
         private async Task<MarketBrowserItem> GetMarketDetails(MapRegion region, InvType invType) {
             return await
-                Task.Run(() => _marketBrowserService.GetDetails(region, invType));
+                Task.Run(() => _eveMarketService.GetDetails(region, invType));
         }
 
-        private ICollection<Station> getStations() {
-            var list = new List<Station>();
-            list.Add(new Station {
-                StationName = "Jita IV - Moon 4 - Caldari Navy Assembly Plant",
-                StationId = 60003760,
-                RegionId = 10000002
-            });
-            return list;
-        }
     }
 }

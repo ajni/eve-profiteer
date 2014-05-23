@@ -23,7 +23,7 @@
             <Button Margin="5" Name="Export">Export</Button>
             <Button Margin="5" Name="SaveChanges">Save</Button>
             <Button Margin="5" Name="EditOrdersDialog">Edit</Button>
-            <Button Margin="5" Name="SetPriceLimits">Set price limits</Button>
+            <Button Margin="5" Name="UpdatePriceLimits">Update price limits</Button>
             <Button Margin="5" Name="UpdateMarketData">Update Market Data</Button>
         </StackPanel>
 
@@ -34,9 +34,7 @@
                 <dxg:SelectionView ShowAutoFilterRow="False" ShowTotalSummary="False" ShowFixedTotalSummary="True"
                                    ShowGroupPanel="False" AutoWidth="True"
                                    NavigationStyle="Cell" NewItemRowPosition="Top"
-                                   ShowingEditor="GridViewBase_OnShowingEditor" InitNewRow="TableView_OnInitNewRow"
-                                   ValidateRow="GridViewBase_OnValidateRow"
-                                   InvalidRowException="GridViewBase_OnInvalidRowException"
+                                   ShowingEditor="GridViewBase_OnShowingEditor"
                                    ShowSearchPanelMode="Default" SearchColumns="InvType.TypeName"
                                    SearchPanelCriteriaOperatorType="And">
                     <dxg:SelectionView.RowCellMenuCustomizations>
