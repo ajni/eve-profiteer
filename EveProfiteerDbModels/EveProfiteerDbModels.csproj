@@ -76,6 +76,9 @@
     <Compile Include="Extensions\InvMarketGroup.cs" />
     <Compile Include="Extensions\InvType.cs" />
     <Compile Include="Extensions\MapRegion.cs" />
+    <Compile Include="InvGroup.cs">
+      <DependentUpon>EveProfiteerDbModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="InvMarketGroup.cs">
       <DependentUpon>EveProfiteerDbModel.tt</DependentUpon>
     </Compile>

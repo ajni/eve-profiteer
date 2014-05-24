@@ -33,6 +33,23 @@
           <Property Name="VCode" Type="nvarchar(max)" />
           <Property Name="KeyType" Type="nvarchar(max)" />
         </EntityType>
+        <EntityType Name="invGroups">
+          <Key>
+            <PropertyRef Name="groupID" />
+          </Key>
+          <Property Name="groupID" Type="int" Nullable="false" />
+          <Property Name="categoryID" Type="int" />
+          <Property Name="groupName" Type="nvarchar" MaxLength="100" />
+          <Property Name="description" Type="nvarchar" MaxLength="3000" />
+          <Property Name="iconID" Type="int" />
+          <Property Name="useBasePrice" Type="bit" />
+          <Property Name="allowManufacture" Type="bit" />
+          <Property Name="allowRecycler" Type="bit" />
+          <Property Name="anchored" Type="bit" />
+          <Property Name="anchorable" Type="bit" />
+          <Property Name="fittableNonSingleton" Type="bit" />
+          <Property Name="published" Type="bit" />
+        </EntityType>
         <EntityType Name="invMarketGroups">
           <Key>
             <PropertyRef Name="marketGroupID" />
@@ -112,7 +129,7 @@
           <Property Name="MinSellQuantity" Type="int" Nullable="false" />
           <Property Name="MinSellPrice" Type="decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="MaxSellQuantity" Type="int" Nullable="false" />
-          <Property Name="UpdateTime" Type="datetime" Nullable="false" />
+          <Property Name="UpdateTime" Type="datetime2" Precision="7" Nullable="false" />
           <Property Name="AvgVolume" Type="float" Nullable="false" />
           <Property Name="CurrentBuyPrice" Type="decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="CurrentSellPrice" Type="decimal" Precision="18" Scale="2" Nullable="false" />
@@ -270,6 +287,7 @@
           <EntitySet Name="ApiKeyApiKeyEntities" EntityType="Self.ApiKeyApiKeyEntities" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ApiKeyEntities" EntityType="Self.ApiKeyEntities" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ApiKeys" EntityType="Self.ApiKeys" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="invGroups" EntityType="Self.invGroups" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="invMarketGroups" EntityType="Self.invMarketGroups" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="invTypes" EntityType="Self.invTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="JournalEntries" EntityType="Self.JournalEntries" Schema="dbo" store:Type="Tables" />
@@ -363,6 +381,11 @@
           <AssociationSet Name="FK_Orders_ToStaStations" Association="EveProfiteerDbModel.FK_Orders_ToStaStations">
             <End Role="StaStation" EntitySet="StaStations" />
             <End Role="Order" EntitySet="Orders" />
+          </AssociationSet>
+          <EntitySet Name="InvGroups" EntityType="EveProfiteerDbModel.InvGroup" />
+          <AssociationSet Name="invGroupInvType" Association="EveProfiteerDbModel.invGroupInvType">
+            <End Role="invGroup" EntitySet="InvGroups" />
+            <End Role="InvType" EntitySet="InvTypes" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="ApiKeyEntity">
@@ -462,6 +485,7 @@
           <NavigationProperty Name="InvMarketGroup" Relationship="EveProfiteerDbModel.invMarketGroupinvType" FromRole="invType" ToRole="invMarketGroup" />
           <NavigationProperty Name="Orders" Relationship="EveProfiteerDbModel.FK_Orders_ToInvTypes" FromRole="invType" ToRole="Order" />
           <NavigationProperty Name="Transactions" Relationship="EveProfiteerDbModel.FK_Transaction_ToInvType" FromRole="invType" ToRole="Transaction" />
+          <NavigationProperty Name="InvGroup" Relationship="EveProfiteerDbModel.invGroupInvType" FromRole="InvType" ToRole="invGroup" />
         </EntityType>
         <EntityType Name="MapRegion">
           <Key>
@@ -517,7 +541,7 @@
           <Property Name="MinSellQuantity" Type="Int32" Nullable="false" />
           <Property Name="MinSellPrice" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
           <Property Name="MaxSellQuantity" Type="Int32" Nullable="false" />
-          <Property Name="UpdateTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UpdateTime" Type="DateTime" Nullable="false" Precision="7" />
           <Property Name="AvgVolume" Type="Double" Nullable="false" />
           <Property Name="CurrentBuyPrice" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
           <Property Name="CurrentSellPrice" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
@@ -647,6 +671,36 @@
             </Principal>
             <Dependent Role="Order">
               <PropertyRef Name="StationId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="InvGroup">
+          <Key>
+            <PropertyRef Name="GroupId" />
+          </Key>
+          <Property Name="GroupId" Type="Int32" Nullable="false" />
+          <Property Name="CategoryId" Type="Int32" />
+          <Property Name="GroupName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="3000" FixedLength="false" Unicode="true" />
+          <Property Name="IconId" Type="Int32" />
+          <Property Name="UseBasePrice" Type="Boolean" />
+          <Property Name="AllowManufacture" Type="Boolean" />
+          <Property Name="AllowRecycler" Type="Boolean" />
+          <Property Name="Anchored" Type="Boolean" />
+          <Property Name="Anchorable" Type="Boolean" />
+          <Property Name="FittableNonSingleton" Type="Boolean" />
+          <Property Name="Published" Type="Boolean" />
+          <NavigationProperty Name="InvTypes" Relationship="EveProfiteerDbModel.invGroupInvType" FromRole="invGroup" ToRole="InvType" />
+        </EntityType>
+        <Association Name="invGroupInvType">
+          <End Type="EveProfiteerDbModel.InvGroup" Role="invGroup" Multiplicity="0..1" />
+          <End Type="EveProfiteerDbModel.InvType" Role="InvType" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="invGroup">
+              <PropertyRef Name="GroupId" />
+            </Principal>
+            <Dependent Role="InvType">
+              <PropertyRef Name="GroupId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -823,6 +877,24 @@
                 <ScalarProperty Name="DockingCostPerVolume" ColumnName="dockingCostPerVolume" />
                 <ScalarProperty Name="Security" ColumnName="security" />
                 <ScalarProperty Name="StationId" ColumnName="stationID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="InvGroups">
+            <EntityTypeMapping TypeName="EveProfiteerDbModel.InvGroup">
+              <MappingFragment StoreEntitySet="invGroups">
+                <ScalarProperty Name="Published" ColumnName="published" />
+                <ScalarProperty Name="FittableNonSingleton" ColumnName="fittableNonSingleton" />
+                <ScalarProperty Name="Anchorable" ColumnName="anchorable" />
+                <ScalarProperty Name="Anchored" ColumnName="anchored" />
+                <ScalarProperty Name="AllowRecycler" ColumnName="allowRecycler" />
+                <ScalarProperty Name="AllowManufacture" ColumnName="allowManufacture" />
+                <ScalarProperty Name="UseBasePrice" ColumnName="useBasePrice" />
+                <ScalarProperty Name="IconId" ColumnName="iconID" />
+                <ScalarProperty Name="Description" ColumnName="description" />
+                <ScalarProperty Name="GroupName" ColumnName="groupName" />
+                <ScalarProperty Name="CategoryId" ColumnName="categoryID" />
+                <ScalarProperty Name="GroupId" ColumnName="groupID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

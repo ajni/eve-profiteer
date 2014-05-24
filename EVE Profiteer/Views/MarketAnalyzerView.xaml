@@ -52,6 +52,8 @@
                                                   LargeStep="5" />
                     </dxb:BarEditItem.EditSettings>
                 </dxb:BarEditItem>
+                <dxb:BarButtonItem Name="AddCustomColumnButton" Content="Add custom expression" ItemClick="AddCustomColumnButton_OnItemClick"></dxb:BarButtonItem>
+
 
 
             </dxb:BarManager.Items>
@@ -73,6 +75,8 @@
                     </dxb:Bar.DockInfo>
                     <dxb:Bar.ItemLinks>
                         <dxb:BarButtonItemLink BarItemName="LoadOrders" />
+                        <dxb:BarCheckItemLink BarItemName="FilterManufacturable" />
+                        <dxb:BarButtonItemLink BarItemName="AddCustomColumnButton" />
                     </dxb:Bar.ItemLinks>
                 </dxb:Bar>
             </dxb:BarManager.Bars>
@@ -102,13 +106,13 @@
         </TreeView>
 
 
-        <dxg:GridControl dxlc:DockLayoutControl.Dock="Client" dxlc:DockLayoutControl.AllowVerticalSizing="True"
-                         AutoGenerateColumns="None" ItemsSource="{Binding MarketAnalyzerResults}">
+        <dxg:GridControl Name="MarketAnalyzerGrid" dxlc:DockLayoutControl.Dock="Client" dxlc:DockLayoutControl.AllowVerticalSizing="True"
+                         ItemsSource="{Binding MarketAnalyzerResults}">
             <dxg:GridControl.View>
                 <dxg:TableView AllowEditing="False" NavigationStyle="Row" ShowAutoFilterRow="True"
                                ShowFixedTotalSummary="True" IsTotalSummaryMenuEnabled="True"
                                ShowGroupPanel="False" RowStyle="{StaticResource BackgroundStyle}"
-                               ShowSearchPanelMode="Default" SearchColumns="TypeName"
+                               ShowSearchPanelMode="Default" SearchColumns="InvType.TypeName"
                                SearchPanelCriteriaOperatorType="And" ShowFilterPanelMode="ShowAlways" AutoWidth="True" AutoScrollOnSorting="False">
                     <dxg:TableView.RowCellMenuCustomizations>
                         <dxb:BarButtonItem Content="Add to orders"
@@ -177,6 +181,10 @@
                     </dxg:GridColumn.EditSettings>
                 </dxg:GridColumn>
                 <dxg:GridColumn FieldName="Updated" />
+                <dxg:GridColumn FieldName="InvType.InvGroup.Manufacturable" Visible="False" Header="Is Manufacturable" />
+                <dxg:GridColumn FieldName="InvType.InvGroup.Order.IsSellOrder" Visible="False" Header="Is Sell Order"/>
+                <dxg:GridColumn FieldName="InvType.InvGroup.Order.IsBuyOrder" Visible="False" Header="Is Buy Order"/>
+                <dxg:GridColumn FieldName="Custom" Visible="False" AllowUnboundExpressionEditor="True" UnboundType="Decimal"/>
             </dxg:GridControl.Columns>
         </dxg:GridControl>
     </dxlc:DockLayoutControl>

@@ -24,6 +24,8 @@
         <EntityTypeShape EntityType="EveProfiteerDbModel.StaStation" Width="1.5" PointX="8.875" PointY="1.25" />
         <AssociationConnector Association="EveProfiteerDbModel.MapRegionStaStation" />
         <AssociationConnector Association="EveProfiteerDbModel.FK_Orders_ToStaStations" />
+        <EntityTypeShape EntityType="EveProfiteerDbModel.InvGroup" Width="1.5" PointX="5.375" PointY="5.75" />
+        <AssociationConnector Association="EveProfiteerDbModel.invGroupInvType" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

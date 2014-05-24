@@ -37,5 +37,6 @@ namespace eZet.EveProfiteer.Models
         public virtual InvMarketGroup InvMarketGroup { get; set; }
         public virtual ICollection<Order> Orders { get; set; }
         public virtual ICollection<Transaction> Transactions { get; set; }
+        public virtual InvGroup InvGroup { get; set; }
     }
 }

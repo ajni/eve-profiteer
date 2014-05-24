@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using DevExpress.Data.Filtering;
 using DevExpress.Xpf.Bars;
 using DevExpress.Xpf.Grid;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.ViewModels;
+using Xceed.Wpf.DataGrid.FilterCriteria;
 
 namespace eZet.EveProfiteer.Views {
     /// <summary>
     /// Interaction logic for TradeAnalyzerView.xaml
     /// </summary>
-    public partial class TradeAnalyzerView : UserControl {
+    public partial class TradeAnalyzerView {
         public TradeAnalyzerView() {
             InitializeComponent();
         }

@@ -57,7 +57,6 @@ namespace eZet.EveProfiteer.ViewModels {
 
         public ICommand ViewTradeDetailsCommand { get; private set; }
 
-
         public BindableCollection<InvMarketGroup> TreeRootNodes { get; private set; }
 
         public ICollection<MapRegion> Regions { get; private set; }
