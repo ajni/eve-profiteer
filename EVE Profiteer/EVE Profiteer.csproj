@@ -154,6 +154,7 @@
     <Compile Include="Ui\Converters\RoutedPropertyChangedEventArgsConverter.cs" />
     <Compile Include="Util\ApiEntityMapper.cs" />
     <Compile Include="Util\ApplicationHelper.cs" />
+    <Compile Include="Util\ConfigManager.cs" />
     <Compile Include="Util\ProgressType.cs" />
     <Compile Include="ViewModels\AnalyzerProgressViewModel.cs" />
     <Compile Include="ViewModels\EditKeyViewModel.cs" />

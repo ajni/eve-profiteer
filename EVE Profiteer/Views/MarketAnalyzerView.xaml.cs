@@ -1,5 +1,4 @@
 ﻿using DevExpress.Data;
-using DevExpress.Data.Filtering;
 using DevExpress.Xpf.Bars;
 using DevExpress.Xpf.Grid;
 
@@ -12,7 +11,6 @@ namespace eZet.EveProfiteer.Views {
 
         public MarketAnalyzerView() {
             InitializeComponent();
- 
         }
 
 

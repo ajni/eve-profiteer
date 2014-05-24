@@ -204,13 +204,13 @@
                             <dxn:NavBarItem>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="First trade: " />
-                                    <TextBlock Text="{Binding TradeData.FirstTrade, StringFormat={x:Static util:ApplicationHelper.DateTimeFormat}}" />
+                                    <TextBlock Text="{Binding TradeData.FirstTrade, StringFormat={x:Static util:ConfigManager.DateTimeFormat}}" />
                                 </StackPanel>
                             </dxn:NavBarItem>
                             <dxn:NavBarItem>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="Last trade: " />
-                                    <TextBlock Text="{Binding TradeData.LastTrade, StringFormat={x:Static util:ApplicationHelper.DateTimeFormat}}" />
+                                    <TextBlock Text="{Binding TradeData.LastTrade, StringFormat={x:Static util:ConfigManager.DateTimeFormat}}" />
                                 </StackPanel>
                             </dxn:NavBarItem>
                         </dxn:NavBarGroup>
