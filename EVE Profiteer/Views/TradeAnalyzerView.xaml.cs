@@ -20,8 +20,8 @@ namespace eZet.EveProfiteer.Views {
             var row = e.Source.GetRow(rowHandle) as TradeAnalyzerItem;
             if (row == null)
                 throw new InvalidOperationException();
-            if (FilterOrders.IsChecked.Value && row.OrderData == null) e.Visible = false;
-            if (FilterInactiveOrders.IsChecked.Value && (row.OrderData == null || row.OrderData.BuyQuantity == 0)) e.Visible = false;
+            if (FilterOrders.IsChecked.Value && row.Order == null) e.Visible = false;
+            if (FilterInactiveOrders.IsChecked.Value && (row.Order == null || !row.Order.IsBuyOrder)) e.Visible = false;
 
             e.Handled = !e.Visible;
         }

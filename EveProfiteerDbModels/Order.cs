@@ -21,7 +21,7 @@ namespace eZet.EveProfiteer.Models
         public int MinSellQuantity { get; set; }
         public decimal MinSellPrice { get; set; }
         public int MaxSellQuantity { get; set; }
-        public DateTime UpdateTime { get; set; }
+        public System.DateTime UpdateTime { get; set; }
         public double AvgVolume { get; set; }
         public decimal CurrentBuyPrice { get; set; }
         public decimal CurrentSellPrice { get; set; }

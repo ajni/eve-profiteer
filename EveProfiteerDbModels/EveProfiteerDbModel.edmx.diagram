@@ -16,7 +16,7 @@
         <AssociationConnector Association="EveProfiteerDbModel.invMarketGroupinvType" />
         <AssociationConnector Association="EveProfiteerDbModel.invMarketGroupinvMarketGroup" />
         <EntityTypeShape EntityType="EveProfiteerDbModel.Order" Width="1.5" PointX="3" PointY="11" />
-        <EntityTypeShape EntityType="EveProfiteerDbModel.Transaction" Width="1.5" PointX="3" PointY="15.625" />
+        <EntityTypeShape EntityType="EveProfiteerDbModel.Transaction" Width="1.5" PointX="3" PointY="16.5" />
         <AssociationConnector Association="EveProfiteerDbModel.FK_dbo_Transactions_dbo_ApiKeyEntities_ApiKeyEntity_Id" />
         <AssociationConnector Association="EveProfiteerDbModel.FK_Orders_ToApiKeyEntities" />
         <AssociationConnector Association="EveProfiteerDbModel.FK_Orders_ToInvTypes" />

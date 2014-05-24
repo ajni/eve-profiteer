@@ -8,6 +8,7 @@ using DevExpress.Xpf.Mvvm;
 using eZet.EveProfiteer.Events;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
+using eZet.EveProfiteer.Util;
 
 namespace eZet.EveProfiteer.ViewModels {
     public class TradeAnalyzerViewModel : Screen {
@@ -41,7 +42,7 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         private bool CanViewTradeDetails(TradeAnalyzerItem tradeAnalyzerItem) {
-            if (tradeAnalyzerItem != null && tradeAnalyzerItem.OrderData != null)
+            if (tradeAnalyzerItem != null && tradeAnalyzerItem.Order != null)
                 return true;
             return false;
         }
@@ -119,16 +120,19 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         private void load() {
-            var items = _dataService.Db.Orders.GroupJoin(_dataService.Db.Transactions.Where(t => t.TransactionDate >= ActualViewStart && t.TransactionDate <= ActualViewEnd), order => order.TypeId,
-                       transaction => transaction.TypeId,
-                       (order, enumerable) =>
-                           new TradeAnalyzerItem {
-                               OrderData = order,
-                               Transactions = enumerable.ToList()
-                           }).Where(item => item.Transactions.Any()).ToList();
-            items.Apply(item => item.Analyze());
+            Items.IsNotifying = false;
             Items.Clear();
-            Items.AddRange(items);
+            var transactionGroups = _dataService.Db.Transactions.Where(
+                t => t.TransactionDate >= ActualViewStart && t.TransactionDate <= ActualViewEnd && t.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id)
+                .GroupBy(t => t.TypeId);
+            var orders =
+                _dataService.Db.Orders.Where(order => order.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id)
+                    .ToLookup(order => order.TypeId);
+            foreach (var transactionCollection in transactionGroups) {
+                Items.Add(new TradeAnalyzerItem(transactionCollection.ToList(), orders[transactionCollection.First().TypeId].SingleOrDefault()));
+            }
+            Items.IsNotifying = true;
+            Items.Refresh();
         }
     }
 }

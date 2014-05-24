@@ -6,21 +6,18 @@ namespace eZet.EveProfiteer.Models {
     public class TradeAnalyzerItem {
         public IEnumerable<Transaction> Transactions { get; set; }
 
-        public TradeAnalyzerItem(int typeId, string typeName, IEnumerable<Transaction> transactions, Order orderData) {
+        public TradeAnalyzerItem(int typeId, string typeName, IEnumerable<Transaction> transactions, Order order) {
             Transactions = transactions;
             TypeName = typeName;
             TypeId = typeId;
-            OrderData = orderData;
+            Order = order;
             Analyze();
         }
 
-        public TradeAnalyzerItem(Order orderData, IEnumerable<Transaction> transactions) {
-            OrderData = orderData;
+        public TradeAnalyzerItem(IEnumerable<Transaction> transactions, Order order) {
+            Order = order;
             Transactions = transactions;
-        }
-
-        public TradeAnalyzerItem() {
-
+            Analyze();
         }
 
         public void Analyze() {
@@ -80,7 +77,7 @@ namespace eZet.EveProfiteer.Models {
 
         public decimal AvgSellPrice { get; private set; }
 
-        public Order OrderData { get; set; }
+        public Order Order { get; set; }
 
         public DateTime FirstTransactionDate { get; private set; }
 
