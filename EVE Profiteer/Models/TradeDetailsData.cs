@@ -4,21 +4,19 @@ using System.Linq;
 
 namespace eZet.EveProfiteer.Models {
     public class TradeDetailsData {
-        public TradeDetailsData(int typeId, string typeName, IEnumerable<Transaction> transactions) {
-            TypeId = typeId;
-            TypeName = typeName;
+        public TradeDetailsData(InvType invType, IEnumerable<Transaction> transactions, Order order) {
+            InvType = invType;
             Transactions = transactions;
+            Order = order;
             ChartEntries = new List<TradeDetailsChartPoint>();
             initialize();
         }
 
+        public InvType InvType { get; set; }
         public IEnumerable<Transaction> Transactions { get; set; }
+        public Order Order { get; set; }
 
         public ICollection<TradeDetailsChartPoint> ChartEntries { get; set; }
-
-        public int TypeId { get; private set; }
-
-        public string TypeName { get; private set; }
 
         public int SellQuantity { get; private set; }
 
@@ -45,6 +43,10 @@ namespace eZet.EveProfiteer.Models {
         public decimal MaxSellPrice { get; private set; }
 
         public decimal Profit { get; private set; }
+
+        public decimal ProfitPerItem { get; private set; }
+
+        public decimal Margin { get; private set; }
 
         public decimal Balance { get; private set; }
 
@@ -89,9 +91,11 @@ namespace eZet.EveProfiteer.Models {
             Stock = BuyQuantity - SellQuantity;
             StockValue = Stock * AvgBuyPrice;
             Profit = SellTotal - AvgBuyPrice * SellQuantity;
+            ProfitPerItem = AvgSellPrice - AvgBuyPrice;
+            Margin = ProfitPerItem / AvgSellPrice;
 
-            if (groups.Any())
-                AvgProfitPerDay = Profit / groups.Count();
+            if (groups.Any() && TradeDuration.TotalDays > 0)
+                AvgProfitPerDay = Profit / (decimal)TradeDuration.TotalDays;
         }
     }
 }

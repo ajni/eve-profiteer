@@ -8,6 +8,7 @@ using DevExpress.Xpf.Mvvm;
 using eZet.EveProfiteer.Events;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
+using eZet.EveProfiteer.Util;
 using MoreLinq;
 
 namespace eZet.EveProfiteer.ViewModels {
@@ -42,8 +43,8 @@ namespace eZet.EveProfiteer.ViewModels {
             List<Transaction> transactions =
                 _dataService.Db.Transactions.Where(f => f.TypeId == type.TypeId).ToList();
             if (transactions.Any())
-                TradeData = new TradeDetailsData(transactions.First().TypeId, transactions.First().InvType.TypeName,
-                    transactions);
+                TradeData = new TradeDetailsData(type,
+                    transactions, type.Orders.SingleOrDefault(order => order.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id));
         }
 
         public TradeDetailsData TradeData {
