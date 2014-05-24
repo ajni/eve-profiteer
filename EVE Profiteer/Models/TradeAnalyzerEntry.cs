@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 
 namespace eZet.EveProfiteer.Models {
-    public class TradeAnalyzerItem {
+    public class TradeAnalyzerEntry {
         public IEnumerable<Transaction> Transactions { get; set; }
 
-        public TradeAnalyzerItem(InvType invType, IEnumerable<Transaction> transactions, Order order) {
+        public TradeAnalyzerEntry(InvType invType, IEnumerable<Transaction> transactions, Order order) {
             Order = order;
             InvType = invType;
             Transactions = transactions;
@@ -38,9 +38,13 @@ namespace eZet.EveProfiteer.Models {
                 AvgSellPrice = SellTotal / QuantitySold;
             Profit = AvgBuyPrice != 0 ? QuantitySold * AvgSellPrice - QuantitySold * AvgBuyPrice : 0;
             int span = (LastTransactionDate - FirstTransactionDate).Days;
-            AvgProfitPerDay = Profit;
+            ProfitPerDay = Profit;
             if (span > 0)
-                AvgProfitPerDay /= span;
+                ProfitPerDay /= span;
+            if (AvgSellPrice != 0 && AvgBuyPrice != 0) {
+                AvgProfit = AvgSellPrice - AvgBuyPrice;
+                AvgMargin = AvgProfit / AvgSellPrice;
+            }
         }
 
         public InvType InvType { get; private set; }
@@ -69,7 +73,11 @@ namespace eZet.EveProfiteer.Models {
 
         public DateTime LastTransactionDate { get; private set; }
 
-        public decimal AvgProfitPerDay { get; private set; }
+        public decimal ProfitPerDay { get; private set; }
+
+        public decimal AvgProfit { get; private set; }
+
+        public decimal AvgMargin { get; private set; }
 
     }
 }

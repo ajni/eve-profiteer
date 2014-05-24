@@ -134,7 +134,7 @@
     <Compile Include="Models\TradeDetailsChartPoint.cs" />
     <Compile Include="Models\MarketBrowserItem.cs" />
     <Compile Include="Models\MarketOrder.cs" />
-    <Compile Include="Models\TradeAnalyzerItem.cs" />
+    <Compile Include="Models\TradeAnalyzerEntry.cs" />
     <Compile Include="Services\EveProfiteerDataService.cs" />
     <Compile Include="Ui\Converters\DoubleToIntConverter.cs" />
     <Compile Include="Ui\Converters\OrderToColorConverter.cs" />

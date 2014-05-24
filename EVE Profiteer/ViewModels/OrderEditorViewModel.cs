@@ -107,8 +107,9 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         public void SaveChanges() {
-            Orders.Apply(order => order.ApiKeyEntity_Id = ApplicationHelper.ActiveKeyEntity.Id);
             _dataService.Db.Orders.RemoveRange(_dataService.Db.Orders);
+            _dataService.Db.SaveChanges();
+            Orders.Apply(order => order.ApiKeyEntity_Id = ApplicationHelper.ActiveKeyEntity.Id);
             _dataService.Db.Orders.AddRange(Orders);
             _dataService.Db.SaveChanges();
         }
