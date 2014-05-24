@@ -32,7 +32,7 @@
                                    Hint="Analyze market." />
                 <dxb:BarButtonItem Name="LoadOrders" Content="Load orders" Command="{Binding LoadOrdersCommand}"
                                    Hint="Analyze your current orders." />
-                <dxb:BarEditItem Name="RegionSelector" EditValue="{Binding SelectedRegion}" EditWidth="300"
+                <dxb:BarEditItem Name="RegionSelector" EditValue="{Binding SelectedRegion}" EditWidth="150"
                                  Hint="Region to analyze.">
                     <dxb:BarEditItem.EditSettings>
                         <dxe:ComboBoxEditSettings ItemsSource="{Binding Regions}" DisplayMember="RegionName" AutoComplete="True"/>
@@ -75,7 +75,6 @@
                     </dxb:Bar.DockInfo>
                     <dxb:Bar.ItemLinks>
                         <dxb:BarButtonItemLink BarItemName="LoadOrders" />
-                        <dxb:BarCheckItemLink BarItemName="FilterManufacturable" />
                         <dxb:BarButtonItemLink BarItemName="AddCustomColumnButton" />
                     </dxb:Bar.ItemLinks>
                 </dxb:Bar>
@@ -122,6 +121,9 @@
                         <dxb:BarButtonItem Content="View trade details"
                                            Command="{Binding View.DataContext.ViewTradeDetailsCommand}"
                                            CommandParameter="{Binding View.DataControl.CurrentItem}" />
+                        <dxb:BarButtonItem Content="View market details"
+                                               Command="{Binding View.DataContext.ViewMarketDetailsCommand}"
+                                               CommandParameter="{Binding View.DataControl.CurrentItem}" />
                     </dxg:TableView.RowCellMenuCustomizations>
                 </dxg:TableView>
             </dxg:GridControl.View>

@@ -35,7 +35,7 @@ namespace eZet.EveProfiteer.ViewModels {
             DisplayName = "Trade Analyzer";
             Items = new BindableCollection<TradeAnalyzerEntry>();
             ViewTradeDetailsCommand = new DelegateCommand<TradeAnalyzerEntry>(ViewTradeDetails, CanViewTradeDetails);
-            ViewMarketDetailsCommand = new DelegateCommand<TradeAnalyzerEntry>(item => _eventAggregator.Publish(new ViewMarketDetailsEventArgs(item.InvType)));
+            ViewMarketDetailsCommand = new DelegateCommand<TradeAnalyzerEntry>(item => _eventAggregator.Publish(new ViewMarketDetailsEventArgs(item.InvType)), item => item != null);
             ViewPeriodCommand = new DelegateCommand(ViewPeriod);
             PeriodSelectorStart = DateTime.UtcNow.AddMonths(-1);
             PeriodSelectorEnd = DateTime.UtcNow;
