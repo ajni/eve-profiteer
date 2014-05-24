@@ -35,7 +35,7 @@ namespace eZet.EveProfiteer.ViewModels {
             DisplayName = "Trade Analyzer";
             Items = new BindableCollection<TradeAnalyzerItem>();
             ViewTradeDetailsCommand = new DelegateCommand<TradeAnalyzerItem>(ViewTradeDetails, CanViewTradeDetails);
-            //ViewMarketDetailsCommand = new DelegateCommand<TradeAnalyzerItem>(item => item.I);
+            ViewMarketDetailsCommand = new DelegateCommand<TradeAnalyzerItem>(item => _eventAggregator.Publish(new ViewMarketDetailsEventArgs(item.InvType)));
             ViewPeriodCommand = new DelegateCommand(ViewPeriod);
             PeriodSelectorStart = DateTime.UtcNow.AddMonths(-1);
             PeriodSelectorEnd = DateTime.UtcNow;
@@ -49,7 +49,7 @@ namespace eZet.EveProfiteer.ViewModels {
 
         private void ViewTradeDetails(TradeAnalyzerItem tradeAnalyzerItem) {
             if (tradeAnalyzerItem != null) {
-                _eventAggregator.Publish(new ViewTradeDetailsEventArgs(tradeAnalyzerItem.TypeId));
+                _eventAggregator.Publish(new ViewTradeDetailsEventArgs(tradeAnalyzerItem.InvType));
             }
         }
 
@@ -129,7 +129,7 @@ namespace eZet.EveProfiteer.ViewModels {
                 _dataService.Db.Orders.Where(order => order.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id)
                     .ToLookup(order => order.TypeId);
             foreach (var transactionCollection in transactionGroups) {
-                Items.Add(new TradeAnalyzerItem(transactionCollection.ToList(), orders[transactionCollection.First().TypeId].SingleOrDefault()));
+                Items.Add(new TradeAnalyzerItem(transactionCollection.First().InvType, transactionCollection.ToList(), orders[transactionCollection.First().TypeId].SingleOrDefault()));
             }
             Items.IsNotifying = true;
             Items.Refresh();

@@ -77,7 +77,7 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         public void Handle(ViewTradeDetailsEventArgs message) {
-            var item = _dataService.Db.InvTypes.SingleOrDefault(type => type.TypeId == message.TypeId);
+            var item = message.InvType;
             Debug.Assert(item != null, "Attempted to view invalid type.");
             SelectedItem = item;
         }

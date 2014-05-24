@@ -44,7 +44,7 @@ namespace eZet.EveProfiteer.ViewModels {
             LoadOrdersCommand = new DelegateCommand(LoadOrders);
             ViewTradeDetailsCommand =
                 new DelegateCommand<MarketAnalyzerEntry>(
-                    entry => _eventAggregator.Publish(new ViewTradeDetailsEventArgs(entry.InvType.TypeId)),
+                    entry => _eventAggregator.Publish(new ViewTradeDetailsEventArgs(entry.InvType)),
                     entry => entry != null && entry.Order != null);
         }
 

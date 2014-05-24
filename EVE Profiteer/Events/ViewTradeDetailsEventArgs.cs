@@ -1,9 +1,11 @@
-﻿namespace eZet.EveProfiteer.Events {
-    public class ViewTradeDetailsEventArgs {
-        public int TypeId { get; private set; }
+﻿using eZet.EveProfiteer.Models;
 
-        public ViewTradeDetailsEventArgs(int typeId) {
-            TypeId = typeId;
+namespace eZet.EveProfiteer.Events {
+    public class ViewTradeDetailsEventArgs {
+        public InvType InvType { get; private set; }
+
+        public ViewTradeDetailsEventArgs(InvType invType) {
+            InvType = invType;
         }
     }
 }

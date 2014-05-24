@@ -72,7 +72,7 @@
                 </dxg:GridControl.View>
 
                 <dxg:GridControl.TotalSummary>
-                    <dxg:GridSummaryItem FieldName="TypeName" SummaryType="None" DisplayFormat="Summary" />
+                    <dxg:GridSummaryItem FieldName="InvType.TypeName" SummaryType="None" DisplayFormat="Summary" />
                     <dxg:GridSummaryItem FieldName="Profit" SummaryType="Sum" DisplayFormat="N2" />
                     <dxg:GridSummaryItem FieldName="AvgProfitPerDay" SummaryType="Sum" DisplayFormat="N2" />
                     <dxg:GridSummaryItem FieldName="Balance" SummaryType="Sum" DisplayFormat="N2" />
@@ -85,7 +85,7 @@
                     <dxg:GridSummaryItem SummaryType="Count" Alignment="Right" DisplayFormat="Items: {0:N0}" />
                 </dxg:GridControl.TotalSummary>
                 <dxg:GridControl.Columns>
-                    <dxg:GridColumn FieldName="TypeName" Header="Item" />
+                    <dxg:GridColumn FieldName="InvType.TypeName" Header="Item" />
                     <dxg:GridColumn FieldName="Profit">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="N2" />

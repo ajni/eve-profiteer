@@ -23,13 +23,12 @@ namespace eZet.EveProfiteer.Services {
 
         public EveCrest EveCrest { get; private set; }
 
-        public EveMarketData EveMarketData { get; private set; }
 
         public MarketBrowserItem GetDetails(MapRegion region, InvType invType) {
             var options = new EveMarketDataOptions();
             options.Items.Add(invType.TypeId);
             options.Regions.Add(region.RegionId);
-            var orderResponse = EveMarketData.GetItemOrders(options, OrderType.Both);
+            var orderResponse = eveMarketData.GetItemOrders(options, OrderType.Both);
             var buyOrders = new List<MarketOrder>();
             var sellOrders = new List<MarketOrder>();
             foreach (var order in orderResponse.Result.Orders) {

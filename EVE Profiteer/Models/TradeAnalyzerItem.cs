@@ -1,30 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace eZet.EveProfiteer.Models {
     public class TradeAnalyzerItem {
         public IEnumerable<Transaction> Transactions { get; set; }
 
-        public TradeAnalyzerItem(int typeId, string typeName, IEnumerable<Transaction> transactions, Order order) {
-            Transactions = transactions;
-            TypeName = typeName;
-            TypeId = typeId;
+        public TradeAnalyzerItem(InvType invType, IEnumerable<Transaction> transactions, Order order) {
             Order = order;
-            Analyze();
-        }
-
-        public TradeAnalyzerItem(IEnumerable<Transaction> transactions, Order order) {
-            Order = order;
+            InvType = invType;
             Transactions = transactions;
             Analyze();
         }
 
         public void Analyze() {
-            if (Transactions.Any()) {
-                TypeId = Transactions.First().TypeId;
-                TypeName = Transactions.First().InvType.TypeName;
-            }
             // TODO Add LIFO or some other cost price calculation
             FirstTransactionDate = DateTime.MaxValue;
             LastTransactionDate = DateTime.MinValue;
@@ -55,9 +43,7 @@ namespace eZet.EveProfiteer.Models {
                 AvgProfitPerDay /= span;
         }
 
-        public int TypeId { get; private set; }
-
-        public string TypeName { get; private set; }
+        public InvType InvType { get; private set; }
 
         public decimal Profit { get; private set; }
 
