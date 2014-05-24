@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.Runtime.Serialization;
+using System.Windows;
 using eZet.EveProfiteer.Models;
 using ApiKey = eZet.EveLib.Modules.ApiKey;
 
@@ -22,6 +24,8 @@ namespace eZet.EveProfiteer.Util {
             }
             set { Application.Current.Properties[ActiveKeyEntityString] = value; }
         }
+
+        public const string DateTimeFormat = "dd-MM-yyyy";
 
     }
 }

@@ -11,6 +11,7 @@
              xmlns:dxn="http://schemas.devexpress.com/winfx/2008/xaml/navbar"
              xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
              xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
+             xmlns:util="clr-namespace:eZet.EveProfiteer.Util"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance Type=viewModels:TradeDetailsViewModel, IsDesignTimeCreatable=False}">
@@ -159,7 +160,8 @@
                             <dxn:NavBarItem>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="Trade period: " />
-                                    <TextBlock Text="{Binding TradeData.TradeDuration}" />
+                                    <TextBlock Text="{Binding TradeData.TradeDuration.TotalDays}" />
+                                    <TextBlock Text=" days" />
                                 </StackPanel>
                             </dxn:NavBarItem>
 
@@ -173,19 +175,19 @@
                             <dxn:NavBarItem>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="Active sellorder: " />
-                                    <TextBlock Text="{Binding TradeData.FirstTrade}" />
+                                    <TextBlock Text="{Binding TradeData.FirstTrade, StringFormat={x:Static util:ApplicationHelper.DateTimeFormat}}" />
                                 </StackPanel>
                             </dxn:NavBarItem>
                             <dxn:NavBarItem>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="First trade: " />
-                                    <TextBlock Text="{Binding TradeData.FirstTrade}" />
+                                    <TextBlock Text="{Binding TradeData.FirstTrade, StringFormat={x:Static util:ApplicationHelper.DateTimeFormat}}" />
                                 </StackPanel>
                             </dxn:NavBarItem>
                             <dxn:NavBarItem>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="Last trade: " />
-                                    <TextBlock Text="{Binding TradeData.LastTrade}" />
+                                    <TextBlock Text="{Binding TradeData.LastTrade, StringFormat={x:Static util:ApplicationHelper.DateTimeFormat}}" />
                                 </StackPanel>
                             </dxn:NavBarItem>
                         </dxn:NavBarGroup>
