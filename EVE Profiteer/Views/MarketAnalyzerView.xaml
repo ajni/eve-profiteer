@@ -11,13 +11,14 @@
              xmlns:converters="clr-namespace:eZet.EveProfiteer.Ui.Converters"
              xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
              xmlns:models="clr-namespace:eZet.EveProfiteer.Models;assembly=EveProfiteerDbModels"
+             xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
              d:DesignHeight="300" d:DesignWidth="500"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=viewModels:MarketAnalyzerViewModel, IsDesignTimeCreatable=False}">
     <UserControl.Resources>
 
         <ResourceDictionary>
-            <Style x:Key="BackgroundStyle" BasedOn="{StaticResource {dxgt:GridRowThemeKey ResourceKey=RowStyle}}"
+            <Style x:Key="BackgroundStyle" BasedOn="{StaticResource {dxgt:GridRowThemeKey ResourceKey=RowStyle, ThemeName={x:Static dx:ThemeManager.ApplicationThemeName}}}"
                    TargetType="dxg:GridRowContent">
                 <Setter Property="Background"
                         Value="{Binding Path=Row.Order, Converter={converters:OrderToColorConverter}, ConverterParameter=dxe:StringToObjectConverter}" />
