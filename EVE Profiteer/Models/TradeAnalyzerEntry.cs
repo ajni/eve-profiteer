@@ -43,7 +43,7 @@ namespace eZet.EveProfiteer.Models {
                 ProfitPerDay /= span;
             if (AvgSellPrice != 0 && AvgBuyPrice != 0) {
                 AvgProfit = AvgSellPrice - AvgBuyPrice;
-                AvgMargin = AvgProfit / AvgSellPrice;
+                AvgMargin = (double) (AvgProfit / AvgSellPrice);
             }
         }
 
@@ -77,7 +77,7 @@ namespace eZet.EveProfiteer.Models {
 
         public decimal AvgProfit { get; private set; }
 
-        public decimal AvgMargin { get; private set; }
+        public double AvgMargin { get; private set; }
 
     }
 }

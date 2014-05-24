@@ -110,7 +110,7 @@
                             <dxe:TextEditSettings DisplayFormat="N" />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="AvgProfit">
+                    <dxg:GridColumn FieldName="AvgProfitPerItem">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="N0" />
                         </dxg:GridColumn.EditSettings>

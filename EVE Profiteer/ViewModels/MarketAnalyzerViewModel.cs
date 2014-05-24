@@ -20,7 +20,7 @@ namespace eZet.EveProfiteer.ViewModels {
         private readonly EveMarketService _eveMarketService;
         private readonly IEventAggregator _eventAggregator;
         private readonly IWindowManager _windowManager;
-        private int _dayLimit = 5;
+        private int _dayLimit = 10;
         private BindableCollection<MarketAnalyzerEntry> _marketAnalyzerResults;
         private BindableCollection<InvType> _selectedItems;
         private MapRegion _selectedRegion;

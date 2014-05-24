@@ -46,7 +46,7 @@ namespace eZet.EveProfiteer.Models {
 
         public decimal ProfitPerItem { get; private set; }
 
-        public decimal Margin { get; private set; }
+        public double Margin { get; private set; }
 
         public decimal Balance { get; private set; }
 
@@ -92,7 +92,7 @@ namespace eZet.EveProfiteer.Models {
             StockValue = Stock * AvgBuyPrice;
             Profit = SellTotal - AvgBuyPrice * SellQuantity;
             ProfitPerItem = AvgSellPrice - AvgBuyPrice;
-            Margin = ProfitPerItem / AvgSellPrice;
+            Margin = (double) (ProfitPerItem / AvgSellPrice);
 
             if (groups.Any() && TradeDuration.TotalDays > 0)
                 AvgProfitPerDay = Profit / (decimal)TradeDuration.TotalDays;

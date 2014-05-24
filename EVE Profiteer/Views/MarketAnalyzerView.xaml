@@ -107,12 +107,106 @@
 
         <dxg:GridControl Name="MarketAnalyzerGrid" dxlc:DockLayoutControl.Dock="Client" dxlc:DockLayoutControl.AllowVerticalSizing="True"
                          ItemsSource="{Binding MarketAnalyzerResults}">
+            <dxg:GridControl.Bands>
+                <dxg:GridControlBand>
+                    <dxg:GridColumn FieldName="InvType.TypeName" Header="Item"/>
+                </dxg:GridControlBand>
+
+                <dxg:GridControlBand Header="Current">
+                    <dxg:GridColumn FieldName="DailyProfit">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N2" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn FieldName="ProfitPerItem">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N2" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn FieldName="VolumeMedian">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N0" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn FieldName="BuyPrice">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N2" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn FieldName="SellPrice">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N2" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn FieldName="Margin">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="P2" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                </dxg:GridControlBand>
+
+                <dxg:GridControlBand Header="Averages for period">
+                    <dxg:GridColumn FieldName="AvgPrice">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N2" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn FieldName="AvgMinPrice" Header="Min Price">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N2" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn FieldName="AvgMaxPrice" Header="Max Price">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N2" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn FieldName="AvgProfitPerItem" Header="Profit/Item">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N2" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn FieldName="AvgMargin" Header="Margin">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="P2" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                </dxg:GridControlBand>
+
+                <dxg:GridControlBand Header="Misc" Visible="False">
+                    <dxg:GridColumn Visible="False" FieldName="VolumeAdjustedAverage">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N0" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn Visible="False" FieldName="VolumeAverage">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N0" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn Visible="False" FieldName="VolumeStandardDeviation">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N2" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn Visible="False" FieldName="VolumeVariance">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N2" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn FieldName="Updated" Visible="False"/>
+                    <dxg:GridColumn FieldName="InvType.InvGroup.Manufacturable" Visible="False" Header="Is Manufacturable" />
+                    <dxg:GridColumn FieldName="InvType.InvGroup.Order.IsSellOrder" Visible="False" Header="Is Sell Order"/>
+                    <dxg:GridColumn FieldName="InvType.InvGroup.Order.IsBuyOrder" Visible="False" Header="Is Buy Order"/>
+                </dxg:GridControlBand>
+
+            </dxg:GridControl.Bands>
             <dxg:GridControl.View>
                 <dxg:TableView AllowEditing="False" NavigationStyle="Row" ShowAutoFilterRow="True"
                                ShowFixedTotalSummary="True" IsTotalSummaryMenuEnabled="True"
                                ShowGroupPanel="False" RowStyle="{StaticResource BackgroundStyle}"
                                ShowSearchPanelMode="Default" SearchColumns="InvType.TypeName"
-                               SearchPanelCriteriaOperatorType="And" ShowFilterPanelMode="ShowAlways" AutoWidth="True" AutoScrollOnSorting="False">
+                               SearchPanelCriteriaOperatorType="And" ShowFilterPanelMode="ShowAlways" AutoScrollOnSorting="False">
                     <dxg:TableView.RowCellMenuCustomizations>
                         <dxb:BarButtonItem Content="Add to orders"
                                            Command="{Binding View.DataContext.AddToOrdersCommand}"
@@ -128,66 +222,8 @@
                 </dxg:TableView>
             </dxg:GridControl.View>
             <dxg:GridControl.TotalSummary>
-                <dxg:GridSummaryItem SummaryType="Count" Alignment="Right" />
+                <dxg:GridSummaryItem SummaryType="Count" Alignment="Right" DisplayFormat="Items: {0}" />
             </dxg:GridControl.TotalSummary>
-            <dxg:GridControl.Columns>
-                <dxg:GridColumn FieldName="InvType.TypeName" />
-                <dxg:GridColumn FieldName="BuyPrice">
-                    <dxg:GridColumn.EditSettings>
-                        <dxe:TextEditSettings DisplayFormat="N2" />
-                    </dxg:GridColumn.EditSettings>
-                </dxg:GridColumn>
-                <dxg:GridColumn FieldName="SellPrice">
-                    <dxg:GridColumn.EditSettings>
-                        <dxe:TextEditSettings DisplayFormat="N2" />
-                    </dxg:GridColumn.EditSettings>
-                </dxg:GridColumn>
-                <dxg:GridColumn FieldName="ProfitPerItem">
-                    <dxg:GridColumn.EditSettings>
-                        <dxe:TextEditSettings DisplayFormat="N2" />
-                    </dxg:GridColumn.EditSettings>
-                </dxg:GridColumn>
-                <dxg:GridColumn FieldName="DailyVolumeMedian">
-                    <dxg:GridColumn.EditSettings>
-                        <dxe:TextEditSettings DisplayFormat="N0" />
-                    </dxg:GridColumn.EditSettings>
-                </dxg:GridColumn>
-                <dxg:GridColumn FieldName="DailyProfit">
-                    <dxg:GridColumn.EditSettings>
-                        <dxe:TextEditSettings DisplayFormat="N2" />
-                    </dxg:GridColumn.EditSettings>
-                </dxg:GridColumn>
-                <dxg:GridColumn FieldName="Margin">
-                    <dxg:GridColumn.EditSettings>
-                        <dxe:TextEditSettings DisplayFormat="P2" />
-                    </dxg:GridColumn.EditSettings>
-                </dxg:GridColumn>
-                <dxg:GridColumn Visible="False" FieldName="DailyVolumeAdjustedAverage">
-                    <dxg:GridColumn.EditSettings>
-                        <dxe:TextEditSettings DisplayFormat="N0" />
-                    </dxg:GridColumn.EditSettings>
-                </dxg:GridColumn>
-                <dxg:GridColumn Visible="False" FieldName="DailyVolumeAverage">
-                    <dxg:GridColumn.EditSettings>
-                        <dxe:TextEditSettings DisplayFormat="N0" />
-                    </dxg:GridColumn.EditSettings>
-                </dxg:GridColumn>
-                <dxg:GridColumn Visible="False" FieldName="VolumeStandardDeviation">
-                    <dxg:GridColumn.EditSettings>
-                        <dxe:TextEditSettings DisplayFormat="N2" />
-                    </dxg:GridColumn.EditSettings>
-                </dxg:GridColumn>
-                <dxg:GridColumn Visible="False" FieldName="VolumeVariance">
-                    <dxg:GridColumn.EditSettings>
-                        <dxe:TextEditSettings DisplayFormat="N2" />
-                    </dxg:GridColumn.EditSettings>
-                </dxg:GridColumn>
-                <dxg:GridColumn FieldName="Updated" />
-                <dxg:GridColumn FieldName="InvType.InvGroup.Manufacturable" Visible="False" Header="Is Manufacturable" />
-                <dxg:GridColumn FieldName="InvType.InvGroup.Order.IsSellOrder" Visible="False" Header="Is Sell Order"/>
-                <dxg:GridColumn FieldName="InvType.InvGroup.Order.IsBuyOrder" Visible="False" Header="Is Buy Order"/>
-                <dxg:GridColumn FieldName="Custom" Visible="False" AllowUnboundExpressionEditor="True" UnboundType="Decimal"/>
-            </dxg:GridControl.Columns>
         </dxg:GridControl>
     </dxlc:DockLayoutControl>
 
