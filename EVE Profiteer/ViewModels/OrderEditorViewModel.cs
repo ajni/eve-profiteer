@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
@@ -44,21 +45,30 @@ namespace eZet.EveProfiteer.ViewModels {
             BuyOrderAvgOffset = 2;
             SellOrderAvgOffset = 2;
             ViewTradeDetailsCommand = new DelegateCommand<Order>(order => _eventAggregator.Publish(new ViewTradeDetailsEventArgs(order.TypeId)));
-            DeleteOrdersCommand = new DelegateCommand<ICollection<Order>>(DeleteOrders) ;
+            DeleteOrdersCommand = new DelegateCommand<ICollection<Order>>(DeleteOrders);
+            SaveOrderCommand = new DelegateCommand<RowEventArgs>(ExecuteSaveOrder);
         }
 
-        private void DeleteOrders(ICollection<Order> collection) {
-            var orders = collection.Select(order => (Order) order).ToList();
+        private void ExecuteSaveOrder(RowEventArgs e) {
+            //var order = (Order) e.Row;
+            //_dataService.Db.Orders.Add(order);
+        }
+
+        private void DeleteOrders(ICollection<Order> orderCollection) {
+            var orders = orderCollection.ToList();
             foreach (var order in orders) {
                 Orders.Remove(order);
             }
             _dataService.Db.Orders.RemoveRange(orders);
-            _dataService.Db.SaveChanges();
         }
+
+        public ICollection<InvType> InvTypes { get; private set; }
 
         public ICommand ViewTradeDetailsCommand { get; private set; }
 
         public ICommand DeleteOrdersCommand { get; private set; }
+
+        public ICommand SaveOrderCommand { get; private set; }
 
         public int DayLimit { get; set; }
 
@@ -83,20 +93,23 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         private void OrdersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
-            if (e.NewItems != null)
-                _dataService.Db.Orders.Add(e.NewItems.OfType<Order>().Single());
-            if (e.OldItems != null)
-                _dataService.Db.Orders.RemoveRange(e.OldItems.OfType<Order>());
+            //if (e.NewItems != null)
+            //    _dataService.Db.Orders.Add(e.NewItems.OfType<Order>().Single());
+            //if (e.OldItems != null)
+            //    _dataService.Db.Orders.RemoveRange(e.OldItems.OfType<Order>());
         }
 
 
         protected override void OnInitialize() {
             Orders.AddRange(_dataService.Db.Orders.Where(order => order.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id).ToList());
             Orders.CollectionChanged += OrdersOnCollectionChanged;
+            InvTypes = _dataService.Db.InvTypes.Where(type => type.MarketGroupId != null).ToList();
         }
 
         public void SaveChanges() {
             Orders.Apply(order => order.ApiKeyEntity_Id = ApplicationHelper.ActiveKeyEntity.Id);
+            _dataService.Db.Orders.RemoveRange(_dataService.Db.Orders);
+            _dataService.Db.Orders.AddRange(Orders);
             _dataService.Db.SaveChanges();
         }
 

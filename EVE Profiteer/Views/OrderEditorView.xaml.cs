@@ -4,6 +4,7 @@ using DevExpress.Data;
 using DevExpress.Xpf.Data;
 using DevExpress.Xpf.Grid;
 using eZet.Eve.OrderIoHelper.Models;
+using eZet.EveProfiteer.Models;
 using GridControl = DevExpress.XtraGrid.GridControl;
 
 namespace eZet.EveProfiteer.Views {
@@ -23,8 +24,8 @@ namespace eZet.EveProfiteer.Views {
 
         private void GridViewBase_OnShowingEditor(object sender, ShowingEditorEventArgs e) {
             var view = sender as SelectionView;
-            if (Orders.CurrentColumn.FieldName == "InvType.TypeName") {
-                if (Orders.View.FocusedRowHandle != GridControl.NewItemRowHandle) {
+            if (OrderEditorGrid.CurrentColumn.FieldName == "InvType.TypeName") {
+                if (OrderEditorGrid.View.FocusedRowHandle != GridControl.NewItemRowHandle) {
                     e.Cancel = true;
                 }
             }
@@ -53,5 +54,6 @@ namespace eZet.EveProfiteer.Views {
                 }
             }
         }
+
     }
 }
