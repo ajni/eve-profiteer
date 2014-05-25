@@ -169,7 +169,7 @@ namespace eZet.EveProfiteer.ViewModels {
             SelectedItem = invType;
         }
 
-        public void Handle(OrdersAddedEventArgs ordersAddedEventArgs) {
+        public void Handle(OrdersChangedEventArgs ordersChangedEventArgs) {
         }
 
         protected override void OnInitialize() {

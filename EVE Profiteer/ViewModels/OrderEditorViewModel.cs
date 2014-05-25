@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Windows.Forms;
@@ -12,7 +10,6 @@ using eZet.EveProfiteer.Events;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
 using eZet.EveProfiteer.Util;
-using eZet.EveProfiteer.Views;
 using Screen = Caliburn.Micro.Screen;
 
 namespace eZet.EveProfiteer.ViewModels {
@@ -215,7 +212,10 @@ namespace eZet.EveProfiteer.ViewModels {
             }
             _eveMarketService.LoadMarketData(orders, DayLimit);
             Orders.AddRange(orders);
-            _eventAggregator.Publish(new OrdersAddedEventArgs(orders));
+            SelectedOrders.Clear();
+            SelectedOrders.AddRange(orders);
+            FocusedOrder = orders.Last();
+            //_eventAggregator.Publish(new OrdersChangedEventArgs(orders));
         }
 
         public void Handle(GridCellValidationEventArgs eventArgs) {

@@ -167,7 +167,7 @@
     <Compile Include="ViewModels\ManageKeysViewModel.cs" />
     <Compile Include="ViewModels\MarketBrowserViewModel.cs" />
     <Compile Include="ViewModels\OrderEditorViewModel.cs" />
-    <Compile Include="Events\OrdersAddedEventArgs.cs" />
+    <Compile Include="Events\OrdersChangedEventArgs.cs" />
     <Compile Include="ViewModels\TradeAnalyzerViewModel.cs" />
     <Compile Include="ViewModels\ViewMarketDetailsEventArgs.cs" />
     <Compile Include="Views\EditOrderDialogView.xaml.cs">

@@ -32,7 +32,7 @@
         </StackPanel>
 
         <dxg:GridControl Name="OrderEditorGrid" AutoGenerateColumns="None" ItemsSource="{Binding Orders}"
-                         SelectedItems="{Binding SelectedOrders}" SelectionMode="Row" SelectedItem="{Binding FocusedOrder}" CurrentItem="{Binding SelectedOrder}"
+                         SelectedItems="{Binding SelectedOrders}" SelectionMode="Row" SelectedItem="{Binding SelectedOrder}" CurrentItem="{Binding FocusedOrder}"
                          CustomSummary="Orders_OnCustomSummary">
             <dxg:GridControl.View>
                 <dxg:SelectionView Name="OrdersView" ShowAutoFilterRow="False" ShowTotalSummary="False" ShowFixedTotalSummary="True"

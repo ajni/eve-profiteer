@@ -12,7 +12,7 @@ using eZet.EveProfiteer.Util;
 using MoreLinq;
 
 namespace eZet.EveProfiteer.ViewModels {
-    public class TradeDetailsViewModel : Screen, IHandle<OrdersAddedEventArgs>, IHandle<ViewTradeDetailsEventArgs> {
+    public class TradeDetailsViewModel : Screen, IHandle<OrdersChangedEventArgs>, IHandle<ViewTradeDetailsEventArgs> {
         private readonly IEventAggregator _eventAggregator;
         private readonly EveProfiteerDataService _dataService;
         private InvType _selectedItem;
@@ -68,7 +68,7 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
 
-        public void Handle(OrdersAddedEventArgs message) {
+        public void Handle(OrdersChangedEventArgs message) {
             LoadSelectableItems();
         }
 

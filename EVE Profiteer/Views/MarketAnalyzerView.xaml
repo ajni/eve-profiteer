@@ -107,7 +107,7 @@
 
 
         <dxg:GridControl Name="MarketAnalyzerGrid" dxlc:DockLayoutControl.Dock="Client" dxlc:DockLayoutControl.AllowVerticalSizing="True"
-                         ItemsSource="{Binding MarketAnalyzerResults}">
+                         ItemsSource="{Binding MarketAnalyzerResults}" SelectionMode="Row">
             <dxg:GridControl.Bands>
                 <dxg:GridControlBand>
                     <dxg:GridColumn FieldName="InvType.TypeName" Header="Item"/>
@@ -211,7 +211,7 @@
                     <dxg:TableView.RowCellMenuCustomizations>
                         <dxb:BarButtonItem Content="Add to orders"
                                            Command="{Binding View.DataContext.AddToOrdersCommand}"
-                                           CommandParameter="{Binding View.DataControl.SelectedItems}" />
+                                           CommandParameter="{Binding View.DataControl.SelectedItems}"/>
                         <dxb:BarItemSeparator />
                         <dxb:BarButtonItem Content="View trade details"
                                            Command="{Binding View.DataContext.ViewTradeDetailsCommand}"

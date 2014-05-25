@@ -15,7 +15,7 @@ using eZet.EveProfiteer.Util;
 using Xceed.Wpf.Toolkit;
 
 namespace eZet.EveProfiteer.ViewModels {
-    public class MarketAnalyzerViewModel : Screen, IHandle<OrdersAddedEventArgs> {
+    public class MarketAnalyzerViewModel : Screen, IHandle<OrdersChangedEventArgs> {
         private readonly EveProfiteerDataService _dataService;
         private readonly EveMarketService _eveMarketService;
         private readonly IEventAggregator _eventAggregator;
@@ -118,9 +118,9 @@ namespace eZet.EveProfiteer.ViewModels {
             }
         }
 
-        public void Handle(OrdersAddedEventArgs ordersAddedEventArgs) {
+        public void Handle(OrdersChangedEventArgs ordersChangedEventArgs) {
             ILookup<int, MarketAnalyzerEntry> lookup = MarketAnalyzerResults.ToLookup(f => f.InvType.TypeId);
-            foreach (Order order in ordersAddedEventArgs.Orders) {
+            foreach (Order order in ordersChangedEventArgs.Orders) {
                 if (lookup.Contains(order.TypeId)) {
                     lookup[order.TypeId].Single().Order = order;
                     MarketAnalyzerResults.NotifyOfPropertyChange();
