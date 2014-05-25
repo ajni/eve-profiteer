@@ -80,14 +80,14 @@
             </dxmvvm:Interaction.Triggers>
         </TreeView>
         
-        <dxlc:GroupBox dxlc:DockLayoutControl.Dock="Top" dxlc:DockLayoutControl.AllowHorizontalSizing="True" Header="{Binding MarketBrowserItem.InvType.TypeName}" ShowShadow="Always" MinimizeElementVisibility="Visible">
-            <Label Content="{Binding MarketBrowserItem.InvType.Description}"></Label>
+        <dxlc:GroupBox dxlc:DockLayoutControl.Dock="Top" dxlc:DockLayoutControl.AllowHorizontalSizing="True" Header="{Binding MarketBrowserData.InvType.TypeName}" ShowShadow="Always" MinimizeElementVisibility="Visible">
+            <Label Content="{Binding MarketBrowserData.InvType.Description}"></Label>
         </dxlc:GroupBox>
 
         <dx:DXTabControl dxlc:DockLayoutControl.Dock="Client" dxlc:DockLayoutControl.AllowVerticalSizing="True">
 
             <dx:DXTabItem Header="Sell Orders">
-                <dxg:GridControl ItemsSource="{Binding MarketBrowserItem.SellOrders}">
+                <dxg:GridControl ItemsSource="{Binding MarketBrowserData.SellOrders}">
                     <dxg:GridControl.View>
                         <dxg:TableView NavigationStyle="Row"
                                        ShowFixedTotalSummary="True" IsTotalSummaryMenuEnabled="True"
@@ -125,7 +125,7 @@
             </dx:DXTabItem>
 
             <dx:DXTabItem Header="Buy Orders">
-                <dxg:GridControl ItemsSource="{Binding MarketBrowserItem.BuyOrders}">
+                <dxg:GridControl ItemsSource="{Binding MarketBrowserData.BuyOrders}">
                     <dxg:GridControl.View>
                         <dxg:TableView NavigationStyle="Row"
                                        ShowFixedTotalSummary="True" IsTotalSummaryMenuEnabled="True"
@@ -162,7 +162,7 @@
             </dx:DXTabItem>
 
             <dx:DXTabItem Header="History (Table)">
-                <dxg:GridControl ItemsSource="{Binding MarketBrowserItem.MarketHistory}">
+                <dxg:GridControl ItemsSource="{Binding MarketBrowserData.MarketHistory}">
                     <dxg:GridControl.View>
                         <dxg:TableView NavigationStyle="Row"
                                        ShowFixedTotalSummary="True" IsTotalSummaryMenuEnabled="True"
@@ -197,7 +197,7 @@
             </dx:DXTabItem>
 
             <dx:DXTabItem Header="History (Chart)">
-                <dxc:ChartControl x:Name="HistoryChart" DataSource="{Binding MarketBrowserItem.MarketHistory}">
+                <dxc:ChartControl x:Name="HistoryChart" DataSource="{Binding MarketBrowserData.MarketHistory}">
                     <dxc:ChartControl.CrosshairOptions>
                         <dxc:CrosshairOptions ShowArgumentLabels="True" SnapMode="NearestArgument"
                                               ArgumentLineBrush="#FF3F3F3F">

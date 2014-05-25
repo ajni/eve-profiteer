@@ -17,7 +17,7 @@ namespace eZet.EveProfiteer.ViewModels {
         private readonly IEventAggregator _eventAggregator;
         private readonly IWindowManager _windowManager;
         private int _dayLimit = 5;
-        private MarketBrowserItem _marketBrowserItem;
+        private MarketBrowserItem _marketBrowserData;
         private InvType _selectedItem;
         private bool _show20DayAverage;
         private bool _show5DayAverage;
@@ -39,17 +39,14 @@ namespace eZet.EveProfiteer.ViewModels {
             ViewTradeDetailsCommand = new DelegateCommand(ExecuteViewTradeDetails, CanViewTradeDetails);
             PropertyChanged += OnPropertyChanged;
 
-            TreeRootNodes = _dataService.BuildMarketTree(null);
-            Regions = new BindableCollection<MapRegion>(_dataService.Db.MapRegions.ToList());
-            SelectedRegion = Regions.Single(region => region.RegionId == 10000002);
         }
 
-        public MarketBrowserItem MarketBrowserItem {
-            get { return _marketBrowserItem; }
+        public MarketBrowserItem MarketBrowserData {
+            get { return _marketBrowserData; }
             private set {
-                if (Equals(value, _marketBrowserItem)) return;
-                _marketBrowserItem = value;
-                NotifyOfPropertyChange(() => MarketBrowserItem);
+                if (Equals(value, _marketBrowserData)) return;
+                _marketBrowserData = value;
+                NotifyOfPropertyChange(() => MarketBrowserData);
             }
         }
 
@@ -147,15 +144,15 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         private bool CanViewTradeDetails() {
-            return MarketBrowserItem != null && MarketBrowserItem.InvType != null;
+            return MarketBrowserData != null && MarketBrowserData.InvType != null;
         }
 
         private void ExecuteViewTradeDetails() {
-            _eventAggregator.Publish(new ViewTradeDetailsEventArgs(MarketBrowserItem.InvType));
+            _eventAggregator.Publish(new ViewTradeDetailsEventArgs(MarketBrowserData.InvType));
         }
 
         private void ExecuteAddToOrders() {
-            var e = new AddToOrdersEventArgs(MarketBrowserItem.InvType);
+            var e = new AddToOrdersEventArgs(MarketBrowserData.InvType);
             _eventAggregator.Publish(e);
         }
 
@@ -166,7 +163,7 @@ namespace eZet.EveProfiteer.ViewModels {
 
         private async void LoadMarketDetails(InvType invType) {
             _eventAggregator.Publish(new StatusChangedEventArgs("Loading market details..."));
-            MarketBrowserItem = await GetMarketDetails(SelectedRegion, invType);
+            MarketBrowserData = await GetMarketDetails(SelectedRegion, invType);
             _eventAggregator.Publish(new StatusChangedEventArgs("Market details loaded"));
 
         }
@@ -180,13 +177,15 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         protected override void OnInitialize() {
-
+            TreeRootNodes = _dataService.BuildMarketTree(null);
+            Regions = new BindableCollection<MapRegion>(_dataService.Db.MapRegions.ToList());
+            SelectedRegion = Regions.Single(region => region.RegionId == 10000002);
         }
 
 
         private bool CanAddToOrders() {
             return
-                MarketBrowserItem.InvType.Orders.All(
+                MarketBrowserData.InvType.Orders.All(
                     order => order.ApiKeyEntity_Id != ApplicationHelper.ActiveKeyEntity.Id);
         }
 

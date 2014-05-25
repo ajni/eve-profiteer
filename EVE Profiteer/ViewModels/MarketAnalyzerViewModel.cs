@@ -53,6 +53,11 @@ namespace eZet.EveProfiteer.ViewModels {
             ViewOrderCommand =
                 new DelegateCommand<MarketAnalyzerEntry>(
                     entry => _eventAggregator.Publish(new ViewOrderEventArgs(entry.InvType)), hasValidOrder);
+
+
+            Regions = _dataService.Db.MapRegions.OrderBy(region => region.RegionName).ToList();
+            SelectedRegion = Regions.Single(f => f.RegionId == 10000002);
+            SelectedStation = SelectedRegion.StaStations.Single(station => station.StationId == 60003760);
         }
 
         public ICommand ViewMarketDetailsCommand { get; private set; }
@@ -136,9 +141,6 @@ namespace eZet.EveProfiteer.ViewModels {
 
         protected override void OnInitialize() {
             TreeRootNodes = _dataService.BuildMarketTree(treeViewCheckBox_PropertyChanged);
-            Regions = _dataService.Db.MapRegions.OrderBy(region => region.RegionName).ToList();
-            SelectedRegion = Regions.Single(f => f.RegionId == 10000002);
-            SelectedStation = SelectedRegion.StaStations.Single(station => station.StationId == 60003760);
         }
 
         private async void ExecuteAnalyze() {

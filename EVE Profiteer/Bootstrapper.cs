@@ -35,11 +35,10 @@ namespace eZet.EveProfiteer {
             _container.PerRequest<IRepository<ApiKeyEntity>, DbContextRepository<ApiKeyEntity, EveProfiteerDbEntities>>();
             _container.PerRequest<IRepository<Order>, DbContextRepository<Order, EveProfiteerDbEntities>>();
 
-            //_container.PerRequest<IRepository<Order>, DbContextRepository<Order, EveProfiteerDbEntities>>();
 
             // Services
             _container.PerRequest<EveApiService>();
-            _container.PerRequest<TransactionService>();
+            _container.PerRequest<BulkOperationService>();
             _container.PerRequest<EveMarketService>();
             _container.PerRequest<OrderXmlService>();
             _container.PerRequest<RepositoryService<ApiKey>>();

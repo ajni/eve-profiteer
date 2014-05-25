@@ -151,7 +151,7 @@
     <Compile Include="Services\EveMarketService.cs" />
     <Compile Include="Services\OrderXmlService.cs" />
     <Compile Include="Services\RepositoryService.cs" />
-    <Compile Include="Services\TransactionService.cs" />
+    <Compile Include="Services\BulkOperationService.cs" />
     <Compile Include="Ui\Converters\RoutedPropertyChangedEventArgsConverter.cs" />
     <Compile Include="Util\ApiEntityMapper.cs" />
     <Compile Include="Util\ApplicationHelper.cs" />

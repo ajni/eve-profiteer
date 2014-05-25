@@ -17,17 +17,17 @@ namespace eZet.EveProfiteer.ViewModels {
         private readonly EveApiService _eveApiService;
         private readonly IEventAggregator _eventAggregator;
         private readonly KeyManagementService _keyManagementService;
-        private readonly TransactionService _transactionService;
+        private readonly BulkOperationService _bulkOperationService;
         private readonly IWindowManager _windowManager;
         private string _statusMessage;
 
         public ShellViewModel(IWindowManager windowManager, IEventAggregator eventAggregator,
             KeyManagementService keyManagementService,
-            TransactionService transactionService, EveApiService eveApiService) {
+            BulkOperationService bulkOperationService, EveApiService eveApiService) {
             _windowManager = windowManager;
             _eventAggregator = eventAggregator;
             _keyManagementService = keyManagementService;
-            _transactionService = transactionService;
+            _bulkOperationService = bulkOperationService;
             _eveApiService = eveApiService;
             ActiveKey = _keyManagementService.AllApiKeys().FirstOrDefault();
             _eventAggregator.Subscribe(this);
@@ -117,11 +117,11 @@ namespace eZet.EveProfiteer.ViewModels {
         public async void UpdateTransactions() {
             _eventAggregator.Publish(new StatusChangedEventArgs("Fetching new transactions..."));
             long latest = 0;
-            latest = _transactionService.GetLatestId(ActiveKeyEntity);
+            latest = _bulkOperationService.GetLatestId(ActiveKeyEntity);
             IEnumerable<Transaction> list = _eveApiService.GetNewTransactions(ActiveKey, ActiveKeyEntity, latest);
             IList<Transaction> transactions = list as IList<Transaction> ?? list.ToList();
             _eventAggregator.Publish(new StatusChangedEventArgs("Processing transactions..."));
-            await Task.Run(() => _transactionService.BulkInsert(transactions));
+            await Task.Run(() => _bulkOperationService.BulkInsert(transactions));
             _eventAggregator.Publish(new StatusChangedEventArgs("Update complete"));
 
         }

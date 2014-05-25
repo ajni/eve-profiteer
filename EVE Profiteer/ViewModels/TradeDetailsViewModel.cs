@@ -16,7 +16,7 @@ namespace eZet.EveProfiteer.ViewModels {
         private readonly IEventAggregator _eventAggregator;
         private readonly EveProfiteerDataService _dataService;
         private InvType _selectedItem;
-        private TradeDetailsData _tradeData;
+        private TradeDetailsData _tradeDetailsData;
 
         public TradeDetailsViewModel(IEventAggregator eventAggregator, EveProfiteerDataService dataService) {
             _eventAggregator = eventAggregator;
@@ -37,25 +37,25 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         private void LoadItem(InvType type) {
-            _eventAggregator.Publish(new StatusChangedEventArgs("Processing trade details..."));
             // TODO Fix loading NULL type
             if (type == null) 
                 return;
+            _eventAggregator.Publish(new StatusChangedEventArgs("Processing trade details..."));
             List<Transaction> transactions =
                 _dataService.Db.Transactions.Where(f => f.TypeId == type.TypeId).ToList();
             if (transactions.Any())
-                TradeData = new TradeDetailsData(type,
+                TradeDetailsData = new TradeDetailsData(type,
                     transactions, type.Orders.SingleOrDefault(order => order.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id));
             _eventAggregator.Publish(new StatusChangedEventArgs("Trade details loaded"));
 
         }
 
-        public TradeDetailsData TradeData {
-            get { return _tradeData; }
+        public TradeDetailsData TradeDetailsData {
+            get { return _tradeDetailsData; }
             set {
-                if (Equals(value, _tradeData)) return;
-                _tradeData = value;
-                NotifyOfPropertyChange(() => TradeData);
+                if (Equals(value, _tradeDetailsData)) return;
+                _tradeDetailsData = value;
+                NotifyOfPropertyChange(() => TradeDetailsData);
             }
         }
 
@@ -82,7 +82,6 @@ namespace eZet.EveProfiteer.ViewModels {
 
         public void Handle(ViewTradeDetailsEventArgs message) {
             var item = message.InvType;
-            Debug.Assert(item != null, "Attempted to view invalid type.");
             SelectedItem = item;
         }
 

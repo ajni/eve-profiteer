@@ -9,8 +9,8 @@ using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Repository;
 
 namespace eZet.EveProfiteer.Services {
-    public class TransactionService : RepositoryService<Transaction> {
-        public TransactionService(IRepository<Transaction> repository)
+    public class BulkOperationService : RepositoryService<Transaction> {
+        public BulkOperationService(IRepository<Transaction> repository)
             : base(repository) {
         }
 
