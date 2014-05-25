@@ -219,6 +219,10 @@
                         <dxb:BarButtonItem Content="View market details"
                                                Command="{Binding View.DataContext.ViewMarketDetailsCommand}"
                                                CommandParameter="{Binding View.DataControl.CurrentItem}" />
+                        <dxb:BarButtonItem Content="View order"
+                                           Command="{Binding View.DataContext.ViewOrderCommand}"
+                                           CommandParameter="{Binding View.DataControl.CurrentItem}" />
+                        <dxb:BarItemSeparator />
                     </dxg:TableView.RowCellMenuCustomizations>
                 </dxg:TableView>
             </dxg:GridControl.View>

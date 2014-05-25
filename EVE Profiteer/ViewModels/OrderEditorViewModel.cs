@@ -29,6 +29,7 @@ namespace eZet.EveProfiteer.ViewModels {
         private BindableCollection<Order> _selectedOrders;
         private string _selectedPath = @"C:\Users\Lars Kristian\AppData\Local\MacroLab\Eve Pilot\Client_1\EVETrader";
         private Order _focusedOrder;
+        private Order _selectedOrder;
 
         public OrderEditorViewModel(IWindowManager windowManager, IEventAggregator eventAggregator,
             OrderXmlService orderXmlService, EveProfiteerDataService dataService, EveMarketService eveMarketService) {
@@ -45,13 +46,15 @@ namespace eZet.EveProfiteer.ViewModels {
             DayLimit = 10;
             BuyOrderAvgOffset = 2;
             SellOrderAvgOffset = 2;
-            ViewTradeDetailsCommand = new DelegateCommand<Order>(order => _eventAggregator.Publish(new ViewTradeDetailsEventArgs(order.InvType)));
-            DeleteOrdersCommand = new DelegateCommand<ICollection<Order>>(DeleteOrders);
+            ViewTradeDetailsCommand = new DelegateCommand(() => _eventAggregator.Publish(new ViewTradeDetailsEventArgs(FocusedOrder.InvType)), () => FocusedOrder != null);
+            DeleteOrdersCommand = new DelegateCommand(DeleteOrders);
             SaveOrderCommand = new DelegateCommand<RowEventArgs>(ExecuteSaveOrder);
 
             Orders.AddRange(_dataService.Db.Orders.Where(order => order.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id).ToList());
             Orders.CollectionChanged += OrdersOnCollectionChanged;
             InvTypes = _dataService.Db.InvTypes.Where(type => type.MarketGroupId != null).ToList();
+            SelectedOrder = Orders.FirstOrDefault();
+            FocusedOrder = Orders.FirstOrDefault();
         }
 
         private void ExecuteSaveOrder(RowEventArgs e) {
@@ -59,22 +62,31 @@ namespace eZet.EveProfiteer.ViewModels {
             //_dataService.Db.Orders.Add(order);
         }
 
-        private void DeleteOrders(ICollection<Order> orderCollection) {
-            var orders = orderCollection.ToList();
+        private void DeleteOrders() {
+            _dataService.Db.Orders.RemoveRange(SelectedOrders);
+            var orders = SelectedOrders.ToList();
             foreach (var order in orders) {
                 Orders.Remove(order);
             }
-            _dataService.Db.Orders.RemoveRange(orders);
         }
 
         public ICollection<InvType> InvTypes { get; private set; }
 
         public Order FocusedOrder {
             get { return _focusedOrder; }
-            private set {
+            set {
                 if (Equals(value, _focusedOrder)) return;
                 _focusedOrder = value;
                 NotifyOfPropertyChange(() => FocusedOrder);
+            }
+        }
+
+        public Order SelectedOrder {
+            get { return _selectedOrder; }
+            set {
+                if (Equals(value, _selectedOrder)) return;
+                _selectedOrder = value;
+                NotifyOfPropertyChange(() => SelectedOrder);
             }
         }
 
@@ -229,6 +241,7 @@ namespace eZet.EveProfiteer.ViewModels {
         public void Handle(ViewOrderEventArgs message) {
             var order = Orders.Single(o => o.InvType.TypeId == message.InvType.TypeId);
             FocusedOrder = order;
+            SelectedOrder = order;
         }
     }
 }

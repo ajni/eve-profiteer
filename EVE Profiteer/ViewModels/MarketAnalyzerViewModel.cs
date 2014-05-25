@@ -39,18 +39,24 @@ namespace eZet.EveProfiteer.ViewModels {
 
             SelectedItems = new BindableCollection<InvType>();
 
-            AnalyzeCommand = new DelegateCommand(Analyze, () => SelectedItems.Count != 0);
-            AddToOrdersCommand = new DelegateCommand<ICollection<object>>(AddToOrders, CanAddToOrders);
-            LoadOrdersCommand = new DelegateCommand(LoadOrders);
+            AnalyzeCommand = new DelegateCommand(ExecuteAnalyze, () => SelectedItems.Count != 0);
+            AddToOrdersCommand = new DelegateCommand<ICollection<object>>(ExecuteAddToOrders, CanAddToOrders);
+            LoadOrdersCommand = new DelegateCommand(ExecuteLoadOrders);
             ViewTradeDetailsCommand =
                 new DelegateCommand<MarketAnalyzerEntry>(
                     entry => _eventAggregator.Publish(new ViewTradeDetailsEventArgs(entry.InvType)),
-                    entry => entry != null && entry.Order != null);
-            ViewMarketDetailsCommand = new DelegateCommand<MarketAnalyzerEntry>(item => _eventAggregator.Publish(new ViewMarketDetailsEventArgs(item.InvType)), item => item != null);
+                    hasValidOrder);
+            ViewMarketDetailsCommand = new DelegateCommand<MarketAnalyzerEntry>(entry => _eventAggregator.Publish(new ViewMarketDetailsEventArgs(entry.InvType)), entry => entry != null);
+            ViewOrderCommand = new DelegateCommand<MarketAnalyzerEntry>(entry => _eventAggregator.Publish(new ViewOrderEventArgs(entry.InvType)), hasValidOrder);
+        }
+
+        private bool hasValidOrder(MarketAnalyzerEntry entry) {
+            return entry != null && entry.InvType.Orders.Any(order => order.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id);
         }
 
         public ICommand ViewMarketDetailsCommand { get; private set; }
 
+        public ICommand ViewOrderCommand { get; private set; }
 
         public ICommand AddToOrdersCommand { get; private set; }
 
@@ -129,7 +135,7 @@ namespace eZet.EveProfiteer.ViewModels {
             SelectedStation = SelectedRegion.StaStations.Single(station => station.StationId == 60003760);
         }
 
-        private async void Analyze() {
+        private async void ExecuteAnalyze() {
             var busy = new BusyIndicator {IsBusy = true};
             var cts = new CancellationTokenSource();
             var progressVm = new AnalyzerProgressViewModel(cts);
@@ -169,14 +175,14 @@ namespace eZet.EveProfiteer.ViewModels {
             return items.All(item => item.Order == null);
         }
 
-        private void AddToOrders(ICollection<object> objects) {
+        private void ExecuteAddToOrders(ICollection<object> objects) {
             if (objects == null || !objects.Any())
                 return;
             List<InvType> items = objects.Select(item => ((MarketAnalyzerEntry) item).InvType).ToList();
             _eventAggregator.Publish(new AddToOrdersEventArgs(items));
         }
 
-        public async void LoadOrders() {
+        public async void ExecuteLoadOrders() {
             List<InvType> items =
                 _dataService.Db.Orders.Where(order => order.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id)
                     .Select(order => order.InvType).ToList();
