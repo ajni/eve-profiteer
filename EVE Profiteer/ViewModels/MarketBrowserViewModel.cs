@@ -38,6 +38,10 @@ namespace eZet.EveProfiteer.ViewModels {
             AddToOrdersCommand = new DelegateCommand(ExecuteAddToOrders, CanAddToOrders);
             ViewTradeDetailsCommand = new DelegateCommand(ExecuteViewTradeDetails, CanViewTradeDetails);
             PropertyChanged += OnPropertyChanged;
+
+            TreeRootNodes = _dataService.BuildMarketTree(null);
+            Regions = new BindableCollection<MapRegion>(_dataService.Db.MapRegions.ToList());
+            SelectedRegion = Regions.Single(region => region.RegionId == 10000002);
         }
 
         public MarketBrowserItem MarketBrowserItem {
@@ -161,7 +165,10 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         private async void LoadMarketDetails(InvType invType) {
+            _eventAggregator.Publish(new StatusChangedEventArgs("Loading market details..."));
             MarketBrowserItem = await GetMarketDetails(SelectedRegion, invType);
+            _eventAggregator.Publish(new StatusChangedEventArgs("Market details loaded"));
+
         }
 
         private void ExecuteSelectItem(InvType invType) {
@@ -173,9 +180,7 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         protected override void OnInitialize() {
-            TreeRootNodes = _dataService.BuildMarketTree(null);
-            Regions = new BindableCollection<MapRegion>(_dataService.Db.MapRegions.ToList());
-            SelectedRegion = Regions.Single(region => region.RegionId == 10000002);
+
         }
 
 

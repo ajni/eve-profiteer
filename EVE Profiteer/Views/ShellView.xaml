@@ -6,15 +6,10 @@
                     xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
                     xmlns:viewModels="clr-namespace:eZet.EveProfiteer.ViewModels"
                     xmlns:dxr="http://schemas.devexpress.com/winfx/2008/xaml/ribbon"
-                    xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
                     d:DesignHeight="300" d:DesignWidth="500"
                     mc:Ignorable="d"
                     d:DataContext="{d:DesignInstance Type=viewModels:ShellViewModel, IsDesignTimeCreatable=False}"
                     Loaded="Window_Loaded">
-
-    <dxmvvm:Interaction.Triggers>
-        <dxmvvm:EventToCommand Command="{Binding ShowDocumentCommand}" CommandParameter="OrderCollectionView;Orders" />
-    </dxmvvm:Interaction.Triggers>
 
     <Grid UseLayoutRounding="True">
 
@@ -60,6 +55,8 @@
                     <dxb:BarButtonItemLink BarItemName="biCopy" />
                     <dxb:BarButtonItemLink BarItemName="biPaste" />
                 </dxb:BarSubItem>
+                <dxb:BarStaticItem Name="Status" Content="{Binding StatusMessage}"></dxb:BarStaticItem>
+                <dxb:BarStaticItem Name="CurrentEntity" Content="{Binding CurrentEntityName}"></dxb:BarStaticItem>
 
             </dxb:BarManager.Items>
             <DockPanel>
@@ -84,7 +81,14 @@
                         </dxr:RibbonPage>
                     </dxr:RibbonDefaultPageCategory>
                 </dxr:RibbonControl>
-                <dxr:RibbonStatusBarControl DockPanel.Dock="Bottom" />
+                <dxr:RibbonStatusBarControl DockPanel.Dock="Bottom">
+                    <dxr:RibbonStatusBarControl.LeftItemLinks>
+                        <dxb:BarStaticItemLink BarItemName="Status"></dxb:BarStaticItemLink>
+                    </dxr:RibbonStatusBarControl.LeftItemLinks>
+                    <dxr:RibbonStatusBarControl.RightItemLinks>
+                        <dxb:BarStaticItemLink BarItemName="CurrentEntity"></dxb:BarStaticItemLink>
+                    </dxr:RibbonStatusBarControl.RightItemLinks>
+                </dxr:RibbonStatusBarControl>
                 <Grid Background="Transparent">
                     <TabControl Name="Items"/>
 

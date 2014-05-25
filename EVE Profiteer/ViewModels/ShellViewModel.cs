@@ -11,12 +11,15 @@ using eZet.EveProfiteer.Services;
 using eZet.EveProfiteer.Util;
 
 namespace eZet.EveProfiteer.ViewModels {
-    public class ShellViewModel : Conductor<IScreen>.Collection.OneActive, IShell, IHandle<ViewTradeDetailsEventArgs>, IHandle<ViewMarketDetailsEventArgs>, IHandle<ViewOrderEventArgs>, IHandle<AddToOrdersEventArgs> {
+    public class ShellViewModel : Conductor<IScreen>.Collection.OneActive, IShell, IHandle<ViewTradeDetailsEventArgs>,
+        IHandle<ViewMarketDetailsEventArgs>, IHandle<ViewOrderEventArgs>, IHandle<AddToOrdersEventArgs>,
+        IHandle<StatusChangedEventArgs> {
         private readonly EveApiService _eveApiService;
         private readonly IEventAggregator _eventAggregator;
         private readonly KeyManagementService _keyManagementService;
         private readonly TransactionService _transactionService;
         private readonly IWindowManager _windowManager;
+        private string _statusMessage;
 
         public ShellViewModel(IWindowManager windowManager, IEventAggregator eventAggregator,
             KeyManagementService keyManagementService,
@@ -34,8 +37,21 @@ namespace eZet.EveProfiteer.ViewModels {
             ManageKeysCommand = new DelegateCommand(ManageKeys);
             UpdateTransactionsCommand = new DelegateCommand(UpdateTransactions);
             DisplayName = "EVE Profiteer";
+            StatusMessage = "Ready";
             SelectKey();
+        }
 
+        public string StatusMessage {
+            get { return _statusMessage; }
+            set {
+                if (value == _statusMessage) return;
+                _statusMessage = value;
+                NotifyOfPropertyChange(() => StatusMessage);
+            }
+        }
+
+        public string CurrentEntityName {
+            get { return ApplicationHelper.ActiveKeyEntity.Name; }
         }
 
         public ICommand ManageKeysCommand { get; private set; }
@@ -46,23 +62,24 @@ namespace eZet.EveProfiteer.ViewModels {
 
         public static ApiKeyEntity ActiveKeyEntity { get; private set; }
 
-        protected virtual IDocumentManagerService DocumentManagerService { get { return null; } }
-
-        Dictionary<string, IDocument> documents = new Dictionary<string, IDocument>();
-
-        public void ShowDocument(string p) {
-            string[] parameters = p.Split(';');
-            ShowDocumentCore(parameters[0], parameters[1]);
+        public void Handle(AddToOrdersEventArgs message) {
+            ActivateItem(Items.Single(item => item.GetType() == typeof (OrderEditorViewModel)));
         }
-        void ShowDocumentCore(string viewName, string title) {
-            IDocument document = null;
-            if (!documents.TryGetValue(viewName, out document)) {
-                document = DocumentManagerService.CreateDocument(viewName, null, this);
-                document.Title = title;
-                document.DestroyOnClose = false;
-                documents[viewName] = document;
-            }
-            document.Show();
+
+        public void Handle(StatusChangedEventArgs message) {
+            StatusMessage = message.Status;
+        }
+
+        public void Handle(ViewMarketDetailsEventArgs message) {
+            ActivateItem(Items.Single(item => item.GetType() == typeof (MarketBrowserViewModel)));
+        }
+
+        public void Handle(ViewOrderEventArgs message) {
+            ActivateItem(Items.Single(item => item.GetType() == typeof (OrderEditorViewModel)));
+        }
+
+        public void Handle(ViewTradeDetailsEventArgs message) {
+            ActivateItem(Items.Single(item => item.GetType() == typeof (TradeDetailsViewModel)));
         }
 
         public void SelectKey() {
@@ -90,36 +107,23 @@ namespace eZet.EveProfiteer.ViewModels {
                 //transactions.Initialize(ActiveKey, ActiveKeyEntity);
                 // journal.Initialize(ActiveKey, ActiveKeyEntity);
 
-                Items.NotifyOfPropertyChange("Items");
-                Items.NotifyOfPropertyChange(null);
             }
         }
+
         public void ManageKeys() {
             _windowManager.ShowDialog(IoC.Get<ManageKeysViewModel>());
         }
 
         public async void UpdateTransactions() {
+            _eventAggregator.Publish(new StatusChangedEventArgs("Fetching new transactions..."));
             long latest = 0;
             latest = _transactionService.GetLatestId(ActiveKeyEntity);
             IEnumerable<Transaction> list = _eveApiService.GetNewTransactions(ActiveKey, ActiveKeyEntity, latest);
             IList<Transaction> transactions = list as IList<Transaction> ?? list.ToList();
+            _eventAggregator.Publish(new StatusChangedEventArgs("Processing transactions..."));
             await Task.Run(() => _transactionService.BulkInsert(transactions));
-        }
+            _eventAggregator.Publish(new StatusChangedEventArgs("Update complete"));
 
-        public void Handle(ViewTradeDetailsEventArgs message) {
-            ActivateItem(Items.Single(item => item.GetType() == typeof(TradeDetailsViewModel)));
-        }
-
-        public void Handle(ViewMarketDetailsEventArgs message) {
-            ActivateItem(Items.Single(item => item.GetType() == typeof(MarketBrowserViewModel)));
-        }
-
-        public void Handle(ViewOrderEventArgs message) {
-            ActivateItem(Items.Single(item => item.GetType() == typeof(OrderEditorViewModel)));
-        }
-
-        public void Handle(AddToOrdersEventArgs message) {
-            ActivateItem(Items.Single(item => item.GetType() == typeof(OrderEditorViewModel)));
         }
     }
 }

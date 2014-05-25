@@ -46,12 +46,13 @@ namespace eZet.EveProfiteer.ViewModels {
                 new DelegateCommand<MarketAnalyzerEntry>(
                     entry => _eventAggregator.Publish(new ViewTradeDetailsEventArgs(entry.InvType)),
                     hasValidOrder);
-            ViewMarketDetailsCommand = new DelegateCommand<MarketAnalyzerEntry>(entry => _eventAggregator.Publish(new ViewMarketDetailsEventArgs(entry.InvType)), entry => entry != null);
-            ViewOrderCommand = new DelegateCommand<MarketAnalyzerEntry>(entry => _eventAggregator.Publish(new ViewOrderEventArgs(entry.InvType)), hasValidOrder);
-        }
-
-        private bool hasValidOrder(MarketAnalyzerEntry entry) {
-            return entry != null && entry.InvType.Orders.Any(order => order.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id);
+            ViewMarketDetailsCommand =
+                new DelegateCommand<MarketAnalyzerEntry>(
+                    entry => _eventAggregator.Publish(new ViewMarketDetailsEventArgs(entry.InvType)),
+                    entry => entry != null);
+            ViewOrderCommand =
+                new DelegateCommand<MarketAnalyzerEntry>(
+                    entry => _eventAggregator.Publish(new ViewOrderEventArgs(entry.InvType)), hasValidOrder);
         }
 
         public ICommand ViewMarketDetailsCommand { get; private set; }
@@ -128,6 +129,11 @@ namespace eZet.EveProfiteer.ViewModels {
             }
         }
 
+        private bool hasValidOrder(MarketAnalyzerEntry entry) {
+            return entry != null &&
+                   entry.InvType.Orders.Any(order => order.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id);
+        }
+
         protected override void OnInitialize() {
             TreeRootNodes = _dataService.BuildMarketTree(treeViewCheckBox_PropertyChanged);
             Regions = _dataService.Db.MapRegions.OrderBy(region => region.RegionName).ToList();
@@ -136,6 +142,7 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         private async void ExecuteAnalyze() {
+            _eventAggregator.Publish(new StatusChangedEventArgs("Analyzing..."));
             var busy = new BusyIndicator {IsBusy = true};
             var cts = new CancellationTokenSource();
             var progressVm = new AnalyzerProgressViewModel(cts);
@@ -143,6 +150,7 @@ namespace eZet.EveProfiteer.ViewModels {
             LoadOrderData(res.Result);
             MarketAnalyzerResults = new BindableCollection<MarketAnalyzerEntry>(res.Result);
             busy.IsBusy = false;
+            _eventAggregator.Publish(new StatusChangedEventArgs("Analysis complete"));
         }
 
         private void LoadOrderData(IEnumerable<MarketAnalyzerEntry> items) {
@@ -176,6 +184,7 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         private void ExecuteAddToOrders(ICollection<object> objects) {
+            _eventAggregator.Publish(new StatusChangedEventArgs("Adding order(s)..."));
             if (objects == null || !objects.Any())
                 return;
             List<InvType> items = objects.Select(item => ((MarketAnalyzerEntry) item).InvType).ToList();
@@ -183,12 +192,14 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         public async void ExecuteLoadOrders() {
+            _eventAggregator.Publish(new StatusChangedEventArgs("Analyzing orders..."));
             List<InvType> items =
                 _dataService.Db.Orders.Where(order => order.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id)
                     .Select(order => order.InvType).ToList();
             MarketAnalyzer res = await GetMarketAnalyzer(items);
             LoadOrderData(res.Result);
             MarketAnalyzerResults = new BindableCollection<MarketAnalyzerEntry>(res.Result);
+            _eventAggregator.Publish(new StatusChangedEventArgs("Analysis complete"));
         }
 
         private async Task<MarketAnalyzer> GetMarketAnalyzer(ICollection<InvType> items) {
@@ -210,6 +221,5 @@ namespace eZet.EveProfiteer.ViewModels {
             }
             TreeRootNodes.NotifyOfPropertyChange();
         }
-
     }
 }

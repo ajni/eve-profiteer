@@ -34,30 +34,15 @@ namespace eZet.EveProfiteer.ViewModels {
             _dataService = dataService;
             DisplayName = "Trade Analyzer";
             Items = new BindableCollection<TradeAnalyzerEntry>();
-            ViewTradeDetailsCommand = new DelegateCommand<TradeAnalyzerEntry>(ExecuteViewTradeDetails, CanViewTradeDetails);
-            ViewMarketDetailsCommand = new DelegateCommand<TradeAnalyzerEntry>(item => _eventAggregator.Publish(new ViewMarketDetailsEventArgs(item.InvType)), item => item != null);
+            ViewTradeDetailsCommand = new DelegateCommand<TradeAnalyzerEntry>(ExecuteViewTradeDetails,
+                CanViewTradeDetails);
+            ViewMarketDetailsCommand =
+                new DelegateCommand<TradeAnalyzerEntry>(
+                    item => _eventAggregator.Publish(new ViewMarketDetailsEventArgs(item.InvType)), item => item != null);
             ViewPeriodCommand = new DelegateCommand(ViewPeriod);
             ViewOrderCommand = new DelegateCommand<TradeAnalyzerEntry>(ExecuteViewOrder, CanViewOrder);
             PeriodSelectorStart = DateTime.UtcNow.AddMonths(-1);
             PeriodSelectorEnd = DateTime.UtcNow;
-        }
-
-        private bool CanViewOrder(TradeAnalyzerEntry tradeAnalyzerEntry) {
-            return tradeAnalyzerEntry!= null && tradeAnalyzerEntry.Order != null;
-        }
-
-        private void ExecuteViewOrder(TradeAnalyzerEntry entry) {
-            _eventAggregator.Publish(new ViewOrderEventArgs(entry.InvType));
-        }
-
-        private bool CanViewTradeDetails(TradeAnalyzerEntry tradeAnalyzerEntry) {
-            return tradeAnalyzerEntry != null && tradeAnalyzerEntry.Order != null;
-        }
-
-        private void ExecuteViewTradeDetails(TradeAnalyzerEntry tradeAnalyzerEntry) {
-            if (tradeAnalyzerEntry != null) {
-                _eventAggregator.Publish(new ViewTradeDetailsEventArgs(tradeAnalyzerEntry.InvType));
-            }
         }
 
         public DateTime ActualViewStart { get; private set; }
@@ -77,9 +62,8 @@ namespace eZet.EveProfiteer.ViewModels {
         public ICommand ViewPeriodCommand { get; private set; }
 
 
-
         public IEnumerable<ViewPeriodEnum> ViewPeriodValues {
-            get { return Enum.GetValues(typeof(ViewPeriodEnum)).Cast<ViewPeriodEnum>(); }
+            get { return Enum.GetValues(typeof (ViewPeriodEnum)).Cast<ViewPeriodEnum>(); }
         }
 
         public ViewPeriodEnum SelectedViewPeriod {
@@ -94,6 +78,24 @@ namespace eZet.EveProfiteer.ViewModels {
 
 
         public int CustomDaySpan { get; set; }
+
+        private bool CanViewOrder(TradeAnalyzerEntry tradeAnalyzerEntry) {
+            return tradeAnalyzerEntry != null && tradeAnalyzerEntry.Order != null;
+        }
+
+        private void ExecuteViewOrder(TradeAnalyzerEntry entry) {
+            _eventAggregator.Publish(new ViewOrderEventArgs(entry.InvType));
+        }
+
+        private bool CanViewTradeDetails(TradeAnalyzerEntry tradeAnalyzerEntry) {
+            return tradeAnalyzerEntry != null && tradeAnalyzerEntry.Order != null;
+        }
+
+        private void ExecuteViewTradeDetails(TradeAnalyzerEntry tradeAnalyzerEntry) {
+            if (tradeAnalyzerEntry != null) {
+                _eventAggregator.Publish(new ViewTradeDetailsEventArgs(tradeAnalyzerEntry.InvType));
+            }
+        }
 
         public async void ViewPeriod() {
             ActualViewEnd = DateTime.UtcNow;
@@ -127,23 +129,30 @@ namespace eZet.EveProfiteer.ViewModels {
                     ActualViewEnd = PeriodSelectorEnd;
                     break;
             }
-            await Task.Run(() => load());
+            await Task.Run(() => analyze(ActualViewStart, ActualViewEnd));
         }
 
-        private void load() {
+        private void analyze(DateTime start, DateTime end) {
+            _eventAggregator.Publish(new StatusChangedEventArgs("Analyzing..."));
+
             Items.IsNotifying = false;
             Items.Clear();
-            var transactionGroups = _dataService.Db.Transactions.Where(
-                t => t.TransactionDate >= ActualViewStart && t.TransactionDate <= ActualViewEnd && t.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id)
+            IQueryable<IGrouping<int, Transaction>> transactionGroups = _dataService.Db.Transactions.Where(
+                t =>
+                    t.TransactionDate >= start && t.TransactionDate <= end &&
+                    t.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id)
                 .GroupBy(t => t.TypeId);
-            var orders =
+            ILookup<int, Order> orders =
                 _dataService.Db.Orders.Where(order => order.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id)
                     .ToLookup(order => order.TypeId);
             foreach (var transactionCollection in transactionGroups) {
-                Items.Add(new TradeAnalyzerEntry(transactionCollection.First().InvType, transactionCollection.ToList(), orders[transactionCollection.First().TypeId].SingleOrDefault()));
+                Items.Add(new TradeAnalyzerEntry(transactionCollection.First().InvType, transactionCollection.ToList(),
+                    orders[transactionCollection.First().TypeId].SingleOrDefault()));
             }
             Items.IsNotifying = true;
             Items.Refresh();
+            _eventAggregator.Publish(new StatusChangedEventArgs("Analysis complete"));
+
         }
     }
 }

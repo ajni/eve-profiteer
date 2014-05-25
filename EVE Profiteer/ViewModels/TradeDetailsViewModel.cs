@@ -37,6 +37,7 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         private void LoadItem(InvType type) {
+            _eventAggregator.Publish(new StatusChangedEventArgs("Processing trade details..."));
             // TODO Fix loading NULL type
             if (type == null) 
                 return;
@@ -45,6 +46,8 @@ namespace eZet.EveProfiteer.ViewModels {
             if (transactions.Any())
                 TradeData = new TradeDetailsData(type,
                     transactions, type.Orders.SingleOrDefault(order => order.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id));
+            _eventAggregator.Publish(new StatusChangedEventArgs("Trade details loaded"));
+
         }
 
         public TradeDetailsData TradeData {
