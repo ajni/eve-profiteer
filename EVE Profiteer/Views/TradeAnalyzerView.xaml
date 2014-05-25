@@ -86,8 +86,8 @@
 
                 <dxg:GridControl.TotalSummary>
                     <dxg:GridSummaryItem FieldName="InvType.TypeName" SummaryType="None" DisplayFormat="Summary" />
-                    <dxg:GridSummaryItem FieldName="Profit" SummaryType="Sum" DisplayFormat="N2" />
-                    <dxg:GridSummaryItem FieldName="ProfitPerDay" SummaryType="Sum" DisplayFormat="N2" />
+                    <dxg:GridSummaryItem FieldName="TotalProfit" SummaryType="Sum" DisplayFormat="N2" />
+                    <dxg:GridSummaryItem FieldName="AvgProfitPerDay" SummaryType="Sum" DisplayFormat="N2" />
                     <dxg:GridSummaryItem FieldName="Balance" SummaryType="Sum" DisplayFormat="N2" />
                     <dxg:GridSummaryItem FieldName="SellTotal" SummaryType="Sum" DisplayFormat="N2" />
                     <dxg:GridSummaryItem FieldName="BuyTotal" SummaryType="Sum" DisplayFormat="N2" />
@@ -105,12 +105,12 @@
                             <dxe:TextEditSettings DisplayFormat="N" />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="Profit">
+                    <dxg:GridColumn FieldName="TotalProfit">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="N" />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="ProfitPerDay" Header="Daily Profit">
+                    <dxg:GridColumn FieldName="AvgProfitPerDay" Header="Daily Profit">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="N" />
                         </dxg:GridColumn.EditSettings>
@@ -125,7 +125,7 @@
                             <dxe:TextEditSettings DisplayFormat="N" />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="AvgProfitPerItem">
+                    <dxg:GridColumn FieldName="AvgProfitPerSale">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="N0" />
                         </dxg:GridColumn.EditSettings>

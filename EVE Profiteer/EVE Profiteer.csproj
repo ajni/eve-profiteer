@@ -132,7 +132,9 @@
     <Compile Include="Events\ViewOrderEventArgs.cs" />
     <Compile Include="Events\ViewTradeDetailsEventArgs.cs" />
     <Compile Include="Models\CharacterData.cs" />
+    <Compile Include="Models\ItemTradeAggregate.cs" />
     <Compile Include="Models\MarketHistoryEntry.cs" />
+    <Compile Include="Models\PeriodTradeAggregate.cs" />
     <Compile Include="Models\TradeDetailsChartPoint.cs" />
     <Compile Include="Models\MarketBrowserItem.cs" />
     <Compile Include="Models\MarketOrder.cs" />

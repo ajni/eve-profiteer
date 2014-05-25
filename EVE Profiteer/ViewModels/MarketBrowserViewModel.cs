@@ -38,7 +38,6 @@ namespace eZet.EveProfiteer.ViewModels {
             AddToOrdersCommand = new DelegateCommand(ExecuteAddToOrders, CanAddToOrders);
             ViewTradeDetailsCommand = new DelegateCommand(ExecuteViewTradeDetails, CanViewTradeDetails);
             PropertyChanged += OnPropertyChanged;
-
         }
 
         public MarketBrowserItem MarketBrowserData {
@@ -165,7 +164,6 @@ namespace eZet.EveProfiteer.ViewModels {
             _eventAggregator.Publish(new StatusChangedEventArgs("Loading market details..."));
             MarketBrowserData = await GetMarketDetails(SelectedRegion, invType);
             _eventAggregator.Publish(new StatusChangedEventArgs("Market details loaded"));
-
         }
 
         private void ExecuteSelectItem(InvType invType) {
@@ -184,9 +182,8 @@ namespace eZet.EveProfiteer.ViewModels {
 
 
         private bool CanAddToOrders() {
-            return
-                MarketBrowserData.InvType.Orders.All(
-                    order => order.ApiKeyEntity_Id != ApplicationHelper.ActiveKeyEntity.Id);
+            return MarketBrowserData.InvType.Orders.All(
+                       order => order.ApiKeyEntity_Id != ApplicationHelper.ActiveKeyEntity.Id);
         }
 
         private async Task<MarketBrowserItem> GetMarketDetails(MapRegion region, InvType invType) {

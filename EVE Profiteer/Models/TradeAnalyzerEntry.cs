@@ -5,14 +5,14 @@ namespace eZet.EveProfiteer.Models {
     public class TradeAnalyzerEntry {
         public IEnumerable<Transaction> Transactions { get; set; }
 
-        public TradeAnalyzerEntry(InvType invType, IEnumerable<Transaction> transactions, Order order) {
+        public TradeAnalyzerEntry(InvType invType, IEnumerable<Transaction> transactions, Order order = null) {
             Order = order;
             InvType = invType;
             Transactions = transactions;
-            Analyze();
+            initialize();
         }
 
-        public void Analyze() {
+        private void initialize() {
             // TODO Add LIFO or some other cost price calculation
             FirstTransactionDate = DateTime.MaxValue;
             LastTransactionDate = DateTime.MinValue;
@@ -36,20 +36,20 @@ namespace eZet.EveProfiteer.Models {
                 AvgBuyPrice = BuyTotal / QuantityBought;
             if (QuantitySold > 0)
                 AvgSellPrice = SellTotal / QuantitySold;
-            Profit = AvgBuyPrice != 0 ? QuantitySold * AvgSellPrice - QuantitySold * AvgBuyPrice : 0;
+            TotalProfit = AvgBuyPrice != 0 ? QuantitySold * AvgSellPrice - QuantitySold * AvgBuyPrice : 0;
             int span = (LastTransactionDate - FirstTransactionDate).Days;
-            ProfitPerDay = Profit;
+            AvgProfitPerDay = TotalProfit;
             if (span > 0)
-                ProfitPerDay /= span;
+                AvgProfitPerDay /= span;
             if (AvgSellPrice != 0 && AvgBuyPrice != 0) {
-                AvgProfit = AvgSellPrice - AvgBuyPrice;
-                AvgMargin = (double) (AvgProfit / AvgSellPrice);
+                AvgProfitPerSale = AvgSellPrice - AvgBuyPrice;
+                AvgMargin = (double) (AvgProfitPerSale / AvgSellPrice);
             }
         }
 
         public InvType InvType { get; private set; }
 
-        public decimal Profit { get; private set; }
+        public decimal TotalProfit { get; private set; }
 
         public decimal Balance { get; private set; }
 
@@ -73,9 +73,9 @@ namespace eZet.EveProfiteer.Models {
 
         public DateTime LastTransactionDate { get; private set; }
 
-        public decimal ProfitPerDay { get; private set; }
+        public decimal AvgProfitPerDay { get; private set; }
 
-        public decimal AvgProfit { get; private set; }
+        public decimal AvgProfitPerSale { get; private set; }
 
         public double AvgMargin { get; private set; }
 

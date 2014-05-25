@@ -24,8 +24,8 @@ namespace eZet.EveProfiteer {
             _container.Singleton<IEventAggregator, EventAggregator>();
 
             // DbContexts
-            _container.Singleton<EveProfiteerDbEntities>();
-            _container.Singleton<EveProfiteerDataService>();
+            _container.PerRequest<EveProfiteerDbEntities>();
+            _container.PerRequest<EveProfiteerDataService>();
             //_container.PerRequest<EveProfiteerDbEntities>();
 
             // Repositories

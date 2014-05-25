@@ -5,14 +5,18 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
     xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+    xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
+    xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/charts"
+    xmlns:models="clr-namespace:eZet.EveProfiteer.Models"
+    xmlns:viewModels="clr-namespace:eZet.EveProfiteer.ViewModels"
     x:Class="eZet.EveProfiteer.Views.OverviewView"
     mc:Ignorable="d"
-    d:DesignHeight="300" d:DesignWidth="800">
+    d:DesignHeight="300" d:DesignWidth="800"
+    d:DataContext="{d:DesignInstance Type=viewModels:OverviewViewModel, IsDesignTimeCreatable=False}">
     <Grid>
         <dxlc:DockLayoutControl>
 
-
-            <dxlc:LayoutControl Header="Header" Orientation="Vertical" UseLayoutRounding="True" View="GroupBox">
+            <dxlc:LayoutControl Header="Header" Orientation="Vertical" UseLayoutRounding="True" View="GroupBox" Visibility="Hidden">
                 <dxlc:LayoutGroup>
                     <dxlc:LayoutGroup Orientation="Vertical" VerticalAlignment="Top">
                         <dxlc:LayoutItem IsRequired="True" Label="First Name:" LabelPosition="Top">
@@ -67,6 +71,50 @@
                 </dxlc:LayoutGroup>
             </dxlc:LayoutControl>
 
+            <dx:DXTabControl dxlc:DockLayoutControl.Dock="Client" dxlc:DockLayoutControl.AllowVerticalSizing="True">
+                <dx:DXTabItem Header="Balance">
+ 
+                            <dxc:ChartControl x:Name="TotalChart" DataSource="{Binding Aggregate.DailyTotals}">
+                                <dxc:ChartControl.CrosshairOptions>
+                                    <dxc:CrosshairOptions />
+                                </dxc:ChartControl.CrosshairOptions>
+                                <dx:DesignDataManager.DesignData>
+                                    <dx:DesignDataSettings DataObjectType="{x:Type models:TradeDetailsChartPoint}" />
+                                </dx:DesignDataManager.DesignData>
+                                <dxc:ChartControl.Legend>
+                                    <dxc:Legend BorderThickness="0" HorizontalPosition="Center"
+                                            VerticalPosition="BottomOutside" />
+                                </dxc:ChartControl.Legend>
+                                <dxc:XYDiagram2D EnableAxisXNavigation="True">
+                                    <dxc:XYDiagram2D.AxisY>
+                                        <dxc:AxisY2D TickmarksMinorVisible="True">
+                                            <dxc:AxisY2D.NumericOptions>
+                                                <dxc:NumericOptions Format="Number" Precision="0" />
+                                            </dxc:AxisY2D.NumericOptions>
+                                            <dxc:AxisY2D.Range>
+                                                <dxc:AxisRange dxc:AxisY.AlwaysShowZeroLevel="False"
+                                                           SideMarginsEnabled="True" />
+                                            </dxc:AxisY2D.Range>
+                                        </dxc:AxisY2D>
+                                    </dxc:XYDiagram2D.AxisY>
+                                    <dxc:BarSideBySideSeries2D DisplayName="Sell Total" ArgumentDataMember="Date"
+                                                           ValueDataMember="Incoming"
+                                                           ArgumentScaleType="DateTime" ValueScaleType="Numerical"
+                                                           CrosshairLabelPattern="{}{S} : {V:N}" />
+                                    <dxc:BarSideBySideSeries2D DisplayName="Buy Total" ArgumentDataMember="Date"
+                                                           ValueDataMember="Outgoing"
+                                                           CrosshairLabelPattern="{}{S} : {V:N}"
+                                                           ArgumentScaleType="DateTime" ValueScaleType="Numerical" />
+                                    <dxc:BarSideBySideSeries2D DisplayName="Profit" ArgumentDataMember="Date"
+                                                           ValueDataMember="Profit"
+                                                           CrosshairLabelPattern="{}{S} : {V:N}"
+                                                           ArgumentScaleType="DateTime" ValueScaleType="Numerical" />
+                                </dxc:XYDiagram2D>
+                            </dxc:ChartControl>
+
+                        </dx:DXTabItem>
+
+            </dx:DXTabControl>
 
         </dxlc:DockLayoutControl>
 
