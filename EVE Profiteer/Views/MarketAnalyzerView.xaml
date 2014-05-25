@@ -18,10 +18,10 @@
     <UserControl.Resources>
 
         <ResourceDictionary>
-            <Style x:Key="BackgroundStyle" BasedOn="{StaticResource {dxgt:GridRowThemeKey ResourceKey=RowStyle, ThemeName={x:Static dx:ThemeManager.ApplicationThemeName}}}"
+            <Style x:Key="RowBackgroundStyle" BasedOn="{StaticResource {dxgt:GridRowThemeKey ResourceKey=RowStyle, ThemeName={x:Static dx:ThemeManager.ApplicationThemeName}}}"
                    TargetType="dxg:GridRowContent">
                 <Setter Property="Background"
-                        Value="{Binding Path=Row.Order, Converter={converters:OrderToColorConverter}, ConverterParameter=dxe:StringToObjectConverter}" />
+                        Value="{Binding Path=Row.Order, Converter={converters:OrderToBrushConverter}}" />
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -205,7 +205,7 @@
             <dxg:GridControl.View>
                 <dxg:TableView AllowEditing="False" NavigationStyle="Row" ShowAutoFilterRow="True"
                                ShowFixedTotalSummary="True" IsTotalSummaryMenuEnabled="True"
-                               ShowGroupPanel="False" RowStyle="{StaticResource BackgroundStyle}"
+                               ShowGroupPanel="False" RowStyle="{StaticResource RowBackgroundStyle}"
                                ShowSearchPanelMode="Default" SearchColumns="InvType.TypeName"
                                SearchPanelCriteriaOperatorType="And" ShowFilterPanelMode="ShowAlways" AutoScrollOnSorting="False">
                     <dxg:TableView.RowCellMenuCustomizations>

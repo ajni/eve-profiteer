@@ -96,7 +96,7 @@
                             <dxg:TableView.RowCellMenuCustomizations>
                                 <dxb:BarButtonItem Content="Add to orders"
                                                    Command="{Binding View.DataContext.AddToOrdersCommand}"
-                                                   CommandParameter="{Binding View.DataControl.SelectedItems}" />
+                                                   CommandParameter="{Binding View.DataControl.CurrentItem}" />
                                 <dxb:BarItemSeparator />
                                 <dxb:BarButtonItem Content="View trade details"
                                                    Command="{Binding View.DataContext.ViewTradeDetailsCommand}"
@@ -133,12 +133,10 @@
                                        ShowSearchPanelMode="Never" AutoWidth="True">
                             <dxg:TableView.RowCellMenuCustomizations>
                                 <dxb:BarButtonItem Content="Add to orders"
-                                                   Command="{Binding View.DataContext.AddToOrdersCommand}"
-                                                   CommandParameter="{Binding View.DataControl.SelectedItems}" />
+                                                   Command="{Binding View.DataContext.AddToOrdersCommand}"/>
                                 <dxb:BarItemSeparator />
                                 <dxb:BarButtonItem Content="View trade details"
-                                                   Command="{Binding View.DataContext.ViewTradeDetailsCommand}"
-                                                   CommandParameter="{Binding View.DataControl.CurrentItem}" />
+                                                   Command="{Binding View.DataContext.ViewTradeDetailsCommand}"/>
                             </dxg:TableView.RowCellMenuCustomizations>
                         </dxg:TableView>
                     </dxg:GridControl.View>

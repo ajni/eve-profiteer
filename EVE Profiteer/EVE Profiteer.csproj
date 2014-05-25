@@ -137,11 +137,10 @@
     <Compile Include="Models\TradeAnalyzerEntry.cs" />
     <Compile Include="Services\EveProfiteerDataService.cs" />
     <Compile Include="Ui\Converters\DoubleToIntConverter.cs" />
-    <Compile Include="Ui\Converters\OrderToColorConverter.cs" />
+    <Compile Include="Ui\Converters\OrderToBrushConverter.cs" />
     <Compile Include="Events\AddToOrdersEventArgs.cs" />
     <Compile Include="Framework\IShell.cs" />
     <Compile Include="Models\MarketAnalyzer.cs" />
-    <Compile Include="Models\Station.cs" />
     <Compile Include="Models\MarketAnalyzerEntry.cs" />
     <Compile Include="Repository\IRepository.cs" />
     <Compile Include="Repository\DbContextRepository.cs" />

@@ -8,12 +8,13 @@ using DevExpress.Xpf.Mvvm;
 using eZet.EveProfiteer.Events;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
+using eZet.EveProfiteer.Util;
 
 namespace eZet.EveProfiteer.ViewModels {
     public class MarketBrowserViewModel : Screen, IHandle<ViewMarketDetailsEventArgs> {
         private readonly EveProfiteerDataService _dataService;
-        private readonly IEventAggregator _eventAggregator;
         private readonly EveMarketService _eveMarketService;
+        private readonly IEventAggregator _eventAggregator;
         private readonly IWindowManager _windowManager;
         private int _dayLimit = 5;
         private MarketBrowserItem _marketBrowserItem;
@@ -33,12 +34,9 @@ namespace eZet.EveProfiteer.ViewModels {
             _eventAggregator.Subscribe(this);
             DisplayName = "Market Browser";
 
-            SelectItemCommand = new DelegateCommand<InvType>(SelectItem);
-            AddToOrdersCommand = new DelegateCommand<ICollection<object>>(AddToOrders, CanAddToOrders);
-            ViewTradeDetailsCommand =
-                new DelegateCommand<MarketAnalyzerEntry>(
-                    entry => _eventAggregator.Publish(new ViewTradeDetailsEventArgs(entry.InvType)),
-                    entry => entry != null && entry.Order != null);
+            SelectItemCommand = new DelegateCommand<InvType>(ExecuteSelectItem);
+            AddToOrdersCommand = new DelegateCommand(ExecuteAddToOrders, CanAddToOrders);
+            ViewTradeDetailsCommand = new DelegateCommand(ExecuteViewTradeDetails, CanViewTradeDetails);
             PropertyChanged += OnPropertyChanged;
         }
 
@@ -129,7 +127,7 @@ namespace eZet.EveProfiteer.ViewModels {
 
         public BindableCollection<InvMarketGroup> TreeRootNodes { get; private set; }
 
-        public ICollection<Station> Stations { get; private set; }
+        public ICollection<StaStation> Stations { get; private set; }
 
         public int DayLimit {
             get { return _dayLimit; }
@@ -144,6 +142,19 @@ namespace eZet.EveProfiteer.ViewModels {
             LoadMarketDetails(message.InvType);
         }
 
+        private bool CanViewTradeDetails() {
+            return MarketBrowserItem != null && MarketBrowserItem.InvType != null;
+        }
+
+        private void ExecuteViewTradeDetails() {
+            _eventAggregator.Publish(new ViewTradeDetailsEventArgs(MarketBrowserItem.InvType));
+        }
+
+        private void ExecuteAddToOrders() {
+            var e = new AddToOrdersEventArgs(MarketBrowserItem.InvType);
+            _eventAggregator.Publish(e);
+        }
+
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs) {
             if (propertyChangedEventArgs.PropertyName == "SelectedItem")
                 LoadMarketDetails(SelectedItem);
@@ -153,7 +164,7 @@ namespace eZet.EveProfiteer.ViewModels {
             MarketBrowserItem = await GetMarketDetails(SelectedRegion, invType);
         }
 
-        private void SelectItem(InvType invType) {
+        private void ExecuteSelectItem(InvType invType) {
             if (invType == null) return;
             SelectedItem = invType;
         }
@@ -168,24 +179,15 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
 
-        private bool CanAddToOrders(ICollection<object> objects) {
-            if (objects == null || !objects.Any())
-                return false;
-            List<MarketAnalyzerEntry> items = objects.Select(item => (MarketAnalyzerEntry) item).ToList();
-            return items.All(item => item.Order == null);
-        }
-
-        private void AddToOrders(ICollection<object> objects) {
-            if (objects == null || !objects.Any())
-                return;
-            List<MarketAnalyzerEntry> items = objects.Select(item => (MarketAnalyzerEntry) item).ToList();
-            _eventAggregator.Publish(new AddToOrdersEventArgs(items));
+        private bool CanAddToOrders() {
+            return
+                MarketBrowserItem.InvType.Orders.All(
+                    order => order.ApiKeyEntity_Id != ApplicationHelper.ActiveKeyEntity.Id);
         }
 
         private async Task<MarketBrowserItem> GetMarketDetails(MapRegion region, InvType invType) {
             return await
                 Task.Run(() => _eveMarketService.GetDetails(region, invType));
         }
-
     }
 }

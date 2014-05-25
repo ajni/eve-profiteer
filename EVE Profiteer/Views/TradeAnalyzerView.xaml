@@ -7,10 +7,22 @@
              xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
              xmlns:viewModels="clr-namespace:eZet.EveProfiteer.ViewModels"
              xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
+             xmlns:themes="http://schemas.devexpress.com/winfx/2008/xaml/grid/themekeys"
+             xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
+             xmlns:converters="clr-namespace:eZet.EveProfiteer.Ui.Converters"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="500"
              d:DataContext="{d:DesignInstance Type=viewModels:TradeAnalyzerViewModel, IsDesignTimeCreatable=False}">
+    <UserControl.Resources>
 
+        <ResourceDictionary>
+            <Style x:Key="RowBackgroundStyle" BasedOn="{StaticResource {themes:GridRowThemeKey ResourceKey=RowStyle, ThemeName={x:Static dx:ThemeManager.ApplicationThemeName}}}"
+                   TargetType="dxg:GridRowContent">
+                <Setter Property="Background"
+                        Value="{Binding Path=Row.Order, Converter={converters:OrderToBrushConverter}}" />
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid>
         <DockPanel>
             <dxb:BarManager DockPanel.Dock="Top">
@@ -55,7 +67,7 @@
 
             <dxg:GridControl x:Name="TradeAnalyzerGrid" ItemsSource="{Binding Items}" CustomRowFilter="TradeAnalyzerGrid_OnCustomRowFilter">
                 <dxg:GridControl.View>
-                    <dxg:SelectionView ShowTotalSummary="True" ShowFixedTotalSummary="True"
+                    <dxg:SelectionView ShowTotalSummary="True" ShowFixedTotalSummary="True" RowStyle="{StaticResource RowBackgroundStyle}"
                                        ShowGroupPanel="False" IsRowCellMenuEnabled="True" ShowSearchPanelMode="Default" SearchColumns="InvType.TypeName"
                                        SearchPanelCriteriaOperatorType="And" AutoScrollOnSorting="False" NavigationStyle="Row" AllowEditing="False">
                         <dxg:SelectionView.RowCellMenuCustomizations>

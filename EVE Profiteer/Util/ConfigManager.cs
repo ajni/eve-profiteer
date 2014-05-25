@@ -10,5 +10,7 @@ namespace eZet.EveProfiteer.Util {
         public static Brush SellOrderBrush = Brushes.LightSeaGreen;
 
         public static Brush ActiveOrderBrush = Brushes.LightGray;
+
+        public static Brush InactiveOrderBrush = Brushes.Thistle;
     }
 }

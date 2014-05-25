@@ -3,10 +3,14 @@ using eZet.EveProfiteer.Models;
 
 namespace eZet.EveProfiteer.Events {
     public class AddToOrdersEventArgs {
-        public AddToOrdersEventArgs(IList<MarketAnalyzerEntry> items) {
+        public AddToOrdersEventArgs(ICollection<InvType> items) {
             Items = items;
         }
+        public AddToOrdersEventArgs(InvType item) {
+            Items = new List<InvType>();
+            Items.Add(item);
+        }
 
-        public IList<MarketAnalyzerEntry> Items { get; private set; }
+        public ICollection<InvType> Items { get; private set; }
     }
 }

@@ -1,6 +1,10 @@
 ﻿<Application xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:eZet.EveProfiteer"
+             xmlns:themes="http://schemas.devexpress.com/winfx/2008/xaml/grid/themekeys"
+             xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
+             xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+             xmlns:converters="clr-namespace:eZet.EveProfiteer.Ui.Converters"
              x:Class="eZet.EveProfiteer.App">
     <Application.Resources>
         <ResourceDictionary>
@@ -33,6 +37,7 @@
                         <Setter Property="IsSelected" Value="{Binding IsActive}" />
                     </Style>
                 </ResourceDictionary>
+
             </ResourceDictionary.MergedDictionaries>
 
         </ResourceDictionary>

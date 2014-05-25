@@ -172,7 +172,7 @@ namespace eZet.EveProfiteer.ViewModels {
         private void AddToOrders(ICollection<object> objects) {
             if (objects == null || !objects.Any())
                 return;
-            List<MarketAnalyzerEntry> items = objects.Select(item => (MarketAnalyzerEntry) item).ToList();
+            List<InvType> items = objects.Select(item => ((MarketAnalyzerEntry) item).InvType).ToList();
             _eventAggregator.Publish(new AddToOrdersEventArgs(items));
         }
 
