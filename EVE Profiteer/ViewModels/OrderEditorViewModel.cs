@@ -16,7 +16,7 @@ using eZet.EveProfiteer.Views;
 using Screen = Caliburn.Micro.Screen;
 
 namespace eZet.EveProfiteer.ViewModels {
-    public class OrderEditorViewModel : Screen, IHandle<AddToOrdersEventArgs>, IHandle<GridCellValidationEventArgs>, IHandle<DeleteOrdersEventArgs> {
+    public class OrderEditorViewModel : Screen, IHandle<AddToOrdersEventArgs>, IHandle<GridCellValidationEventArgs>, IHandle<DeleteOrdersEventArgs>, IHandle<ViewOrderEventArgs> {
         private readonly EveProfiteerDataService _dataService;
         private readonly EveMarketService _eveMarketService;
         private readonly IEventAggregator _eventAggregator;
@@ -26,8 +26,9 @@ namespace eZet.EveProfiteer.ViewModels {
 
         private BindableCollection<Order> _orders;
 
-        private ObservableCollection<Order> _selectedOrders;
+        private BindableCollection<Order> _selectedOrders;
         private string _selectedPath = @"C:\Users\Lars Kristian\AppData\Local\MacroLab\Eve Pilot\Client_1\EVETrader";
+        private Order _focusedOrder;
 
         public OrderEditorViewModel(IWindowManager windowManager, IEventAggregator eventAggregator,
             OrderXmlService orderXmlService, EveProfiteerDataService dataService, EveMarketService eveMarketService) {
@@ -39,7 +40,7 @@ namespace eZet.EveProfiteer.ViewModels {
             DisplayName = "Order Editor";
             _eventAggregator.Subscribe(this);
 
-            SelectedOrders = new ObservableCollection<Order>();
+            SelectedOrders = new BindableCollection<Order>();
             Orders = new BindableCollection<Order>();
             DayLimit = 10;
             BuyOrderAvgOffset = 2;
@@ -47,6 +48,10 @@ namespace eZet.EveProfiteer.ViewModels {
             ViewTradeDetailsCommand = new DelegateCommand<Order>(order => _eventAggregator.Publish(new ViewTradeDetailsEventArgs(order.InvType)));
             DeleteOrdersCommand = new DelegateCommand<ICollection<Order>>(DeleteOrders);
             SaveOrderCommand = new DelegateCommand<RowEventArgs>(ExecuteSaveOrder);
+
+            Orders.AddRange(_dataService.Db.Orders.Where(order => order.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id).ToList());
+            Orders.CollectionChanged += OrdersOnCollectionChanged;
+            InvTypes = _dataService.Db.InvTypes.Where(type => type.MarketGroupId != null).ToList();
         }
 
         private void ExecuteSaveOrder(RowEventArgs e) {
@@ -63,6 +68,15 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         public ICollection<InvType> InvTypes { get; private set; }
+
+        public Order FocusedOrder {
+            get { return _focusedOrder; }
+            private set {
+                if (Equals(value, _focusedOrder)) return;
+                _focusedOrder = value;
+                NotifyOfPropertyChange(() => FocusedOrder);
+            }
+        }
 
         public ICommand ViewTradeDetailsCommand { get; private set; }
 
@@ -84,7 +98,7 @@ namespace eZet.EveProfiteer.ViewModels {
             }
         }
 
-        public ObservableCollection<Order> SelectedOrders {
+        public BindableCollection<Order> SelectedOrders {
             get { return _selectedOrders; }
             set {
                 _selectedOrders = value;
@@ -101,9 +115,7 @@ namespace eZet.EveProfiteer.ViewModels {
 
 
         protected override void OnInitialize() {
-            Orders.AddRange(_dataService.Db.Orders.Where(order => order.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id).ToList());
-            Orders.CollectionChanged += OrdersOnCollectionChanged;
-            InvTypes = _dataService.Db.InvTypes.Where(type => type.MarketGroupId != null).ToList();
+
         }
 
         public void SaveChanges() {
@@ -114,9 +126,9 @@ namespace eZet.EveProfiteer.ViewModels {
             _dataService.Db.SaveChanges();
         }
 
-  
 
-        public void Import() {
+
+        public void ImportXml() {
             var dialog = new FolderBrowserDialog();
             dialog.ShowNewFolderButton = false;
             dialog.SelectedPath = _selectedPath;
@@ -129,7 +141,7 @@ namespace eZet.EveProfiteer.ViewModels {
             }
         }
 
-        public void Export() {
+        public void ExportXml() {
             var dialog = new FolderBrowserDialog();
             dialog.ShowNewFolderButton = false;
             dialog.SelectedPath = _selectedPath;
@@ -160,11 +172,11 @@ namespace eZet.EveProfiteer.ViewModels {
             foreach (Order order in SelectedOrders) {
                 if (vm.SetBuyOrderTotal && order.MaxBuyPrice != 0) {
                     order.BuyQuantity = (int)(vm.BuyOrderTotal / order.MaxBuyPrice);
-                    if (order.MaxBuyPrice > vm.BuyOrderTotal) 
+                    if (order.MaxBuyPrice > vm.BuyOrderTotal)
                         order.BuyQuantity = 1;
 
                     // set total as close to target as possible
-                    var total = order.MaxBuyPrice*order.BuyQuantity;
+                    var total = order.MaxBuyPrice * order.BuyQuantity;
                     if (vm.BuyOrderTotal - total > total + order.MaxBuyPrice - vm.BuyOrderTotal)
                         order.BuyQuantity += 1;
                 }
@@ -184,9 +196,9 @@ namespace eZet.EveProfiteer.ViewModels {
 
         public void Handle(AddToOrdersEventArgs e) {
             var orders = new List<Order>();
-            foreach (MarketAnalyzerEntry item in e.Items) {
+            foreach (InvType item in e.Items) {
                 var order = _dataService.Db.Orders.Create();
-                order.InvType = item.InvType;
+                order.InvType = item;
                 orders.Add(order);
             }
             _eveMarketService.LoadMarketData(orders, DayLimit);
@@ -212,6 +224,11 @@ namespace eZet.EveProfiteer.ViewModels {
 
         public void Handle(DeleteOrdersEventArgs message) {
             throw new System.NotImplementedException();
+        }
+
+        public void Handle(ViewOrderEventArgs message) {
+            var order = Orders.Single(o => o.InvType.TypeId == message.InvType.TypeId);
+            FocusedOrder = order;
         }
     }
 }

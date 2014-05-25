@@ -128,6 +128,8 @@
     </ApplicationDefinition>
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Events\DeleteOrdersEventArgs.cs" />
+    <Compile Include="Events\StatusChangedEventArgs.cs" />
+    <Compile Include="Events\ViewOrderEventArgs.cs" />
     <Compile Include="Events\ViewTradeDetailsEventArgs.cs" />
     <Compile Include="Models\CharacterData.cs" />
     <Compile Include="Models\MarketHistoryEntry.cs" />

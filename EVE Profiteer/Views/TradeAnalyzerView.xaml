@@ -72,11 +72,14 @@
                                        SearchPanelCriteriaOperatorType="And" AutoScrollOnSorting="False" NavigationStyle="Row" AllowEditing="False">
                         <dxg:SelectionView.RowCellMenuCustomizations>
                             <dxb:BarButtonItem Content="View trade details"
-                                               Command="{Binding View.DataContext.ViewTradeDetailsCommand}"
-                                               CommandParameter="{Binding View.DataControl.CurrentItem}" />
+                                               Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.ViewTradeDetailsCommand, RelativeSource={RelativeSource Self}}"
+                                               CommandParameter="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataControl.CurrentItem, RelativeSource={RelativeSource Self}}"/>
                             <dxb:BarButtonItem Content="View market details"
-                                               Command="{Binding View.DataContext.ViewMarketDetailsCommand}"
-                                               CommandParameter="{Binding View.DataControl.CurrentItem}" />
+                                               Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.ViewMarketDetailsCommand, RelativeSource={RelativeSource Self}}"
+                                               CommandParameter="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataControl.CurrentItem, RelativeSource={RelativeSource Self}}"/>
+                            <dxb:BarButtonItem Content="View order"
+                                               Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.ViewOrderCommand, RelativeSource={RelativeSource Self}}"
+                                               CommandParameter="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataControl.CurrentItem, RelativeSource={RelativeSource Self}}"/>
                         </dxg:SelectionView.RowCellMenuCustomizations>
                     </dxg:SelectionView>
                 </dxg:GridControl.View>

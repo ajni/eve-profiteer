@@ -11,7 +11,7 @@ using eZet.EveProfiteer.Services;
 using eZet.EveProfiteer.Util;
 
 namespace eZet.EveProfiteer.ViewModels {
-    public class ShellViewModel : Conductor<IScreen>.Collection.OneActive, IShell, IHandle<ViewTradeDetailsEventArgs>, IHandle<ViewMarketDetailsEventArgs> {
+    public class ShellViewModel : Conductor<IScreen>.Collection.OneActive, IShell, IHandle<ViewTradeDetailsEventArgs>, IHandle<ViewMarketDetailsEventArgs>, IHandle<ViewOrderEventArgs> {
         private readonly EveApiService _eveApiService;
         private readonly IEventAggregator _eventAggregator;
         private readonly KeyManagementService _keyManagementService;
@@ -112,6 +112,10 @@ namespace eZet.EveProfiteer.ViewModels {
 
         public void Handle(ViewMarketDetailsEventArgs message) {
             ActivateItem(Items.Single(item => item.GetType() == typeof(MarketBrowserViewModel)));
+        }
+
+        public void Handle(ViewOrderEventArgs message) {
+            ActivateItem(Items.Single(item => item.GetType() == typeof(OrderEditorViewModel)));
         }
     }
 }

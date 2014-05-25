@@ -1,6 +1,8 @@
-﻿namespace eZet.EveProfiteer.Events {
+﻿using System;
 
-    public class DeleteOrdersEventArgs {
+namespace eZet.EveProfiteer.Events {
+
+    public class DeleteOrdersEventArgs : EventArgs {
     
     }
 }

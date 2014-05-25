@@ -23,8 +23,8 @@
         
         
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Left">
-            <Button Margin="5" Name="Import">Import</Button>
-            <Button Margin="5" Name="Export">Export</Button>
+            <Button Margin="5" Name="ImportXml">Import</Button>
+            <Button Margin="5" Name="ExportXml">Export</Button>
             <Button Margin="5" Name="SaveChanges">Save</Button>
             <Button Margin="5" Name="EditOrdersDialog">Edit</Button>
             <Button Margin="5" Name="UpdatePriceLimits">Update price limits</Button>
@@ -32,7 +32,7 @@
         </StackPanel>
 
         <dxg:GridControl Name="OrderEditorGrid" AutoGenerateColumns="None" ItemsSource="{Binding Orders}"
-                         SelectedItems="{Binding SelectedOrders}" SelectionMode="Row"
+                         SelectedItems="{Binding SelectedOrders}" SelectionMode="Row" SelectedItem="{Binding FocusedOrder}" CurrentItem="{Binding FocusedOrder}"
                          CustomSummary="Orders_OnCustomSummary">
             <dxg:GridControl.View>
                 <dxg:SelectionView Name="OrdersView" ShowAutoFilterRow="False" ShowTotalSummary="False" ShowFixedTotalSummary="True"
@@ -43,11 +43,11 @@
                                    SearchPanelCriteriaOperatorType="And">
                     <dxg:SelectionView.RowCellMenuCustomizations>
                         <dxb:BarButtonItem Content="View trade details"
-                                           Command="{Binding View.DataContext.ViewTradeDetailsCommand}"
-                                           CommandParameter="{Binding View.DataControl.CurrentItem}" />
+                                                 Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.ViewTradeDetailsCommand, RelativeSource={RelativeSource Self}}"
+                                               CommandParameter="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataControl.CurrentItem, RelativeSource={RelativeSource Self}}"/>
                         <dxb:BarButtonItem Content="Delete orders"
-                                           Command="{Binding View.DataContext.DeleteOrdersCommand}"
-                                           CommandParameter="{Binding View.DataControl.SelectedItems}" />
+                                               Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.DeleteOrdersCommand, RelativeSource={RelativeSource Self}}"
+                                               CommandParameter="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataControl.SelectedItems, RelativeSource={RelativeSource Self}}"/>
                     </dxg:SelectionView.RowCellMenuCustomizations>
                   
                 </dxg:SelectionView>
@@ -62,7 +62,7 @@
                                      DisplayFormat="Buyorder total: {0:N0} isk" Alignment="Left" />
             </dxg:GridControl.TotalSummary>
             <dxg:GridControl.Columns>
-                <dxg:SelectAllColumn />
+                <dxg:SelectAllColumn Focusable="False"/>
                 <dxg:GridColumn FieldName="InvType.TypeName" Header="Item" Validate="TypeName_OnValidate">
                     <dxg:GridColumn.EditTemplate>
                         <ControlTemplate>

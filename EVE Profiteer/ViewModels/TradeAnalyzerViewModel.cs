@@ -34,20 +34,27 @@ namespace eZet.EveProfiteer.ViewModels {
             _dataService = dataService;
             DisplayName = "Trade Analyzer";
             Items = new BindableCollection<TradeAnalyzerEntry>();
-            ViewTradeDetailsCommand = new DelegateCommand<TradeAnalyzerEntry>(ViewTradeDetails, CanViewTradeDetails);
+            ViewTradeDetailsCommand = new DelegateCommand<TradeAnalyzerEntry>(ExecuteViewTradeDetails, CanViewTradeDetails);
             ViewMarketDetailsCommand = new DelegateCommand<TradeAnalyzerEntry>(item => _eventAggregator.Publish(new ViewMarketDetailsEventArgs(item.InvType)), item => item != null);
             ViewPeriodCommand = new DelegateCommand(ViewPeriod);
+            ViewOrderCommand = new DelegateCommand<TradeAnalyzerEntry>(ExecuteViewOrder, CanViewOrder);
             PeriodSelectorStart = DateTime.UtcNow.AddMonths(-1);
             PeriodSelectorEnd = DateTime.UtcNow;
         }
 
-        private bool CanViewTradeDetails(TradeAnalyzerEntry tradeAnalyzerEntry) {
-            if (tradeAnalyzerEntry != null && tradeAnalyzerEntry.Order != null)
-                return true;
-            return false;
+        private bool CanViewOrder(TradeAnalyzerEntry tradeAnalyzerEntry) {
+            return tradeAnalyzerEntry!= null && tradeAnalyzerEntry.Order != null;
         }
 
-        private void ViewTradeDetails(TradeAnalyzerEntry tradeAnalyzerEntry) {
+        private void ExecuteViewOrder(TradeAnalyzerEntry entry) {
+            _eventAggregator.Publish(new ViewOrderEventArgs(entry.InvType));
+        }
+
+        private bool CanViewTradeDetails(TradeAnalyzerEntry tradeAnalyzerEntry) {
+            return tradeAnalyzerEntry != null && tradeAnalyzerEntry.Order != null;
+        }
+
+        private void ExecuteViewTradeDetails(TradeAnalyzerEntry tradeAnalyzerEntry) {
             if (tradeAnalyzerEntry != null) {
                 _eventAggregator.Publish(new ViewTradeDetailsEventArgs(tradeAnalyzerEntry.InvType));
             }
@@ -65,7 +72,11 @@ namespace eZet.EveProfiteer.ViewModels {
 
         public ICommand ViewMarketDetailsCommand { get; private set; }
 
+        public ICommand ViewOrderCommand { get; private set; }
+
         public ICommand ViewPeriodCommand { get; private set; }
+
+
 
         public IEnumerable<ViewPeriodEnum> ViewPeriodValues {
             get { return Enum.GetValues(typeof(ViewPeriodEnum)).Cast<ViewPeriodEnum>(); }
