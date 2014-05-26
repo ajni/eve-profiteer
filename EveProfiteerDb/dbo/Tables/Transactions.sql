@@ -9,7 +9,7 @@
     [ClientName]      NVARCHAR (MAX)  NULL,
     [StationId]       BIGINT          NOT NULL,
     [StationName]     NVARCHAR (MAX)  NULL,
-    [TransactionType] NVARCHAR(50)    NOT NULL,
+    [TransactionType] INT    NOT NULL,
     [TransactionFor]  NVARCHAR (MAX)  NULL,
     [ApiKeyEntity_Id] INT             NULL,
     [JournalTransactionId] BIGINT	  NOT NULL, 

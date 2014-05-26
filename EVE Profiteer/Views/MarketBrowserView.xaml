@@ -117,9 +117,9 @@
                         <dxg:GridColumn FieldName="VolRemaining" />
                         <dxg:GridColumn FieldName="MinVolume" />
                         <dxg:GridColumn FieldName="Range" />
-                        <dxg:GridColumn FieldName="IssuedDate" />
-                        <dxg:GridColumn FieldName="ExpiresDate" />
-                        <dxg:GridColumn FieldName="CreatedDate" />
+                        <dxg:GridColumn FieldName="IssuedDateStart" />
+                        <dxg:GridColumn FieldName="ExpiresDateStart" />
+                        <dxg:GridColumn FieldName="CreatedDateStart" />
                     </dxg:GridControl.Columns>
                 </dxg:GridControl>
             </dx:DXTabItem>
@@ -153,9 +153,9 @@
                         <dxg:GridColumn FieldName="VolRemaining" />
                         <dxg:GridColumn FieldName="MinVolume" />
                         <dxg:GridColumn FieldName="Range" />
-                        <dxg:GridColumn FieldName="IssuedDate" />
-                        <dxg:GridColumn FieldName="ExpiresDate" />
-                        <dxg:GridColumn FieldName="CreatedDate" />
+                        <dxg:GridColumn FieldName="IssuedDateStart" />
+                        <dxg:GridColumn FieldName="ExpiresDateStart" />
+                        <dxg:GridColumn FieldName="CreatedDateStart" />
                     </dxg:GridControl.Columns>
                 </dxg:GridControl>
 
@@ -173,7 +173,7 @@
                         <dxg:GridSummaryItem SummaryType="Count" Alignment="Right" />
                     </dxg:GridControl.TotalSummary>
                     <dxg:GridControl.Columns>
-                        <dxg:GridColumn FieldName="Date" />
+                        <dxg:GridColumn FieldName="DateStart" />
                         <dxg:GridColumn FieldName="LowPrice">
                             <dxg:GridColumn.EditSettings>
                                 <dxe:TextEditSettings DisplayFormat="N" />
@@ -238,7 +238,7 @@
                         <dxc:RangeAreaSeries2D DisplayName="Donchian Channel" Visible="{Binding ShowDonchianChannel}"
                                                Marker1Visible="False" Marker2Visible="False"
                                                ValueDataMember="DonchianLow" Value2DataMember="DonchianHigh"
-                                               ArgumentDataMember="Date" Brush="#FFDAF9FD"
+                                               ArgumentDataMember="DateStart" Brush="#FFDAF9FD"
                                                ArgumentScaleType="DateTime">
                             <dxc:RangeAreaSeries2D.Border2>
                                 <dxc:SeriesBorder Brush="#FF94CBDA" />
@@ -253,7 +253,7 @@
                             <dxc:SeriesPoint Argument="5" Value="18.5" dxc:RangeAreaSeries2D.Value2="20.5"/>-->
                         </dxc:RangeAreaSeries2D>
                         <dxc:PointSeries2D DisplayName="Price Average" Visible="{Binding ShowAveragePrice}"
-                                           MarkerSize="3" ValueDataMember="AvgPrice" ArgumentDataMember="Date"
+                                           MarkerSize="3" ValueDataMember="AvgPrice" ArgumentDataMember="DateStart"
                                            Brush="#FFF3E164" ArgumentScaleType="DateTime">
                             <dxc:PointSeries2D.MarkerModel>
                                 <dxc:SquareMarker2DModel />
@@ -275,7 +275,7 @@
                         <dxc:LineSeries2D DisplayName="Donchian Center" Visible="{Binding ShowDonchianCenter}"
                                           MarkerVisible="False" Brush="#FF4C70FF"
                                           ShowInLegend="True" ValueDataMember="DonchianCenter"
-                                          ArgumentDataMember="Date" ArgumentScaleType="DateTime">
+                                          ArgumentDataMember="DateStart" ArgumentScaleType="DateTime">
                             <dxc:LineSeries2D.MarkerModel>
                                 <dxc:CircleMarker2DModel />
                             </dxc:LineSeries2D.MarkerModel>
@@ -286,7 +286,7 @@
                             <dxc:SeriesPoint Argument="5" Value="18.5"/>-->
                         </dxc:LineSeries2D>
                         <dxc:BarSideBySideSeries2D DisplayName="Volume"
-                                                   dxc:XYDiagram2D.SeriesAxisY="{Binding ElementName=VolumeAxisY}" ArgumentDataMember="Date" ValueDataMember="Volume">
+                                                   dxc:XYDiagram2D.SeriesAxisY="{Binding ElementName=VolumeAxisY}" ArgumentDataMember="DateStart" ValueDataMember="Volume">
                             <!--<dxc:SeriesPoint Argument="1" Value="6.5" />
                             <dxc:SeriesPoint Argument="2" Value="5.5" />
                             <dxc:SeriesPoint Argument="3" Value="12.5" />

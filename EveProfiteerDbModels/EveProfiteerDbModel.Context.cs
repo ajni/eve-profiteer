@@ -35,5 +35,6 @@ namespace eZet.EveProfiteer.Models
         public virtual DbSet<Transaction> Transactions { get; set; }
         public virtual DbSet<StaStation> StaStations { get; set; }
         public virtual DbSet<InvGroup> InvGroups { get; set; }
+        public virtual DbSet<ItemCost> ItemCosts { get; set; }
     }
 }

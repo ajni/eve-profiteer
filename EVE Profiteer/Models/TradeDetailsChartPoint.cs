@@ -48,12 +48,12 @@ namespace eZet.EveProfiteer.Models {
             MinSellPrice = decimal.MaxValue;
             MinBuyPrice = decimal.MaxValue;
             foreach (var transaction in Transactions) {
-                if (transaction.TransactionType == "Sell") {
+                if (transaction.TransactionType == TransactionType.Sell) {
                     MinSellPrice = Math.Min(MinSellPrice.GetValueOrDefault(), transaction.Price);
                     MaxSellPrice = Math.Max(MaxSellPrice.GetValueOrDefault(), transaction.Price);
                     SellQuantity += transaction.Quantity;
                     SellTotal += transaction.Quantity * transaction.Price;
-                } else if (transaction.TransactionType == "Buy") {
+                } else if (transaction.TransactionType == TransactionType.Buy) {
                     MinBuyPrice = Math.Min(MinBuyPrice.GetValueOrDefault(), transaction.Price);
                     MaxBuyPrice = Math.Max(MaxBuyPrice.GetValueOrDefault(), transaction.Price);
                     BuyQuantity += transaction.Quantity;

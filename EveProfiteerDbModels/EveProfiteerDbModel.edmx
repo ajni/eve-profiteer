@@ -79,6 +79,17 @@
           <Property Name="marketGroupID" Type="int" />
           <Property Name="chanceOfDuplicating" Type="float" />
         </EntityType>
+        <EntityType Name="ItemCost">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="InvTypes_TypeId" Type="int" Nullable="false" />
+          <Property Name="MovingAverage" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="Fifo" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="Lifo" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="ApiKeyEntities_Id" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="JournalEntries">
           <Key>
             <PropertyRef Name="Id" />
@@ -177,7 +188,7 @@
           <Property Name="ClientName" Type="nvarchar(max)" />
           <Property Name="StationId" Type="bigint" Nullable="false" />
           <Property Name="StationName" Type="nvarchar(max)" />
-          <Property Name="TransactionType" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="TransactionType" Type="int" Nullable="false" />
           <Property Name="TransactionFor" Type="nvarchar(max)" />
           <Property Name="ApiKeyEntity_Id" Type="int" />
           <Property Name="JournalTransactionId" Type="bigint" Nullable="false" />
@@ -208,6 +219,30 @@
             </Principal>
             <Dependent Role="ApiKeyApiKeyEntities">
               <PropertyRef Name="ApiKey_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_ItemCost_dbo_ToApiKeyEntities">
+          <End Role="ApiKeyEntities" Type="Self.ApiKeyEntities" Multiplicity="1" />
+          <End Role="ItemCost" Type="Self.ItemCost" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ApiKeyEntities">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ItemCost">
+              <PropertyRef Name="ApiKeyEntities_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_ItemCost_dbo_ToInvTypes">
+          <End Role="invTypes" Type="Self.invTypes" Multiplicity="1" />
+          <End Role="ItemCost" Type="Self.ItemCost" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="invTypes">
+              <PropertyRef Name="typeID" />
+            </Principal>
+            <Dependent Role="ItemCost">
+              <PropertyRef Name="InvTypes_TypeId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -290,6 +325,7 @@
           <EntitySet Name="invGroups" EntityType="Self.invGroups" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="invMarketGroups" EntityType="Self.invMarketGroups" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="invTypes" EntityType="Self.invTypes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ItemCost" EntityType="Self.ItemCost" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="JournalEntries" EntityType="Self.JournalEntries" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="mapRegions" EntityType="Self.mapRegions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Orders" EntityType="Self.Orders" Schema="dbo" store:Type="Tables" />
@@ -302,6 +338,14 @@
           <AssociationSet Name="FK_dbo_ApiKeyApiKeyEntities_dbo_ApiKeys_ApiKey_Id" Association="Self.FK_dbo_ApiKeyApiKeyEntities_dbo_ApiKeys_ApiKey_Id">
             <End Role="ApiKeys" EntitySet="ApiKeys" />
             <End Role="ApiKeyApiKeyEntities" EntitySet="ApiKeyApiKeyEntities" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_ItemCost_dbo_ToApiKeyEntities" Association="Self.FK_dbo_ItemCost_dbo_ToApiKeyEntities">
+            <End Role="ApiKeyEntities" EntitySet="ApiKeyEntities" />
+            <End Role="ItemCost" EntitySet="ItemCost" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_ItemCost_dbo_ToInvTypes" Association="Self.FK_dbo_ItemCost_dbo_ToInvTypes">
+            <End Role="invTypes" EntitySet="invTypes" />
+            <End Role="ItemCost" EntitySet="ItemCost" />
           </AssociationSet>
           <AssociationSet Name="FK_dbo_JournalEntries_dbo_ApiKeyEntities_ApiKeyEntity_Id" Association="Self.FK_dbo_JournalEntries_dbo_ApiKeyEntities_ApiKeyEntity_Id">
             <End Role="ApiKeyEntities" EntitySet="ApiKeyEntities" />
@@ -387,6 +431,15 @@
             <End Role="invGroup" EntitySet="InvGroups" />
             <End Role="InvType" EntitySet="InvTypes" />
           </AssociationSet>
+          <EntitySet Name="ItemCosts" EntityType="EveProfiteerDbModel.ItemCost" />
+          <AssociationSet Name="FK_dbo_ItemCost_dbo_ToApiKeyEntities" Association="EveProfiteerDbModel.FK_dbo_ItemCost_dbo_ToApiKeyEntities">
+            <End Role="ApiKeyEntity" EntitySet="ApiKeyEntities" />
+            <End Role="ItemCost" EntitySet="ItemCosts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_ItemCost_dbo_ToInvTypes" Association="EveProfiteerDbModel.FK_dbo_ItemCost_dbo_ToInvTypes">
+            <End Role="InvType" EntitySet="InvTypes" />
+            <End Role="ItemCost" EntitySet="ItemCosts" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="ApiKeyEntity">
           <Key>
@@ -402,6 +455,7 @@
           <NavigationProperty Name="ApiKeys" Relationship="EveProfiteerDbModel.ApiKeyApiKeyEntities" FromRole="ApiKeyEntity" ToRole="ApiKey" />
           <NavigationProperty Name="Transactions" Relationship="EveProfiteerDbModel.FK_dbo_Transactions_dbo_ApiKeyEntities_ApiKeyEntity_Id" FromRole="ApiKeyEntity" ToRole="Transaction" />
           <NavigationProperty Name="Orders" Relationship="EveProfiteerDbModel.FK_Orders_ToApiKeyEntities" FromRole="ApiKeyEntity" ToRole="Order" />
+          <NavigationProperty Name="ItemCosts" Relationship="EveProfiteerDbModel.FK_dbo_ItemCost_dbo_ToApiKeyEntities" FromRole="ApiKeyEntity" ToRole="ItemCost" />
         </EntityType>
         <EntityType Name="ApiKey">
           <Key>
@@ -486,6 +540,7 @@
           <NavigationProperty Name="Orders" Relationship="EveProfiteerDbModel.FK_Orders_ToInvTypes" FromRole="invType" ToRole="Order" />
           <NavigationProperty Name="Transactions" Relationship="EveProfiteerDbModel.FK_Transaction_ToInvType" FromRole="invType" ToRole="Transaction" />
           <NavigationProperty Name="InvGroup" Relationship="EveProfiteerDbModel.invGroupInvType" FromRole="InvType" ToRole="invGroup" />
+          <NavigationProperty Name="ItemCosts" Relationship="EveProfiteerDbModel.FK_dbo_ItemCost_dbo_ToInvTypes" FromRole="InvType" ToRole="ItemCost" />
         </EntityType>
         <EntityType Name="MapRegion">
           <Key>
@@ -569,7 +624,7 @@
           <Property Name="ClientName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="StationId" Type="Int64" Nullable="false" />
           <Property Name="StationName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="TransactionType" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TransactionType" Type="EveProfiteerDbModel.TransactionType" Nullable="false" />
           <Property Name="TransactionFor" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ApiKeyEntity_Id" Type="Int32" />
           <Property Name="JournalTransactionId" Type="Int64" Nullable="false" />
@@ -704,6 +759,47 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="ItemCost">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="InvTypes_TypeId" Type="Int32" Nullable="false" />
+          <Property Name="MovingAverage" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="Fifo" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="Lifo" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="ApiKeyEntities_Id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="ApiKeyEntity" Relationship="EveProfiteerDbModel.FK_dbo_ItemCost_dbo_ToApiKeyEntities" FromRole="ItemCost" ToRole="ApiKeyEntity" />
+          <NavigationProperty Name="invType" Relationship="EveProfiteerDbModel.FK_dbo_ItemCost_dbo_ToInvTypes" FromRole="ItemCost" ToRole="InvType" />
+        </EntityType>
+        <Association Name="FK_dbo_ItemCost_dbo_ToApiKeyEntities">
+          <End Type="EveProfiteerDbModel.ApiKeyEntity" Role="ApiKeyEntity" Multiplicity="1" />
+          <End Type="EveProfiteerDbModel.ItemCost" Role="ItemCost" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ApiKeyEntity">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ItemCost">
+              <PropertyRef Name="ApiKeyEntities_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_ItemCost_dbo_ToInvTypes">
+          <End Type="EveProfiteerDbModel.InvType" Role="InvType" Multiplicity="1" />
+          <End Type="EveProfiteerDbModel.ItemCost" Role="ItemCost" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="InvType">
+              <PropertyRef Name="TypeId" />
+            </Principal>
+            <Dependent Role="ItemCost">
+              <PropertyRef Name="InvTypes_TypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EnumType Name="TransactionType" UnderlyingType="Int32">
+          <Member Name="Buy" />
+          <Member Name="Sell" />
+        </EnumType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -895,6 +991,18 @@
                 <ScalarProperty Name="GroupName" ColumnName="groupName" />
                 <ScalarProperty Name="CategoryId" ColumnName="categoryID" />
                 <ScalarProperty Name="GroupId" ColumnName="groupID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ItemCosts">
+            <EntityTypeMapping TypeName="EveProfiteerDbModel.ItemCost">
+              <MappingFragment StoreEntitySet="ItemCost">
+                <ScalarProperty Name="ApiKeyEntities_Id" ColumnName="ApiKeyEntities_Id" />
+                <ScalarProperty Name="Lifo" ColumnName="Lifo" />
+                <ScalarProperty Name="Fifo" ColumnName="Fifo" />
+                <ScalarProperty Name="MovingAverage" ColumnName="MovingAverage" />
+                <ScalarProperty Name="InvTypes_TypeId" ColumnName="InvTypes_TypeId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

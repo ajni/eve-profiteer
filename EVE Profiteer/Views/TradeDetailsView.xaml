@@ -244,15 +244,15 @@
                                         </dxc:AxisY2D.Range>
                                     </dxc:AxisY2D>
                                 </dxc:XYDiagram2D.AxisY>
-                                <dxc:BarSideBySideSeries2D DisplayName="Sell Total" ArgumentDataMember="Date"
+                                <dxc:BarSideBySideSeries2D DisplayName="Sell Total" ArgumentDataMember="DateStart"
                                                            ValueDataMember="SellTotal"
                                                            ArgumentScaleType="DateTime" ValueScaleType="Numerical"
                                                            CrosshairLabelPattern="{}{S} : {V:N}" />
-                                <dxc:BarSideBySideSeries2D DisplayName="Buy Total" ArgumentDataMember="Date"
+                                <dxc:BarSideBySideSeries2D DisplayName="Buy Total" ArgumentDataMember="DateStart"
                                                            ValueDataMember="BuyTotal"
                                                            CrosshairLabelPattern="{}{S} : {V:N}"
                                                            ArgumentScaleType="DateTime" ValueScaleType="Numerical" />
-                                <dxc:BarSideBySideSeries2D DisplayName="Profit" ArgumentDataMember="Date"
+                                <dxc:BarSideBySideSeries2D DisplayName="Profit" ArgumentDataMember="DateStart"
                                                            ValueDataMember="Profit"
                                                            CrosshairLabelPattern="{}{S} : {V:N}"
                                                            ArgumentScaleType="DateTime" ValueScaleType="Numerical" />
@@ -278,11 +278,11 @@
                                         </dxc:AxisY2D.Range>
                                     </dxc:AxisY2D>
                                 </dxc:XYDiagram2D.AxisY>
-                                <dxc:BarSideBySideSeries2D DisplayName="Sold" ArgumentDataMember="Date"
+                                <dxc:BarSideBySideSeries2D DisplayName="Sold" ArgumentDataMember="DateStart"
                                                            ValueDataMember="SellQuantity" ArgumentScaleType="DateTime" />
-                                <dxc:BarSideBySideSeries2D DisplayName="Bought" ArgumentDataMember="Date"
+                                <dxc:BarSideBySideSeries2D DisplayName="Bought" ArgumentDataMember="DateStart"
                                                            ValueDataMember="BuyQuantity" ArgumentScaleType="DateTime" />
-                                <dxc:BarSideBySideSeries2D DisplayName="Stock" ArgumentDataMember="Date"
+                                <dxc:BarSideBySideSeries2D DisplayName="Stock" ArgumentDataMember="DateStart"
                                                            ValueDataMember="Stock" ArgumentScaleType="DateTime" />
                             </dxc:XYDiagram2D>
                         </dxc:ChartControl>
@@ -305,18 +305,18 @@
                                         </dxc:AxisY2D.Range>
                                     </dxc:AxisY2D>
                                 </dxc:XYDiagram2D.AxisY>
-                                <dxc:LineSeries2D DisplayName="AvgSellPrice" ArgumentDataMember="Date"
+                                <dxc:LineSeries2D DisplayName="AvgSellPrice" ArgumentDataMember="DateStart"
                                                   ValueDataMember="AvgSellPrice" ArgumentScaleType="DateTime"
                                                   CrosshairLabelPattern="{}{S} : {V:N}" />
-                                <dxc:LineSeries2D DisplayName="AvgBuyPrice" ArgumentDataMember="Date"
+                                <dxc:LineSeries2D DisplayName="AvgBuyPrice" ArgumentDataMember="DateStart"
                                                   ValueDataMember="AvgBuyPrice" ArgumentScaleType="DateTime"
                                                   CrosshairLabelPattern="{}{S} : {V:N}" />
-                                <dxc:RangeBarSideBySideSeries2D DisplayName="BuyPrice" ArgumentDataMember="Date"
+                                <dxc:RangeBarSideBySideSeries2D DisplayName="BuyPrice" ArgumentDataMember="DateStart"
                                                                 Value2DataMember="MaxBuyPrice"
                                                                 ValueDataMember="MinBuyPrice"
                                                                 ArgumentScaleType="DateTime"
                                                                 CrosshairLabelPattern="{}{S} : {V1:N} : {V2:N}"/>
-                                <dxc:RangeBarSideBySideSeries2D DisplayName="SellPrice" ArgumentDataMember="Date"
+                                <dxc:RangeBarSideBySideSeries2D DisplayName="SellPrice" ArgumentDataMember="DateStart"
                                                                 Value2DataMember="MaxSellPrice"
                                                                 ValueDataMember="MinSellPrice"
                                                                 ArgumentScaleType="DateTime"

@@ -15,7 +15,9 @@ namespace eZet.EveProfiteer.Util {
             target.ClientName = source.ClientName;
             target.StationId = source.StationId;
             target.StationName = source.StationName;
-            target.TransactionType = source.TransactionType.ToString();
+            target.TransactionType = source.TransactionType == OrderType.Buy
+                ? TransactionType.Buy
+                : TransactionType.Sell;
             target.TransactionFor = source.TransactionFor;
             target.JournalTransactionId = source.JournalTransactionId;
             target.ClientTypeId = source.ClientTypeId;

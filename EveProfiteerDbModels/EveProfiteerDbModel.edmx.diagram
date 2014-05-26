@@ -26,6 +26,9 @@
         <AssociationConnector Association="EveProfiteerDbModel.FK_Orders_ToStaStations" />
         <EntityTypeShape EntityType="EveProfiteerDbModel.InvGroup" Width="1.5" PointX="5.375" PointY="5.75" />
         <AssociationConnector Association="EveProfiteerDbModel.invGroupInvType" />
+        <EntityTypeShape EntityType="EveProfiteerDbModel.ItemCost" Width="1.5" PointX="11.75" PointY="10.375" />
+        <AssociationConnector Association="EveProfiteerDbModel.FK_dbo_ItemCost_dbo_ToApiKeyEntities" />
+        <AssociationConnector Association="EveProfiteerDbModel.FK_dbo_ItemCost_dbo_ToInvTypes" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

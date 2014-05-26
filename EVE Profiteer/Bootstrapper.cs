@@ -38,6 +38,7 @@ namespace eZet.EveProfiteer {
 
             // Services
             _container.PerRequest<EveApiService>();
+            _container.PerRequest<ItemCostService>();
             _container.PerRequest<BulkOperationService>();
             _container.PerRequest<EveMarketService>();
             _container.PerRequest<OrderXmlService>();

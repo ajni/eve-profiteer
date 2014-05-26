@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using Caliburn.Micro;
@@ -11,26 +10,29 @@ namespace eZet.EveProfiteer.ViewModels {
 
         private readonly EveProfiteerDataService _dataService;
         private readonly EveApiService _eveApiService;
+        private OverviewData _aggregate;
 
 
         public OverviewViewModel(EveProfiteerDataService dataService, EveApiService eveApiService) {
             _dataService = dataService;
             _eveApiService = eveApiService;
             DisplayName = "Overview";
-            initialize();
         }
 
-        private async void initialize() {
-            var transactions = await Task.Run<IList<Transaction>>(() => _dataService.Db.Transactions.AsNoTracking().Include("InvType").ToList());
-            Aggregate = new PeriodTradeAggregate(transactions);
+        protected override void OnInitialize() {
+            //var transactions = _dataService.Db.Transactions.AsNoTracking().Include("InvType").ToList();
+            //Aggregate = new OverviewData(transactions);
         }
 
         public CharacterData CharacterData { get; private set; }
 
-        public PeriodTradeAggregate Aggregate { get; private set; }
-
-
-
-
+        public OverviewData Aggregate {
+            get { return _aggregate; }
+            private set {
+                if (Equals(value, _aggregate)) return;
+                _aggregate = value;
+                NotifyOfPropertyChange(() => Aggregate);
+            }
+        }
     }
 }

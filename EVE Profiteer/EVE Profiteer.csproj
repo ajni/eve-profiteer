@@ -132,14 +132,15 @@
     <Compile Include="Events\ViewOrderEventArgs.cs" />
     <Compile Include="Events\ViewTradeDetailsEventArgs.cs" />
     <Compile Include="Models\CharacterData.cs" />
-    <Compile Include="Models\ItemTradeAggregate.cs" />
+    <Compile Include="Models\TradeIntervalAggregate.cs" />
     <Compile Include="Models\MarketHistoryEntry.cs" />
-    <Compile Include="Models\PeriodTradeAggregate.cs" />
+    <Compile Include="Models\OverviewData.cs" />
     <Compile Include="Models\TradeDetailsChartPoint.cs" />
     <Compile Include="Models\MarketBrowserItem.cs" />
     <Compile Include="Models\MarketOrder.cs" />
-    <Compile Include="Models\TradeAnalyzerEntry.cs" />
+    <Compile Include="Models\TradeTypeAggregate.cs" />
     <Compile Include="Services\EveProfiteerDataService.cs" />
+    <Compile Include="Services\ItemCostService.cs" />
     <Compile Include="Ui\Converters\DoubleToIntConverter.cs" />
     <Compile Include="Ui\Converters\OrderToBrushConverter.cs" />
     <Compile Include="Events\AddToOrdersEventArgs.cs" />
@@ -342,6 +343,10 @@
     <ProjectReference Include="..\..\EVE Library\EveLib.EveOnline\EveLib.EveOnline.csproj">
       <Project>{655CA737-CD94-4128-B2B5-DCE37EA6E7F8}</Project>
       <Name>EveLib.EveOnline</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NET Utilities\IoUtils\NET Utilities.csproj">
+      <Project>{1C0627DE-5E16-4079-9F4B-8A0092AE88AA}</Project>
+      <Name>NET Utilities</Name>
     </ProjectReference>
     <ProjectReference Include="..\EvePilot Order Editor\Order Editor Service.csproj">
       <Project>{0FD4CF67-093D-465C-9AFD-EFB9A2F159F6}</Project>

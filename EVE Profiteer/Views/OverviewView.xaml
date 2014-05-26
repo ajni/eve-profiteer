@@ -74,7 +74,7 @@
             <dx:DXTabControl dxlc:DockLayoutControl.Dock="Client" dxlc:DockLayoutControl.AllowVerticalSizing="True">
                 <dx:DXTabItem Header="Balance">
  
-                            <dxc:ChartControl x:Name="TotalChart" DataSource="{Binding Aggregate.DailyTotals}">
+                            <dxc:ChartControl x:Name="TotalChart" DataSource="{Binding Aggregate.Periods}">
                                 <dxc:ChartControl.CrosshairOptions>
                                     <dxc:CrosshairOptions />
                                 </dxc:ChartControl.CrosshairOptions>
@@ -97,15 +97,15 @@
                                             </dxc:AxisY2D.Range>
                                         </dxc:AxisY2D>
                                     </dxc:XYDiagram2D.AxisY>
-                                    <dxc:BarSideBySideSeries2D DisplayName="Sell Total" ArgumentDataMember="Date"
+                                    <dxc:BarSideBySideSeries2D DisplayName="Sell Total" ArgumentDataMember="DateStart"
                                                            ValueDataMember="Incoming"
                                                            ArgumentScaleType="DateTime" ValueScaleType="Numerical"
                                                            CrosshairLabelPattern="{}{S} : {V:N}" />
-                                    <dxc:BarSideBySideSeries2D DisplayName="Buy Total" ArgumentDataMember="Date"
+                                    <dxc:BarSideBySideSeries2D DisplayName="Buy Total" ArgumentDataMember="DateStart"
                                                            ValueDataMember="Outgoing"
                                                            CrosshairLabelPattern="{}{S} : {V:N}"
                                                            ArgumentScaleType="DateTime" ValueScaleType="Numerical" />
-                                    <dxc:BarSideBySideSeries2D DisplayName="Profit" ArgumentDataMember="Date"
+                                    <dxc:BarSideBySideSeries2D DisplayName="Profit" ArgumentDataMember="DateStart"
                                                            ValueDataMember="Profit"
                                                            CrosshairLabelPattern="{}{S} : {V:N}"
                                                            ArgumentScaleType="DateTime" ValueScaleType="Numerical" />

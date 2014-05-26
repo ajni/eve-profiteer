@@ -40,10 +40,19 @@
                                   Glyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Format/AlignRight_16x16.png"
                                   GroupIndex="1" />
                 <dxb:BarButtonItem x:Name="ManageKeys" Content="Manage keys" Command="{Binding ManageKeysCommand}"
-                                   LargeGlyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/setup/properties_32x32.png" Glyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Setup/Properties_16x16.png" />
+                                   LargeGlyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/setup/properties_32x32.png"
+                                   Glyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Setup/Properties_16x16.png" />
                 <dxb:BarButtonItem x:Name="UpdateTransactions" Content="Update Transactions"
-                                   Command="{Binding UpdateTransactionsCommand}" Glyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_16x16.png"
+                                   Command="{Binding UpdateTransactionsCommand}"
+                                   Glyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_16x16.png"
                                    LargeGlyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_32x32.png" />
+                <dxb:BarButtonItem x:Name="UpdateItemCosts" Content="Update Item Costs"
+                                   Command="{Binding UpdateItemCostsCommand}"
+                                   Glyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_16x16.png"
+                                   LargeGlyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_32x32.png" />
+                <dxb:BarButtonItem x:Name="Settings" Content="Settings"
+                                   LargeGlyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/setup/properties_32x32.png"
+                                   Glyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Setup/Properties_16x16.png" />
                 <dxb:BarSubItem x:Name="biFile" Content="File">
                     <dxb:BarButtonItemLink BarItemName="biFileOpen" />
                     <dxb:BarButtonItemLink BarItemName="biFileNew" />
@@ -55,8 +64,8 @@
                     <dxb:BarButtonItemLink BarItemName="biCopy" />
                     <dxb:BarButtonItemLink BarItemName="biPaste" />
                 </dxb:BarSubItem>
-                <dxb:BarStaticItem Name="Status" Content="{Binding StatusMessage}"></dxb:BarStaticItem>
-                <dxb:BarStaticItem Name="CurrentEntity" Content="{Binding CurrentEntityName}"></dxb:BarStaticItem>
+                <dxb:BarStaticItem Name="Status" Content="{Binding StatusMessage}" />
+                <dxb:BarStaticItem Name="CurrentEntity" Content="{Binding CurrentEntityName}" />
 
             </dxb:BarManager.Items>
             <DockPanel>
@@ -64,33 +73,36 @@
                     <dxr:RibbonControl.ApplicationMenu>
                         <dxr:ApplicationMenu>
                             <dxr:ApplicationMenu.ItemLinks>
-                                <dxb:BarItemLink BarItemName="biFile"/>
-                                <dxb:BarItemLink BarItemName="biEdit"/>
-                                <dxb:BarItemLink BarItemName="ManageKeys"/>
-                            <dxb:BarItemLink BarItemName="UpdateTransactions"/>
+                                <dxb:BarItemLink BarItemName="biFile" />
+                                <dxb:BarItemLink BarItemName="biEdit" />
+                                <dxb:BarItemLink BarItemName="ManageKeys" />
+                                <dxb:BarItemLink BarItemName="UpdateTransactions" />
                             </dxr:ApplicationMenu.ItemLinks>
 
                         </dxr:ApplicationMenu>
                     </dxr:RibbonControl.ApplicationMenu>
                     <dxr:RibbonDefaultPageCategory Caption="defaultCategory">
                         <dxr:RibbonPage Caption="Home">
-                            <dxr:RibbonPageGroup Caption="Manage" ShowCaptionButton="False" IsCaptionButtonEnabled="True">
+                            <dxr:RibbonPageGroup Caption="Manage" ShowCaptionButton="False"
+                                                 IsCaptionButtonEnabled="True">
                                 <dxb:BarItemLink BarItemName="UpdateTransactions" RibbonStyle="All" />
                                 <dxb:BarItemLink BarItemName="ManageKeys" RibbonStyle="All" />
+                                <dxb:BarItemLink BarItemName="UpdateItemCosts" RibbonStyle="All" />
+                                <dxb:BarItemLink BarItemName="Settings" RibbonStyle="All" />
                             </dxr:RibbonPageGroup>
                         </dxr:RibbonPage>
                     </dxr:RibbonDefaultPageCategory>
                 </dxr:RibbonControl>
                 <dxr:RibbonStatusBarControl DockPanel.Dock="Bottom">
                     <dxr:RibbonStatusBarControl.LeftItemLinks>
-                        <dxb:BarStaticItemLink BarItemName="Status"></dxb:BarStaticItemLink>
+                        <dxb:BarStaticItemLink BarItemName="Status" />
                     </dxr:RibbonStatusBarControl.LeftItemLinks>
                     <dxr:RibbonStatusBarControl.RightItemLinks>
-                        <dxb:BarStaticItemLink BarItemName="CurrentEntity"></dxb:BarStaticItemLink>
+                        <dxb:BarStaticItemLink BarItemName="CurrentEntity" />
                     </dxr:RibbonStatusBarControl.RightItemLinks>
                 </dxr:RibbonStatusBarControl>
                 <Grid Background="Transparent">
-                    <TabControl Name="Items"/>
+                    <TabControl Name="Items" />
 
                     <!--<dxdo:DockLayoutManager>
                         <dxdo:LayoutGroup Caption="LayoutRoot">

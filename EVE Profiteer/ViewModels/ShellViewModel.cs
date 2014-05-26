@@ -15,6 +15,7 @@ namespace eZet.EveProfiteer.ViewModels {
         IHandle<ViewMarketDetailsEventArgs>, IHandle<ViewOrderEventArgs>, IHandle<AddToOrdersEventArgs>,
         IHandle<StatusChangedEventArgs> {
         private readonly EveApiService _eveApiService;
+        private readonly ItemCostService _itemCostService;
         private readonly IEventAggregator _eventAggregator;
         private readonly KeyManagementService _keyManagementService;
         private readonly BulkOperationService _bulkOperationService;
@@ -23,12 +24,13 @@ namespace eZet.EveProfiteer.ViewModels {
 
         public ShellViewModel(IWindowManager windowManager, IEventAggregator eventAggregator,
             KeyManagementService keyManagementService,
-            BulkOperationService bulkOperationService, EveApiService eveApiService) {
+            BulkOperationService bulkOperationService, EveApiService eveApiService, ItemCostService itemCostService) {
             _windowManager = windowManager;
             _eventAggregator = eventAggregator;
             _keyManagementService = keyManagementService;
             _bulkOperationService = bulkOperationService;
             _eveApiService = eveApiService;
+            _itemCostService = itemCostService;
             ActiveKey = _keyManagementService.AllApiKeys().FirstOrDefault();
             _eventAggregator.Subscribe(this);
             if (ActiveKey != null)
@@ -36,6 +38,7 @@ namespace eZet.EveProfiteer.ViewModels {
 
             ManageKeysCommand = new DelegateCommand(ManageKeys);
             UpdateTransactionsCommand = new DelegateCommand(UpdateTransactions);
+            UpdateItemCostsCommand = new DelegateCommand(UpdateItemCosts);
             DisplayName = "EVE Profiteer";
             StatusMessage = "Ready";
             SelectKey();
@@ -53,6 +56,8 @@ namespace eZet.EveProfiteer.ViewModels {
         public string CurrentEntityName {
             get { return ApplicationHelper.ActiveKeyEntity.Name; }
         }
+
+        public ICommand UpdateItemCostsCommand { get; private set; }
 
         public ICommand ManageKeysCommand { get; private set; }
 
@@ -124,6 +129,12 @@ namespace eZet.EveProfiteer.ViewModels {
             await Task.Run(() => _bulkOperationService.BulkInsert(transactions));
             _eventAggregator.Publish(new StatusChangedEventArgs("Update complete"));
 
+        }
+
+        public async void UpdateItemCosts() {
+            _eventAggregator.Publish(new StatusChangedEventArgs("Updating item costs..."));
+            await _itemCostService.updateCosts(ApplicationHelper.ActiveKeyEntity);
+            _eventAggregator.Publish(new StatusChangedEventArgs("Item costs updated"));
         }
     }
 }

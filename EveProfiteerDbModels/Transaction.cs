@@ -24,7 +24,7 @@ namespace eZet.EveProfiteer.Models
         public string ClientName { get; set; }
         public long StationId { get; set; }
         public string StationName { get; set; }
-        public string TransactionType { get; set; }
+        public TransactionType TransactionType { get; set; }
         public string TransactionFor { get; set; }
         public Nullable<int> ApiKeyEntity_Id { get; set; }
         public long JournalTransactionId { get; set; }

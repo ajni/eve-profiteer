@@ -85,6 +85,9 @@
     <Compile Include="InvType.cs">
       <DependentUpon>EveProfiteerDbModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="ItemCost.cs">
+      <DependentUpon>EveProfiteerDbModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="JournalEntry.cs">
       <DependentUpon>EveProfiteerDbModel.tt</DependentUpon>
     </Compile>
@@ -99,6 +102,9 @@
       <DependentUpon>EveProfiteerDbModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Transaction.cs">
+      <DependentUpon>EveProfiteerDbModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TransactionType.cs">
       <DependentUpon>EveProfiteerDbModel.tt</DependentUpon>
     </Compile>
     <Compile Include="TreeNode.cs" />

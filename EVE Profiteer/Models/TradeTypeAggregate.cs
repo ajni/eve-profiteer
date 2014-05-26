@@ -2,14 +2,20 @@
 using System.Collections.Generic;
 
 namespace eZet.EveProfiteer.Models {
-    public class TradeAnalyzerEntry {
+    public class TradeTypeAggregate {
         public IEnumerable<Transaction> Transactions { get; set; }
 
-        public TradeAnalyzerEntry(InvType invType, IEnumerable<Transaction> transactions, Order order = null) {
+        public ICollection<TradeIntervalAggregate> PeriodAggregates { get; private set; }
+
+        public TradeTypeAggregate(InvType invType, IEnumerable<Transaction> transactions, Order order = null) {
             Order = order;
             InvType = invType;
             Transactions = transactions;
             initialize();
+        }
+
+        public void CalculatePeriodAggregate(TimeSpan timespan) {
+            
         }
 
         private void initialize() {
@@ -22,10 +28,10 @@ namespace eZet.EveProfiteer.Models {
                 if (transaction.TransactionDate > LastTransactionDate)
                     LastTransactionDate = transaction.TransactionDate;
 
-                if (transaction.TransactionType == "Sell") {
+                if (transaction.TransactionType == TransactionType.Sell) {
                     QuantitySold += transaction.Quantity;
                     SellTotal += transaction.Price * transaction.Quantity;
-                } else if (transaction.TransactionType == "Buy") {
+                } else if (transaction.TransactionType == TransactionType.Buy) {
                     QuantityBought += transaction.Quantity;
                     BuyTotal += transaction.Price * transaction.Quantity;
                 }
