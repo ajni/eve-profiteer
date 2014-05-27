@@ -18,7 +18,7 @@ namespace eZet.EveProfiteer.Models
         {
             this.Orders = new HashSet<Order>();
             this.Transactions = new HashSet<Transaction>();
-            this.ItemCosts = new HashSet<ItemCost>();
+            this.Assets = new HashSet<Asset>();
         }
     
         public int TypeId { get; set; }
@@ -39,6 +39,6 @@ namespace eZet.EveProfiteer.Models
         public virtual ICollection<Order> Orders { get; set; }
         public virtual ICollection<Transaction> Transactions { get; set; }
         public virtual InvGroup InvGroup { get; set; }
-        public virtual ICollection<ItemCost> ItemCosts { get; set; }
+        public virtual ICollection<Asset> Assets { get; set; }
     }
 }

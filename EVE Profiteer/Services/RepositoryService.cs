@@ -5,51 +5,51 @@ using eZet.EveProfiteer.Repository;
 namespace eZet.EveProfiteer.Services {
     public class RepositoryService<T> where T : class {
 
-        protected readonly IRepository<T> Repository;
+        protected readonly IRepository<T> Db;
 
-        public RepositoryService(IRepository<T> repository) {
-            Repository = repository;
+        public RepositoryService(IRepository<T> db) {
+            Db = db;
         }
 
         public bool Validate {
-            get { return Repository.Validate; }
-            set { Repository.Validate = value; }
+            get { return Db.Validate; }
+            set { Db.Validate = value; }
         }
 
         public void Dispose() {
-            Repository.Dispose();
+            Db.Dispose();
         }
 
         public T Create() {
-            return Repository.Create();
+            return Db.Create();
         }
 
         public IQueryable<T> Transactions() {
-            return Repository.Queryable();
+            return Db.Queryable();
         }
 
         public T Add(T entity) {
-            return Repository.Add(entity);
+            return Db.Add(entity);
         }
 
         public IEnumerable<T> AddRange(IEnumerable<T> entities) {
-            return Repository.AddRange(entities);
+            return Db.AddRange(entities);
         }
 
         public T Remove(T entity) {
-            return Repository.Remove(entity);
+            return Db.Remove(entity);
         }
 
         public IEnumerable<T> RemoveRange(IEnumerable<T> entities) {
-            return Repository.RemoveRange(entities);
+            return Db.RemoveRange(entities);
         }
 
         public int SaveChanges() {
-            return Repository.SaveChanges();
+            return Db.SaveChanges();
         }
 
         public T Find(int pkey) {
-            return Repository.Find(pkey);
+            return Db.Find(pkey);
         }
     }
 }

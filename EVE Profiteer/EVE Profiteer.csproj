@@ -132,15 +132,14 @@
     <Compile Include="Events\ViewOrderEventArgs.cs" />
     <Compile Include="Events\ViewTradeDetailsEventArgs.cs" />
     <Compile Include="Models\CharacterData.cs" />
-    <Compile Include="Models\TradeIntervalAggregate.cs" />
+    <Compile Include="Models\TradePeriodStatistics.cs" />
     <Compile Include="Models\MarketHistoryEntry.cs" />
     <Compile Include="Models\OverviewData.cs" />
     <Compile Include="Models\TradeDetailsChartPoint.cs" />
     <Compile Include="Models\MarketBrowserItem.cs" />
     <Compile Include="Models\MarketOrder.cs" />
-    <Compile Include="Models\TradeTypeAggregate.cs" />
+    <Compile Include="Models\TradeTypeStatistics.cs" />
     <Compile Include="Services\EveProfiteerDataService.cs" />
-    <Compile Include="Services\ItemCostService.cs" />
     <Compile Include="Ui\Converters\DoubleToIntConverter.cs" />
     <Compile Include="Ui\Converters\OrderToBrushConverter.cs" />
     <Compile Include="Events\AddToOrdersEventArgs.cs" />
@@ -154,7 +153,7 @@
     <Compile Include="Services\EveMarketService.cs" />
     <Compile Include="Services\OrderXmlService.cs" />
     <Compile Include="Services\RepositoryService.cs" />
-    <Compile Include="Services\BulkOperationService.cs" />
+    <Compile Include="Services\TransactionService.cs" />
     <Compile Include="Ui\Converters\RoutedPropertyChangedEventArgsConverter.cs" />
     <Compile Include="Util\ApiEntityMapper.cs" />
     <Compile Include="Util\ApplicationHelper.cs" />
@@ -172,6 +171,7 @@
     <Compile Include="ViewModels\OrderEditorViewModel.cs" />
     <Compile Include="Events\OrdersChangedEventArgs.cs" />
     <Compile Include="ViewModels\TradeAnalyzerViewModel.cs" />
+    <Compile Include="ViewModels\TransactionsViewModel.cs" />
     <Compile Include="ViewModels\ViewMarketDetailsEventArgs.cs" />
     <Compile Include="Views\EditOrderDialogView.xaml.cs">
       <DependentUpon>EditOrderDialogView.xaml</DependentUpon>
@@ -184,7 +184,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ViewModels\TransactionsViewModel.cs" />
     <Compile Include="Views\AnalyzerProgressView.xaml.cs">
       <DependentUpon>AnalyzerProgressView.xaml</DependentUpon>
     </Compile>

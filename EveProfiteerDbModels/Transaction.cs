@@ -26,9 +26,10 @@ namespace eZet.EveProfiteer.Models
         public string StationName { get; set; }
         public TransactionType TransactionType { get; set; }
         public string TransactionFor { get; set; }
-        public Nullable<int> ApiKeyEntity_Id { get; set; }
+        public int ApiKeyEntity_Id { get; set; }
         public long JournalTransactionId { get; set; }
         public int ClientTypeId { get; set; }
+        public Nullable<decimal> PerpetualAverageCost { get; set; }
     
         public virtual ApiKeyEntity ApiKeyEntity { get; set; }
         public virtual InvType InvType { get; set; }

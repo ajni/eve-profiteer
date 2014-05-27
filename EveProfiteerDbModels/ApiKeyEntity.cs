@@ -20,7 +20,7 @@ namespace eZet.EveProfiteer.Models
             this.ApiKeys = new HashSet<ApiKey>();
             this.Transactions = new HashSet<Transaction>();
             this.Orders = new HashSet<Order>();
-            this.ItemCosts = new HashSet<ItemCost>();
+            this.Assets = new HashSet<Asset>();
         }
     
         public int Id { get; set; }
@@ -34,6 +34,6 @@ namespace eZet.EveProfiteer.Models
         public virtual ICollection<ApiKey> ApiKeys { get; set; }
         public virtual ICollection<Transaction> Transactions { get; set; }
         public virtual ICollection<Order> Orders { get; set; }
-        public virtual ICollection<ItemCost> ItemCosts { get; set; }
+        public virtual ICollection<Asset> Assets { get; set; }
     }
 }

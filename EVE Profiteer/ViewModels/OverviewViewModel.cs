@@ -1,7 +1,4 @@
-﻿using System.Data.Entity;
-using System.Linq;
-using System.Threading.Tasks;
-using Caliburn.Micro;
+﻿using Caliburn.Micro;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
 

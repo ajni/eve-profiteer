@@ -58,6 +58,9 @@
     <Compile Include="ApiKeyEntity.cs">
       <DependentUpon>EveProfiteerDbModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Asset.cs">
+      <DependentUpon>EveProfiteerDbModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="EveProfiteerDbModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -83,9 +86,6 @@
       <DependentUpon>EveProfiteerDbModel.tt</DependentUpon>
     </Compile>
     <Compile Include="InvType.cs">
-      <DependentUpon>EveProfiteerDbModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="ItemCost.cs">
       <DependentUpon>EveProfiteerDbModel.tt</DependentUpon>
     </Compile>
     <Compile Include="JournalEntry.cs">

@@ -98,11 +98,11 @@
                                         </dxc:AxisY2D>
                                     </dxc:XYDiagram2D.AxisY>
                                     <dxc:BarSideBySideSeries2D DisplayName="Sell Total" ArgumentDataMember="DateStart"
-                                                           ValueDataMember="Incoming"
+                                                           ValueDataMember="SellTotal"
                                                            ArgumentScaleType="DateTime" ValueScaleType="Numerical"
                                                            CrosshairLabelPattern="{}{S} : {V:N}" />
                                     <dxc:BarSideBySideSeries2D DisplayName="Buy Total" ArgumentDataMember="DateStart"
-                                                           ValueDataMember="Outgoing"
+                                                           ValueDataMember="BuyTotal"
                                                            CrosshairLabelPattern="{}{S} : {V:N}"
                                                            ArgumentScaleType="DateTime" ValueScaleType="Numerical" />
                                     <dxc:BarSideBySideSeries2D DisplayName="Profit" ArgumentDataMember="DateStart"

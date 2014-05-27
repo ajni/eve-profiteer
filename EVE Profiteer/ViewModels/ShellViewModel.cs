@@ -15,22 +15,22 @@ namespace eZet.EveProfiteer.ViewModels {
         IHandle<ViewMarketDetailsEventArgs>, IHandle<ViewOrderEventArgs>, IHandle<AddToOrdersEventArgs>,
         IHandle<StatusChangedEventArgs> {
         private readonly EveApiService _eveApiService;
-        private readonly ItemCostService _itemCostService;
+        private readonly EveProfiteerDataService _dataService;
         private readonly IEventAggregator _eventAggregator;
         private readonly KeyManagementService _keyManagementService;
-        private readonly BulkOperationService _bulkOperationService;
+        private readonly TransactionService TransactionService;
         private readonly IWindowManager _windowManager;
         private string _statusMessage;
 
         public ShellViewModel(IWindowManager windowManager, IEventAggregator eventAggregator,
             KeyManagementService keyManagementService,
-            BulkOperationService bulkOperationService, EveApiService eveApiService, ItemCostService itemCostService) {
+            TransactionService transactionService, EveApiService eveApiService, EveProfiteerDataService dataService) {
             _windowManager = windowManager;
             _eventAggregator = eventAggregator;
             _keyManagementService = keyManagementService;
-            _bulkOperationService = bulkOperationService;
+            TransactionService = transactionService;
             _eveApiService = eveApiService;
-            _itemCostService = itemCostService;
+            _dataService = dataService;
             ActiveKey = _keyManagementService.AllApiKeys().FirstOrDefault();
             _eventAggregator.Subscribe(this);
             if (ActiveKey != null)
@@ -114,7 +114,6 @@ namespace eZet.EveProfiteer.ViewModels {
 
             }
         }
-
         public void ManageKeys() {
             _windowManager.ShowDialog(IoC.Get<ManageKeysViewModel>());
         }
@@ -122,19 +121,19 @@ namespace eZet.EveProfiteer.ViewModels {
         public async void UpdateTransactions() {
             _eventAggregator.Publish(new StatusChangedEventArgs("Fetching new transactions..."));
             long latest = 0;
-            latest = _bulkOperationService.GetLatestId(ActiveKeyEntity);
-            IEnumerable<Transaction> list = _eveApiService.GetNewTransactions(ActiveKey, ActiveKeyEntity, latest);
+            latest = TransactionService.GetLatestId(ActiveKeyEntity);
+            IEnumerable<Transaction> list = await Task.Run(() => _eveApiService.GetNewTransactions(ActiveKey, ActiveKeyEntity, latest));
             IList<Transaction> transactions = list as IList<Transaction> ?? list.ToList();
             _eventAggregator.Publish(new StatusChangedEventArgs("Processing transactions..."));
-            await Task.Run(() => _bulkOperationService.BulkInsert(transactions));
-            _eventAggregator.Publish(new StatusChangedEventArgs("Update complete"));
+            await TransactionService.ProcessTransactions(transactions);
+            _eventAggregator.Publish(new StatusChangedEventArgs("Transaction update complete"));
 
         }
 
         public async void UpdateItemCosts() {
-            _eventAggregator.Publish(new StatusChangedEventArgs("Updating item costs..."));
-            await _itemCostService.updateCosts(ApplicationHelper.ActiveKeyEntity);
-            _eventAggregator.Publish(new StatusChangedEventArgs("Item costs updated"));
+            await TransactionService.ProcessInventory(TransactionService.Db.Transactions.ToList());
+            _eventAggregator.Publish(new StatusChangedEventArgs("Saved"));
+
         }
     }
 }

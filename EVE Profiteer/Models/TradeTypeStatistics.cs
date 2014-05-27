@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 
 namespace eZet.EveProfiteer.Models {
-    public class TradeTypeAggregate {
+    public class TradeTypeStatistics {
         public IEnumerable<Transaction> Transactions { get; set; }
 
-        public ICollection<TradeIntervalAggregate> PeriodAggregates { get; private set; }
+        public ICollection<TradePeriodStatistics> PeriodAggregates { get; private set; }
 
-        public TradeTypeAggregate(InvType invType, IEnumerable<Transaction> transactions, Order order = null) {
+        public TradeTypeStatistics(InvType invType, IEnumerable<Transaction> transactions, Order order = null) {
             Order = order;
             InvType = invType;
             Transactions = transactions;

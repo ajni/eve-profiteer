@@ -77,4 +77,102 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="ApiKeyEntities_Id" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="e3929ec3-ad74-4878-9f8a-142867ca137c" ChangeDateTime="05/26/2014 16:48:41">
+    <Property Name="ElementName" Value="[dbo].[Inventory].[Stock]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Inventory]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Quantity" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="587b847c-7450-4efb-a638-9025ca2bb3eb" ChangeDateTime="05/26/2014 16:48:47">
+    <Property Name="ElementName" Value="[dbo].[Inventory].[Cost]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Inventory]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Value" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="8b21b395-363f-42e9-869e-6397390c4e05" ChangeDateTime="05/26/2014 16:50:36">
+    <Property Name="ElementName" Value="[dbo].[InventoryItems].[Value]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[InventoryItems]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="CostValue" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="c45967fa-1d4d-4f15-9046-4e26dd457efc" ChangeDateTime="05/26/2014 16:50:42">
+    <Property Name="ElementName" Value="[dbo].[InventoryItems].[CostValue]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[InventoryItems]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="TotalCost" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="0b3f7a4f-2c10-44c0-8c42-abddd7ca5988" ChangeDateTime="05/26/2014 23:41:57">
+    <Property Name="ElementName" Value="[dbo].[Assets].[UnaccountedSales]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Assets]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="UnaccountedQuantity" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="44421b8f-cb6c-40c8-9a45-08e1218ca95b" ChangeDateTime="05/26/2014 23:42:07">
+    <Property Name="ElementName" Value="[dbo].[Assets].[UnaccountedQuantity]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Assets]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="UnaccountedSalesQuantity" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="f73de6b3-f628-4f83-8db5-7c781cd43768" ChangeDateTime="05/26/2014 23:45:23">
+    <Property Name="ElementName" Value="[dbo].[Assets].[EstimatedUnaccountedCost]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Assets]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="UnaccountedTotalCost" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="8ce226b2-3e48-4906-89ee-44653a787805" ChangeDateTime="05/26/2014 23:45:51">
+    <Property Name="ElementName" Value="[dbo].[Assets].[UnaccountedSalesQuantity]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Assets]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="UnaccountedQuantity" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="67ceb7ca-6fb0-472c-b964-0c679966c4bd" ChangeDateTime="05/26/2014 23:52:56">
+    <Property Name="ElementName" Value="[dbo].[Transactions].[EsimatedCost]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Transactions]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="PerpetualAverageCost" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="633d8b06-6928-43e5-be0b-b5d03b68f278" ChangeDateTime="05/26/2014 23:59:28">
+    <Property Name="ElementName" Value="[dbo].[Assets].[UnaccountedTotalCost]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Assets]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="EsimatedCost" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="bca05718-320a-4190-86a3-aab155718df0" ChangeDateTime="05/27/2014 00:04:54">
+    <Property Name="ElementName" Value="[dbo].[Assets].[TotalCost]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Assets]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="AverageCost" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="08285162-f745-48f5-9618-6db30542eb0d" ChangeDateTime="05/27/2014 00:05:40">
+    <Property Name="ElementName" Value="[dbo].[Assets].[AverageCost]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Assets]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="TotalCost" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="777237a2-9c98-4de2-b465-d1348feae35e" ChangeDateTime="05/27/2014 00:06:06">
+    <Property Name="ElementName" Value="[dbo].[Assets].[EsimatedCost]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Assets]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="AverageCost" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="f6f1d392-528b-4a4e-9ac7-a9d2564a3336" ChangeDateTime="05/27/2014 00:07:18">
+    <Property Name="ElementName" Value="[dbo].[Assets].[AverageCost]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Assets]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="LatestAverageCost" />
+  </Operation>
 </Operations>

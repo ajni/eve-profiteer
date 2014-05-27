@@ -5,11 +5,11 @@ using eZet.EveProfiteer.Models;
 
 namespace eZet.EveProfiteer.ViewModels {
     public class TransactionsViewModel : Screen {
-        private readonly Services.BulkOperationService _bulkOperationService;
+        private readonly Services.TransactionService _transactionService;
         private ObservableCollection<Transaction> _transactions;
 
-        public TransactionsViewModel(Services.BulkOperationService bulkOperationService) {
-            _bulkOperationService = bulkOperationService;
+        public TransactionsViewModel(Services.TransactionService transactionService) {
+            _transactionService = transactionService;
             DisplayName = "Transactions";
         }
 
@@ -27,7 +27,7 @@ namespace eZet.EveProfiteer.ViewModels {
         public void Initialize(ApiKey key, ApiKeyEntity entity) {
             ApiKey = key;
             ApiKeyEntity = entity;
-            Transactions = new ObservableCollection<Transaction>(_bulkOperationService.Transactions().Where(t => t.ApiKeyEntity.Id == entity.Id).ToList());
+            //Transactions = new ObservableCollection<Transaction>(_dataService.Db.Transactions().Where(t => t.ApiKeyEntity.Id == entity.Id).ToList());
         }
 
         protected override void OnInitialize() {
