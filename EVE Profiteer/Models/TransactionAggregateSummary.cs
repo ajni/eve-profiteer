@@ -4,12 +4,12 @@ using System.Linq;
 using MoreLinq;
 
 namespace eZet.EveProfiteer.Models {
-    public class TradeDetailsData {
-        public TradeDetailsData(InvType invType, IEnumerable<Transaction> transactions, Order order) {
+    public class TransactionAggregateSummary {
+        public TransactionAggregateSummary(InvType invType, IEnumerable<Transaction> transactions, Order order) {
             InvType = invType;
             Transactions = transactions;
             Order = order;
-            ChartEntries = new List<TradeDetailsChartPoint>();
+            ChartEntries = new List<TransactionAggregate>();
             initialize();
         }
 
@@ -17,7 +17,7 @@ namespace eZet.EveProfiteer.Models {
         public IEnumerable<Transaction> Transactions { get; set; }
         public Order Order { get; set; }
 
-        public ICollection<TradeDetailsChartPoint> ChartEntries { get; set; }
+        public ICollection<TransactionAggregate> ChartEntries { get; set; }
 
         public int SellQuantity { get; private set; }
 
@@ -71,7 +71,7 @@ namespace eZet.EveProfiteer.Models {
             FirstTrade = DateTime.MaxValue;
             LastTrade = DateTime.MinValue;
             foreach (var transactions in groups) {
-                var entry = new TradeDetailsChartPoint(transactions.First().TransactionDate.Date, transactions);
+                var entry = new TransactionAggregate(transactions.First().TransactionDate.Date, transactions);
                 ChartEntries.Add(entry);
                 Balance += entry.Balance;
                 SellQuantity += entry.SellQuantity;

@@ -79,7 +79,7 @@
                                     <dxc:CrosshairOptions />
                                 </dxc:ChartControl.CrosshairOptions>
                                 <dx:DesignDataManager.DesignData>
-                                    <dx:DesignDataSettings DataObjectType="{x:Type models:TradeDetailsChartPoint}" />
+                                    <dx:DesignDataSettings DataObjectType="{x:Type models:TransactionAggregate}" />
                                 </dx:DesignDataManager.DesignData>
                                 <dxc:ChartControl.Legend>
                                     <dxc:Legend BorderThickness="0" HorizontalPosition="Center"

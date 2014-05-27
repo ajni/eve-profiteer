@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Controls;
-using DevExpress.Data.Filtering;
 using DevExpress.Xpf.Bars;
 using DevExpress.Xpf.Grid;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.ViewModels;
-using Xceed.Wpf.DataGrid.FilterCriteria;
 
 namespace eZet.EveProfiteer.Views {
     /// <summary>
@@ -19,7 +16,7 @@ namespace eZet.EveProfiteer.Views {
 
         private void TradeAnalyzerGrid_OnCustomRowFilter(object sender, RowFilterEventArgs e) {
             int rowHandle = TradeAnalyzerGrid.GetRowHandleByListIndex(e.ListSourceRowIndex);
-            var row = e.Source.GetRow(rowHandle) as TradeTypeStatistics;
+            var row = e.Source.GetRow(rowHandle) as TransactionAggregate;
             if (row == null)
                 throw new InvalidOperationException();
             if (FilterOrders.IsChecked.Value && row.Order == null) e.Visible = false;

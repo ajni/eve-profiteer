@@ -15,7 +15,7 @@ namespace eZet.EveProfiteer.ViewModels {
         private readonly IEventAggregator _eventAggregator;
         private readonly EveProfiteerDataService _dataService;
         private InvType _selectedItem;
-        private TradeDetailsData _tradeDetailsData;
+        private TransactionAggregateSummary _transactionAggregateSummary;
 
         public TradeDetailsViewModel(IEventAggregator eventAggregator, EveProfiteerDataService dataService) {
             _eventAggregator = eventAggregator;
@@ -43,18 +43,18 @@ namespace eZet.EveProfiteer.ViewModels {
             List<Transaction> transactions =
                 _dataService.Db.Transactions.Where(f => f.TypeId == type.TypeId).ToList();
             if (transactions.Any())
-                TradeDetailsData = new TradeDetailsData(type,
+                TransactionAggregateSummary = new TransactionAggregateSummary(type,
                     transactions, type.Orders.SingleOrDefault(order => order.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id));
             _eventAggregator.Publish(new StatusChangedEventArgs("Trade details loaded"));
 
         }
 
-        public TradeDetailsData TradeDetailsData {
-            get { return _tradeDetailsData; }
+        public TransactionAggregateSummary TransactionAggregateSummary {
+            get { return _transactionAggregateSummary; }
             set {
-                if (Equals(value, _tradeDetailsData)) return;
-                _tradeDetailsData = value;
-                NotifyOfPropertyChange(() => TradeDetailsData);
+                if (Equals(value, _transactionAggregateSummary)) return;
+                _transactionAggregateSummary = value;
+                NotifyOfPropertyChange(() => TransactionAggregateSummary);
             }
         }
 

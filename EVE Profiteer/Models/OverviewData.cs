@@ -17,7 +17,7 @@ namespace eZet.EveProfiteer.Models {
         public OverviewData(ICollection<Transaction> transactions, TradeInterval interval) {
             Transactions = transactions;
             Interval = interval;
-            Types = new List<TradeTypeStatistics>();
+            Types = new List<TradeTypeAggregate>();
             initialize();
         }
 
@@ -26,7 +26,7 @@ namespace eZet.EveProfiteer.Models {
 
         public TradePeriodStatistics Period { get; private set; }
 
-        public ICollection<TradeTypeStatistics> Types { get; private set; }
+        public ICollection<TradeTypeAggregate> Types { get; private set; }
 
         public ICollection<TradePeriodStatistics> Periods { get; private set; }
 
@@ -59,9 +59,9 @@ namespace eZet.EveProfiteer.Models {
 
             IEnumerable<IGrouping<int, Transaction>> itemGroups = Transactions.GroupBy(t => t.TypeId);
             foreach (var itemGroup in itemGroups) {
-                Types.Add(new TradeTypeStatistics(itemGroup.First().InvType, (itemGroup)));
+                Types.Add(new TradeTypeAggregate(itemGroup.First().InvType, (itemGroup)));
             }
-            ILookup<int, TradeTypeStatistics> typeLookup = Types.ToLookup(t => t.InvType.TypeId);
+            ILookup<int, TradeTypeAggregate> typeLookup = Types.ToLookup(t => t.InvType.TypeId);
 
             IEnumerable<IGrouping<DateTime, Transaction>> groupByInterval =
                 Transactions.GroupBy(t => toInterval(t.TransactionDate));

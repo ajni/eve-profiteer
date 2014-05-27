@@ -132,13 +132,11 @@
     <Compile Include="Events\ViewOrderEventArgs.cs" />
     <Compile Include="Events\ViewTradeDetailsEventArgs.cs" />
     <Compile Include="Models\CharacterData.cs" />
-    <Compile Include="Models\TradePeriodStatistics.cs" />
     <Compile Include="Models\MarketHistoryEntry.cs" />
     <Compile Include="Models\OverviewData.cs" />
-    <Compile Include="Models\TradeDetailsChartPoint.cs" />
+    <Compile Include="Models\TransactionAggregate.cs" />
     <Compile Include="Models\MarketBrowserItem.cs" />
     <Compile Include="Models\MarketOrder.cs" />
-    <Compile Include="Models\TradeTypeStatistics.cs" />
     <Compile Include="Services\EveProfiteerDataService.cs" />
     <Compile Include="Ui\Converters\DoubleToIntConverter.cs" />
     <Compile Include="Ui\Converters\OrderToBrushConverter.cs" />
@@ -163,7 +161,7 @@
     <Compile Include="ViewModels\EditKeyViewModel.cs" />
     <Compile Include="ViewModels\AddKeyViewModel.cs" />
     <Compile Include="ViewModels\EditOrderDialogViewModel.cs" />
-    <Compile Include="Models\TradeDetailsData.cs" />
+    <Compile Include="Models\TransactionAggregateSummary.cs" />
     <Compile Include="ViewModels\TradeDetailsViewModel.cs" />
     <Compile Include="ViewModels\JournalViewModel.cs" />
     <Compile Include="ViewModels\ManageKeysViewModel.cs" />

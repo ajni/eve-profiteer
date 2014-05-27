@@ -93,8 +93,8 @@
                     <dxg:GridSummaryItem FieldName="SellTotal" SummaryType="Sum" DisplayFormat="N2" />
                     <dxg:GridSummaryItem FieldName="BuyTotal" SummaryType="Sum" DisplayFormat="N2" />
                     <dxg:GridSummaryItem FieldName="Transactions.Count" SummaryType="Sum" DisplayFormat="N0" />
-                    <dxg:GridSummaryItem FieldName="QuantitySold" SummaryType="Sum" DisplayFormat="N0" />
-                    <dxg:GridSummaryItem FieldName="QuantityBought" SummaryType="Sum" DisplayFormat="N0" />
+                    <dxg:GridSummaryItem FieldName="SellQuantity" SummaryType="Sum" DisplayFormat="N0" />
+                    <dxg:GridSummaryItem FieldName="BuyQuantity" SummaryType="Sum" DisplayFormat="N0" />
 
                     <dxg:GridSummaryItem SummaryType="Count" Alignment="Right" DisplayFormat="Items: {0:N0}" />
                 </dxg:GridControl.TotalSummary>
@@ -141,12 +141,12 @@
                             <dxe:TextEditSettings DisplayFormat="P" />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="QuantityBought" Header="Qty Bought">
+                    <dxg:GridColumn FieldName="BuyQuantity" Header="Qty Bought">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="N0" />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="QuantitySold" Header="Qty Sold">
+                    <dxg:GridColumn FieldName="SellQuantity" Header="Qty Sold">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="N2" />
                         </dxg:GridColumn.EditSettings>
