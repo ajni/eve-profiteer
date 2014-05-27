@@ -175,4 +175,39 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="LatestAverageCost" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="d24cdf7b-04b5-4e72-8f72-c72b40f07164" ChangeDateTime="05/27/2014 11:51:32">
+    <Property Name="ElementName" Value="[dbo].[Transactions].[NewStock]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Transactions]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="PostStock" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="935c427c-af56-4b2e-a978-242808eb0dce" ChangeDateTime="05/27/2014 11:51:41">
+    <Property Name="ElementName" Value="[dbo].[Transactions].[PostStock]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Transactions]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="PostTransactionStock" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="09537d71-0a17-42b8-be23-72a82a6f336a" ChangeDateTime="05/27/2014 11:51:59">
+    <Property Name="ElementName" Value="[dbo].[Transactions].[PostTransactionStock]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Transactions]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="NewStock" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="b7783d9b-ad34-4e54-b3c3-91f44435f4a2" ChangeDateTime="05/27/2014 11:52:09">
+    <Property Name="ElementName" Value="[dbo].[Transactions].[NewStock]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Transactions]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="CurrentSTock" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="bcd24bf5-edf6-4cac-ac53-55e0cd83e9aa" ChangeDateTime="05/27/2014 11:52:13">
+    <Property Name="ElementName" Value="[dbo].[Transactions].[CurrentSTock]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Transactions]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="CurrentStock" />
+  </Operation>
 </Operations>

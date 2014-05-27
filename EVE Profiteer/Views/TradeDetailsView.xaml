@@ -20,7 +20,7 @@
         <DockPanel>
             <dxb:BarManager DockPanel.Dock="Top">
                 <dxb:BarManager.Items>
-                    <dxb:BarEditItem Name="ItemSelector" EditValue="{Binding SelectedItem}" EditWidth="400"
+                    <dxb:BarEditItem Name="ItemSelector" EditValue="{Binding SelectedItem, Mode=TwoWay}" EditWidth="400"
                                      Hint="Available orders.">
                         <dxb:BarEditItem.EditSettings>
                             <dxe:ComboBoxEditSettings ItemsSource="{Binding SelectableItems}" AutoComplete="True"
@@ -110,8 +110,14 @@
                             </dxn:NavBarItem>
                             <dxn:NavBarItem>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="Profit: " />
-                                    <TextBlock Text="{Binding TradeDetailsData.Profit, StringFormat=N2}" />
+                                    <TextBlock Text="Periodic Avg. Profit: " />
+                                    <TextBlock Text="{Binding TradeDetailsData.PeriodicAverageProfit, StringFormat=N2}" />
+                                </StackPanel>
+                            </dxn:NavBarItem>
+                            <dxn:NavBarItem>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Perpetual Avg. Profit: " />
+                                    <TextBlock Text="{Binding TradeDetailsData.PerpetualAverageProfit, StringFormat=N2}" />
                                 </StackPanel>
                             </dxn:NavBarItem>
                             <dxn:NavBarItem>
@@ -122,14 +128,14 @@
                             </dxn:NavBarItem>
                             <dxn:NavBarItem>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="Average profit per sale:" />
+                                    <TextBlock Text="Average profit per sale: " />
                                     <TextBlock Text="{Binding TradeDetailsData.ProfitPerItem, StringFormat=N2}" />
                                 </StackPanel>
                             </dxn:NavBarItem>
                             <dxn:NavBarItem>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="Average margin: " />
-                                    <TextBlock Text="{Binding TradeDetailsData.Margin, StringFormat=P}" />
+                                    <TextBlock Text="{Binding TradeDetailsData.AvgMargin, StringFormat=P}" />
                                 </StackPanel>
                             </dxn:NavBarItem>
                             <dxn:NavBarItem>
@@ -147,13 +153,19 @@
                             <dxn:NavBarItem>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="Average buy price: " />
-                                    <TextBlock Text="{Binding TradeDetailsData.AvgBuyPrice, StringFormat=N}" />
+                                    <TextBlock Text="{Binding TradeDetailsData.AvgBuyPrice, StringFormat=N2}" />
                                 </StackPanel>
                             </dxn:NavBarItem>
                             <dxn:NavBarItem>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="Average sell price: " />
-                                    <TextBlock Text="{Binding TradeDetailsData.AvgSellPrice, StringFormat=N}" />
+                                    <TextBlock Text="{Binding TradeDetailsData.AvgSellPrice, StringFormat=N2}" />
+                                </StackPanel>
+                            </dxn:NavBarItem>
+                            <dxn:NavBarItem>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Perpetual Avg. Cost: " />
+                                    <TextBlock Text="{Binding TradeDetailsData.PerpetualAverageCost, StringFormat=N2}" />
                                 </StackPanel>
                             </dxn:NavBarItem>
                             <dxn:NavBarItem>
@@ -170,13 +182,25 @@
                             </dxn:NavBarItem>
                             <dxn:NavBarItem>
                                 <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Perpetual Avg. Cost of Items Sold: " />
+                                    <TextBlock Text="{Binding TradeDetailsData.PerpetualAverageTotalCost, StringFormat=N2}" />
+                                </StackPanel>
+                            </dxn:NavBarItem>
+                            <dxn:NavBarItem>
+                                <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="Current stock: " />
                                     <TextBlock Text="{Binding TradeDetailsData.Stock}" />
                                 </StackPanel>
                             </dxn:NavBarItem>
                             <dxn:NavBarItem>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="Stock value (at avg. buy price): " />
+                                    <TextBlock Text="Unaccounted Stock: " />
+                                    <TextBlock Text="{Binding TradeDetailsData.UnaccountedStock}" />
+                                </StackPanel>
+                            </dxn:NavBarItem>
+                            <dxn:NavBarItem>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Stock value: " />
                                     <TextBlock Text="{Binding TradeDetailsData.StockValue, StringFormat=N2}" />
                                 </StackPanel>
                             </dxn:NavBarItem>
@@ -225,10 +249,7 @@
                             <dxc:ChartControl.CrosshairOptions>
                                 <dxc:CrosshairOptions />
                             </dxc:ChartControl.CrosshairOptions>
-                            <dx:DesignDataManager.DesignData>
-                                <dx:DesignDataSettings DataObjectType="{x:Type models:TradeDetailsChartPoint}" />
-                            </dx:DesignDataManager.DesignData>
-                            <dxc:ChartControl.Legend>
+                             <dxc:ChartControl.Legend>
                                 <dxc:Legend BorderThickness="0" HorizontalPosition="Center"
                                             VerticalPosition="BottomOutside" />
                             </dxc:ChartControl.Legend>
@@ -244,16 +265,16 @@
                                         </dxc:AxisY2D.Range>
                                     </dxc:AxisY2D>
                                 </dxc:XYDiagram2D.AxisY>
-                                <dxc:BarSideBySideSeries2D DisplayName="Sell Total" ArgumentDataMember="DateStart"
+                                <dxc:BarSideBySideSeries2D DisplayName="Sell Total" ArgumentDataMember="Date"
                                                            ValueDataMember="SellTotal"
                                                            ArgumentScaleType="DateTime" ValueScaleType="Numerical"
                                                            CrosshairLabelPattern="{}{S} : {V:N}" />
-                                <dxc:BarSideBySideSeries2D DisplayName="Buy Total" ArgumentDataMember="DateStart"
+                                <dxc:BarSideBySideSeries2D DisplayName="Buy Total" ArgumentDataMember="Date"
                                                            ValueDataMember="BuyTotal"
                                                            CrosshairLabelPattern="{}{S} : {V:N}"
                                                            ArgumentScaleType="DateTime" ValueScaleType="Numerical" />
-                                <dxc:BarSideBySideSeries2D DisplayName="Profit" ArgumentDataMember="DateStart"
-                                                           ValueDataMember="Profit"
+                                <dxc:BarSideBySideSeries2D DisplayName="Profit" ArgumentDataMember="Date"
+                                                           ValueDataMember="PeriodicAverageProfit"
                                                            CrosshairLabelPattern="{}{S} : {V:N}"
                                                            ArgumentScaleType="DateTime" ValueScaleType="Numerical" />
                             </dxc:XYDiagram2D>
@@ -278,11 +299,11 @@
                                         </dxc:AxisY2D.Range>
                                     </dxc:AxisY2D>
                                 </dxc:XYDiagram2D.AxisY>
-                                <dxc:BarSideBySideSeries2D DisplayName="Sold" ArgumentDataMember="DateStart"
+                                <dxc:BarSideBySideSeries2D DisplayName="Sold" ArgumentDataMember="Date"
                                                            ValueDataMember="SellQuantity" ArgumentScaleType="DateTime" />
-                                <dxc:BarSideBySideSeries2D DisplayName="Bought" ArgumentDataMember="DateStart"
+                                <dxc:BarSideBySideSeries2D DisplayName="Bought" ArgumentDataMember="Date"
                                                            ValueDataMember="BuyQuantity" ArgumentScaleType="DateTime" />
-                                <dxc:BarSideBySideSeries2D DisplayName="Stock" ArgumentDataMember="DateStart"
+                                <dxc:BarSideBySideSeries2D DisplayName="Stock" ArgumentDataMember="Date"
                                                            ValueDataMember="Stock" ArgumentScaleType="DateTime" />
                             </dxc:XYDiagram2D>
                         </dxc:ChartControl>
@@ -305,18 +326,18 @@
                                         </dxc:AxisY2D.Range>
                                     </dxc:AxisY2D>
                                 </dxc:XYDiagram2D.AxisY>
-                                <dxc:LineSeries2D DisplayName="AvgSellPrice" ArgumentDataMember="DateStart"
+                                <dxc:LineSeries2D DisplayName="AvgSellPrice" ArgumentDataMember="Date"
                                                   ValueDataMember="AvgSellPrice" ArgumentScaleType="DateTime"
                                                   CrosshairLabelPattern="{}{S} : {V:N}" />
-                                <dxc:LineSeries2D DisplayName="AvgBuyPrice" ArgumentDataMember="DateStart"
+                                <dxc:LineSeries2D DisplayName="AvgBuyPrice" ArgumentDataMember="Date"
                                                   ValueDataMember="AvgBuyPrice" ArgumentScaleType="DateTime"
                                                   CrosshairLabelPattern="{}{S} : {V:N}" />
-                                <dxc:RangeBarSideBySideSeries2D DisplayName="BuyPrice" ArgumentDataMember="DateStart"
+                                <dxc:RangeBarSideBySideSeries2D DisplayName="BuyPrice" ArgumentDataMember="Date"
                                                                 Value2DataMember="MaxBuyPrice"
                                                                 ValueDataMember="MinBuyPrice"
                                                                 ArgumentScaleType="DateTime"
                                                                 CrosshairLabelPattern="{}{S} : {V1:N} : {V2:N}"/>
-                                <dxc:RangeBarSideBySideSeries2D DisplayName="SellPrice" ArgumentDataMember="DateStart"
+                                <dxc:RangeBarSideBySideSeries2D DisplayName="SellPrice" ArgumentDataMember="Date"
                                                                 Value2DataMember="MaxSellPrice"
                                                                 ValueDataMember="MinSellPrice"
                                                                 ArgumentScaleType="DateTime"

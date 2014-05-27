@@ -43,6 +43,8 @@ namespace eZet.EveProfiteer.Services {
                     asset.TotalCost += transaction.Price * transaction.Quantity;
                     asset.Quantity += transaction.Quantity;
                     asset.LatestAverageCost = asset.TotalCost / asset.Quantity;
+                    transaction.PerpetualAverageCost = asset.LatestAverageCost;
+                    transaction.CurrentStock = asset.Quantity;
                 } else if (transaction.TransactionType == TransactionType.Sell) {
                     if (asset.Quantity > 0) {
                         transaction.PerpetualAverageCost = asset.TotalCost / asset.Quantity;
@@ -51,7 +53,10 @@ namespace eZet.EveProfiteer.Services {
                         transaction.PerpetualAverageCost = asset.LatestAverageCost;
                     }
                     asset.Quantity -= transaction.Quantity;
+                    transaction.CurrentStock = asset.Quantity;
                     if (asset.Quantity < 0) {
+                        transaction.UnaccountedStock += Math.Abs(asset.Quantity);
+                        transaction.CurrentStock = 0;
                         asset.UnaccountedQuantity += Math.Abs(asset.Quantity);
                         asset.TotalCost = 0;
                         asset.Quantity = 0;

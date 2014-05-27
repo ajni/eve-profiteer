@@ -19,7 +19,6 @@ namespace eZet.EveProfiteer.Models {
         }
 
         private void initialize() {
-            // TODO Add LIFO or some other cost price calculation
             FirstTransactionDate = DateTime.MaxValue;
             LastTransactionDate = DateTime.MinValue;
             foreach (var transaction in Transactions) {
@@ -31,6 +30,7 @@ namespace eZet.EveProfiteer.Models {
                 if (transaction.TransactionType == TransactionType.Sell) {
                     QuantitySold += transaction.Quantity;
                     SellTotal += transaction.Price * transaction.Quantity;
+                    CostOfGoodsSold += transaction.PerpetualAverageCost * transaction.Quantity;
                 } else if (transaction.TransactionType == TransactionType.Buy) {
                     QuantityBought += transaction.Quantity;
                     BuyTotal += transaction.Price * transaction.Quantity;
@@ -42,9 +42,10 @@ namespace eZet.EveProfiteer.Models {
                 AvgBuyPrice = BuyTotal / QuantityBought;
             if (QuantitySold > 0)
                 AvgSellPrice = SellTotal / QuantitySold;
-            TotalProfit = AvgBuyPrice != 0 ? QuantitySold * AvgSellPrice - QuantitySold * AvgBuyPrice : 0;
+            PeriodicAverageProfit = AvgBuyPrice != 0 ? SellTotal - QuantitySold * AvgBuyPrice : 0;
+            PerpetualAverageProfit = SellTotal - CostOfGoodsSold;
             int span = (LastTransactionDate - FirstTransactionDate).Days;
-            AvgProfitPerDay = TotalProfit;
+            AvgProfitPerDay = PeriodicAverageProfit;
             if (span > 0)
                 AvgProfitPerDay /= span;
             if (AvgSellPrice != 0 && AvgBuyPrice != 0) {
@@ -55,7 +56,7 @@ namespace eZet.EveProfiteer.Models {
 
         public InvType InvType { get; private set; }
 
-        public decimal TotalProfit { get; private set; }
+        public decimal PeriodicAverageProfit { get; private set; }
 
         public decimal Balance { get; private set; }
 
@@ -84,6 +85,11 @@ namespace eZet.EveProfiteer.Models {
         public decimal AvgProfitPerSale { get; private set; }
 
         public double AvgMargin { get; private set; }
+
+        public decimal CostOfGoodsSold { get; private set; }
+
+        public decimal PerpetualAverageProfit { get; private set; }
+
 
     }
 }

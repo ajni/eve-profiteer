@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows.Input;
 using Caliburn.Micro;
@@ -82,7 +81,7 @@ namespace eZet.EveProfiteer.ViewModels {
 
         public void Handle(ViewTradeDetailsEventArgs message) {
             var item = message.InvType;
-            SelectedItem = item;
+            SelectedItem = SelectableItems.Single(t => t.TypeId == item.TypeId);
         }
 
     }
