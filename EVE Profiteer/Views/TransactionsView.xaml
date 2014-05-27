@@ -27,7 +27,7 @@
         ShowInColumn="" SummaryType="Custom" />
             </dxg:GridControl.GroupSummary>
             <dxg:GridControl.Columns>
-                <dxg:GridColumn FieldName="TransactionDateStart" Header="DateStart" />
+                <dxg:GridColumn FieldName="TransactionDate" Header="Date" />
                 <dxg:GridColumn FieldName="TransactionType" Header="Transaction Type" />
                 <dxg:GridColumn FieldName="TypeName" Header="Item" />
                 <dxg:GridColumn FieldName="Quantity" />

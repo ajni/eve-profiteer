@@ -17,18 +17,13 @@ namespace eZet.EveProfiteer.Models {
         public OverviewData(ICollection<Transaction> transactions, TradeInterval interval) {
             Transactions = transactions;
             Interval = interval;
-            Types = new List<TradeTypeAggregate>();
             initialize();
         }
 
         public ICollection<Transaction> Transactions { get; set; }
         public TradeInterval Interval { get; set; }
 
-        public TradePeriodStatistics Period { get; private set; }
-
-        public ICollection<TradeTypeAggregate> Types { get; private set; }
-
-        public ICollection<TradePeriodStatistics> Periods { get; private set; }
+  
 
 
         public decimal SellTotal { get; private set; }
@@ -47,27 +42,7 @@ namespace eZet.EveProfiteer.Models {
         public DateTime FirstTransactionDate { get; set; }
 
         private void initialize() {
-            FirstTransactionDate = DateTime.MaxValue;
-            LastTransactionDate = DateTime.MinValue;
-            foreach (Transaction transaction in Transactions) {
-                if (transaction.TransactionDate < FirstTransactionDate)
-                    FirstTransactionDate = transaction.TransactionDate;
-                if (transaction.TransactionDate > LastTransactionDate)
-                    LastTransactionDate = transaction.TransactionDate;
-            }
-            TransactionCount = Transactions.Count;
-
-            IEnumerable<IGrouping<int, Transaction>> itemGroups = Transactions.GroupBy(t => t.TypeId);
-            foreach (var itemGroup in itemGroups) {
-                Types.Add(new TradeTypeAggregate(itemGroup.First().InvType, (itemGroup)));
-            }
-            ILookup<int, TradeTypeAggregate> typeLookup = Types.ToLookup(t => t.InvType.TypeId);
-
-            IEnumerable<IGrouping<DateTime, Transaction>> groupByInterval =
-                Transactions.GroupBy(t => toInterval(t.TransactionDate));
-            foreach (var transactionList in groupByInterval.ToList()) {
-                //Periods.Add(new TradePeriodStatistics(Types.ToDictionary(f => f.InvType, f => f.AvgBuyPrice), transactionList));
-            }
+    
         }
 
         public void CalculateSubIntervals() {

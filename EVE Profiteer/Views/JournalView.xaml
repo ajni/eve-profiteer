@@ -14,7 +14,7 @@
         <xcdg:DataGridControl NavigationBehavior="RowOnly" ReadOnly="True"
                               ItemsSource="{Binding Source={StaticResource JournalSource}}" AutoCreateColumns="False">
             <xcdg:DataGridControl.Columns>
-                <xcdg:Column FieldName="DateStart" Title="DateStart" />
+                <xcdg:Column FieldName="Date" Title="Date" />
                 <xcdg:Column FieldName="OwnerName" Title="Owner" />
                 <xcdg:Column FieldName="ParticipantName" Title="Participant" />
                 <xcdg:Column FieldName="ArgumentName" Title="Argument" />
