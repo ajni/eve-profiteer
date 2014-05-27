@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using DevExpress.Xpf.Core;
 
 namespace eZet.EveProfiteer.Views {
     /// <summary>
@@ -10,7 +11,7 @@ namespace eZet.EveProfiteer.Views {
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e) {
-            DevExpress.Xpf.Core.ThemeManager.ApplicationThemeName = "Office2013";
+            ThemeManager.ApplicationThemeName = "Office2013";
         }
     }
 }

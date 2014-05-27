@@ -9,19 +9,13 @@ namespace eZet.EveProfiteer.Models {
             InvType = invType;
             Transactions = transactions;
             Order = order;
-            Entries = new List<TransactionAggregate>();
-            initialize();
-        }
-
-        public TransactionAggregateSummary(DateTime start, DateTime end, IEnumerable<Transaction> transactions) {
-            Transactions = transactions;
-            Entries = new List<TransactionAggregate>();
+            Entries = new List<TradeAggregate>();
             initialize();
         }
 
         public TransactionAggregateSummary(IEnumerable<Transaction> transactions) {
             Transactions = transactions;
-            Entries = new List<TransactionAggregate>();
+            Entries = new List<TradeAggregate>();
             initialize();
         }
 
@@ -29,15 +23,13 @@ namespace eZet.EveProfiteer.Models {
         public IEnumerable<Transaction> Transactions { get; set; }
         public Order Order { get; set; }
 
-        public ICollection<TransactionAggregate> Entries { get; set; }
+        public ICollection<TradeAggregate> Entries { get; set; }
 
-        public int SellQuantity { get; private set; }
+        public decimal Balance { get; private set; }
 
-        public int BuyQuantity { get; private set; }
+        public decimal PeriodicAverageProfit { get; private set; }
 
-        public DateTime FirstTransactionDate { get; private set; }
-
-        public DateTime LastTransactionDate { get; private set; }
+        public decimal PerpetualAverageProfit { get; private set; }
 
         public decimal BuyTotal { get; private set; }
 
@@ -55,17 +47,19 @@ namespace eZet.EveProfiteer.Models {
 
         public decimal MaxSellPrice { get; private set; }
 
-        public decimal PeriodicAverageProfit { get; private set; }
+        public int SellQuantity { get; private set; }
 
-        public decimal PerpetualAverageProfit { get; private set; }
+        public int BuyQuantity { get; private set; }
+
+        public DateTime FirstTransactionDate { get; private set; }
+
+        public DateTime LastTransactionDate { get; private set; }
 
         public decimal PerpetualAverageTotalCost { get; private set; }
 
         public decimal ProfitPerItem { get; private set; }
 
         public double AvgMargin { get; private set; }
-
-        public decimal Balance { get; private set; }
 
         public int Stock { get; private set; }
 
@@ -74,16 +68,18 @@ namespace eZet.EveProfiteer.Models {
         public decimal StockValue { get; private set; }
 
         public decimal AvgProfitPerDay { get; private set; }
+
         public decimal PerpetualAverageCost { get; private set; }
 
         public TimeSpan TradeDuration { get; private set; }
 
         private void initialize() {
-            var groups = Transactions.GroupBy(f => f.TransactionDate.Date).Select(f => f.ToList()).ToList();
+            List<List<Transaction>> groups =
+                Transactions.GroupBy(f => f.TransactionDate.Date).Select(f => f.ToList()).ToList();
             FirstTransactionDate = DateTime.MaxValue;
             LastTransactionDate = DateTime.MinValue;
             foreach (var transactions in groups) {
-                var entry = new TransactionAggregate(transactions);
+                var entry = new TradeAggregate(transactions);
                 Entries.Add(entry);
                 Balance += entry.Balance;
                 SellQuantity += entry.SellQuantity;
@@ -101,24 +97,24 @@ namespace eZet.EveProfiteer.Models {
             TradeDuration = LastTransactionDate - FirstTransactionDate;
 
             if (BuyQuantity > 0)
-                AvgBuyPrice = BuyTotal / BuyQuantity;
+                AvgBuyPrice = BuyTotal/BuyQuantity;
             if (SellQuantity > 0)
-                AvgSellPrice = SellTotal / SellQuantity;
+                AvgSellPrice = SellTotal/SellQuantity;
 
-            var latest = Transactions.MaxBy(t => t.TransactionDate);
+            Transaction latest = Transactions.MaxBy(t => t.TransactionDate);
             Stock = latest.CurrentStock;
-            StockValue = Stock * latest.PerpetualAverageCost;
+            StockValue = Stock*latest.PerpetualAverageCost;
             PerpetualAverageCost = latest.PerpetualAverageCost;
 
-            PeriodicAverageProfit = SellTotal - AvgBuyPrice * SellQuantity;
+            PeriodicAverageProfit = SellTotal - AvgBuyPrice*SellQuantity;
             PerpetualAverageProfit = SellTotal - PerpetualAverageTotalCost;
             if (SellQuantity > 0)
-                ProfitPerItem = PerpetualAverageProfit / SellQuantity;
+                ProfitPerItem = PerpetualAverageProfit/SellQuantity;
             if (AvgSellPrice > 0)
-                AvgMargin = (double)(ProfitPerItem / AvgSellPrice);
+                AvgMargin = (double) (ProfitPerItem/AvgSellPrice);
 
             if (groups.Any() && TradeDuration.TotalDays > 0)
-                AvgProfitPerDay = PerpetualAverageProfit / (decimal)TradeDuration.TotalDays;
+                AvgProfitPerDay = PerpetualAverageProfit/(decimal) TradeDuration.TotalDays;
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using DevExpress.Utils.Drawing;
 using eZet.EveLib.Modules.Models;
 
 namespace eZet.EveProfiteer.Models {
@@ -61,22 +60,24 @@ namespace eZet.EveProfiteer.Models {
 
         public void Calculate() {
             ProfitPerItem = SellPrice - BuyPrice;
-            Margin = BuyPrice != 0 ? ProfitPerItem / BuyPrice : 0;
+            Margin = BuyPrice != 0 ? ProfitPerItem/BuyPrice : 0;
             if (!History.Any()) return;
             List<ItemHistory.ItemHistoryEntry> historyByVolume = History.OrderBy(f => f.Volume).ToList();
-            VolumeMedian = historyByVolume.Count == 1 ? historyByVolume[0].Volume : historyByVolume[historyByVolume.Count / 2 - 1].Volume;
+            VolumeMedian = historyByVolume.Count == 1
+                ? historyByVolume[0].Volume
+                : historyByVolume[historyByVolume.Count/2 - 1].Volume;
             VolumeAverage = History.Average(f => f.Volume);
-            if (History.Count() % 2 == 0) {
-                VolumeMedian = (VolumeMedian + historyByVolume[historyByVolume.Count / 2].Volume) / 2;
+            if (History.Count()%2 == 0) {
+                VolumeMedian = (VolumeMedian + historyByVolume[historyByVolume.Count/2].Volume)/2;
             }
             var variance = new List<double>();
             historyByVolume.ForEach(f => variance.Add(Math.Pow(f.Volume - VolumeAverage, 2)));
             VolumeVariance = variance.Average();
             VolumeStandardDeviation = Math.Sqrt(VolumeVariance);
             VolumeAdjustedAverage = History.Where(f => !isOutlier(f.Volume)).Average(f => f.Volume);
-            DailyProfit = ProfitPerItem * (decimal)VolumeMedian;
+            DailyProfit = ProfitPerItem*(decimal) VolumeMedian;
             List<ItemHistory.ItemHistoryEntry> historyByDate = History.OrderBy(f => f.Date).ToList();
-            foreach (var item in historyByDate) {
+            foreach (ItemHistory.ItemHistoryEntry item in historyByDate) {
                 AvgPrice += item.AvgPrice;
                 AvgMinPrice += item.MinPrice;
                 AvgMaxPrice += item.MaxPrice;
@@ -86,14 +87,13 @@ namespace eZet.EveProfiteer.Models {
             AvgMinPrice /= History.Count();
             AvgProfitPerItem = AvgMaxPrice - AvgMinPrice;
             if (AvgMaxPrice > 0)
-                AvgMargin = (double)(AvgProfitPerItem / AvgMaxPrice);
-            AvgDailyProfit = AvgProfitPerItem * (decimal)VolumeMedian;
-
+                AvgMargin = (double) (AvgProfitPerItem/AvgMaxPrice);
+            AvgDailyProfit = AvgProfitPerItem*(decimal) VolumeMedian;
         }
 
         private bool isOutlier(double volume) {
-            return volume > VolumeMedian + VolumeStandardDeviation * StandardDeviationFactor ||
-                   volume < VolumeMedian - VolumeStandardDeviation * StandardDeviationFactor;
+            return volume > VolumeMedian + VolumeStandardDeviation*StandardDeviationFactor ||
+                   volume < VolumeMedian - VolumeStandardDeviation*StandardDeviationFactor;
         }
     }
 }

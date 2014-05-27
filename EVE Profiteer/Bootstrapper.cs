@@ -7,7 +7,6 @@ using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Repository;
 using eZet.EveProfiteer.Services;
 using eZet.EveProfiteer.ViewModels;
-using eZet.EveProfiteer.Views;
 
 namespace eZet.EveProfiteer {
     public class Bootstrapper : BootstrapperBase {
@@ -51,7 +50,7 @@ namespace eZet.EveProfiteer {
             _container.PerRequest<ManageKeysViewModel>();
             _container.PerRequest<AddKeyViewModel>();
             _container.PerRequest<EditKeyViewModel>();
-            _container.PerRequest<OverviewViewModel>();
+            _container.PerRequest<TradeSummaryViewModel>();
             _container.PerRequest<TransactionsViewModel>();
             _container.PerRequest<MarketAnalyzerViewModel>();
             _container.PerRequest<JournalViewModel>();

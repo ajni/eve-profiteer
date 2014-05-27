@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using eZet.Utilities;
 
 namespace eZet.EveProfiteer.Models {
@@ -23,8 +22,6 @@ namespace eZet.EveProfiteer.Models {
         public ICollection<Transaction> Transactions { get; set; }
         public TradeInterval Interval { get; set; }
 
-  
-
 
         public decimal SellTotal { get; private set; }
 
@@ -42,7 +39,6 @@ namespace eZet.EveProfiteer.Models {
         public DateTime FirstTransactionDate { get; set; }
 
         private void initialize() {
-    
         }
 
         public void CalculateSubIntervals() {
@@ -55,7 +51,7 @@ namespace eZet.EveProfiteer.Models {
                 case TradeInterval.Daily:
                     return date.Date;
                 case TradeInterval.Weekly:
-                    return new DateTime(date.Year, 0, 0).AddDays(date.GetWeekOfYear() * 7);
+                    return new DateTime(date.Year, 0, 0).AddDays(date.GetWeekOfYear()*7);
                 case TradeInterval.Monthly:
                     return new DateTime(date.Year, date.Month, 0);
                 case TradeInterval.Yearly:

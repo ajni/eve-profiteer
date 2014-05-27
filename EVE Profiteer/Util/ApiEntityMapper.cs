@@ -1,5 +1,4 @@
-﻿using System.Windows;
-using eZet.EveLib.Modules.Models;
+﻿using eZet.EveLib.Modules.Models;
 using eZet.EveLib.Modules.Models.Character;
 using eZet.EveProfiteer.Models;
 
@@ -68,6 +67,5 @@ namespace eZet.EveProfiteer.Util {
             target.Date = source.Date;
             return target;
         }
-
     }
 }

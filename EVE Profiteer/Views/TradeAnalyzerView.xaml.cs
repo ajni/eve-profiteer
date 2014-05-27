@@ -7,7 +7,7 @@ using eZet.EveProfiteer.ViewModels;
 
 namespace eZet.EveProfiteer.Views {
     /// <summary>
-    /// Interaction logic for TradeAnalyzerView.xaml
+    ///     Interaction logic for TradeAnalyzerView.xaml
     /// </summary>
     public partial class TradeAnalyzerView {
         public TradeAnalyzerView() {
@@ -16,7 +16,7 @@ namespace eZet.EveProfiteer.Views {
 
         private void TradeAnalyzerGrid_OnCustomRowFilter(object sender, RowFilterEventArgs e) {
             int rowHandle = TradeAnalyzerGrid.GetRowHandleByListIndex(e.ListSourceRowIndex);
-            var row = e.Source.GetRow(rowHandle) as TransactionAggregate;
+            var row = e.Source.GetRow(rowHandle) as TradeAggregate;
             if (row == null)
                 throw new InvalidOperationException();
             if (FilterOrders.IsChecked.Value && row.Order == null) e.Visible = false;
@@ -30,14 +30,16 @@ namespace eZet.EveProfiteer.Views {
         }
 
         private void ViewPeriodSelector_OnEditValueChanged(object sender, RoutedEventArgs e) {
-            var value = (TradeAnalyzerViewModel.ViewPeriodEnum)((BarEditItem)sender).EditValue;
+            var value = (TradeAnalyzerViewModel.ViewPeriodEnum) ((BarEditItem) sender).EditValue;
             if (value == TradeAnalyzerViewModel.ViewPeriodEnum.Period) {
                 StartDate.IsEnabled = true;
                 EndDate.IsEnabled = true;
-            } else if (value == TradeAnalyzerViewModel.ViewPeriodEnum.Since) {
+            }
+            else if (value == TradeAnalyzerViewModel.ViewPeriodEnum.Since) {
                 StartDate.IsEnabled = true;
                 EndDate.IsEnabled = false;
-            } else {
+            }
+            else {
                 StartDate.IsEnabled = false;
                 EndDate.IsEnabled = false;
             }

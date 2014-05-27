@@ -10,7 +10,8 @@
 
     <DockPanel>
 
-        <dxg:GridControl AutoGenerateColumns="None" ItemsSource="{Binding Transactions}" GroupSummaryGeneratorTemplate="{DynamicResource DataTemplate1}">
+        <dxg:GridControl AutoGenerateColumns="None" ItemsSource="{Binding Transactions}"
+                         GroupSummaryGeneratorTemplate="{DynamicResource DataTemplate1}">
             <dxg:GridControl.View>
                 <dxg:TableView AllowEditing="False" NavigationStyle="Row" ShowAutoFilterRow="True"
                                PrintTotalSummary="True" IsTotalSummaryMenuEnabled="True"
@@ -23,8 +24,8 @@
                                      DisplayFormat="Profit: {0:N0} isk" Alignment="Left" />
             </dxg:GridControl.TotalSummary>
             <dxg:GridControl.GroupSummary>
-                <dxg:GridSummaryItem DisplayFormat="Max: {0:c2}" FieldName="Profit:" 
-        ShowInColumn="" SummaryType="Custom" />
+                <dxg:GridSummaryItem DisplayFormat="Max: {0:c2}" FieldName="Profit:"
+                                     ShowInColumn="" SummaryType="Custom" />
             </dxg:GridControl.GroupSummary>
             <dxg:GridControl.Columns>
                 <dxg:GridColumn FieldName="TransactionDate" Header="Date" />
@@ -32,7 +33,7 @@
                 <dxg:GridColumn FieldName="TypeName" Header="Item" />
                 <dxg:GridColumn FieldName="Quantity" />
                 <dxg:GridColumn FieldName="Price" />
-                <dxg:GridColumn FieldName="Total" UnboundType="Decimal" UnboundExpression="[Quantity] * [Price]"/>
+                <dxg:GridColumn FieldName="Total" UnboundType="Decimal" UnboundExpression="[Quantity] * [Price]" />
                 <dxg:GridColumn FieldName="ClientName" Header="Client" />
                 <dxg:GridColumn FieldName="StationName" Header="Station" />
             </dxg:GridControl.Columns>

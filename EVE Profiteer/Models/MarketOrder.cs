@@ -2,7 +2,6 @@
 
 namespace eZet.EveProfiteer.Models {
     public class MarketOrder {
-
         public int TypeId { get; set; }
 
         public int StationId { get; set; }

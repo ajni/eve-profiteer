@@ -7,14 +7,9 @@ using eZet.EveProfiteer.Util;
 
 namespace eZet.EveProfiteer.Ui.Converters {
     public class OrderToBrushConverter : MarkupExtension, IValueConverter {
-
-        public OrderToBrushConverter() {
-
-        }
-
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
             if (value == null) return null;
-            var order = (Order)value;
+            var order = (Order) value;
             if (order.IsBuyOrder || order.IsSellOrder)
                 return ConfigManager.ActiveOrderBrush;
             return ConfigManager.InactiveOrderBrush;

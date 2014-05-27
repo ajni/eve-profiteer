@@ -11,8 +11,8 @@ namespace eZet.EveProfiteer.ViewModels {
         private ApiKey _selectedKey;
 
         public ManageKeysViewModel(IWindowManager windowManager, KeyManagementService keyManagementService) {
-            this._windowManager = windowManager;
-            this._keyManagementService = keyManagementService;
+            _windowManager = windowManager;
+            _keyManagementService = keyManagementService;
             Keys = new BindableCollection<ApiKey>(keyManagementService.AllApiKeys().ToList());
         }
 

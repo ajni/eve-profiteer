@@ -1,10 +1,6 @@
-﻿using System;
-using Caliburn.Micro;
+﻿using Caliburn.Micro;
 using DevExpress.Data;
-using DevExpress.Xpf.Data;
 using DevExpress.Xpf.Grid;
-using eZet.Eve.OrderIoHelper.Models;
-using eZet.EveProfiteer.Models;
 using GridControl = DevExpress.XtraGrid.GridControl;
 
 namespace eZet.EveProfiteer.Views {
@@ -14,8 +10,8 @@ namespace eZet.EveProfiteer.Views {
     public partial class OrderEditorView {
         private readonly IEventAggregator _eventAggregator;
 
-        private int sellOrders;
         private int buyOrders;
+        private int sellOrders;
 
         public OrderEditorView() {
             _eventAggregator = IoC.Get<IEventAggregator>();
@@ -36,24 +32,24 @@ namespace eZet.EveProfiteer.Views {
         }
 
         private void Orders_OnCustomSummary(object sender, CustomSummaryEventArgs e) {
-
-            if (((GridSummaryItem)e.Item).FieldName == "IsSellOrder") {
+            if (((GridSummaryItem) e.Item).FieldName == "IsSellOrder") {
                 if (e.SummaryProcess == CustomSummaryProcess.Start) {
                     sellOrders = 0;
-                } else if (e.SummaryProcess == CustomSummaryProcess.Calculate && (bool)e.FieldValue) {
+                }
+                else if (e.SummaryProcess == CustomSummaryProcess.Calculate && (bool) e.FieldValue) {
                     ++sellOrders;
                     e.TotalValue = sellOrders;
                 }
             }
-            if (((GridSummaryItem)e.Item).FieldName == "IsBuyOrder") {
+            if (((GridSummaryItem) e.Item).FieldName == "IsBuyOrder") {
                 if (e.SummaryProcess == CustomSummaryProcess.Start) {
                     buyOrders = 0;
-                } else if (e.SummaryProcess == CustomSummaryProcess.Calculate && (bool)e.FieldValue) {
+                }
+                else if (e.SummaryProcess == CustomSummaryProcess.Calculate && (bool) e.FieldValue) {
                     ++buyOrders;
                     e.TotalValue = buyOrders;
                 }
             }
         }
-
     }
 }

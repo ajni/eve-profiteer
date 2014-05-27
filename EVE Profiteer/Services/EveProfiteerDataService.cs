@@ -6,11 +6,11 @@ using eZet.EveProfiteer.Models;
 
 namespace eZet.EveProfiteer.Services {
     public class EveProfiteerDataService {
-        public EveProfiteerDbEntities Db { get; private set; }
-
         public EveProfiteerDataService(EveProfiteerDbEntities db) {
             Db = db;
         }
+
+        public EveProfiteerDbEntities Db { get; private set; }
 
         public BindableCollection<InvMarketGroup> BuildMarketTree(PropertyChangedEventHandler itemPropertyChanged) {
             var rootList = new BindableCollection<InvMarketGroup>();
@@ -31,12 +31,12 @@ namespace eZet.EveProfiteer.Services {
                     int id = key.Value.ParentGroupId ?? default(int);
                     groups.TryGetValue(id, out group);
                     group.Children.Add(key.Value);
-                } else {
+                }
+                else {
                     rootList.Add(key.Value);
                 }
             }
             return rootList;
         }
-
     }
 }

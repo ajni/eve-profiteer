@@ -134,7 +134,7 @@
     <Compile Include="Models\CharacterData.cs" />
     <Compile Include="Models\MarketHistoryEntry.cs" />
     <Compile Include="Models\OverviewData.cs" />
-    <Compile Include="Models\TransactionAggregate.cs" />
+    <Compile Include="Models\TradeAggregate.cs" />
     <Compile Include="Models\MarketBrowserItem.cs" />
     <Compile Include="Models\MarketOrder.cs" />
     <Compile Include="Services\EveProfiteerDataService.cs" />
@@ -175,7 +175,7 @@
       <DependentUpon>EditOrderDialogView.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\MarketAnalyzerViewModel.cs" />
-    <Compile Include="ViewModels\OverviewViewModel.cs" />
+    <Compile Include="ViewModels\TradeSummaryViewModel.cs" />
     <Compile Include="ViewModels\ScannerLinkViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
     <Compile Include="App.xaml.cs">
@@ -191,8 +191,8 @@
     <Compile Include="Views\AddKeyView.xaml.cs">
       <DependentUpon>AddKeyView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\OverviewView.xaml.cs">
-      <DependentUpon>OverviewView.xaml</DependentUpon>
+    <Compile Include="Views\TradeSummaryView.xaml.cs">
+      <DependentUpon>TradeSummaryView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\TradeDetailsView.xaml.cs">
       <DependentUpon>TradeDetailsView.xaml</DependentUpon>
@@ -243,7 +243,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\OverviewView.xaml">
+    <Page Include="Views\TradeSummaryView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

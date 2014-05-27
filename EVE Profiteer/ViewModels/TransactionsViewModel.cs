@@ -1,14 +1,14 @@
 ﻿using System.Collections.ObjectModel;
-using System.Linq;
 using Caliburn.Micro;
 using eZet.EveProfiteer.Models;
+using eZet.EveProfiteer.Services;
 
 namespace eZet.EveProfiteer.ViewModels {
     public class TransactionsViewModel : Screen {
-        private readonly Services.TransactionService _transactionService;
+        private readonly TransactionService _transactionService;
         private ObservableCollection<Transaction> _transactions;
 
-        public TransactionsViewModel(Services.TransactionService transactionService) {
+        public TransactionsViewModel(TransactionService transactionService) {
             _transactionService = transactionService;
             DisplayName = "Transactions";
         }
@@ -24,6 +24,7 @@ namespace eZet.EveProfiteer.ViewModels {
         public ApiKey ApiKey { get; set; }
 
         public ApiKeyEntity ApiKeyEntity { get; set; }
+
         public void Initialize(ApiKey key, ApiKeyEntity entity) {
             ApiKey = key;
             ApiKeyEntity = entity;
@@ -32,6 +33,5 @@ namespace eZet.EveProfiteer.ViewModels {
 
         protected override void OnInitialize() {
         }
-
     }
 }

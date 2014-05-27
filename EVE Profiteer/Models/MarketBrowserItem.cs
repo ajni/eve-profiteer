@@ -3,7 +3,8 @@ using System.Linq;
 
 namespace eZet.EveProfiteer.Models {
     public class MarketBrowserItem {
-        public MarketBrowserItem(InvType invType, IEnumerable<MarketHistoryEntry> marketHistory, ICollection<MarketOrder> buyOrders, ICollection<MarketOrder> sellOrders, int donchianLength) {
+        public MarketBrowserItem(InvType invType, IEnumerable<MarketHistoryEntry> marketHistory,
+            ICollection<MarketOrder> buyOrders, ICollection<MarketOrder> sellOrders, int donchianLength) {
             InvType = invType;
             MarketHistory = marketHistory.OrderBy(entry => entry.Date).ToList();
             BuyOrders = buyOrders;
@@ -24,7 +25,7 @@ namespace eZet.EveProfiteer.Models {
         private void initialize() {
             var high = new List<decimal>();
             var low = new List<decimal>();
-            foreach (var entry in MarketHistory) {
+            foreach (MarketHistoryEntry entry in MarketHistory) {
                 high.Add(entry.HighPrice);
                 low.Add(entry.LowPrice);
                 if (high.Count > DonchianLength)
@@ -37,8 +38,6 @@ namespace eZet.EveProfiteer.Models {
                     entry.DonchianLow = low.Min();
                 entry.DonchianCenter = (entry.DonchianHigh + entry.DonchianLow)/2;
             }
-
-
         }
     }
 }

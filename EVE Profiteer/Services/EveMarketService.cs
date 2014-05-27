@@ -28,20 +28,21 @@ namespace eZet.EveProfiteer.Services {
             var options = new EveMarketDataOptions();
             options.Items.Add(invType.TypeId);
             options.Regions.Add(region.RegionId);
-            var orderResponse = eveMarketData.GetItemOrders(options, OrderType.Both);
+            EveMarketDataResponse<ItemOrders> orderResponse = eveMarketData.GetItemOrders(options, OrderType.Both);
             var buyOrders = new List<MarketOrder>();
             var sellOrders = new List<MarketOrder>();
-            foreach (var order in orderResponse.Result.Orders) {
-                var marketOrder = ApiEntityMapper.Map(order, new MarketOrder());
+            foreach (ItemOrders.ItemOrderEntry order in orderResponse.Result.Orders) {
+                MarketOrder marketOrder = ApiEntityMapper.Map(order, new MarketOrder());
                 if (order.OrderType == OrderType.Buy) {
                     buyOrders.Add(marketOrder);
-                } else {
+                }
+                else {
                     sellOrders.Add(marketOrder);
                 }
             }
-            var marketHistoryResponse = EveCrest.GetMarketHistory(region.RegionId, invType.TypeId);
+            MarketHistoryResponse marketHistoryResponse = EveCrest.GetMarketHistory(region.RegionId, invType.TypeId);
             var marketHistory = new List<MarketHistoryEntry>();
-            foreach (var entry in marketHistoryResponse.Entries) {
+            foreach (MarketHistoryResponse.MarketHistoryEntry entry in marketHistoryResponse.Entries) {
                 marketHistory.Add(ApiEntityMapper.Map(entry, new MarketHistoryEntry()));
             }
 
@@ -50,7 +51,8 @@ namespace eZet.EveProfiteer.Services {
             return item;
         }
 
-        public MarketAnalyzer GetMarketAnalyzer(MapRegion region, StaStation station, ICollection<InvType> items, int dayLimit) {
+        public MarketAnalyzer GetMarketAnalyzer(MapRegion region, StaStation station, ICollection<InvType> items,
+            int dayLimit) {
             var historyOptions = new EveMarketDataOptions();
             historyOptions.AgeSpan = TimeSpan.FromDays(dayLimit);
             historyOptions.Regions.Add(region.RegionId);
@@ -86,7 +88,7 @@ namespace eZet.EveProfiteer.Services {
         }
 
         public Uri GetScannerLink(ICollection<Int64> items) {
-            var options = new EveMarketDataOptions { Items = items };
+            var options = new EveMarketDataOptions {Items = items};
             return eveMarketData.GetScannerUri(options);
         }
 

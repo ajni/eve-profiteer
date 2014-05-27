@@ -2,7 +2,6 @@
 
 namespace eZet.EveProfiteer.Util {
     public static class ConfigManager {
-
         public const string DateTimeFormat = "dd-MM-yyyy";
 
         public static Brush BuyOrderBrush = Brushes.LightSalmon;

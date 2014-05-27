@@ -183,7 +183,7 @@ namespace eZet.EveProfiteer.ViewModels {
 
         private bool CanAddToOrders() {
             return MarketBrowserData.InvType.Orders.All(
-                       order => order.ApiKeyEntity_Id != ApplicationHelper.ActiveKeyEntity.Id);
+                order => order.ApiKeyEntity_Id != ApplicationHelper.ActiveKeyEntity.Id);
         }
 
         private async Task<MarketBrowserItem> GetMarketDetails(MapRegion region, InvType invType) {

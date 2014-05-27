@@ -16,7 +16,8 @@
     <UserControl.Resources>
 
         <ResourceDictionary>
-            <Style x:Key="RowBackgroundStyle" BasedOn="{StaticResource {themes:GridRowThemeKey ResourceKey=RowStyle, ThemeName={x:Static dx:ThemeManager.ApplicationThemeName}}}"
+            <Style x:Key="RowBackgroundStyle"
+                   BasedOn="{StaticResource {themes:GridRowThemeKey ResourceKey=RowStyle, ThemeName={x:Static dx:ThemeManager.ApplicationThemeName}}}"
                    TargetType="dxg:GridRowContent">
                 <Setter Property="Background"
                         Value="{Binding Path=Row.Order, Converter={converters:OrderToBrushConverter}}" />
@@ -27,59 +28,67 @@
         <DockPanel>
             <dxb:BarManager DockPanel.Dock="Top">
                 <dxb:BarManager.Items>
-                    <dxb:BarEditItem Name="ViewPeriodSelector" EditValue="{Binding SelectedViewPeriod}" EditWidth="100" Hint="Station to analyze." EditValueChanged="ViewPeriodSelector_OnEditValueChanged">
+                    <dxb:BarEditItem Name="ViewPeriodSelector" EditValue="{Binding SelectedViewPeriod}" EditWidth="100"
+                                     Hint="Station to analyze."
+                                     EditValueChanged="ViewPeriodSelector_OnEditValueChanged">
                         <dxb:BarEditItem.EditSettings>
-                            <dxe:ComboBoxEditSettings ItemsSource="{Binding ViewPeriodValues}"/>
+                            <dxe:ComboBoxEditSettings ItemsSource="{Binding ViewPeriodValues}" />
                         </dxb:BarEditItem.EditSettings>
                     </dxb:BarEditItem>
-                    <dxb:BarEditItem  Name="StartDate" Content="From" EditValue="{Binding PeriodSelectorStart}">
+                    <dxb:BarEditItem Name="StartDate" Content="From" EditValue="{Binding PeriodSelectorStart}">
                         <dxb:BarEditItem.EditSettings>
-                            <dxe:DateEditSettings/>
+                            <dxe:DateEditSettings />
                         </dxb:BarEditItem.EditSettings>
 
                     </dxb:BarEditItem>
-                    <dxb:BarEditItem  Name="EndDate" Content="To" EditValue="{Binding PeriodSelectorEnd}">
+                    <dxb:BarEditItem Name="EndDate" Content="To" EditValue="{Binding PeriodSelectorEnd}">
                         <dxb:BarEditItem.EditSettings>
-                            <dxe:DateEditSettings/>
+                            <dxe:DateEditSettings />
                         </dxb:BarEditItem.EditSettings>
                     </dxb:BarEditItem>
-                    <dxb:BarCheckItem Name="FilterOrders" CheckedChanged="FilterOrders_OnChecked" Description="Description" Content="Orders"/>
-                    <dxb:BarCheckItem Name="FilterInactiveOrders" CheckedChanged="FilterOrders_OnChecked" Content="Active Orders"/>
-                    <dxb:BarButtonItem Name="ViewButton" Content="View" Command="{Binding ViewPeriodCommand}"></dxb:BarButtonItem>
+                    <dxb:BarCheckItem Name="FilterOrders" CheckedChanged="FilterOrders_OnChecked"
+                                      Description="Description" Content="Orders" />
+                    <dxb:BarCheckItem Name="FilterInactiveOrders" CheckedChanged="FilterOrders_OnChecked"
+                                      Content="Active Orders" />
+                    <dxb:BarButtonItem Name="ViewButton" Content="View" Command="{Binding ViewPeriodCommand}" />
 
                 </dxb:BarManager.Items>
 
                 <dxb:BarManager.Bars>
                     <dxb:Bar>
-                        <dxb:BarButtonItemLink BarItemName="ViewButton"></dxb:BarButtonItemLink>
-                        <dxb:BarEditItemLink BarItemName="ViewPeriodSelector"></dxb:BarEditItemLink>
-                        <dxb:BarEditItemLink BarItemName="StartDate"></dxb:BarEditItemLink>
-                        <dxb:BarEditItemLink BarItemName="EndDate"></dxb:BarEditItemLink>
+                        <dxb:BarButtonItemLink BarItemName="ViewButton" />
+                        <dxb:BarEditItemLink BarItemName="ViewPeriodSelector" />
+                        <dxb:BarEditItemLink BarItemName="StartDate" />
+                        <dxb:BarEditItemLink BarItemName="EndDate" />
                     </dxb:Bar>
                     <dxb:Bar>
-                        <dxb:BarCheckItemLink BarItemName="FilterOrders"></dxb:BarCheckItemLink>
-                        <dxb:BarCheckItemLink BarItemName="FilterInactiveOrders"></dxb:BarCheckItemLink>
+                        <dxb:BarCheckItemLink BarItemName="FilterOrders" />
+                        <dxb:BarCheckItemLink BarItemName="FilterInactiveOrders" />
                     </dxb:Bar>
 
                 </dxb:BarManager.Bars>
 
             </dxb:BarManager>
 
-            <dxg:GridControl x:Name="TradeAnalyzerGrid" ItemsSource="{Binding Items}" CustomRowFilter="TradeAnalyzerGrid_OnCustomRowFilter">
+            <dxg:GridControl x:Name="TradeAnalyzerGrid" ItemsSource="{Binding Items}"
+                             CustomRowFilter="TradeAnalyzerGrid_OnCustomRowFilter">
                 <dxg:GridControl.View>
-                    <dxg:SelectionView ShowTotalSummary="True" ShowFixedTotalSummary="True" RowStyle="{StaticResource RowBackgroundStyle}"
-                                       ShowGroupPanel="False" IsRowCellMenuEnabled="True" ShowSearchPanelMode="Default" SearchColumns="InvType.TypeName"
-                                       SearchPanelCriteriaOperatorType="And" AutoScrollOnSorting="False" NavigationStyle="Row" AllowEditing="False">
+                    <dxg:SelectionView ShowTotalSummary="True" ShowFixedTotalSummary="True"
+                                       RowStyle="{StaticResource RowBackgroundStyle}"
+                                       ShowGroupPanel="False" IsRowCellMenuEnabled="True" ShowSearchPanelMode="Default"
+                                       SearchColumns="InvType.TypeName"
+                                       SearchPanelCriteriaOperatorType="And" AutoScrollOnSorting="False"
+                                       NavigationStyle="Row" AllowEditing="False">
                         <dxg:SelectionView.RowCellMenuCustomizations>
                             <dxb:BarButtonItem Content="View trade details"
                                                Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.ViewTradeDetailsCommand, RelativeSource={RelativeSource Self}}"
-                                               CommandParameter="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataControl.CurrentItem, RelativeSource={RelativeSource Self}}"/>
+                                               CommandParameter="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataControl.CurrentItem, RelativeSource={RelativeSource Self}}" />
                             <dxb:BarButtonItem Content="View market details"
                                                Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.ViewMarketDetailsCommand, RelativeSource={RelativeSource Self}}"
-                                               CommandParameter="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataControl.CurrentItem, RelativeSource={RelativeSource Self}}"/>
+                                               CommandParameter="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataControl.CurrentItem, RelativeSource={RelativeSource Self}}" />
                             <dxb:BarButtonItem Content="View order"
                                                Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.ViewOrderCommand, RelativeSource={RelativeSource Self}}"
-                                               CommandParameter="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataControl.CurrentItem, RelativeSource={RelativeSource Self}}"/>
+                                               CommandParameter="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataControl.CurrentItem, RelativeSource={RelativeSource Self}}" />
                         </dxg:SelectionView.RowCellMenuCustomizations>
                     </dxg:SelectionView>
                 </dxg:GridControl.View>
@@ -99,8 +108,8 @@
                     <dxg:GridSummaryItem SummaryType="Count" Alignment="Right" DisplayFormat="Items: {0:N0}" />
                 </dxg:GridControl.TotalSummary>
                 <dxg:GridControl.Columns>
-                    <dxg:GridColumn Visible="False" FieldName="InvType.TypeId"/>
-                    <dxg:GridColumn FieldName="InvType.TypeName" Header="Item"/>
+                    <dxg:GridColumn Visible="False" FieldName="InvType.TypeId" />
+                    <dxg:GridColumn FieldName="InvType.TypeName" Header="Item" />
                     <dxg:GridColumn FieldName="Balance">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="N2" />
@@ -141,8 +150,8 @@
                             <dxe:TextEditSettings DisplayFormat="P" />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="BuyQuantity" Header="Qty Bought"/>
-                    <dxg:GridColumn FieldName="SellQuantity" Header="Qty Sold"/>
+                    <dxg:GridColumn FieldName="BuyQuantity" Header="Qty Bought" />
+                    <dxg:GridColumn FieldName="SellQuantity" Header="Qty Sold" />
                     <dxg:GridColumn FieldName="AvgBuyPrice">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="N2" />
@@ -154,9 +163,9 @@
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
                     <dxg:GridColumn Visible="False" FieldName="Transactions.Count" Header="Transactions" />
-                    <dxg:GridColumn Visible="False" FieldName="StockDelta"/>
-                    <dxg:GridColumn Visible="False" FieldName="FirstTransactionDate" Header="First transaction"/>
-                    <dxg:GridColumn Visible="False" FieldName="LastTransactionDate" Header="Last transaction"/>
+                    <dxg:GridColumn Visible="False" FieldName="StockDelta" />
+                    <dxg:GridColumn Visible="False" FieldName="FirstTransactionDate" Header="First transaction" />
+                    <dxg:GridColumn Visible="False" FieldName="LastTransactionDate" Header="Last transaction" />
                 </dxg:GridControl.Columns>
             </dxg:GridControl>
 

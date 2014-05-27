@@ -136,17 +136,18 @@ namespace eZet.EveProfiteer.ViewModels {
             if (item == null) {
                 eventArgs.IsValid = false;
                 eventArgs.SetError("Invalid item.");
-            } else {
+            }
+            else {
                 if (Orders.SingleOrDefault(order => order.TypeId == item.TypeId) != null) {
                     eventArgs.IsValid = false;
                     eventArgs.SetError("Item has already been added.");
-                } else {
-                    ((Order)eventArgs.Row).InvType = item;
+                }
+                else {
+                    ((Order) eventArgs.Row).InvType = item;
                 }
             }
 
             _eventAggregator.Publish(new StatusChangedEventArgs("Order added"));
-
         }
 
         public void Handle(ViewOrderEventArgs message) {
@@ -154,7 +155,6 @@ namespace eZet.EveProfiteer.ViewModels {
             FocusedOrder = order;
             SelectedOrder = order;
             _eventAggregator.Publish(new StatusChangedEventArgs("Order selected"));
-
         }
 
         private void ExecuteSaveOrder(RowEventArgs e) {
@@ -168,7 +168,6 @@ namespace eZet.EveProfiteer.ViewModels {
                 Orders.Remove(order);
             }
             _eventAggregator.Publish(new StatusChangedEventArgs("Order(s) deleted"));
-
         }
 
         private void OrdersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
@@ -184,7 +183,7 @@ namespace eZet.EveProfiteer.ViewModels {
 
         public void SaveChanges() {
             _eventAggregator.Publish(new StatusChangedEventArgs("Saving orders..."));
-            var newOrders = Orders.Where(order => order.Id == 0).ToList();
+            List<Order> newOrders = Orders.Where(order => order.Id == 0).ToList();
             newOrders.Apply(order => order.ApiKeyEntity_Id = ApplicationHelper.ActiveKeyEntity.Id);
             _dataService.Db.Orders.AddRange(newOrders);
             _dataService.Db.SaveChanges();
@@ -222,17 +221,15 @@ namespace eZet.EveProfiteer.ViewModels {
             _eveMarketService.LoadMarketData(Orders, DayLimit);
             Orders.Refresh();
             _eventAggregator.Publish(new StatusChangedEventArgs("Market data updated"));
-
         }
 
         public void UpdatePriceLimits() {
             foreach (Order order in SelectedOrders) {
-                order.MaxBuyPrice = order.AvgPrice + order.AvgPrice * (decimal)(BuyOrderAvgOffset / 100.0);
-                order.MinSellPrice = order.AvgPrice - order.AvgPrice * (decimal)(SellOrderAvgOffset / 100.0);
+                order.MaxBuyPrice = order.AvgPrice + order.AvgPrice*(decimal) (BuyOrderAvgOffset/100.0);
+                order.MinSellPrice = order.AvgPrice - order.AvgPrice*(decimal) (SellOrderAvgOffset/100.0);
             }
             Orders.Refresh();
             _eventAggregator.Publish(new StatusChangedEventArgs("Price limits updated"));
-
         }
 
 
@@ -241,22 +238,22 @@ namespace eZet.EveProfiteer.ViewModels {
             if (_windowManager.ShowDialog(vm) != true) return;
             foreach (Order order in SelectedOrders) {
                 if (vm.SetBuyOrderTotal && order.MaxBuyPrice != 0) {
-                    order.BuyQuantity = (int)(vm.BuyOrderTotal / order.MaxBuyPrice);
+                    order.BuyQuantity = (int) (vm.BuyOrderTotal/order.MaxBuyPrice);
                     if (order.MaxBuyPrice > vm.BuyOrderTotal)
                         order.BuyQuantity = 1;
 
                     // set total as close to target as possible
-                    decimal total = order.MaxBuyPrice * order.BuyQuantity;
+                    decimal total = order.MaxBuyPrice*order.BuyQuantity;
                     if (vm.BuyOrderTotal - total > total + order.MaxBuyPrice - vm.BuyOrderTotal)
                         order.BuyQuantity += 1;
                 }
                 if (vm.SetMinSellOrderTotal && order.MinSellPrice != 0) {
-                    order.MinSellQuantity = (int)(vm.MinSellOrderTotal / order.MinSellPrice);
+                    order.MinSellQuantity = (int) (vm.MinSellOrderTotal/order.MinSellPrice);
                     if (order.MinSellQuantity == 1) order.MinSellQuantity = 0;
                 }
 
                 if (vm.SetMaxSellOrderTotal && order.MinSellPrice != 0) {
-                    order.MaxSellQuantity = (int)(vm.MaxSellOrderTotal / order.MinSellPrice);
+                    order.MaxSellQuantity = (int) (vm.MaxSellOrderTotal/order.MinSellPrice);
                     if (order.MaxSellQuantity == 0)
                         order.MaxSellQuantity = 1;
                 }

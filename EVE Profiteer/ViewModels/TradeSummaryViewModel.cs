@@ -11,8 +11,7 @@ using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
 
 namespace eZet.EveProfiteer.ViewModels {
-    public class OverviewViewModel : Screen {
-
+    public class TradeSummaryViewModel : Screen {
         public enum ViewPeriodEnum {
             Today,
             Yesterday,
@@ -24,17 +23,18 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         private readonly EveProfiteerDataService _dataService;
-        private TransactionAggregateSummary _summary;
-        private ViewPeriodEnum _selectedViewPeriod;
         private readonly IEventAggregator _eventAggregator;
+        private ViewPeriodEnum _selectedViewPeriod;
+        private TradeAggregate _summary;
 
 
-        public OverviewViewModel(EveProfiteerDataService dataService, IEventAggregator eventAggregator) {
+        public TradeSummaryViewModel(EveProfiteerDataService dataService, IEventAggregator eventAggregator) {
             _dataService = dataService;
             _eventAggregator = eventAggregator;
             DisplayName = "Trade summary";
             PeriodSelectorStart = DateTime.UtcNow.AddMonths(-1);
             PeriodSelectorEnd = DateTime.UtcNow;
+            _selectedViewPeriod = ViewPeriodEnum.Week;
             ViewPeriodCommand = new DelegateCommand(ViewPeriod);
         }
 
@@ -49,7 +49,7 @@ namespace eZet.EveProfiteer.ViewModels {
         public DateTime PeriodSelectorEnd { get; set; }
 
         public IEnumerable<ViewPeriodEnum> ViewPeriodValues {
-            get { return Enum.GetValues(typeof(ViewPeriodEnum)).Cast<ViewPeriodEnum>(); }
+            get { return Enum.GetValues(typeof (ViewPeriodEnum)).Cast<ViewPeriodEnum>(); }
         }
 
         public ViewPeriodEnum SelectedViewPeriod {
@@ -60,20 +60,17 @@ namespace eZet.EveProfiteer.ViewModels {
             }
         }
 
-
-
-        protected async override void OnInitialize() {
-            var transactions = await _dataService.Db.Transactions.AsNoTracking().ToListAsync();
-            Summary = new TransactionAggregateSummary(transactions);
-        }
-
-        public TransactionAggregateSummary Summary {
+        public TradeAggregate Summary {
             get { return _summary; }
             private set {
                 if (Equals(value, _summary)) return;
                 _summary = value;
                 NotifyOfPropertyChange(() => Summary);
             }
+        }
+
+        protected override void OnInitialize() {
+            ViewPeriod();
         }
 
         public async void ViewPeriod() {
@@ -113,11 +110,14 @@ namespace eZet.EveProfiteer.ViewModels {
 
         private async Task analyze(DateTime start, DateTime end) {
             _eventAggregator.Publish(new StatusChangedEventArgs("Loading..."));
-            var transactions = await _dataService.Db.Transactions.AsNoTracking().Where(t => t.TransactionDate > start && t.TransactionDate < end).ToListAsync();
+            List<Transaction> transactions =
+                await
+                    _dataService.Db.Transactions.AsNoTracking()
+                        .Where(t => t.TransactionDate > start.Date && t.TransactionDate <= end.Date)
+                        .ToListAsync();
             _eventAggregator.Publish(new StatusChangedEventArgs("Analyzing..."));
-            Summary = new TransactionAggregateSummary(transactions);
+            Summary = new TradeAggregate(transactions.GroupBy(t => t.TransactionDate.Date));
             _eventAggregator.Publish(new StatusChangedEventArgs("Analysis complete"));
-
         }
     }
 }

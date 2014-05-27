@@ -4,18 +4,18 @@ using System.Linq;
 using eZet.EveLib.Modules;
 using eZet.EveLib.Modules.Models;
 using eZet.EveLib.Modules.Models.Character;
+using eZet.EveLib.Modules.Models.Misc;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Util;
 using ApiKey = eZet.EveProfiteer.Models.ApiKey;
 
 namespace eZet.EveProfiteer.Services {
     public class EveApiService {
-
         public CharacterData GetCharacterData(ApiKey key, ApiKeyEntity entity) {
             var data = new CharacterData();
             var ckey = new CharacterKey(key.ApiKeyId, key.VCode);
-            var character = ckey.Characters.Single(c => c.CharacterId == entity.EntityId);
-            var info  = character.GetCharacterInfo();
+            Character character = ckey.Characters.Single(c => c.CharacterId == entity.EntityId);
+            EveApiResponse<CharacterInfo> info = character.GetCharacterInfo();
 
 
             return data;
@@ -26,12 +26,11 @@ namespace eZet.EveProfiteer.Services {
         }
 
 
-
         public IList<ApiKeyEntity> GetApiKeyEntities(ApiKey key) {
             var ckey = new CharacterKey(key.ApiKeyId, key.VCode);
             var list = new List<ApiKeyEntity>();
             foreach (Character c in ckey.Characters) {
-                list.Add(new ApiKeyEntity { EntityId = c.CharacterId, Name = c.CharacterName, Type = "Character" });
+                list.Add(new ApiKeyEntity {EntityId = c.CharacterId, Name = c.CharacterName, Type = "Character"});
             }
             return list;
         }
@@ -77,14 +76,15 @@ namespace eZet.EveProfiteer.Services {
         }
 
         private static IEnumerable<Transaction> getTransactions(ApiKey key, ApiKeyEntity apiKeyEntity, int rowLimit,
-    long limitId = 0) {
+            long limitId = 0) {
             var transactions = new List<Transaction>();
             var ckey = new CharacterKey(key.ApiKeyId, key.VCode);
-            var entity = ckey.Characters.Single(c => c.CharacterId == apiKeyEntity.EntityId);
+            Character entity = ckey.Characters.Single(c => c.CharacterId == apiKeyEntity.EntityId);
             EveApiResponse<WalletTransactions> res = entity.GetWalletTransactions(rowLimit);
             while (res.Result.Transactions.Count > 0) {
-                var sortedList = res.Result.Transactions.OrderByDescending(f => f.TransactionId);
-                foreach (var transaction in sortedList) {
+                IOrderedEnumerable<WalletTransactions.Transaction> sortedList =
+                    res.Result.Transactions.OrderByDescending(f => f.TransactionId);
+                foreach (WalletTransactions.Transaction transaction in sortedList) {
                     if (transaction.TransactionId == limitId)
                         return transactions;
                     var newTransaction = new Transaction();
@@ -96,6 +96,5 @@ namespace eZet.EveProfiteer.Services {
             }
             return transactions;
         }
-
     }
 }

@@ -79,9 +79,11 @@
                 </dxmvvm:EventToCommand>
             </dxmvvm:Interaction.Triggers>
         </TreeView>
-        
-        <dxlc:GroupBox dxlc:DockLayoutControl.Dock="Top" dxlc:DockLayoutControl.AllowHorizontalSizing="True" Header="{Binding MarketBrowserData.InvType.TypeName}" ShowShadow="Always" MinimizeElementVisibility="Visible">
-            <Label Content="{Binding MarketBrowserData.InvType.Description}"></Label>
+
+        <dxlc:GroupBox dxlc:DockLayoutControl.Dock="Top" dxlc:DockLayoutControl.AllowHorizontalSizing="True"
+                       Header="{Binding MarketBrowserData.InvType.TypeName}" ShowShadow="Always"
+                       MinimizeElementVisibility="Visible">
+            <Label Content="{Binding MarketBrowserData.InvType.Description}" />
         </dxlc:GroupBox>
 
         <dx:DXTabControl dxlc:DockLayoutControl.Dock="Client" dxlc:DockLayoutControl.AllowVerticalSizing="True">
@@ -133,10 +135,10 @@
                                        ShowSearchPanelMode="Never" AutoWidth="True">
                             <dxg:TableView.RowCellMenuCustomizations>
                                 <dxb:BarButtonItem Content="Add to orders"
-                                                   Command="{Binding View.DataContext.AddToOrdersCommand}"/>
+                                                   Command="{Binding View.DataContext.AddToOrdersCommand}" />
                                 <dxb:BarItemSeparator />
                                 <dxb:BarButtonItem Content="View trade details"
-                                                   Command="{Binding View.DataContext.ViewTradeDetailsCommand}"/>
+                                                   Command="{Binding View.DataContext.ViewTradeDetailsCommand}" />
                             </dxg:TableView.RowCellMenuCustomizations>
                         </dxg:TableView>
                     </dxg:GridControl.View>
@@ -286,7 +288,8 @@
                             <dxc:SeriesPoint Argument="5" Value="18.5"/>-->
                         </dxc:LineSeries2D>
                         <dxc:BarSideBySideSeries2D DisplayName="Volume"
-                                                   dxc:XYDiagram2D.SeriesAxisY="{Binding ElementName=VolumeAxisY}" ArgumentDataMember="Date" ValueDataMember="Volume">
+                                                   dxc:XYDiagram2D.SeriesAxisY="{Binding ElementName=VolumeAxisY}"
+                                                   ArgumentDataMember="Date" ValueDataMember="Volume">
                             <!--<dxc:SeriesPoint Argument="1" Value="6.5" />
                             <dxc:SeriesPoint Argument="2" Value="5.5" />
                             <dxc:SeriesPoint Argument="3" Value="12.5" />

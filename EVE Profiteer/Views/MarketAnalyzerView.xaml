@@ -18,7 +18,8 @@
     <UserControl.Resources>
 
         <ResourceDictionary>
-            <Style x:Key="RowBackgroundStyle" BasedOn="{StaticResource {dxgt:GridRowThemeKey ResourceKey=RowStyle, ThemeName={x:Static dx:ThemeManager.ApplicationThemeName}}}"
+            <Style x:Key="RowBackgroundStyle"
+                   BasedOn="{StaticResource {dxgt:GridRowThemeKey ResourceKey=RowStyle, ThemeName={x:Static dx:ThemeManager.ApplicationThemeName}}}"
                    TargetType="dxg:GridRowContent">
                 <Setter Property="Background"
                         Value="{Binding Path=Row.Order, Converter={converters:OrderToBrushConverter}}" />
@@ -36,13 +37,16 @@
                 <dxb:BarEditItem Name="RegionSelector" EditValue="{Binding SelectedRegion}" EditWidth="150"
                                  Hint="Region to analyze.">
                     <dxb:BarEditItem.EditSettings>
-                        <dxe:ComboBoxEditSettings ItemsSource="{Binding Regions}" DisplayMember="RegionName" AutoComplete="True"/>
+                        <dxe:ComboBoxEditSettings ItemsSource="{Binding Regions}" DisplayMember="RegionName"
+                                                  AutoComplete="True" />
                     </dxb:BarEditItem.EditSettings>
                 </dxb:BarEditItem>
                 <dxb:BarEditItem Name="StationSelector" EditValue="{Binding SelectedStation}" EditWidth="300"
                                  Hint="Station to analyze.">
                     <dxb:BarEditItem.EditSettings>
-                        <dxe:ComboBoxEditSettings ItemsSource="{Binding SelectedRegion.StationsAscending}" DisplayMember="StationName" AutoComplete="True" NullValueButtonPlacement="EditBox" NullText="-- All stations --"/>
+                        <dxe:ComboBoxEditSettings ItemsSource="{Binding SelectedRegion.StationsAscending}"
+                                                  DisplayMember="StationName" AutoComplete="True"
+                                                  NullValueButtonPlacement="EditBox" NullText="-- All stations --" />
                     </dxb:BarEditItem.EditSettings>
                 </dxb:BarEditItem>
                 <dxb:BarEditItem Name="DayLimit"
@@ -53,8 +57,8 @@
                                                   LargeStep="5" />
                     </dxb:BarEditItem.EditSettings>
                 </dxb:BarEditItem>
-                <dxb:BarButtonItem Name="AddCustomColumnButton" Content="Add custom expression" ItemClick="AddCustomColumnButton_OnItemClick"></dxb:BarButtonItem>
-
+                <dxb:BarButtonItem Name="AddCustomColumnButton" Content="Add custom expression"
+                                   ItemClick="AddCustomColumnButton_OnItemClick" />
 
 
             </dxb:BarManager.Items>
@@ -106,11 +110,12 @@
         </TreeView>
 
 
-        <dxg:GridControl Name="MarketAnalyzerGrid" dxlc:DockLayoutControl.Dock="Client" dxlc:DockLayoutControl.AllowVerticalSizing="True"
+        <dxg:GridControl Name="MarketAnalyzerGrid" dxlc:DockLayoutControl.Dock="Client"
+                         dxlc:DockLayoutControl.AllowVerticalSizing="True"
                          ItemsSource="{Binding MarketAnalyzerResults}" SelectionMode="Row">
             <dxg:GridControl.Bands>
                 <dxg:GridControlBand>
-                    <dxg:GridColumn FieldName="InvType.TypeName" Header="Item"/>
+                    <dxg:GridColumn FieldName="InvType.TypeName" Header="Item" />
                 </dxg:GridControlBand>
 
                 <dxg:GridControlBand Header="Current">
@@ -195,10 +200,12 @@
                             <dxe:TextEditSettings DisplayFormat="N2" />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="Updated" Visible="False"/>
-                    <dxg:GridColumn FieldName="InvType.InvGroup.Manufacturable" Visible="False" Header="Is Manufacturable" />
-                    <dxg:GridColumn FieldName="InvType.InvGroup.Order.IsSellOrder" Visible="False" Header="Is Sell Order"/>
-                    <dxg:GridColumn FieldName="InvType.InvGroup.Order.IsBuyOrder" Visible="False" Header="Is Buy Order"/>
+                    <dxg:GridColumn FieldName="Updated" Visible="False" />
+                    <dxg:GridColumn FieldName="InvType.InvGroup.Manufacturable" Visible="False"
+                                    Header="Is Manufacturable" />
+                    <dxg:GridColumn FieldName="InvType.InvGroup.Order.IsSellOrder" Visible="False"
+                                    Header="Is Sell Order" />
+                    <dxg:GridColumn FieldName="InvType.InvGroup.Order.IsBuyOrder" Visible="False" Header="Is Buy Order" />
                 </dxg:GridControlBand>
 
             </dxg:GridControl.Bands>
@@ -207,18 +214,19 @@
                                ShowFixedTotalSummary="True" IsTotalSummaryMenuEnabled="True"
                                ShowGroupPanel="False" RowStyle="{StaticResource RowBackgroundStyle}"
                                ShowSearchPanelMode="Default" SearchColumns="InvType.TypeName"
-                               SearchPanelCriteriaOperatorType="And" ShowFilterPanelMode="ShowAlways" AutoScrollOnSorting="False">
+                               SearchPanelCriteriaOperatorType="And" ShowFilterPanelMode="ShowAlways"
+                               AutoScrollOnSorting="False">
                     <dxg:TableView.RowCellMenuCustomizations>
                         <dxb:BarButtonItem Content="Add to orders"
                                            Command="{Binding View.DataContext.AddToOrdersCommand}"
-                                           CommandParameter="{Binding View.DataControl.SelectedItems}"/>
+                                           CommandParameter="{Binding View.DataControl.SelectedItems}" />
                         <dxb:BarItemSeparator />
                         <dxb:BarButtonItem Content="View trade details"
                                            Command="{Binding View.DataContext.ViewTradeDetailsCommand}"
                                            CommandParameter="{Binding View.DataControl.CurrentItem}" />
                         <dxb:BarButtonItem Content="View market details"
-                                               Command="{Binding View.DataContext.ViewMarketDetailsCommand}"
-                                               CommandParameter="{Binding View.DataControl.CurrentItem}" />
+                                           Command="{Binding View.DataContext.ViewMarketDetailsCommand}"
+                                           CommandParameter="{Binding View.DataControl.CurrentItem}" />
                         <dxb:BarButtonItem Content="View order"
                                            Command="{Binding View.DataContext.ViewOrderCommand}"
                                            CommandParameter="{Binding View.DataControl.CurrentItem}" />

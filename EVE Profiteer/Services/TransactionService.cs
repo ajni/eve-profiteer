@@ -12,25 +12,26 @@ using eZet.EveProfiteer.Util;
 
 namespace eZet.EveProfiteer.Services {
     public class TransactionService {
-        public EveProfiteerDbEntities Db { get; set; }
-
         public TransactionService(EveProfiteerDbEntities db) {
             Db = db;
         }
 
+        public EveProfiteerDbEntities Db { get; set; }
+
         public long GetLatestId(ApiKeyEntity entity) {
             return (from t in Db.Transactions
-                    where t.ApiKeyEntity.Id == entity.Id
-                    orderby t.TransactionId descending
-                    select t.TransactionId).FirstOrDefault();
+                where t.ApiKeyEntity.Id == entity.Id
+                orderby t.TransactionId descending
+                select t.TransactionId).FirstOrDefault();
         }
 
 
         public async Task ProcessInventory(IEnumerable<Transaction> transactions) {
             Db.Configuration.AutoDetectChangesEnabled = false;
-            var assets = await Db.Assets.Where(t => t.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id).ToListAsync();
-            var assetLookup = assets.ToDictionary(t => t.InvTypes_TypeId, t => t);
-            foreach (var transaction in transactions.OrderBy(t => t.TransactionDate)) {
+            List<Asset> assets =
+                await Db.Assets.Where(t => t.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id).ToListAsync();
+            Dictionary<int, Asset> assetLookup = assets.ToDictionary(t => t.InvTypes_TypeId, t => t);
+            foreach (Transaction transaction in transactions.OrderBy(t => t.TransactionDate)) {
                 Asset asset;
                 if (!assetLookup.TryGetValue(transaction.TypeId, out asset)) {
                     asset = new Asset();
@@ -40,16 +41,18 @@ namespace eZet.EveProfiteer.Services {
                     assetLookup.Add(asset.InvTypes_TypeId, asset);
                 }
                 if (transaction.TransactionType == TransactionType.Buy) {
-                    asset.TotalCost += transaction.Price * transaction.Quantity;
+                    asset.TotalCost += transaction.Price*transaction.Quantity;
                     asset.Quantity += transaction.Quantity;
-                    asset.LatestAverageCost = asset.TotalCost / asset.Quantity;
+                    asset.LatestAverageCost = asset.TotalCost/asset.Quantity;
                     transaction.PerpetualAverageCost = asset.LatestAverageCost;
                     transaction.CurrentStock = asset.Quantity;
-                } else if (transaction.TransactionType == TransactionType.Sell) {
+                }
+                else if (transaction.TransactionType == TransactionType.Sell) {
                     if (asset.Quantity > 0) {
-                        transaction.PerpetualAverageCost = asset.TotalCost / asset.Quantity;
-                        asset.TotalCost -= transaction.Quantity * (asset.TotalCost / asset.Quantity);
-                    } else {
+                        transaction.PerpetualAverageCost = asset.TotalCost/asset.Quantity;
+                        asset.TotalCost -= transaction.Quantity*(asset.TotalCost/asset.Quantity);
+                    }
+                    else {
                         transaction.PerpetualAverageCost = asset.LatestAverageCost;
                     }
                     asset.Quantity -= transaction.Quantity;
@@ -74,8 +77,9 @@ namespace eZet.EveProfiteer.Services {
             Db.Configuration.ValidateOnSaveEnabled = false;
             IList<Transaction> list = transactions as IList<Transaction> ?? transactions.ToList();
             int count = 0;
-            foreach (var transaction in list) {
-                ++count; if (count % 5000 == 0) {
+            foreach (Transaction transaction in list) {
+                ++count;
+                if (count%5000 == 0) {
                     Db.ChangeTracker.DetectChanges();
                     await Db.SaveChangesAsync();
                     Debug.WriteLine("Saved transactions:" + count);
@@ -95,7 +99,7 @@ namespace eZet.EveProfiteer.Services {
                 bulkCopy.DestinationTableName = tableName;
 
                 var table = new DataTable();
-                PropertyDescriptor[] props = TypeDescriptor.GetProperties(typeof(T))
+                PropertyDescriptor[] props = TypeDescriptor.GetProperties(typeof (T))
                     //Dirty hack to make sure we only have system data types 
                     //i.e. filter out the relationships/collections
                     .Cast<PropertyDescriptor>()

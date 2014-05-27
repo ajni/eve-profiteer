@@ -33,14 +33,14 @@ namespace eZet.EveProfiteer.ViewModels {
             _eventAggregator = eventAggregator;
             _dataService = dataService;
             DisplayName = "Trade Analyzer";
-            Items = new BindableCollection<TransactionAggregate>();
-            ViewTradeDetailsCommand = new DelegateCommand<TransactionAggregate>(ExecuteViewTradeDetails,
+            Items = new BindableCollection<TradeAggregate>();
+            ViewTradeDetailsCommand = new DelegateCommand<TradeAggregate>(ExecuteViewTradeDetails,
                 CanViewTradeDetails);
             ViewMarketDetailsCommand =
-                new DelegateCommand<TransactionAggregate>(
+                new DelegateCommand<TradeAggregate>(
                     item => _eventAggregator.Publish(new ViewMarketDetailsEventArgs(item.InvType)), item => item != null);
             ViewPeriodCommand = new DelegateCommand(ViewPeriod);
-            ViewOrderCommand = new DelegateCommand<TransactionAggregate>(ExecuteViewOrder, CanViewOrder);
+            ViewOrderCommand = new DelegateCommand<TradeAggregate>(ExecuteViewOrder, CanViewOrder);
             PeriodSelectorStart = DateTime.UtcNow.AddMonths(-1);
             PeriodSelectorEnd = DateTime.UtcNow;
         }
@@ -74,22 +74,22 @@ namespace eZet.EveProfiteer.ViewModels {
             }
         }
 
-        public BindableCollection<TransactionAggregate> Items { get; private set; }
+        public BindableCollection<TradeAggregate> Items { get; private set; }
 
 
-        private bool CanViewOrder(TransactionAggregate tradeAnalyzerEntry) {
+        private bool CanViewOrder(TradeAggregate tradeAnalyzerEntry) {
             return tradeAnalyzerEntry != null && tradeAnalyzerEntry.Order != null;
         }
 
-        private void ExecuteViewOrder(TransactionAggregate entry) {
+        private void ExecuteViewOrder(TradeAggregate entry) {
             _eventAggregator.Publish(new ViewOrderEventArgs(entry.InvType));
         }
 
-        private bool CanViewTradeDetails(TransactionAggregate tradeAnalyzerEntry) {
+        private bool CanViewTradeDetails(TradeAggregate tradeAnalyzerEntry) {
             return tradeAnalyzerEntry != null && tradeAnalyzerEntry.Order != null;
         }
 
-        private void ExecuteViewTradeDetails(TransactionAggregate tradeAnalyzerEntry) {
+        private void ExecuteViewTradeDetails(TradeAggregate tradeAnalyzerEntry) {
             if (tradeAnalyzerEntry != null) {
                 _eventAggregator.Publish(new ViewTradeDetailsEventArgs(tradeAnalyzerEntry.InvType));
             }
@@ -137,20 +137,19 @@ namespace eZet.EveProfiteer.ViewModels {
             Items.Clear();
             IQueryable<IGrouping<int, Transaction>> transactionGroups = _dataService.Db.Transactions.Where(
                 t =>
-                    t.TransactionDate >= start && t.TransactionDate <= end &&
+                    t.TransactionDate > start.Date && t.TransactionDate <= end.Date &&
                     t.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id)
                 .GroupBy(t => t.TypeId);
             ILookup<int, Order> orders =
                 _dataService.Db.Orders.Where(order => order.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id)
                     .ToLookup(order => order.TypeId);
             foreach (var transactionCollection in transactionGroups) {
-                Items.Add(new TransactionAggregate(transactionCollection.First().InvType, transactionCollection.ToList(),
+                Items.Add(new TradeAggregate(transactionCollection.First().InvType, transactionCollection.ToList(),
                     orders[transactionCollection.First().TypeId].SingleOrDefault()));
             }
             Items.IsNotifying = true;
             Items.Refresh();
             _eventAggregator.Publish(new StatusChangedEventArgs("Analysis complete"));
-
         }
     }
 }

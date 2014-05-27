@@ -15,11 +15,12 @@
 
     </UserControl.Resources>
     <dxmvvm:Interaction.Triggers>
-        <dxmvvm:EventToCommand PassEventArgsToCommand="True" Command="{Binding SaveOrderCommand}" EventName="RowUpdated" SourceName="OrdersView"></dxmvvm:EventToCommand>
+        <dxmvvm:EventToCommand PassEventArgsToCommand="True" Command="{Binding SaveOrderCommand}"
+                               EventName="RowUpdated" SourceName="OrdersView" />
     </dxmvvm:Interaction.Triggers>
-    
+
     <DockPanel>
-        
+
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Left">
             <Button Margin="5" Name="ImportXml">Import</Button>
             <Button Margin="5" Name="ExportXml">Export</Button>
@@ -30,10 +31,12 @@
         </StackPanel>
 
         <dxg:GridControl Name="OrderEditorGrid" AutoGenerateColumns="None" ItemsSource="{Binding Orders}"
-                         SelectedItems="{Binding SelectedOrders}" SelectionMode="Row" SelectedItem="{Binding SelectedOrder}" CurrentItem="{Binding FocusedOrder}"
+                         SelectedItems="{Binding SelectedOrders}" SelectionMode="Row"
+                         SelectedItem="{Binding SelectedOrder}" CurrentItem="{Binding FocusedOrder}"
                          CustomSummary="Orders_OnCustomSummary">
             <dxg:GridControl.View>
-                <dxg:SelectionView Name="OrdersView" ShowAutoFilterRow="False" ShowTotalSummary="False" ShowFixedTotalSummary="True"
+                <dxg:SelectionView Name="OrdersView" ShowAutoFilterRow="False" ShowTotalSummary="False"
+                                   ShowFixedTotalSummary="True"
                                    ShowGroupPanel="False" AutoWidth="True"
                                    NavigationStyle="Cell" NewItemRowPosition="Top"
                                    ShowingEditor="GridViewBase_OnShowingEditor"
@@ -41,45 +44,51 @@
                                    SearchPanelCriteriaOperatorType="And">
                     <dxg:SelectionView.RowCellMenuCustomizations>
                         <dxb:BarButtonItem Content="View trade details"
-                                                 Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.ViewTradeDetailsCommand, RelativeSource={RelativeSource Self}}"/>
+                                           Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.ViewTradeDetailsCommand, RelativeSource={RelativeSource Self}}" />
                         <dxb:BarButtonItem Content="Delete orders"
-                                               Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.DeleteOrdersCommand, RelativeSource={RelativeSource Self}}"/>
+                                           Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.DeleteOrdersCommand, RelativeSource={RelativeSource Self}}" />
                     </dxg:SelectionView.RowCellMenuCustomizations>
-                  
+
                 </dxg:SelectionView>
- 
+
 
             </dxg:GridControl.View>
             <dxg:GridControl.TotalSummary>
-                <dxg:GridSummaryItem FieldName="IsBuyOrder" SummaryType="Custom" Alignment="Right" DisplayFormat="Buying: {0}"/>
-                <dxg:GridSummaryItem FieldName="IsSellOrder" SummaryType="Custom" Alignment="Right" DisplayFormat="Selling: {0}" />
-                <dxg:GridSummaryItem SummaryType="Count" Alignment="Right" DisplayFormat="Total: {0}"/>
+                <dxg:GridSummaryItem FieldName="IsBuyOrder" SummaryType="Custom" Alignment="Right"
+                                     DisplayFormat="Buying: {0}" />
+                <dxg:GridSummaryItem FieldName="IsSellOrder" SummaryType="Custom" Alignment="Right"
+                                     DisplayFormat="Selling: {0}" />
+                <dxg:GridSummaryItem SummaryType="Count" Alignment="Right" DisplayFormat="Total: {0}" />
                 <dxg:GridSummaryItem FieldName="TotalMaxBuyPrice" SummaryType="Sum"
                                      DisplayFormat="Buyorder total: {0:N0} isk" Alignment="Left" />
             </dxg:GridControl.TotalSummary>
             <dxg:GridControl.Columns>
-                <dxg:SelectAllColumn Focusable="False"/>
+                <dxg:SelectAllColumn Focusable="False" />
                 <dxg:GridColumn FieldName="InvType.TypeName" Header="Item" Validate="TypeName_OnValidate">
                     <dxg:GridColumn.EditTemplate>
                         <ControlTemplate>
-                            <dxe:ComboBoxEdit Name="ComboBox2"  AutoComplete="True" MaskAutoComplete="Optimistic" ItemsSource="{Binding DataContext.InvTypes, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=dxg:GridControl}}" DisplayMember="TypeName"></dxe:ComboBoxEdit>
+                            <dxe:ComboBoxEdit Name="ComboBox2" AutoComplete="True" MaskAutoComplete="Optimistic"
+                                              ItemsSource="{Binding DataContext.InvTypes, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=dxg:GridControl}}"
+                                              DisplayMember="TypeName" />
                         </ControlTemplate>
                     </dxg:GridColumn.EditTemplate>
-                    </dxg:GridColumn>
+                </dxg:GridColumn>
                 <dxg:GridColumn FieldName="IsBuyOrder" Header="Buy" Width="30">
                     <dxg:GridColumn.DisplayTemplate>
                         <ControlTemplate>
-                            <dxe:CheckEdit EditMode="InplaceInactive" IsChecked="{Binding EditValue, RelativeSource={RelativeSource Mode=TemplatedParent}}"
-                                           VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            <dxe:CheckEdit EditMode="InplaceInactive"
+                                           IsChecked="{Binding EditValue, RelativeSource={RelativeSource Mode=TemplatedParent}}"
+                                           VerticalAlignment="Center" HorizontalAlignment="Center" />
                         </ControlTemplate>
                     </dxg:GridColumn.DisplayTemplate>
                     <dxg:GridColumn.EditTemplate>
                         <ControlTemplate>
-                            <dxe:CheckEdit x:Name="PART_Editor" EditMode="InplaceActive" IsChecked="{Binding EditValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource Mode=TemplatedParent}}"/>
+                            <dxe:CheckEdit x:Name="PART_Editor" EditMode="InplaceActive"
+                                           IsChecked="{Binding EditValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource Mode=TemplatedParent}}" />
                         </ControlTemplate>
                     </dxg:GridColumn.EditTemplate>
                 </dxg:GridColumn>
- 
+
                 <dxg:GridColumn FieldName="BuyQuantity" Header="Quantity" Width="50" />
                 <dxg:GridColumn FieldName="MaxBuyPrice">
                     <dxg:GridColumn.EditSettings>
@@ -92,16 +101,18 @@
                         <dxe:TextEditSettings DisplayFormat="N0" />
                     </dxg:GridColumn.EditSettings>
                 </dxg:GridColumn>
-                <dxg:GridColumn FieldName="IsSellOrder"  Header="Sell" Width="30">
+                <dxg:GridColumn FieldName="IsSellOrder" Header="Sell" Width="30">
                     <dxg:GridColumn.DisplayTemplate>
                         <ControlTemplate>
-                            <dxe:CheckEdit EditMode="InplaceInactive" IsChecked="{Binding EditValue, RelativeSource={RelativeSource Mode=TemplatedParent}}"
-                                           VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            <dxe:CheckEdit EditMode="InplaceInactive"
+                                           IsChecked="{Binding EditValue, RelativeSource={RelativeSource Mode=TemplatedParent}}"
+                                           VerticalAlignment="Center" HorizontalAlignment="Center" />
                         </ControlTemplate>
                     </dxg:GridColumn.DisplayTemplate>
                     <dxg:GridColumn.EditTemplate>
                         <ControlTemplate>
-                            <dxe:CheckEdit x:Name="PART_Editor" EditMode="InplaceActive" IsChecked="{Binding EditValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource Mode=TemplatedParent}}"/>
+                            <dxe:CheckEdit x:Name="PART_Editor" EditMode="InplaceActive"
+                                           IsChecked="{Binding EditValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource Mode=TemplatedParent}}" />
                         </ControlTemplate>
                     </dxg:GridColumn.EditTemplate>
                 </dxg:GridColumn>
@@ -117,7 +128,7 @@
                         <dxe:TextEditSettings DisplayFormat="N0" />
                     </dxg:GridColumn.EditSettings>
                 </dxg:GridColumn>
-                <dxg:GridColumn FieldName="MaxSellQuantity" Header ="Max Qty" Width="50" />
+                <dxg:GridColumn FieldName="MaxSellQuantity" Header="Max Qty" Width="50" />
                 <dxg:GridColumn FieldName="TotalMaxSellPrice" Header="Max Sell Total" UnboundType="Decimal"
                                 UnboundExpression="[MaxSellQuantity] * [MinSellPrice]">
                     <dxg:GridColumn.EditSettings>

@@ -50,11 +50,11 @@ namespace eZet.EveProfiteer.Services {
         }
 
         private void loadType(IEnumerable<Order> orders) {
-            var enumerable = orders as IList<Order> ?? orders.ToList();
-            var orderIds = enumerable.Select(f => f.TypeId);
-            var types = _dataService.Db.InvTypes.Where(f => orderIds.Contains(f.TypeId));
-            var lookup = types.ToLookup(f => f.TypeId);
-            foreach (var order in enumerable) {
+            IList<Order> enumerable = orders as IList<Order> ?? orders.ToList();
+            IEnumerable<int> orderIds = enumerable.Select(f => f.TypeId);
+            IQueryable<InvType> types = _dataService.Db.InvTypes.Where(f => orderIds.Contains(f.TypeId));
+            ILookup<int, InvType> lookup = types.ToLookup(f => f.TypeId);
+            foreach (Order order in enumerable) {
                 order.InvType = lookup[order.TypeId].Single();
             }
         }
@@ -116,6 +116,5 @@ namespace eZet.EveProfiteer.Services {
             }
             return order;
         }
-
     }
 }
