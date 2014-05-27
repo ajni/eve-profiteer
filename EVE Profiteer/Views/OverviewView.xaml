@@ -7,14 +7,49 @@
     xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
     xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
     xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/charts"
-    xmlns:models="clr-namespace:eZet.EveProfiteer.Models"
     xmlns:viewModels="clr-namespace:eZet.EveProfiteer.ViewModels"
+    xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
     x:Class="eZet.EveProfiteer.Views.OverviewView"
     mc:Ignorable="d"
     d:DesignHeight="300" d:DesignWidth="800"
     d:DataContext="{d:DesignInstance Type=viewModels:OverviewViewModel, IsDesignTimeCreatable=False}">
     <Grid>
         <dxlc:DockLayoutControl>
+
+            <dxb:BarManager dxlc:DockLayoutControl.Dock="Top">
+                <dxb:BarManager.Items>
+                    <dxb:BarEditItem Name="ViewPeriodSelector" EditValue="{Binding SelectedViewPeriod}" EditWidth="100" Hint="Period to view data for." EditValueChanged="ViewPeriodSelector_OnEditValueChanged">
+                        <dxb:BarEditItem.EditSettings>
+                            <dxe:ComboBoxEditSettings ItemsSource="{Binding ViewPeriodValues}"/>
+                        </dxb:BarEditItem.EditSettings>
+                    </dxb:BarEditItem>
+                    <dxb:BarEditItem  Name="StartDate" Content="From" EditValue="{Binding PeriodSelectorStart}">
+                        <dxb:BarEditItem.EditSettings>
+                            <dxe:DateEditSettings/>
+                        </dxb:BarEditItem.EditSettings>
+
+                    </dxb:BarEditItem>
+                    <dxb:BarEditItem  Name="EndDate" Content="To" EditValue="{Binding PeriodSelectorEnd}">
+                        <dxb:BarEditItem.EditSettings>
+                            <dxe:DateEditSettings/>
+                        </dxb:BarEditItem.EditSettings>
+                    </dxb:BarEditItem>
+                    <dxb:BarButtonItem Name="ViewButton" Content="View" Command="{Binding ViewPeriodCommand}"></dxb:BarButtonItem>
+
+                </dxb:BarManager.Items>
+
+                <dxb:BarManager.Bars>
+                    <dxb:Bar>
+                        <dxb:BarButtonItemLink BarItemName="ViewButton"></dxb:BarButtonItemLink>
+                        <dxb:BarEditItemLink BarItemName="ViewPeriodSelector"></dxb:BarEditItemLink>
+                        <dxb:BarEditItemLink BarItemName="StartDate"></dxb:BarEditItemLink>
+                        <dxb:BarEditItemLink BarItemName="EndDate"></dxb:BarEditItemLink>
+                    </dxb:Bar>
+
+
+                </dxb:BarManager.Bars>
+
+            </dxb:BarManager>
 
             <dxlc:LayoutControl Header="Header" Orientation="Vertical" UseLayoutRounding="True" View="GroupBox" Visibility="Hidden">
                 <dxlc:LayoutGroup>
@@ -71,48 +106,47 @@
                 </dxlc:LayoutGroup>
             </dxlc:LayoutControl>
 
+
+
             <dx:DXTabControl dxlc:DockLayoutControl.Dock="Client" dxlc:DockLayoutControl.AllowVerticalSizing="True">
                 <dx:DXTabItem Header="Balance">
- 
-                            <dxc:ChartControl x:Name="TotalChart" DataSource="{Binding Aggregate.Periods}">
-                                <dxc:ChartControl.CrosshairOptions>
-                                    <dxc:CrosshairOptions />
-                                </dxc:ChartControl.CrosshairOptions>
-                                <dx:DesignDataManager.DesignData>
-                                    <dx:DesignDataSettings DataObjectType="{x:Type models:TransactionAggregate}" />
-                                </dx:DesignDataManager.DesignData>
-                                <dxc:ChartControl.Legend>
-                                    <dxc:Legend BorderThickness="0" HorizontalPosition="Center"
+
+                    <dxc:ChartControl x:Name="TotalChart" DataSource="{Binding Summary.Entries}">
+                        <dxc:ChartControl.CrosshairOptions>
+                            <dxc:CrosshairOptions />
+                        </dxc:ChartControl.CrosshairOptions>
+                        <dxc:ChartControl.Legend>
+                            <dxc:Legend BorderThickness="0" HorizontalPosition="Center"
                                             VerticalPosition="BottomOutside" />
-                                </dxc:ChartControl.Legend>
-                                <dxc:XYDiagram2D EnableAxisXNavigation="True">
-                                    <dxc:XYDiagram2D.AxisY>
-                                        <dxc:AxisY2D TickmarksMinorVisible="True">
-                                            <dxc:AxisY2D.NumericOptions>
-                                                <dxc:NumericOptions Format="Number" Precision="0" />
-                                            </dxc:AxisY2D.NumericOptions>
-                                            <dxc:AxisY2D.Range>
-                                                <dxc:AxisRange dxc:AxisY.AlwaysShowZeroLevel="False"
+                        </dxc:ChartControl.Legend>
+                        <dxc:XYDiagram2D EnableAxisXNavigation="True">
+                            <dxc:XYDiagram2D.AxisY>
+                                <dxc:AxisY2D TickmarksMinorVisible="True">
+                                    <dxc:AxisY2D.NumericOptions>
+                                        <dxc:NumericOptions Format="Number" Precision="0" />
+                                    </dxc:AxisY2D.NumericOptions>
+                                    <dxc:AxisY2D.Range>
+                                        <dxc:AxisRange dxc:AxisY.AlwaysShowZeroLevel="False"
                                                            SideMarginsEnabled="True" />
-                                            </dxc:AxisY2D.Range>
-                                        </dxc:AxisY2D>
-                                    </dxc:XYDiagram2D.AxisY>
-                                    <dxc:BarSideBySideSeries2D DisplayName="Sell Total" ArgumentDataMember="DateStart"
+                                    </dxc:AxisY2D.Range>
+                                </dxc:AxisY2D>
+                            </dxc:XYDiagram2D.AxisY>
+                            <dxc:BarSideBySideSeries2D DisplayName="Sell Total" ArgumentDataMember="FirstTransactionDate"
                                                            ValueDataMember="SellTotal"
                                                            ArgumentScaleType="DateTime" ValueScaleType="Numerical"
-                                                           CrosshairLabelPattern="{}{S} : {V:N}" />
-                                    <dxc:BarSideBySideSeries2D DisplayName="Buy Total" ArgumentDataMember="DateStart"
+                                                           CrosshairLabelPattern="{}{S} : {V:N2}" />
+                            <dxc:BarSideBySideSeries2D DisplayName="Buy Total" ArgumentDataMember="FirstTransactionDate"
                                                            ValueDataMember="BuyTotal"
-                                                           CrosshairLabelPattern="{}{S} : {V:N}"
+                                                           CrosshairLabelPattern="{}{S} : {V:N2}"
                                                            ArgumentScaleType="DateTime" ValueScaleType="Numerical" />
-                                    <dxc:BarSideBySideSeries2D DisplayName="Profit" ArgumentDataMember="DateStart"
-                                                           ValueDataMember="Profit"
-                                                           CrosshairLabelPattern="{}{S} : {V:N}"
+                            <dxc:BarSideBySideSeries2D DisplayName="Profit" ArgumentDataMember="FirstTransactionDate"
+                                                           ValueDataMember="PerpetualAverageProfit"
+                                                           CrosshairLabelPattern="{}{S} : {V:N2}"
                                                            ArgumentScaleType="DateTime" ValueScaleType="Numerical" />
-                                </dxc:XYDiagram2D>
-                            </dxc:ChartControl>
+                        </dxc:XYDiagram2D>
+                    </dxc:ChartControl>
 
-                        </dx:DXTabItem>
+                </dx:DXTabItem>
 
             </dx:DXTabControl>
 

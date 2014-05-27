@@ -99,11 +99,11 @@
                     <dxg:GridSummaryItem SummaryType="Count" Alignment="Right" DisplayFormat="Items: {0:N0}" />
                 </dxg:GridControl.TotalSummary>
                 <dxg:GridControl.Columns>
-                    <dxg:GridColumn FieldName="InvType.TypeName" Header="Item"/>
                     <dxg:GridColumn Visible="False" FieldName="InvType.TypeId"/>
+                    <dxg:GridColumn FieldName="InvType.TypeName" Header="Item"/>
                     <dxg:GridColumn FieldName="Balance">
                         <dxg:GridColumn.EditSettings>
-                            <dxe:TextEditSettings DisplayFormat="N" />
+                            <dxe:TextEditSettings DisplayFormat="N2" />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
                     <dxg:GridColumn FieldName="PeriodicAverageProfit">
@@ -141,16 +141,8 @@
                             <dxe:TextEditSettings DisplayFormat="P" />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="BuyQuantity" Header="Qty Bought">
-                        <dxg:GridColumn.EditSettings>
-                            <dxe:TextEditSettings DisplayFormat="N0" />
-                        </dxg:GridColumn.EditSettings>
-                    </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="SellQuantity" Header="Qty Sold">
-                        <dxg:GridColumn.EditSettings>
-                            <dxe:TextEditSettings DisplayFormat="N2" />
-                        </dxg:GridColumn.EditSettings>
-                    </dxg:GridColumn>
+                    <dxg:GridColumn FieldName="BuyQuantity" Header="Qty Bought"/>
+                    <dxg:GridColumn FieldName="SellQuantity" Header="Qty Sold"/>
                     <dxg:GridColumn FieldName="AvgBuyPrice">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="N2" />
@@ -162,13 +154,9 @@
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
                     <dxg:GridColumn Visible="False" FieldName="Transactions.Count" Header="Transactions" />
-                    <dxg:GridColumn Visible="False" FieldName="StockDelta">
-                        <dxg:GridColumn.EditSettings>
-                            <dxe:TextEditSettings DisplayFormat="N0" />
-                        </dxg:GridColumn.EditSettings>
-                    </dxg:GridColumn>
-                    <dxg:GridColumn Visible="False" FieldName="FirstTransactionDate" />
-                    <dxg:GridColumn Visible="False" FieldName="LastTransactionDate" />
+                    <dxg:GridColumn Visible="False" FieldName="StockDelta"/>
+                    <dxg:GridColumn Visible="False" FieldName="FirstTransactionDate" Header="First transaction"/>
+                    <dxg:GridColumn Visible="False" FieldName="LastTransactionDate" Header="Last transaction"/>
                 </dxg:GridControl.Columns>
             </dxg:GridControl>
 

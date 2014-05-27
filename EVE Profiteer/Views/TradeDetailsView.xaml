@@ -227,14 +227,14 @@
                             </dxn:NavBarItem>
                             <dxn:NavBarItem>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="First trade: " />
-                                    <TextBlock Text="{Binding TransactionAggregateSummary.FirstTrade, StringFormat={x:Static util:ConfigManager.DateTimeFormat}}" />
+                                    <TextBlock Text="First transaction: " />
+                                    <TextBlock Text="{Binding TransactionAggregateSummary.FirstTransactionDate, StringFormat={x:Static util:ConfigManager.DateTimeFormat}}" />
                                 </StackPanel>
                             </dxn:NavBarItem>
                             <dxn:NavBarItem>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="Last trade: " />
-                                    <TextBlock Text="{Binding TransactionAggregateSummary.LastTrade, StringFormat={x:Static util:ConfigManager.DateTimeFormat}}" />
+                                    <TextBlock Text="Latest transaction: " />
+                                    <TextBlock Text="{Binding TransactionAggregateSummary.LastTransactionDate, StringFormat={x:Static util:ConfigManager.DateTimeFormat}}" />
                                 </StackPanel>
                             </dxn:NavBarItem>
                         </dxn:NavBarGroup>
@@ -245,7 +245,7 @@
                 <dx:DXTabControl dxlc:DockLayoutControl.Dock="Client"
                                  dxlc:DockLayoutControl.AllowHorizontalSizing="True">
                     <dx:DXTabItem Header="Total">
-                        <dxc:ChartControl x:Name="TotalChart" DataSource="{Binding TransactionAggregateSummary.ChartEntries}">
+                        <dxc:ChartControl x:Name="TotalChart" DataSource="{Binding TransactionAggregateSummary.Entries}">
                             <dxc:ChartControl.CrosshairOptions>
                                 <dxc:CrosshairOptions />
                             </dxc:ChartControl.CrosshairOptions>
@@ -265,15 +265,15 @@
                                         </dxc:AxisY2D.Range>
                                     </dxc:AxisY2D>
                                 </dxc:XYDiagram2D.AxisY>
-                                <dxc:BarSideBySideSeries2D DisplayName="Sell Total" ArgumentDataMember="Date"
+                                <dxc:BarSideBySideSeries2D DisplayName="Sell Total" ArgumentDataMember="FirstTransactionDate"
                                                            ValueDataMember="SellTotal"
                                                            ArgumentScaleType="DateTime" ValueScaleType="Numerical"
                                                            CrosshairLabelPattern="{}{S} : {V:N}" />
-                                <dxc:BarSideBySideSeries2D DisplayName="Buy Total" ArgumentDataMember="Date"
+                                <dxc:BarSideBySideSeries2D DisplayName="Buy Total" ArgumentDataMember="FirstTransactionDate"
                                                            ValueDataMember="BuyTotal"
                                                            CrosshairLabelPattern="{}{S} : {V:N}"
                                                            ArgumentScaleType="DateTime" ValueScaleType="Numerical" />
-                                <dxc:BarSideBySideSeries2D DisplayName="Profit" ArgumentDataMember="Date"
+                                <dxc:BarSideBySideSeries2D DisplayName="Profit" ArgumentDataMember="FirstTransactionDate"
                                                            ValueDataMember="PeriodicAverageProfit"
                                                            CrosshairLabelPattern="{}{S} : {V:N}"
                                                            ArgumentScaleType="DateTime" ValueScaleType="Numerical" />
@@ -282,7 +282,7 @@
 
                     </dx:DXTabItem>
                     <dx:DXTabItem Header="Quantity">
-                        <dxc:ChartControl x:Name="QuantityChart" DataSource="{Binding TransactionAggregateSummary.ChartEntries}">
+                        <dxc:ChartControl x:Name="QuantityChart" DataSource="{Binding TransactionAggregateSummary.Entries}">
                             <dxc:ChartControl.Legend>
                                 <dxc:Legend BorderThickness="0" HorizontalPosition="Center"
                                             VerticalPosition="BottomOutside" />
@@ -299,17 +299,17 @@
                                         </dxc:AxisY2D.Range>
                                     </dxc:AxisY2D>
                                 </dxc:XYDiagram2D.AxisY>
-                                <dxc:BarSideBySideSeries2D DisplayName="Sold" ArgumentDataMember="Date"
+                                <dxc:BarSideBySideSeries2D DisplayName="Sold" ArgumentDataMember="FirstTransactionDate"
                                                            ValueDataMember="SellQuantity" ArgumentScaleType="DateTime" />
-                                <dxc:BarSideBySideSeries2D DisplayName="Bought" ArgumentDataMember="Date"
+                                <dxc:BarSideBySideSeries2D DisplayName="Bought" ArgumentDataMember="FirstTransactionDate"
                                                            ValueDataMember="BuyQuantity" ArgumentScaleType="DateTime" />
-                                <dxc:BarSideBySideSeries2D DisplayName="Stock" ArgumentDataMember="Date"
+                                <dxc:BarSideBySideSeries2D DisplayName="Stock" ArgumentDataMember="FirstTransactionDate"
                                                            ValueDataMember="Stock" ArgumentScaleType="DateTime" />
                             </dxc:XYDiagram2D>
                         </dxc:ChartControl>
                     </dx:DXTabItem>
                     <dx:DXTabItem Header="Price">
-                        <dxc:ChartControl x:Name="PriceChart" DataSource="{Binding TransactionAggregateSummary.ChartEntries}">
+                        <dxc:ChartControl x:Name="PriceChart" DataSource="{Binding TransactionAggregateSummary.Entries}">
                             <dxc:ChartControl.Legend>
                                 <dxc:Legend BorderThickness="0" HorizontalPosition="Center"
                                             VerticalPosition="BottomOutside" />
@@ -326,18 +326,18 @@
                                         </dxc:AxisY2D.Range>
                                     </dxc:AxisY2D>
                                 </dxc:XYDiagram2D.AxisY>
-                                <dxc:LineSeries2D DisplayName="AvgSellPrice" ArgumentDataMember="Date"
+                                <dxc:LineSeries2D DisplayName="AvgSellPrice" ArgumentDataMember="FirstTransactionDate"
                                                   ValueDataMember="AvgSellPrice" ArgumentScaleType="DateTime"
                                                   CrosshairLabelPattern="{}{S} : {V:N}" />
-                                <dxc:LineSeries2D DisplayName="AvgBuyPrice" ArgumentDataMember="Date"
+                                <dxc:LineSeries2D DisplayName="AvgBuyPrice" ArgumentDataMember="FirstTransactionDate"
                                                   ValueDataMember="AvgBuyPrice" ArgumentScaleType="DateTime"
                                                   CrosshairLabelPattern="{}{S} : {V:N}" />
-                                <dxc:RangeBarSideBySideSeries2D DisplayName="BuyPrice" ArgumentDataMember="Date"
+                                <dxc:RangeBarSideBySideSeries2D DisplayName="BuyPrice" ArgumentDataMember="FirstTransactionDate"
                                                                 Value2DataMember="MaxBuyPrice"
                                                                 ValueDataMember="MinBuyPrice"
                                                                 ArgumentScaleType="DateTime"
                                                                 CrosshairLabelPattern="{}{S} : {V1:N} : {V2:N}"/>
-                                <dxc:RangeBarSideBySideSeries2D DisplayName="SellPrice" ArgumentDataMember="Date"
+                                <dxc:RangeBarSideBySideSeries2D DisplayName="SellPrice" ArgumentDataMember="FirstTransactionDate"
                                                                 Value2DataMember="MaxSellPrice"
                                                                 ValueDataMember="MinSellPrice"
                                                                 ArgumentScaleType="DateTime"

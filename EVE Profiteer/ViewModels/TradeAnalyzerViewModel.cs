@@ -77,8 +77,6 @@ namespace eZet.EveProfiteer.ViewModels {
         public BindableCollection<TransactionAggregate> Items { get; private set; }
 
 
-        public int CustomDaySpan { get; set; }
-
         private bool CanViewOrder(TransactionAggregate tradeAnalyzerEntry) {
             return tradeAnalyzerEntry != null && tradeAnalyzerEntry.Order != null;
         }

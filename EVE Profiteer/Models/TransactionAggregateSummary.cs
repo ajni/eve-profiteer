@@ -9,7 +9,19 @@ namespace eZet.EveProfiteer.Models {
             InvType = invType;
             Transactions = transactions;
             Order = order;
-            ChartEntries = new List<TransactionAggregate>();
+            Entries = new List<TransactionAggregate>();
+            initialize();
+        }
+
+        public TransactionAggregateSummary(DateTime start, DateTime end, IEnumerable<Transaction> transactions) {
+            Transactions = transactions;
+            Entries = new List<TransactionAggregate>();
+            initialize();
+        }
+
+        public TransactionAggregateSummary(IEnumerable<Transaction> transactions) {
+            Transactions = transactions;
+            Entries = new List<TransactionAggregate>();
             initialize();
         }
 
@@ -17,15 +29,15 @@ namespace eZet.EveProfiteer.Models {
         public IEnumerable<Transaction> Transactions { get; set; }
         public Order Order { get; set; }
 
-        public ICollection<TransactionAggregate> ChartEntries { get; set; }
+        public ICollection<TransactionAggregate> Entries { get; set; }
 
         public int SellQuantity { get; private set; }
 
         public int BuyQuantity { get; private set; }
 
-        public DateTime FirstTrade { get; private set; }
+        public DateTime FirstTransactionDate { get; private set; }
 
-        public DateTime LastTrade { get; private set; }
+        public DateTime LastTransactionDate { get; private set; }
 
         public decimal BuyTotal { get; private set; }
 
@@ -68,11 +80,11 @@ namespace eZet.EveProfiteer.Models {
 
         private void initialize() {
             var groups = Transactions.GroupBy(f => f.TransactionDate.Date).Select(f => f.ToList()).ToList();
-            FirstTrade = DateTime.MaxValue;
-            LastTrade = DateTime.MinValue;
+            FirstTransactionDate = DateTime.MaxValue;
+            LastTransactionDate = DateTime.MinValue;
             foreach (var transactions in groups) {
-                var entry = new TransactionAggregate(transactions.First().TransactionDate.Date, transactions);
-                ChartEntries.Add(entry);
+                var entry = new TransactionAggregate(transactions);
+                Entries.Add(entry);
                 Balance += entry.Balance;
                 SellQuantity += entry.SellQuantity;
                 BuyQuantity += entry.BuyQuantity;
@@ -80,13 +92,13 @@ namespace eZet.EveProfiteer.Models {
                 SellTotal += entry.SellTotal;
                 PerpetualAverageTotalCost += entry.PerpetualAverageTotalCost;
                 UnaccountedStock += entry.UnaccountedStock;
-                if (entry.Date < FirstTrade)
-                    FirstTrade = entry.Date;
-                if (entry.Date > LastTrade)
-                    LastTrade = entry.Date;
+                if (entry.FirstTransactionDate < FirstTransactionDate)
+                    FirstTransactionDate = entry.FirstTransactionDate;
+                if (entry.LastTransactionDate > LastTransactionDate)
+                    LastTransactionDate = entry.LastTransactionDate;
             }
 
-            TradeDuration = LastTrade - FirstTrade;
+            TradeDuration = LastTransactionDate - FirstTransactionDate;
 
             if (BuyQuantity > 0)
                 AvgBuyPrice = BuyTotal / BuyQuantity;

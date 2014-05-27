@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using DevExpress.Xpf.Bars;
+using eZet.EveProfiteer.ViewModels;
 
 namespace eZet.EveProfiteer.Views {
     /// <summary>
@@ -20,6 +22,20 @@ namespace eZet.EveProfiteer.Views {
     public partial class OverviewView : UserControl {
         public OverviewView() {
             InitializeComponent();
+        }
+
+        private void ViewPeriodSelector_OnEditValueChanged(object sender, RoutedEventArgs e) {
+            var value = (OverviewViewModel.ViewPeriodEnum)((BarEditItem)sender).EditValue;
+            if (value == OverviewViewModel.ViewPeriodEnum.Period) {
+                StartDate.IsEnabled = true;
+                EndDate.IsEnabled = true;
+            } else if (value == OverviewViewModel.ViewPeriodEnum.Since) {
+                StartDate.IsEnabled = true;
+                EndDate.IsEnabled = false;
+            } else {
+                StartDate.IsEnabled = false;
+                EndDate.IsEnabled = false;
+            }
         }
     }
 }

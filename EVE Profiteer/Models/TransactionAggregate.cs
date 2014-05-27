@@ -5,8 +5,7 @@ using MoreLinq;
 
 namespace eZet.EveProfiteer.Models {
     public class TransactionAggregate {
-        public TransactionAggregate(DateTime date, IEnumerable<Transaction> transactions) {
-            Date = date;
+        public TransactionAggregate(IEnumerable<Transaction> transactions) {
             Transactions = transactions;
             initialize();
         }
@@ -21,8 +20,6 @@ namespace eZet.EveProfiteer.Models {
         public Order Order { get; private set; }
 
         public InvType InvType { get; private set; }
-
-        public DateTime Date { get; private set; }
 
         public IEnumerable<Transaction> Transactions { get; private set; }
 
