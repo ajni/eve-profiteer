@@ -44,31 +44,8 @@
             </dxb:BarManager>
 
             <dxlc:DockLayoutControl>
-                <StackPanel dxlc:DockLayoutControl.Dock="Left" dxlc:DockLayoutControl.AllowHorizontalSizing="True"
+                <Grid dxlc:DockLayoutControl.Dock="Left" dxlc:DockLayoutControl.AllowHorizontalSizing="True"
                             Width="300">
-
-                    <!--<dxlc:GroupBox Name="Text" Header="Item Details" MinimizeElementVisibility="Visible">
-                        <StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Id: " />
-                                <TextBlock Text="{Binding SelectedItem.TypeId}" />
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Name: "/>
-                                <TextBlock Text="{Binding SelectedItem.TypeName}" />
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Mass: " />
-                                <TextBlock Text="{Binding SelectedItem.Mass, StringFormat=N2}" />
-
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Volume: " />
-                                <TextBlock Text="{Binding SelectedItem.Volume, StringFormat=N2}" />
-                            </StackPanel>
-                        </StackPanel>
-
-                    </dxlc:GroupBox>-->
 
                     <dxn:NavBarControl AllowSelectItem="False">
                         <dxn:NavBarControl.View>
@@ -110,15 +87,9 @@
                                     <TextBlock Text="{Binding TradeAggregate.Balance, StringFormat=N2}" />
                                 </StackPanel>
                             </dxn:NavBarItem>
-                            <dxn:NavBarItem>
+           <dxn:NavBarItem>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="Periodic Avg. Profit: " />
-                                    <TextBlock Text="{Binding TradeAggregate.PeriodicAverageProfit, StringFormat=N2}" />
-                                </StackPanel>
-                            </dxn:NavBarItem>
-                            <dxn:NavBarItem>
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="Perpetual Avg. Profit: " />
+                                    <TextBlock Text="Profit: " />
                                     <TextBlock Text="{Binding TradeAggregate.PerpetualAverageProfit, StringFormat=N2}" />
                                 </StackPanel>
                             </dxn:NavBarItem>
@@ -184,14 +155,14 @@
                             </dxn:NavBarItem>
                             <dxn:NavBarItem>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="Perpetual Avg. Cost of Items Sold: " />
+                                    <TextBlock Text="Cost of Items Sold: " />
                                     <TextBlock
                                         Text="{Binding TradeAggregate.PerpetualAverageTotalCost, StringFormat=N2}" />
                                 </StackPanel>
                             </dxn:NavBarItem>
                             <dxn:NavBarItem>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="Current stock: " />
+                                    <TextBlock Text="Estimated stock (minimum): " />
                                     <TextBlock Text="{Binding TradeAggregate.Stock}" />
                                 </StackPanel>
                             </dxn:NavBarItem>
@@ -207,8 +178,6 @@
                                     <TextBlock Text="{Binding TradeAggregate.StockValue, StringFormat=N2}" />
                                 </StackPanel>
                             </dxn:NavBarItem>
-
-                            <!--TODO determine if active sell or buy order-->
                             <dxn:NavBarItem>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="Active buyorder: " />
@@ -243,9 +212,8 @@
                                 </StackPanel>
                             </dxn:NavBarItem>
                         </dxn:NavBarGroup>
-
                     </dxn:NavBarControl>
-                </StackPanel>
+                </Grid>
 
                 <dx:DXTabControl dxlc:DockLayoutControl.Dock="Client"
                                  dxlc:DockLayoutControl.AllowHorizontalSizing="True">

@@ -65,11 +65,11 @@ namespace eZet.EveProfiteer.Models {
             List<ItemHistory.ItemHistoryEntry> historyByVolume = History.OrderBy(f => f.Volume).ToList();
             VolumeMedian = historyByVolume.Count == 1
                 ? historyByVolume[0].Volume
-                : historyByVolume[historyByVolume.Count/2 - 1].Volume;
-            VolumeAverage = History.Average(f => f.Volume);
+                : historyByVolume[historyByVolume.Count/2].Volume;
             if (History.Count()%2 == 0) {
-                VolumeMedian = (VolumeMedian + historyByVolume[historyByVolume.Count/2].Volume)/2;
+                VolumeMedian = (VolumeMedian + historyByVolume[historyByVolume.Count/2-1].Volume)/2;
             }
+            VolumeAverage = History.Average(f => f.Volume);
             var variance = new List<double>();
             historyByVolume.ForEach(f => variance.Add(Math.Pow(f.Volume - VolumeAverage, 2)));
             VolumeVariance = variance.Average();

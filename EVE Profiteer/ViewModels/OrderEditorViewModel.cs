@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Input;
 using Caliburn.Micro;
+using DevExpress.Xpf.Editors;
 using DevExpress.Xpf.Grid;
 using DevExpress.Xpf.Mvvm;
 using eZet.EveProfiteer.Events;
@@ -14,8 +15,7 @@ using eZet.EveProfiteer.Util;
 using Screen = Caliburn.Micro.Screen;
 
 namespace eZet.EveProfiteer.ViewModels {
-    public class OrderEditorViewModel : Screen, IHandle<AddToOrdersEventArgs>, IHandle<GridCellValidationEventArgs>,
-        IHandle<DeleteOrdersEventArgs>, IHandle<ViewOrderEventArgs> {
+    public class OrderEditorViewModel : Screen, IHandle<AddToOrdersEventArgs>, IHandle<DeleteOrdersEventArgs>, IHandle<ViewOrderEventArgs> {
         private readonly EveProfiteerDataService _dataService;
         private readonly EveMarketService _eveMarketService;
         private readonly IEventAggregator _eventAggregator;
@@ -51,6 +51,7 @@ namespace eZet.EveProfiteer.ViewModels {
                     () => FocusedOrder != null);
             DeleteOrdersCommand = new DelegateCommand(DeleteOrders);
             SaveOrderCommand = new DelegateCommand<RowEventArgs>(ExecuteSaveOrder);
+            ValidateTypeCommand = new DelegateCommand<GridCellValidationEventArgs>(ExecuteValidateType);
 
             Orders.AddRange(
                 _dataService.Db.Orders.Where(order => order.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id)
@@ -60,6 +61,8 @@ namespace eZet.EveProfiteer.ViewModels {
             SelectedOrder = Orders.FirstOrDefault();
             FocusedOrder = Orders.FirstOrDefault();
         }
+
+ 
 
         public ICollection<InvType> InvTypes { get; private set; }
 
@@ -80,6 +83,8 @@ namespace eZet.EveProfiteer.ViewModels {
                 NotifyOfPropertyChange(() => SelectedOrder);
             }
         }
+
+        public ICommand ValidateTypeCommand { get; private set; }
 
         public ICommand ViewTradeDetailsCommand { get; private set; }
 
@@ -130,25 +135,25 @@ namespace eZet.EveProfiteer.ViewModels {
             throw new NotImplementedException();
         }
 
-        public void Handle(GridCellValidationEventArgs eventArgs) {
+        private void ExecuteValidateType(GridCellValidationEventArgs eventArgs) {
             string value = eventArgs.Value.ToString();
             InvType item = _dataService.Db.InvTypes.SingleOrDefault(f => f.TypeName == value);
             if (item == null) {
                 eventArgs.IsValid = false;
                 eventArgs.SetError("Invalid item.");
-            }
-            else {
+            } else {
                 if (Orders.SingleOrDefault(order => order.TypeId == item.TypeId) != null) {
                     eventArgs.IsValid = false;
                     eventArgs.SetError("Item has already been added.");
-                }
-                else {
-                    ((Order) eventArgs.Row).InvType = item;
+                } else {
+                    ((Order)eventArgs.Row).InvType = item;
                 }
             }
 
             _eventAggregator.Publish(new StatusChangedEventArgs("Order added"));
         }
+
+
 
         public void Handle(ViewOrderEventArgs message) {
             Order order = Orders.Single(o => o.InvType.TypeId == message.InvType.TypeId);

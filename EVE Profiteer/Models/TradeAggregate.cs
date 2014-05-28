@@ -143,24 +143,24 @@ namespace eZet.EveProfiteer.Models {
             TradeDuration = LastTransactionDate - FirstTransactionDate;
 
             if (BuyQuantity > 0)
-                AvgBuyPrice = BuyTotal/BuyQuantity;
+                AvgBuyPrice = BuyTotal / BuyQuantity;
             if (SellQuantity > 0)
-                AvgSellPrice = SellTotal/SellQuantity;
+                AvgSellPrice = SellTotal / SellQuantity;
 
             Balance = SellTotal - BuyTotal;
-            PeriodicAverageProfit = SellTotal - SellQuantity*AvgBuyPrice.GetValueOrDefault();
+            PeriodicAverageProfit = SellTotal - SellQuantity * AvgBuyPrice.GetValueOrDefault();
             PerpetualAverageProfit = SellTotal - PerpetualAverageTotalCost;
 
             StockDelta = BuyQuantity - SellQuantity;
 
             AvgProfitPerDay = PerpetualAverageProfit;
             if (TradeDuration.TotalDays > 0)
-                AvgProfitPerDay /= (decimal) TradeDuration.TotalDays;
+                AvgProfitPerDay /= (int)(Math.Ceiling(TradeDuration.TotalDays));
 
             if (SellQuantity > 0)
-                AvgProfitPerSale = PerpetualAverageProfit/SellQuantity;
+                AvgProfitPerSale = PerpetualAverageProfit / SellQuantity;
             if (AvgSellPrice > 0)
-                AvgMargin = (double) (AvgProfitPerSale/AvgSellPrice);
+                AvgMargin = (double)(AvgProfitPerSale / AvgSellPrice);
 
             // Set prices to NULL if they are 0, as they have not been set.
             MinSellPrice = MinSellPrice == decimal.MaxValue ? null : MinSellPrice;
@@ -182,14 +182,14 @@ namespace eZet.EveProfiteer.Models {
                         MinBuyPrice = Math.Min(MinBuyPrice.GetValueOrDefault(), transaction.Price);
                         MaxBuyPrice = Math.Max(MaxBuyPrice.GetValueOrDefault(), transaction.Price);
                         BuyQuantity += transaction.Quantity;
-                        BuyTotal += transaction.Quantity*transaction.Price;
+                        BuyTotal += transaction.Quantity * transaction.Price;
                         break;
                     case TransactionType.Sell:
                         MinSellPrice = Math.Min(MinSellPrice.GetValueOrDefault(), transaction.Price);
                         MaxSellPrice = Math.Max(MaxSellPrice.GetValueOrDefault(), transaction.Price);
                         SellQuantity += transaction.Quantity;
-                        SellTotal += transaction.Quantity*transaction.Price;
-                        PerpetualAverageTotalCost += transaction.Quantity*transaction.PerpetualAverageCost;
+                        SellTotal += transaction.Quantity * transaction.Price;
+                        PerpetualAverageTotalCost += transaction.Quantity * transaction.PerpetualAverageCost;
                         UnaccountedStock += transaction.UnaccountedStock;
                         break;
                     default:
@@ -197,9 +197,10 @@ namespace eZet.EveProfiteer.Models {
                 }
             }
 
+            // TODO Only makes sense for type aggregates
             Transaction latest = Transactions.MaxBy(t => t.TransactionDate);
             Stock = latest.CurrentStock;
-            StockValue = Stock*latest.PerpetualAverageCost;
+            StockValue = Stock * latest.PerpetualAverageCost;
             PerpetualAverageCost = latest.PerpetualAverageCost;
 
 

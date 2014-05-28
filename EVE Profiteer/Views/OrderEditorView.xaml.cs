@@ -1,5 +1,6 @@
 ﻿using Caliburn.Micro;
 using DevExpress.Data;
+using DevExpress.Xpf.Editors;
 using DevExpress.Xpf.Grid;
 using GridControl = DevExpress.XtraGrid.GridControl;
 
@@ -8,13 +9,11 @@ namespace eZet.EveProfiteer.Views {
     ///     Interaction logic for OrderEditorView.xaml
     /// </summary>
     public partial class OrderEditorView {
-        private readonly IEventAggregator _eventAggregator;
 
-        private int buyOrders;
-        private int sellOrders;
+        private int _buyOrders;
+        private int _sellOrders;
 
         public OrderEditorView() {
-            _eventAggregator = IoC.Get<IEventAggregator>();
             InitializeComponent();
         }
 
@@ -27,29 +26,26 @@ namespace eZet.EveProfiteer.Views {
             }
         }
 
-        private void TypeName_OnValidate(object sender, GridCellValidationEventArgs e) {
-            _eventAggregator.Publish(e);
-        }
-
         private void Orders_OnCustomSummary(object sender, CustomSummaryEventArgs e) {
             if (((GridSummaryItem) e.Item).FieldName == "IsSellOrder") {
                 if (e.SummaryProcess == CustomSummaryProcess.Start) {
-                    sellOrders = 0;
+                    _sellOrders = 0;
                 }
                 else if (e.SummaryProcess == CustomSummaryProcess.Calculate && (bool) e.FieldValue) {
-                    ++sellOrders;
-                    e.TotalValue = sellOrders;
+                    ++_sellOrders;
+                    e.TotalValue = _sellOrders;
                 }
             }
             if (((GridSummaryItem) e.Item).FieldName == "IsBuyOrder") {
                 if (e.SummaryProcess == CustomSummaryProcess.Start) {
-                    buyOrders = 0;
+                    _buyOrders = 0;
                 }
                 else if (e.SummaryProcess == CustomSummaryProcess.Calculate && (bool) e.FieldValue) {
-                    ++buyOrders;
-                    e.TotalValue = buyOrders;
+                    ++_buyOrders;
+                    e.TotalValue = _buyOrders;
                 }
             }
         }
+
     }
 }

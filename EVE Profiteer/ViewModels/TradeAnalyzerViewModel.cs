@@ -77,21 +77,21 @@ namespace eZet.EveProfiteer.ViewModels {
         public BindableCollection<TradeAggregate> Items { get; private set; }
 
 
-        private bool CanViewOrder(TradeAggregate tradeAnalyzerEntry) {
-            return tradeAnalyzerEntry != null && tradeAnalyzerEntry.Order != null;
+        private bool CanViewOrder(TradeAggregate entry) {
+            return entry != null && entry.Order != null;
         }
 
         private void ExecuteViewOrder(TradeAggregate entry) {
             _eventAggregator.Publish(new ViewOrderEventArgs(entry.InvType));
         }
 
-        private bool CanViewTradeDetails(TradeAggregate tradeAnalyzerEntry) {
-            return tradeAnalyzerEntry != null && tradeAnalyzerEntry.Order != null;
+        private bool CanViewTradeDetails(TradeAggregate entry) {
+            return entry != null && entry.Order != null;
         }
 
-        private void ExecuteViewTradeDetails(TradeAggregate tradeAnalyzerEntry) {
-            if (tradeAnalyzerEntry != null) {
-                _eventAggregator.Publish(new ViewTradeDetailsEventArgs(tradeAnalyzerEntry.InvType));
+        private void ExecuteViewTradeDetails(TradeAggregate entry) {
+            if (entry != null) {
+                _eventAggregator.Publish(new ViewTradeDetailsEventArgs(entry.InvType));
             }
         }
 
@@ -135,7 +135,7 @@ namespace eZet.EveProfiteer.ViewModels {
 
             Items.IsNotifying = false;
             Items.Clear();
-            IQueryable<IGrouping<int, Transaction>> transactionGroups = _dataService.Db.Transactions.Where(
+            IQueryable<IGrouping<int, Transaction>> transactionGroups = _dataService.Db.Transactions.AsNoTracking().Where(
                 t =>
                     t.TransactionDate > start.Date && t.TransactionDate <= end.Date &&
                     t.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id)
