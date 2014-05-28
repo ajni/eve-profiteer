@@ -17,8 +17,10 @@
     <dxmvvm:Interaction.Triggers>
         <dxmvvm:EventToCommand PassEventArgsToCommand="True" Command="{Binding SaveOrderCommand}"
                                EventName="RowUpdated" SourceName="OrdersView" />
-        <dxmvvm:EventToCommand PassEventArgsToCommand="True" Command="{Binding ValidateTypeCommand}"
+        <dxmvvm:EventToCommand PassEventArgsToCommand="True" Command="{Binding ValidateOrderTypeCommand}"
                                EventName="Validate" SourceName="TypeNameEditor"/>
+        <dxmvvm:EventToCommand PassEventArgsToCommand="True" Command="{Binding ValidateOrderCommand}"
+                               EventName="ValidateRow" SourceName="OrdersView"/>
     </dxmvvm:Interaction.Triggers>
 
     <DockPanel>
@@ -44,6 +46,7 @@
                                    ShowingEditor="GridViewBase_OnShowingEditor"
                                    ShowSearchPanelMode="Default" SearchColumns="InvType.TypeName"
                                    SearchPanelCriteriaOperatorType="And">
+                    
                     <dxg:SelectionView.RowCellMenuCustomizations>
                         <dxb:BarButtonItem Content="View trade details"
                                            Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.ViewTradeDetailsCommand, RelativeSource={RelativeSource Self}}" />

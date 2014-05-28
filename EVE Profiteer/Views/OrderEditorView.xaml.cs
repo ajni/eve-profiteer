@@ -46,6 +46,5 @@ namespace eZet.EveProfiteer.Views {
                 }
             }
         }
-
     }
 }
