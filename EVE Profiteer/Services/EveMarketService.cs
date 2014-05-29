@@ -24,7 +24,7 @@ namespace eZet.EveProfiteer.Services {
         public EveCrest EveCrest { get; private set; }
 
 
-        public MarketBrowserItem GetDetails(MapRegion region, InvType invType) {
+        public MarketBrowserItem GetDetails(InvType invType, MapRegion region) {
             var options = new EveMarketDataOptions();
             options.Items.Add(invType.TypeId);
             options.Regions.Add(region.RegionId);
@@ -64,7 +64,6 @@ namespace eZet.EveProfiteer.Services {
             var sellOrders = new List<ItemPrices.ItemPriceEntry>();
             var buyOrders = new List<ItemPrices.ItemPriceEntry>();
             var history = new List<ItemHistory.ItemHistoryEntry>();
-            var tasks = new List<Task>();
             foreach (InvType item in items) {
                 historyOptions.Items.Add(item.TypeId);
                 priceOptions.Items.Add(item.TypeId);

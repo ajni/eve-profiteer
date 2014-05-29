@@ -35,23 +35,36 @@
                 <dxb:BarButtonItem Name="LoadOrders" Content="Load orders" Command="{Binding LoadOrdersCommand}"
                                    Hint="Analyze your current orders." />
                 <dxb:BarEditItem Name="RegionSelector" EditValue="{Binding SelectedRegion}" EditWidth="150"
-                                 Hint="Region to analyze.">
+                                 Hint="Region">
                     <dxb:BarEditItem.EditSettings>
-                        <dxe:ComboBoxEditSettings ItemsSource="{Binding Regions}" DisplayMember="RegionName"
-                                                  AutoComplete="True" />
+                        <dxe:ComboBoxEditSettings ItemsSource="{Binding Regions}"
+                                                  DisplayMember="RegionName"
+                                                  IncrementalFiltering="True"
+                                                  FilterCondition="Contains"
+                                                  ImmediatePopup="True"
+                                                  ValidateOnTextInput="False" />
                     </dxb:BarEditItem.EditSettings>
                 </dxb:BarEditItem>
-                <dxb:BarEditItem Name="StationSelector" EditValue="{Binding SelectedStation}" EditWidth="300"
-                                 Hint="Station to analyze.">
+                <dxb:BarEditItem Name="StationSelector"
+                                 EditValue="{Binding SelectedStation}"
+                                 EditWidth="300"
+                                 Hint="Station (optional)">
                     <dxb:BarEditItem.EditSettings>
-                        <dxe:ComboBoxEditSettings ItemsSource="{Binding SelectedRegion.StationsAscending}"
-                                                  DisplayMember="StationName" AutoComplete="True"
-                                                  NullValueButtonPlacement="EditBox" NullText="-- All stations --" />
+                        <dxe:ComboBoxEditSettings ItemsSource="{Binding Stations}"
+                                                  DisplayMember="StationName"
+                                                  IncrementalFiltering="True"
+                                                  FilterCondition="Contains"
+                                                  ImmediatePopup="True"
+                                                  ValidateOnTextInput="False"
+                                                  NullValueButtonPlacement="EditBox"
+                                                  AllowNullInput="False"
+                                                  NullText="-- All stations --" />
                     </dxb:BarEditItem.EditSettings>
                 </dxb:BarEditItem>
                 <dxb:BarEditItem Name="DayLimit"
                                  EditValue="{Binding DayLimit, Converter={converters:DoubleToIntConverter}}"
-                                 EditWidth="80" Content2="{Binding DayLimit}" Hint="Number of recent days to analyze.">
+                                 EditWidth="80" Content2="{Binding DayLimit}"
+                                 Hint="Number of recent days to include in calculations">
                     <dxb:BarEditItem.EditSettings>
                         <dxe:TrackBarEditSettings Minimum="1" Maximum="30" TickFrequency="2" SmallStep="1"
                                                   LargeStep="5" />
@@ -88,15 +101,19 @@
 
         </dxb:BarManager>
 
-        <TreeView Name="ItemsTreeView" dxlc:DockLayoutControl.Dock="Left"
-                  dxlc:DockLayoutControl.AllowHorizontalSizing="True" VirtualizingPanel.IsVirtualizing="True"
-                  VerticalAlignment="Stretch" VerticalContentAlignment="Stretch"
+        <TreeView Name="ItemsTreeView"
+                  dxlc:DockLayoutControl.Dock="Left"
+                  dxlc:DockLayoutControl.AllowHorizontalSizing="True"
+                  VirtualizingPanel.IsVirtualizing="True"
+                  VerticalAlignment="Stretch"
+                  VerticalContentAlignment="Stretch"
                   ItemsSource="{Binding TreeRootNodes}">
             <TreeView.Resources>
                 <HierarchicalDataTemplate DataType="{x:Type models:InvMarketGroup}"
                                           ItemsSource="{Binding Children}">
                     <StackPanel Orientation="Horizontal">
-                        <CheckBox IsChecked="{Binding IsChecked}" Focusable="False" />
+                        <CheckBox IsChecked="{Binding IsChecked}"
+                                  Focusable="False" />
                         <ContentPresenter Content="{Binding MarketGroupName}" />
                     </StackPanel>
                 </HierarchicalDataTemplate>
@@ -217,20 +234,19 @@
                                SearchPanelCriteriaOperatorType="And" ShowFilterPanelMode="ShowAlways"
                                AutoScrollOnSorting="False">
                     <dxg:TableView.RowCellMenuCustomizations>
-                        <dxb:BarButtonItem Content="Add to orders"
-                                           Command="{Binding View.DataContext.AddToOrdersCommand}"
-                                           CommandParameter="{Binding View.DataControl.SelectedItems}" />
-                        <dxb:BarItemSeparator />
-                        <dxb:BarButtonItem Content="View trade details"
-                                           Command="{Binding View.DataContext.ViewTradeDetailsCommand}"
-                                           CommandParameter="{Binding View.DataControl.CurrentItem}" />
                         <dxb:BarButtonItem Content="View market details"
-                                           Command="{Binding View.DataContext.ViewMarketDetailsCommand}"
-                                           CommandParameter="{Binding View.DataControl.CurrentItem}" />
-                        <dxb:BarButtonItem Content="View order"
-                                           Command="{Binding View.DataContext.ViewOrderCommand}"
-                                           CommandParameter="{Binding View.DataControl.CurrentItem}" />
+                                           Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.ViewMarketDetailsCommand, RelativeSource={RelativeSource Self}}"
+                                           CommandParameter="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataControl.CurrentItem, RelativeSource={RelativeSource Self}}" />
+                        <dxb:BarButtonItem Content="View trade details"
+                                           Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.ViewTradeDetailsCommand, RelativeSource={RelativeSource Self}}"
+                                           CommandParameter="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataControl.CurrentItem, RelativeSource={RelativeSource Self}}" />
                         <dxb:BarItemSeparator />
+                        <dxb:BarButtonItem Content="View order"
+                                           Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.ViewOrderCommand, RelativeSource={RelativeSource Self}}"
+                                           CommandParameter="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataControl.CurrentItem, RelativeSource={RelativeSource Self}}" />
+                        <dxb:BarButtonItem Content="Add to orders"
+                                           Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.AddToOrdersCommand, RelativeSource={RelativeSource Self}}"
+                                           CommandParameter="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataControl.SelectedItems, RelativeSource={RelativeSource Self}}" />
                     </dxg:TableView.RowCellMenuCustomizations>
                 </dxg:TableView>
             </dxg:GridControl.View>

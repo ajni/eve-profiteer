@@ -1,4 +1,6 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
+using GroupBox = DevExpress.Xpf.LayoutControl.GroupBox;
 
 namespace eZet.EveProfiteer.Views {
     /// <summary>
@@ -8,5 +10,6 @@ namespace eZet.EveProfiteer.Views {
         public MarketBrowserView() {
             InitializeComponent();
         }
+
     }
 }

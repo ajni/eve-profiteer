@@ -80,15 +80,19 @@
                                        SearchPanelCriteriaOperatorType="And" AutoScrollOnSorting="False"
                                        NavigationStyle="Row" AllowEditing="False">
                         <dxg:SelectionView.RowCellMenuCustomizations>
-                            <dxb:BarButtonItem Content="View trade details"
-                                               Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.ViewTradeDetailsCommand, RelativeSource={RelativeSource Self}}"
-                                               CommandParameter="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataControl.CurrentItem, RelativeSource={RelativeSource Self}}" />
                             <dxb:BarButtonItem Content="View market details"
                                                Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.ViewMarketDetailsCommand, RelativeSource={RelativeSource Self}}"
                                                CommandParameter="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataControl.CurrentItem, RelativeSource={RelativeSource Self}}" />
+                            <dxb:BarButtonItem Content="View trade details"
+                                               Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.ViewTradeDetailsCommand, RelativeSource={RelativeSource Self}}"
+                                               CommandParameter="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataControl.CurrentItem, RelativeSource={RelativeSource Self}}" />
+                            <dxb:BarItemSeparator />
                             <dxb:BarButtonItem Content="View order"
                                                Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.ViewOrderCommand, RelativeSource={RelativeSource Self}}"
                                                CommandParameter="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataControl.CurrentItem, RelativeSource={RelativeSource Self}}" />
+                            <dxb:BarButtonItem Content="Add to orders"
+                                               Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.AddToOrdersCommand, RelativeSource={RelativeSource Self}}"
+                                               CommandParameter="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataControl.SelectedItems, RelativeSource={RelativeSource Self}}" />
                         </dxg:SelectionView.RowCellMenuCustomizations>
                     </dxg:SelectionView>
                 </dxg:GridControl.View>
@@ -108,14 +112,9 @@
                     <dxg:GridSummaryItem SummaryType="Count" Alignment="Right" DisplayFormat="Items: {0:N0}" />
                 </dxg:GridControl.TotalSummary>
                 <dxg:GridControl.Columns>
-                    <dxg:GridColumn Visible="False" FieldName="InvType.TypeId" />
+                    <dxg:GridColumn Visible="False" FieldName="InvType.TypeId" Header="Type ID" />
                     <dxg:GridColumn FieldName="InvType.TypeName" Header="Item" />
                     <dxg:GridColumn FieldName="Balance">
-                        <dxg:GridColumn.EditSettings>
-                            <dxe:TextEditSettings DisplayFormat="N2" />
-                        </dxg:GridColumn.EditSettings>
-                    </dxg:GridColumn>
-                    <dxg:GridColumn Visible="False" FieldName="PeriodicAverageProfit">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="N2" />
                         </dxg:GridColumn.EditSettings>

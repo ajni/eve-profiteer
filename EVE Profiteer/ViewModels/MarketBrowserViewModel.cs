@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Caliburn.Micro;
+using DevExpress.Xpf.Charts;
 using DevExpress.Xpf.Mvvm;
 using eZet.EveProfiteer.Events;
 using eZet.EveProfiteer.Models;
@@ -19,11 +22,12 @@ namespace eZet.EveProfiteer.ViewModels {
         private int _dayLimit = 5;
         private MarketBrowserItem _marketBrowserData;
         private InvType _selectedItem;
-        private bool _show20DayAverage;
-        private bool _show5DayAverage;
-        private bool _showAveragePrice;
-        private bool _showDonchianCenter;
-        private bool _showDonchianChannel;
+        private ICollection<MapRegion> _regions;
+        private ICollection<InvType> _invTypes;
+        private MapRegion _selectedRegion;
+        private BindableCollection<InvMarketGroup> _treeRootNodes;
+        private DateTime _viewStart;
+        private DateTime _viewEnd;
 
         public MarketBrowserViewModel(IWindowManager windowManager, IEventAggregator eventAggregator,
             EveMarketService eveMarketService, EveProfiteerDataService dataService) {
@@ -37,15 +41,44 @@ namespace eZet.EveProfiteer.ViewModels {
             SelectItemCommand = new DelegateCommand<InvType>(ExecuteSelectItem);
             AddToOrdersCommand = new DelegateCommand(ExecuteAddToOrders, CanAddToOrders);
             ViewTradeDetailsCommand = new DelegateCommand(ExecuteViewTradeDetails, CanViewTradeDetails);
+            ViewEnd = DateTime.UtcNow.AddDays(-2).Date;
+            ViewStart = ViewEnd.AddMonths(-6).Date;
             PropertyChanged += OnPropertyChanged;
+            DateTimeMeasurement = DateTimeMeasurementUnit.Week;
         }
 
-        public MarketBrowserItem MarketBrowserData {
-            get { return _marketBrowserData; }
+        public ICommand AddToOrdersCommand { get; private set; }
+
+        public ICommand ViewTradeDetailsCommand { get; private set; }
+
+        public ICommand SelectItemCommand { get; private set; }
+
+        public DateTime ViewStart {
+            get { return _viewStart; }
+            set {
+                if (value.Equals(_viewStart)) return;
+                _viewStart = value;
+                NotifyOfPropertyChange(() => ViewStart);
+            }
+        }
+
+        public DateTime ViewEnd {
+            get { return _viewEnd; }
+            set {
+                if (value.Equals(_viewEnd)) return;
+                _viewEnd = value;
+                NotifyOfPropertyChange(() => ViewEnd);
+            }
+        }
+
+        public DateTimeMeasurementUnit DateTimeMeasurement { get; set; }
+
+        public ICollection<InvType> InvTypes {
+            get { return _invTypes; }
             private set {
-                if (Equals(value, _marketBrowserData)) return;
-                _marketBrowserData = value;
-                NotifyOfPropertyChange(() => MarketBrowserData);
+                if (Equals(value, _invTypes)) return;
+                _invTypes = value;
+                NotifyOfPropertyChange(() => InvTypes);
             }
         }
 
@@ -58,76 +91,43 @@ namespace eZet.EveProfiteer.ViewModels {
             }
         }
 
-        public BindableCollection<MarketOrder> CurrentOrders { get; private set; }
-
-        public BindableCollection<MapRegion> Regions { get; private set; }
-
-        public MapRegion SelectedRegion { get; private set; }
-
-        public bool ShowDonchianChannel {
-            get { return _showDonchianChannel; }
-            set {
-                if (value.Equals(_showDonchianChannel)) return;
-                _showDonchianChannel = value;
-                NotifyOfPropertyChange(() => ShowDonchianChannel);
+        public ICollection<MapRegion> Regions {
+            get { return _regions; }
+            private set {
+                if (Equals(value, _regions)) return;
+                _regions = value;
+                NotifyOfPropertyChange(() => Regions);
             }
         }
 
-        public bool ShowDonchianCenter {
-            get { return _showDonchianCenter; }
-            set {
-                if (value.Equals(_showDonchianCenter)) return;
-                _showDonchianCenter = value;
-                NotifyOfPropertyChange(() => ShowDonchianCenter);
+        public MapRegion SelectedRegion {
+            get { return _selectedRegion; }
+            private set {
+                if (Equals(value, _selectedRegion)) return;
+                _selectedRegion = value;
+                NotifyOfPropertyChange(() => SelectedRegion);
             }
         }
 
-        public bool Show5DayAverage {
-            get { return _show5DayAverage; }
-            set {
-                if (value.Equals(_show5DayAverage)) return;
-                _show5DayAverage = value;
-                NotifyOfPropertyChange(() => Show5DayAverage);
-                if (value)
-                    ShowAveragePrice = true;
+        public BindableCollection<InvMarketGroup> TreeRootNodes {
+            get { return _treeRootNodes; }
+            private set {
+                if (Equals(value, _treeRootNodes)) return;
+                _treeRootNodes = value;
+                NotifyOfPropertyChange(() => TreeRootNodes);
             }
         }
 
-        public bool Show20DayAverage {
-            get { return _show20DayAverage; }
-            set {
-                if (value.Equals(_show20DayAverage)) return;
-                _show20DayAverage = value;
-                NotifyOfPropertyChange(() => Show20DayAverage);
-                if (value)
-                    ShowAveragePrice = true;
+        public MarketBrowserItem MarketBrowserData {
+            get { return _marketBrowserData; }
+            private set {
+                if (Equals(value, _marketBrowserData)) return;
+                _marketBrowserData = value;
+                NotifyOfPropertyChange(() => MarketBrowserData);
             }
         }
 
-        public bool ShowAveragePrice {
-            get { return _showAveragePrice; }
-            set {
-                if (value.Equals(_showAveragePrice)) return;
-                _showAveragePrice = value;
-                NotifyOfPropertyChange(() => ShowAveragePrice);
-                if (!value) {
-                    Show20DayAverage = false;
-                    Show5DayAverage = false;
-                }
-            }
-        }
-
-
-        public ICommand AddToOrdersCommand { get; private set; }
-
-        public ICommand ViewTradeDetailsCommand { get; private set; }
-
-        public ICommand SelectItemCommand { get; private set; }
-
-
-        public BindableCollection<InvMarketGroup> TreeRootNodes { get; private set; }
-
-        public ICollection<StaStation> Stations { get; private set; }
+       
 
         public int DayLimit {
             get { return _dayLimit; }
@@ -147,12 +147,12 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         private void ExecuteViewTradeDetails() {
-            _eventAggregator.Publish(new ViewTradeDetailsEventArgs(MarketBrowserData.InvType));
+            _eventAggregator.PublishOnUIThread(new ViewTradeDetailsEventArgs(MarketBrowserData.InvType));
         }
 
         private void ExecuteAddToOrders() {
             var e = new AddToOrdersEventArgs(MarketBrowserData.InvType);
-            _eventAggregator.Publish(e);
+            _eventAggregator.PublishOnUIThread(e);
         }
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs) {
@@ -161,23 +161,21 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         private async void LoadMarketDetails(InvType invType) {
-            _eventAggregator.Publish(new StatusChangedEventArgs("Loading market details..."));
+            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Loading market details..."));
             MarketBrowserData = await GetMarketDetails(SelectedRegion, invType);
-            _eventAggregator.Publish(new StatusChangedEventArgs("Market details loaded"));
+            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Market details loaded"));
         }
 
         private void ExecuteSelectItem(InvType invType) {
             if (invType == null) return;
-            SelectedItem = invType;
+            SelectedItem = InvTypes.Single(t => t.TypeId == invType.TypeId);
         }
 
-        public void Handle(OrdersChangedEventArgs ordersChangedEventArgs) {
-        }
-
-        protected override void OnInitialize() {
-            TreeRootNodes = _dataService.BuildMarketTree(null);
-            Regions = new BindableCollection<MapRegion>(_dataService.Db.MapRegions.ToList());
-            SelectedRegion = Regions.Single(region => region.RegionId == 10000002);
+        protected override async void OnInitialize() {
+            TreeRootNodes = await _dataService.BuildMarketTree(null);
+            Regions = await _dataService.Db.MapRegions.AsNoTracking().ToListAsync();
+            SelectedRegion = Regions.Single(region => region.RegionId == ConfigManager.DefaultRegion);
+            InvTypes = await _dataService.GetMarketTypes().AsNoTracking().ToListAsync();
         }
 
 
@@ -188,7 +186,7 @@ namespace eZet.EveProfiteer.ViewModels {
 
         private async Task<MarketBrowserItem> GetMarketDetails(MapRegion region, InvType invType) {
             return await
-                Task.Run(() => _eveMarketService.GetDetails(region, invType));
+                Task.Run(() => _eveMarketService.GetDetails(invType, region));
         }
     }
 }

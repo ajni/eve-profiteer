@@ -21,10 +21,15 @@
                 <dxb:BarManager.Items>
                     <dxb:BarEditItem Name="ItemSelector" EditValue="{Binding SelectedItem, Mode=TwoWay}"
                                      EditWidth="400"
-                                     Hint="Available orders.">
+                                     Hint="Item">
                         <dxb:BarEditItem.EditSettings>
-                            <dxe:ComboBoxEditSettings ItemsSource="{Binding SelectableItems}" AutoComplete="True"
-                                                      MaskAutoComplete="Optimistic" DisplayMember="TypeName" />
+                            <dxe:ComboBoxEditSettings ItemsSource="{Binding InvTypes}"
+                                                      DisplayMember="TypeName"
+                                                      IncrementalFiltering="True"
+                                                      FilterCondition="Contains"
+                                                      ImmediatePopup="True"
+                                                      ValidateOnTextInput="False"
+                                                      />
                         </dxb:BarEditItem.EditSettings>
                     </dxb:BarEditItem>
                     <dxb:BarButtonItem Name="ViewMarketDetails" Content="Market Details"
@@ -45,7 +50,7 @@
 
             <dxlc:DockLayoutControl>
                 <Grid dxlc:DockLayoutControl.Dock="Left" dxlc:DockLayoutControl.AllowHorizontalSizing="True"
-                            Width="300">
+                      Width="300">
 
                     <dxn:NavBarControl AllowSelectItem="False">
                         <dxn:NavBarControl.View>
@@ -56,26 +61,26 @@
                             <dxn:NavBarItem Name="TypeId" Focusable="False">
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="Id: " />
-                                    <TextBlock Text="{Binding TradeAggregate.InvType.TypeId}" />
+                                    <TextBlock Text="{Binding SelectedItem.TypeId}" />
                                 </StackPanel>
                             </dxn:NavBarItem>
                             <dxn:NavBarItem>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="Name: " />
-                                    <TextBlock Text="{Binding TradeAggregate.InvType.TypeName}" />
+                                    <TextBlock Text="{Binding SelectedItem.TypeName}" />
                                 </StackPanel>
                             </dxn:NavBarItem>
                             <dxn:NavBarItem>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="Mass: " />
-                                    <TextBlock Text="{Binding TradeAggregate.InvType.Mass, StringFormat=N2}" />
+                                    <TextBlock Text="{Binding SelectedItem.Mass, StringFormat=N2}" />
 
                                 </StackPanel>
                             </dxn:NavBarItem>
                             <dxn:NavBarItem>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="Volume: " />
-                                    <TextBlock Text="{Binding TradeAggregate.InvType.Volume, StringFormat=N2}" />
+                                    <TextBlock Text="{Binding SelectedItem.Volume, StringFormat=N2}" />
                                 </StackPanel>
                             </dxn:NavBarItem>
                         </dxn:NavBarGroup>
@@ -87,7 +92,7 @@
                                     <TextBlock Text="{Binding TradeAggregate.Balance, StringFormat=N2}" />
                                 </StackPanel>
                             </dxn:NavBarItem>
-           <dxn:NavBarItem>
+                            <dxn:NavBarItem>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="Profit: " />
                                     <TextBlock Text="{Binding TradeAggregate.PerpetualAverageProfit, StringFormat=N2}" />
@@ -212,13 +217,14 @@
                                 </StackPanel>
                             </dxn:NavBarItem>
                         </dxn:NavBarGroup>
+
                     </dxn:NavBarControl>
                 </Grid>
 
                 <dx:DXTabControl dxlc:DockLayoutControl.Dock="Client"
                                  dxlc:DockLayoutControl.AllowHorizontalSizing="True">
                     <dx:DXTabItem Header="Total">
-                        <dxc:ChartControl x:Name="TotalChart" DataSource="{Binding TradeAggregate.TradeAggregates}">
+                        <dxc:ChartControl DataSource="{Binding TradeAggregate.TradeAggregates}">
                             <dxc:ChartControl.CrosshairOptions>
                                 <dxc:CrosshairOptions />
                             </dxc:ChartControl.CrosshairOptions>
@@ -250,15 +256,15 @@
                                                            ArgumentScaleType="DateTime" ValueScaleType="Numerical" />
                                 <dxc:BarSideBySideSeries2D DisplayName="Profit"
                                                            ArgumentDataMember="FirstTransactionDate"
-                                                           ValueDataMember="PeriodicAverageProfit"
+                                                           ValueDataMember="PerpetualAverageProfit"
                                                            CrosshairLabelPattern="{}{S} : {V:N}"
                                                            ArgumentScaleType="DateTime" ValueScaleType="Numerical" />
                             </dxc:XYDiagram2D>
                         </dxc:ChartControl>
 
                     </dx:DXTabItem>
-                    <dx:DXTabItem Header="Quantity">
-                        <dxc:ChartControl x:Name="QuantityChart" DataSource="{Binding TradeAggregate.TradeAggregates}">
+                    <dx:DXTabItem Header="Volume">
+                        <dxc:ChartControl DataSource="{Binding TradeAggregate.TradeAggregates}">
                             <dxc:ChartControl.Legend>
                                 <dxc:Legend BorderThickness="0" HorizontalPosition="Center"
                                             VerticalPosition="BottomOutside" />

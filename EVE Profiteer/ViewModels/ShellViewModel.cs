@@ -119,20 +119,20 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         public async void UpdateTransactions() {
-            _eventAggregator.Publish(new StatusChangedEventArgs("Fetching new transactions..."));
+            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Fetching new transactions..."));
             long latest = 0;
             latest = TransactionService.GetLatestId(ActiveKeyEntity);
             IEnumerable<Transaction> list =
                 await Task.Run(() => _eveApiService.GetNewTransactions(ActiveKey, ActiveKeyEntity, latest));
             IList<Transaction> transactions = list as IList<Transaction> ?? list.ToList();
-            _eventAggregator.Publish(new StatusChangedEventArgs("Processing transactions..."));
+            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Processing transactions..."));
             await TransactionService.ProcessTransactions(transactions);
-            _eventAggregator.Publish(new StatusChangedEventArgs("Transaction update complete"));
+            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Transaction update complete"));
         }
 
         public async void UpdateItemCosts() {
             await TransactionService.ProcessInventory(TransactionService.Db.Transactions.ToList());
-            _eventAggregator.Publish(new StatusChangedEventArgs("Saved"));
+            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Saved"));
         }
     }
 }

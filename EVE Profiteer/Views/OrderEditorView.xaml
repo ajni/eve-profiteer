@@ -18,9 +18,9 @@
         <dxmvvm:EventToCommand PassEventArgsToCommand="True" Command="{Binding SaveOrderCommand}"
                                EventName="RowUpdated" SourceName="OrdersView" />
         <dxmvvm:EventToCommand PassEventArgsToCommand="True" Command="{Binding ValidateOrderTypeCommand}"
-                               EventName="Validate" SourceName="TypeNameEditor"/>
+                               EventName="Validate" SourceName="TypeNameEditor" />
         <dxmvvm:EventToCommand PassEventArgsToCommand="True" Command="{Binding ValidateOrderCommand}"
-                               EventName="ValidateRow" SourceName="OrdersView"/>
+                               EventName="ValidateRow" SourceName="OrdersView" />
     </dxmvvm:Interaction.Triggers>
 
     <DockPanel>
@@ -46,11 +46,14 @@
                                    ShowingEditor="GridViewBase_OnShowingEditor"
                                    ShowSearchPanelMode="Default" SearchColumns="InvType.TypeName"
                                    SearchPanelCriteriaOperatorType="And">
-                    
+
                     <dxg:SelectionView.RowCellMenuCustomizations>
+                        <dxb:BarButtonItem Content="View market details"
+                                           Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.ViewMarketDetailsCommand, RelativeSource={RelativeSource Self}}" />
                         <dxb:BarButtonItem Content="View trade details"
                                            Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.ViewTradeDetailsCommand, RelativeSource={RelativeSource Self}}" />
-                        <dxb:BarButtonItem Content="Delete orders"
+                        <dxb:BarItemSeparator />
+                        <dxb:BarButtonItem Content="Delete order(s)"
                                            Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.DeleteOrdersCommand, RelativeSource={RelativeSource Self}}" />
                     </dxg:SelectionView.RowCellMenuCustomizations>
 
@@ -59,49 +62,33 @@
 
             </dxg:GridControl.View>
             <dxg:GridControl.TotalSummary>
-                <dxg:GridSummaryItem FieldName="IsBuyOrder" SummaryType="Custom" Alignment="Right"
-                                     DisplayFormat="Buying: {0}" />
-                <dxg:GridSummaryItem FieldName="IsSellOrder" SummaryType="Custom" Alignment="Right"
-                                     DisplayFormat="Selling: {0}" />
                 <dxg:GridSummaryItem SummaryType="Count" Alignment="Right" DisplayFormat="Total: {0}" />
-                <dxg:GridSummaryItem FieldName="TotalMaxBuyPrice" SummaryType="Sum"
-                                     DisplayFormat="Buyorder total: {0:N0} isk" Alignment="Left" />
+                <dxg:GridSummaryItem FieldName="IsBuyOrder"
+                                     SummaryType="Custom"
+                                     Alignment="Right"
+                                     DisplayFormat="Buying: {0}" />
+                <dxg:GridSummaryItem FieldName="IsSellOrder"
+                                     SummaryType="Custom"
+                                     Alignment="Right"
+                                     DisplayFormat="Selling: {0}" />
+                <dxg:GridSummaryItem FieldName="TotalMaxBuyPrice"
+                                     SummaryType="Sum"
+                                     DisplayFormat="Buyorder total: {0:N0} isk"
+                                     Alignment="Left" />
             </dxg:GridControl.TotalSummary>
             <dxg:GridControl.Columns>
                 <dxg:SelectAllColumn Focusable="False" />
 
-
-                <!--//-->
-                <!--<dxg:GridColumn FieldName="InvType.TypeName" Header="Lookup">
-                    <dxg:GridColumn.CellTemplate>
-                        <DataTemplate>
-                            <dxg:LookUpEdit Name="PART_Editor" ImmediatePopup="True" FilterCondition="Contains" AutoPopulateColumns="False"
-                                            IncrementalFiltering="True" ValueMember="TypeName" DisplayMember="TypeName"
-                                            ItemsSource="{Binding DataContext.InvTypes, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=dxg:GridControl}}">
-                                <dxg:LookUpEdit.PopupContentTemplate>
-                                    <ControlTemplate>
-                                        <dxg:GridControl Name="PART_GridControl">
-                                            <dxg:GridControl.Columns>
-                                                <dxg:GridColumn FieldName="TypeName" />
-                                                <dxg:GridColumn FieldName="TypeId"/>
-                                            </dxg:GridControl.Columns>
-                                            <dxg:GridControl.View>
-                                                <dxg:TableView AutoWidth="True" />
-                                            </dxg:GridControl.View>
-                                        </dxg:GridControl>
-                                    </ControlTemplate>
-                                </dxg:LookUpEdit.PopupContentTemplate>
-                            </dxg:LookUpEdit>
-                        </DataTemplate>
-                    </dxg:GridColumn.CellTemplate>
-                </dxg:GridColumn>-->
-                <!--//-->
-
                 <dxg:GridColumn Name="TypeNameEditor" FieldName="InvType.TypeName" Header="Type">
                     <dxg:GridColumn.CellTemplate>
                         <DataTemplate>
-                            <dxe:ComboBoxEdit Name="PART_Editor" AutoComplete="True" IncrementalFiltering="True" ImmediatePopup="True"
-                                              FilterCondition="Default" ValueMember="TypeName" DisplayMember="TypeName"
+                            <dxe:ComboBoxEdit Name="PART_Editor"
+                                              IncrementalFiltering="True"
+                                              ImmediatePopup="True"
+                                              FilterCondition="Contains"
+                                              ValidateOnTextInput="False"
+                                              ValueMember="TypeName"
+                                              DisplayMember="TypeName"
                                               ItemsSource="{Binding DataContext.InvTypes, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=dxg:GridControl}}" />
                         </DataTemplate>
                     </dxg:GridColumn.CellTemplate>
@@ -114,7 +101,9 @@
                         <ControlTemplate>
                             <dxe:CheckEdit EditMode="InplaceInactive"
                                            IsChecked="{Binding EditValue, RelativeSource={RelativeSource Mode=TemplatedParent}}"
-                                           VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Center"
+                                           />
                         </ControlTemplate>
                     </dxg:GridColumn.DisplayTemplate>
                     <dxg:GridColumn.EditTemplate>

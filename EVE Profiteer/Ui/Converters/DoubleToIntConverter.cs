@@ -5,6 +5,11 @@ using System.Windows.Markup;
 
 namespace eZet.EveProfiteer.Ui.Converters {
     public class DoubleToIntConverter : MarkupExtension, IValueConverter {
+
+        public DoubleToIntConverter() {
+            // to stop WPF no default constructor warning
+        }
+
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
             return System.Convert.ToInt32(value);
         }

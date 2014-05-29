@@ -13,7 +13,7 @@ namespace eZet.EveProfiteer {
         private SimpleContainer _container;
 
         public Bootstrapper() {
-            Start();
+            Initialize();
         }
 
         protected override void Configure() {

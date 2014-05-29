@@ -4,7 +4,7 @@ using System.Linq;
 namespace eZet.EveProfiteer.Models {
     public class MarketBrowserItem {
         public MarketBrowserItem(InvType invType, IEnumerable<MarketHistoryEntry> marketHistory,
-            ICollection<MarketOrder> buyOrders, ICollection<MarketOrder> sellOrders, int donchianLength) {
+            ICollection<MarketOrder> sellOrders, ICollection<MarketOrder> buyOrders, int donchianLength) {
             InvType = invType;
             MarketHistory = marketHistory.OrderBy(entry => entry.Date).ToList();
             BuyOrders = buyOrders;

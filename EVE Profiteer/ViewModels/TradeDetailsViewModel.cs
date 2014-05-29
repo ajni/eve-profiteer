@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data.Entity;
 using System.Linq;
 using System.Windows.Input;
 using Caliburn.Micro;
@@ -8,10 +9,9 @@ using eZet.EveProfiteer.Events;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
 using eZet.EveProfiteer.Util;
-using MoreLinq;
 
 namespace eZet.EveProfiteer.ViewModels {
-    public class TradeDetailsViewModel : Screen, IHandle<OrdersChangedEventArgs>, IHandle<ViewTradeDetailsEventArgs> {
+    public class TradeDetailsViewModel : Screen, IHandle<ViewTradeDetailsEventArgs> {
         private readonly EveProfiteerDataService _dataService;
         private readonly IEventAggregator _eventAggregator;
         private InvType _selectedItem;
@@ -23,9 +23,8 @@ namespace eZet.EveProfiteer.ViewModels {
             DisplayName = "Trade Details";
             eventAggregator.Subscribe(this);
             PropertyChanged += OnPropertyChanged;
-            LoadSelectableItems();
             ViewMarketDetailsCommand =
-                new DelegateCommand(() => _eventAggregator.Publish(new ViewMarketDetailsEventArgs(SelectedItem)),
+                new DelegateCommand(() => _eventAggregator.PublishOnUIThread(new ViewMarketDetailsEventArgs(SelectedItem)),
                     () => SelectedItem != null);
         }
 
@@ -41,7 +40,13 @@ namespace eZet.EveProfiteer.ViewModels {
             }
         }
 
-        public ICollection<InvType> SelectableItems { get; private set; }
+        protected override void OnInitialize() {
+            LoadSelectableItems();
+        }
+
+        public ICollection<InvType> Orders { get; private set; }
+
+        public ICollection<InvType> InvTypes { get; private set; }
 
         public InvType SelectedItem {
             get { return _selectedItem; }
@@ -52,14 +57,8 @@ namespace eZet.EveProfiteer.ViewModels {
             }
         }
 
-
-        public void Handle(OrdersChangedEventArgs message) {
-            LoadSelectableItems();
-        }
-
         public void Handle(ViewTradeDetailsEventArgs message) {
-            InvType item = message.InvType;
-            SelectedItem = SelectableItems.Single(t => t.TypeId == item.TypeId);
+            SelectedItem = InvTypes.Single(t => t.TypeId == message.InvType.TypeId);
         }
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs) {
@@ -69,25 +68,25 @@ namespace eZet.EveProfiteer.ViewModels {
 
         private void LoadItem(InvType type) {
             // TODO Fix loading NULL type
-            if (type == null)
+            if (type == null) {
                 return;
-            _eventAggregator.Publish(new StatusChangedEventArgs("Processing trade details..."));
+            }
+            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Processing trade details..."));
             List<Transaction> transactions =
-                _dataService.Db.Transactions.Where(f => f.TypeId == type.TypeId).ToList();
+                _dataService.Db.Transactions.AsNoTracking().Where(f => f.TypeId == type.TypeId).ToList();
             if (transactions.Any()) {
                 Order order =
                     type.Orders.SingleOrDefault(t => t.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id);
-                TradeAggregate = new TradeAggregate(transactions.GroupBy(t => t.TransactionDate.Date), type, order);
+            TradeAggregate = new TradeAggregate(transactions.GroupBy(t => t.TransactionDate.Date), type, order);
+            } else {
+                TradeAggregate = new TradeAggregate();
             }
-            _eventAggregator.Publish(new StatusChangedEventArgs("Trade details loaded"));
+            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Trade details loaded"));
         }
 
         private void LoadSelectableItems() {
-            SelectableItems =
-                _dataService.Db.Orders.DistinctBy(order => order.TypeId)
-                    .Select(order => order.InvType)
-                    .OrderBy(type => type.TypeName)
-                    .ToList();
+            Orders = _dataService.GetOrders().AsNoTracking().Select(order => order.InvType).OrderBy(type => type.TypeName).ToList();
+            InvTypes = _dataService.GetMarketTypes().AsNoTracking().ToList();
         }
     }
 }
