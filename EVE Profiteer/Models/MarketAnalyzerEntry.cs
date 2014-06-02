@@ -42,7 +42,7 @@ namespace eZet.EveProfiteer.Models {
 
         public double VolumeVariance { get; set; }
 
-        public string Updated { get; set; }
+        public DateTime Updated { get; set; }
 
         public Order Order { get; set; }
 

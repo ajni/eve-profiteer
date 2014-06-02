@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using DevExpress.XtraPrinting.Native;
 using eZet.EveLib.Modules;
 using eZet.EveLib.Modules.Models;
@@ -47,11 +46,11 @@ namespace eZet.EveProfiteer.Services {
             }
 
 
-            var item = new MarketBrowserItem(invType, marketHistory, sellOrders, buyOrders, 20);
+            var item = new MarketBrowserItem(invType, marketHistory, sellOrders, buyOrders, 7);
             return item;
         }
 
-        public MarketAnalyzer GetMarketAnalyzer(MapRegion region, StaStation station, ICollection<InvType> items,
+        public MarketAnalyzer AnalyzeMarket(MapRegion region, StaStation station, ICollection<InvType> items,
             int dayLimit) {
             var historyOptions = new EveMarketDataOptions();
             historyOptions.AgeSpan = TimeSpan.FromDays(dayLimit);
@@ -78,7 +77,6 @@ namespace eZet.EveProfiteer.Services {
                 }
             }
             sellOrders.AddRange(eveMarketData.GetItemPrice(priceOptions, OrderType.Sell).Result.Prices);
-            ;
             buyOrders.AddRange(eveMarketData.GetItemPrice(priceOptions, OrderType.Buy).Result.Prices);
             history.AddRange(eveMarketData.GetItemHistory(historyOptions).Result.History);
             var res = new MarketAnalyzer(items, sellOrders, buyOrders, history);
@@ -86,7 +84,7 @@ namespace eZet.EveProfiteer.Services {
             return res;
         }
 
-        public Uri GetScannerLink(ICollection<Int64> items) {
+        public Uri GetScannerLink(ICollection<int> items) {
             var options = new EveMarketDataOptions {Items = items};
             return eveMarketData.GetScannerUri(options);
         }
@@ -100,7 +98,7 @@ namespace eZet.EveProfiteer.Services {
             historyOptions.AgeSpan = TimeSpan.FromDays(dayLimit);
             historyOptions.Regions.Add(region);
             EveMarketDataResponse<ItemHistory> history = eveMarketData.GetItemHistory(historyOptions);
-            ILookup<long, ItemHistory.ItemHistoryEntry> historyLookup = history.Result.History.ToLookup(f => f.TypeId);
+            ILookup<int, ItemHistory.ItemHistoryEntry> historyLookup = history.Result.History.ToLookup(f => f.TypeId);
             foreach (Order order in orders) {
                 List<ItemHistory.ItemHistoryEntry> itemHistory = historyLookup[order.TypeId].ToList();
                 if (!itemHistory.IsEmpty()) {

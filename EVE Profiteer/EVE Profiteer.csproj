@@ -67,6 +67,9 @@
     <Reference Include="EntityFramework.SqlServer">
       <HintPath>..\packages\EntityFramework.6.1.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="Essential.Diagnostics">
+      <HintPath>..\packages\Essential.Diagnostics.1.2.501.0\lib\Essential.Diagnostics.dll</HintPath>
+    </Reference>
     <Reference Include="MoreLinq">
       <HintPath>..\packages\morelinq.2.0.0-alpha01\lib\net35\MoreLinq.dll</HintPath>
     </Reference>
@@ -88,12 +91,6 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="Xceed.Wpf.DataGrid">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.2.1.0\lib\net40\Xceed.Wpf.DataGrid.dll</HintPath>
-    </Reference>
-    <Reference Include="Xceed.Wpf.Toolkit">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.2.1.0\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -101,6 +98,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Bootstrapper.cs" />
+    <Compile Include="EventManager.cs" />
     <Compile Include="Events\DeleteOrdersEventArgs.cs" />
     <Compile Include="Events\StatusChangedEventArgs.cs" />
     <Compile Include="Events\ViewOrderEventArgs.cs" />
@@ -111,7 +109,10 @@
     <Compile Include="Models\TradeAggregate.cs" />
     <Compile Include="Models\MarketBrowserItem.cs" />
     <Compile Include="Models\MarketOrder.cs" />
+    <Compile Include="Models\TreeNode.cs" />
     <Compile Include="Services\EveProfiteerDataService.cs" />
+    <Compile Include="EventConfig.cs" />
+    <Compile Include="Ui\Converters\DrawingColorToSolidColorBrushConverter.cs" />
     <Compile Include="Ui\Converters\DoubleToIntConverter.cs" />
     <Compile Include="Ui\Converters\OrderToBrushConverter.cs" />
     <Compile Include="Events\AddToOrdersEventArgs.cs" />
@@ -132,121 +133,107 @@
     <Compile Include="Util\ConfigManager.cs" />
     <Compile Include="Util\ProgressType.cs" />
     <Compile Include="Util\SettingsBindingExtension.cs" />
-    <Compile Include="ViewModels\AnalyzerProgressViewModel.cs" />
-    <Compile Include="ViewModels\EditKeyViewModel.cs" />
-    <Compile Include="ViewModels\AddKeyViewModel.cs" />
-    <Compile Include="ViewModels\EditOrderDialogViewModel.cs" />
+    <Compile Include="Models\CheckableTreeNode.cs" />
+    <Compile Include="ViewModels\Dialogs\AnalyzerProgressViewModel.cs" />
+    <Compile Include="ViewModels\Dialogs\EditKeyViewModel.cs" />
+    <Compile Include="ViewModels\Dialogs\AddKeyViewModel.cs" />
+    <Compile Include="ViewModels\Dialogs\EditOrderDialogViewModel.cs" />
     <Compile Include="Models\TransactionAggregateSummary.cs" />
-    <Compile Include="ViewModels\TradeDetailsViewModel.cs" />
-    <Compile Include="ViewModels\JournalViewModel.cs" />
-    <Compile Include="ViewModels\ManageKeysViewModel.cs" />
-    <Compile Include="ViewModels\MarketBrowserViewModel.cs" />
-    <Compile Include="ViewModels\OrderEditorViewModel.cs" />
+    <Compile Include="ViewModels\Tabs\TradeDetailsViewModel.cs" />
+    <Compile Include="ViewModels\Dialogs\ManageKeysViewModel.cs" />
+    <Compile Include="ViewModels\Tabs\MarketBrowserViewModel.cs" />
+    <Compile Include="ViewModels\Tabs\OrderEditorViewModel.cs" />
     <Compile Include="Events\OrdersChangedEventArgs.cs" />
-    <Compile Include="ViewModels\TradeAnalyzerViewModel.cs" />
-    <Compile Include="ViewModels\TransactionsViewModel.cs" />
-    <Compile Include="ViewModels\ViewMarketDetailsEventArgs.cs" />
-    <Compile Include="Views\EditOrderDialogView.xaml.cs">
+    <Compile Include="ViewModels\Tabs\TradeAnalyzerViewModel.cs" />
+    <Compile Include="Events\ViewMarketDetailsEventArgs.cs" />
+    <Compile Include="Views\Dialogs\EditOrderDialogView.xaml.cs">
       <DependentUpon>EditOrderDialogView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\MarketAnalyzerViewModel.cs" />
-    <Compile Include="ViewModels\TradeSummaryViewModel.cs" />
-    <Compile Include="ViewModels\ScannerLinkViewModel.cs" />
+    <Compile Include="ViewModels\Tabs\MarketAnalyzerViewModel.cs" />
+    <Compile Include="ViewModels\Tabs\TradeSummaryViewModel.cs" />
+    <Compile Include="ViewModels\Dialogs\ScannerLinkViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Views\AnalyzerProgressView.xaml.cs">
+    <Compile Include="Views\Dialogs\AnalyzerProgressView.xaml.cs">
       <DependentUpon>AnalyzerProgressView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\EditKeyView.xaml.cs">
+    <Compile Include="Views\Dialogs\EditKeyView.xaml.cs">
       <DependentUpon>EditKeyView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\AddKeyView.xaml.cs">
+    <Compile Include="Views\Dialogs\AddKeyView.xaml.cs">
       <DependentUpon>AddKeyView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\TradeSummaryView.xaml.cs">
+    <Compile Include="Views\Tabs\TradeSummaryView.xaml.cs">
       <DependentUpon>TradeSummaryView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\TradeDetailsView.xaml.cs">
+    <Compile Include="Views\Tabs\TradeDetailsView.xaml.cs">
       <DependentUpon>TradeDetailsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\JournalView.xaml.cs">
-      <DependentUpon>JournalView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\MarketBrowserView.xaml.cs">
+    <Compile Include="Views\Tabs\MarketBrowserView.xaml.cs">
       <DependentUpon>MarketBrowserView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\OrderEditorView.xaml.cs">
+    <Compile Include="Views\Tabs\OrderEditorView.xaml.cs">
       <DependentUpon>OrderEditorView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\MarketAnalyzerView.xaml.cs">
+    <Compile Include="Views\Tabs\MarketAnalyzerView.xaml.cs">
       <DependentUpon>MarketAnalyzerView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ManageKeysView.xaml.cs">
+    <Compile Include="Views\Dialogs\ManageKeysView.xaml.cs">
       <DependentUpon>ManageKeysView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ScannerLinkView.xaml.cs">
+    <Compile Include="Views\Dialogs\ScannerLinkView.xaml.cs">
       <DependentUpon>ScannerLinkView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ShellView.xaml.cs">
       <DependentUpon>ShellView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\TestView.xaml.cs">
-      <DependentUpon>TestView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\TradeAnalyzerView.xaml.cs">
+    <Compile Include="Views\Tabs\TradeAnalyzerView.xaml.cs">
       <DependentUpon>TradeAnalyzerView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\TransactionsView.xaml.cs">
-      <DependentUpon>TransactionsView.xaml</DependentUpon>
-    </Compile>
-    <Page Include="Views\EditOrderDialogView.xaml">
+    <Page Include="Views\Dialogs\EditOrderDialogView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\AnalyzerProgressView.xaml">
+    <Page Include="Views\Dialogs\AnalyzerProgressView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\EditKeyView.xaml">
+    <Page Include="Views\Dialogs\EditKeyView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\AddKeyView.xaml">
+    <Page Include="Views\Dialogs\AddKeyView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\TradeSummaryView.xaml">
+    <Page Include="Views\Tabs\TradeSummaryView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\TradeDetailsView.xaml">
+    <Page Include="Views\Tabs\TradeDetailsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\JournalView.xaml">
+    <Page Include="Views\Tabs\MarketBrowserView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\MarketBrowserView.xaml">
+    <Page Include="Views\Tabs\OrderEditorView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\OrderEditorView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\MarketAnalyzerView.xaml">
+    <Page Include="Views\Tabs\MarketAnalyzerView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\ManageKeysView.xaml">
+    <Page Include="Views\Dialogs\ManageKeysView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\ScannerLinkView.xaml">
+    <Page Include="Views\Dialogs\ScannerLinkView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -254,15 +241,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\TestView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\TradeAnalyzerView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\TransactionsView.xaml">
+    <Page Include="Views\Tabs\TradeAnalyzerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

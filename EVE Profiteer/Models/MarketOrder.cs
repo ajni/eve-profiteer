@@ -14,11 +14,11 @@ namespace eZet.EveProfiteer.Models {
 
         public long OrderId { get; set; }
 
-        public int VolEntered { get; set; }
+        public long VolEntered { get; set; }
 
-        public int VolRemaining { get; set; }
+        public long VolRemaining { get; set; }
 
-        public int MinVolume { get; set; }
+        public long MinVolume { get; set; }
 
         public int Range { get; set; }
 

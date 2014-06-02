@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[ApiKeyEntities] (
     [Id]        INT            IDENTITY (1, 1) NOT NULL,
-    [EntityId]  INT         NOT NULL,
+    [EntityId]  BIGINT         NOT NULL,
     [Name]      NVARCHAR (MAX) NULL,
     [Type]      NVARCHAR (MAX) NULL,
     [ImagePath] NVARCHAR (MAX) NULL,

@@ -1,0 +1,351 @@
+﻿<UserControl x:Class="eZet.EveProfiteer.Views.Tabs.MarketBrowserView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+             xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+             xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
+             xmlns:converters="clr-namespace:eZet.EveProfiteer.Ui.Converters"
+             xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
+             xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+             xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
+             xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/charts"
+             xmlns:eveOnlineDbModels="clr-namespace:eZet.EveProfiteer.Models;assembly=EveProfiteerDbModels"
+             xmlns:p="clr-namespace:eZet.EveProfiteer.Properties"
+             xmlns:tabs="clr-namespace:eZet.EveProfiteer.ViewModels.Tabs"
+             xmlns:models="clr-namespace:eZet.EveProfiteer.Models"
+             d:DesignHeight="300" d:DesignWidth="500"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance IsDesignTimeCreatable=False, Type={x:Type tabs:MarketBrowserViewModel}}">
+
+    <UserControl.Resources>
+
+        <ResourceDictionary />
+    </UserControl.Resources>
+
+    <dxlc:DockLayoutControl>
+
+        <dxb:BarManager dxlc:DockLayoutControl.Dock="Top">
+            <dxb:BarManager.Items>
+                <dxb:BarEditItem x:Name="ItemSelector" EditValue="{Binding SelectedItem, Mode=TwoWay}"
+                                 EditWidth="400"
+                                 Hint="Selected item">
+                    <dxb:BarEditItem.EditSettings>
+                        <dxe:ComboBoxEditSettings ItemsSource="{Binding InvTypes}"
+                                                  DisplayMember="TypeName"
+                                                  IncrementalFiltering="True"
+                                                  FilterCondition="Contains"
+                                                  ImmediatePopup="True"
+                                                  ValidateOnTextInput="False" />
+                    </dxb:BarEditItem.EditSettings>
+                </dxb:BarEditItem>
+                <dxb:BarEditItem x:Name="RegionSelector" EditValue="{Binding SelectedRegion}" EditWidth="150"
+                                 Hint="Selected region">
+                    <dxb:BarEditItem.EditSettings>
+                        <dxe:ComboBoxEditSettings ItemsSource="{Binding Regions}"
+                                                  DisplayMember="RegionName"
+                                                  IncrementalFiltering="True"
+                                                  FilterCondition="Contains"
+                                                  ImmediatePopup="True"
+                                                  ValidateOnTextInput="False" />
+                    </dxb:BarEditItem.EditSettings>
+                </dxb:BarEditItem>
+
+            </dxb:BarManager.Items>
+            <dxb:BarManager.Bars>
+
+                <dxb:Bar Caption="Market Browser">
+                    <dxb:BarEditItemLink BarItemName="ItemSelector" />
+                    <dxb:BarEditItemLink BarItemName="RegionSelector" />
+                </dxb:Bar>
+                <dxb:Bar Caption="Chart Options" />
+            </dxb:BarManager.Bars>
+
+        </dxb:BarManager>
+
+        <TreeView dxlc:DockLayoutControl.Dock="Left" dxlc:DockLayoutControl.AllowHorizontalSizing="True"
+                  VirtualizingPanel.IsVirtualizing="True"
+                  VerticalAlignment="Stretch" VerticalContentAlignment="Stretch"
+                  ItemsSource="{Binding TreeRootNodes}">
+            <TreeView.ItemContainerStyle>
+                <Style TargetType="TreeViewItem">
+                    <Setter Property="Focusable" Value="{Binding IsFocusable}"></Setter>
+                </Style>
+            </TreeView.ItemContainerStyle>
+            <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate DataType="{x:Type models:TreeNode}"
+                                          ItemsSource="{Binding Children}">
+                    <ContentPresenter Content="{Binding Name}"/>
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
+            <TreeView.Resources>
+                <!--<DataTemplate DataType="{x:Type models:TreeNode}">
+                    <TextBlock Text="{Binding Name}" />
+                </DataTemplate>-->
+            </TreeView.Resources>
+            <dxmvvm:Interaction.Triggers>
+                <dxmvvm:EventToCommand Command="{Binding SelectItemCommand}" EventName="SelectedItemChanged"
+                                       PassEventArgsToCommand="True">
+                    <dxmvvm:EventToCommand.EventArgsConverter>
+                        <converters:RoutedPropertyChangedEventArgsConverter />
+                    </dxmvvm:EventToCommand.EventArgsConverter>
+                </dxmvvm:EventToCommand>
+            </dxmvvm:Interaction.Triggers>
+        </TreeView>
+
+        <dxlc:GroupBox dxlc:DockLayoutControl.Dock="Top" dxlc:DockLayoutControl.AllowHorizontalSizing="True"
+                       Header="{Binding MarketBrowserData.InvType.TypeName}" ShowShadow="Always" State="Minimized"
+                       MinimizeElementVisibility="Visible">
+            <Label Content="{Binding MarketBrowserData.InvType.Description}" />
+        </dxlc:GroupBox>
+
+        <dx:DXTabControl dxlc:DockLayoutControl.Dock="Client" dxlc:DockLayoutControl.AllowVerticalSizing="True">
+
+            <dx:DXTabItem Header="Sell Orders">
+                <dxg:GridControl ItemsSource="{Binding MarketBrowserData.SellOrders}">
+                    <dxg:GridControl.View>
+                        <dxg:TableView NavigationStyle="Row"
+                                       ShowFixedTotalSummary="True" IsTotalSummaryMenuEnabled="True"
+                                       ShowGroupPanel="False"
+                                       ShowSearchPanelMode="Never" AutoWidth="True">
+                            <dxg:TableView.RowCellMenuCustomizations>
+                                <dxb:BarButtonItem Content="Add to orders"
+                                                   Command="{Binding View.DataContext.AddToOrdersCommand}"
+                                                   CommandParameter="{Binding View.DataControl.CurrentItem}" />
+                                <dxb:BarItemSeparator />
+                                <dxb:BarButtonItem Content="View trade details"
+                                                   Command="{Binding View.DataContext.ViewTradeDetailsCommand}"
+                                                   CommandParameter="{Binding View.DataControl.CurrentItem}" />
+                            </dxg:TableView.RowCellMenuCustomizations>
+                        </dxg:TableView>
+                    </dxg:GridControl.View>
+                    <dxg:GridControl.TotalSummary>
+                        <dxg:GridSummaryItem SummaryType="Count" Alignment="Right" />
+                    </dxg:GridControl.TotalSummary>
+                    <dxg:GridControl.Columns>
+                        <dxg:GridColumn FieldName="Price">
+                            <dxg:GridColumn.EditSettings>
+                                <dxe:TextEditSettings DisplayFormat="N" />
+                            </dxg:GridColumn.EditSettings>
+                        </dxg:GridColumn>
+                        <dxg:GridColumn FieldName="VolEntered" />
+                        <dxg:GridColumn FieldName="VolRemaining" />
+                        <dxg:GridColumn FieldName="MinVolume" />
+                        <dxg:GridColumn FieldName="Range" />
+                        <dxg:GridColumn FieldName="IssuedDate" />
+                        <dxg:GridColumn FieldName="ExpiresDate" />
+                        <dxg:GridColumn FieldName="CreatedDate" />
+                    </dxg:GridControl.Columns>
+                </dxg:GridControl>
+            </dx:DXTabItem>
+
+            <dx:DXTabItem Header="Buy Orders">
+                <dxg:GridControl ItemsSource="{Binding MarketBrowserData.BuyOrders}">
+                    <dxg:GridControl.View>
+                        <dxg:TableView NavigationStyle="Row"
+                                       ShowFixedTotalSummary="True" IsTotalSummaryMenuEnabled="True"
+                                       ShowGroupPanel="False"
+                                       ShowSearchPanelMode="Never" AutoWidth="True">
+                            <dxg:TableView.RowCellMenuCustomizations>
+                                <dxb:BarButtonItem Content="Add to orders"
+                                                   Command="{Binding View.DataContext.AddToOrdersCommand}" />
+                                <dxb:BarItemSeparator />
+                                <dxb:BarButtonItem Content="View trade details"
+                                                   Command="{Binding View.DataContext.ViewTradeDetailsCommand}" />
+                            </dxg:TableView.RowCellMenuCustomizations>
+                        </dxg:TableView>
+                    </dxg:GridControl.View>
+                    <dxg:GridControl.TotalSummary>
+                        <dxg:GridSummaryItem SummaryType="Count" Alignment="Right" />
+                    </dxg:GridControl.TotalSummary>
+                    <dxg:GridControl.Columns>
+                        <dxg:GridColumn FieldName="Price">
+                            <dxg:GridColumn.EditSettings>
+                                <dxe:TextEditSettings DisplayFormat="N" />
+                            </dxg:GridColumn.EditSettings>
+                        </dxg:GridColumn>
+                        <dxg:GridColumn FieldName="VolEntered" />
+                        <dxg:GridColumn FieldName="VolRemaining" />
+                        <dxg:GridColumn FieldName="MinVolume" />
+                        <dxg:GridColumn FieldName="Range" />
+                        <dxg:GridColumn FieldName="IssuedDate" />
+                        <dxg:GridColumn FieldName="ExpiresDate" />
+                        <dxg:GridColumn FieldName="CreatedDate" />
+                    </dxg:GridControl.Columns>
+                </dxg:GridControl>
+
+            </dx:DXTabItem>
+
+            <dx:DXTabItem Header="History (Table)">
+                <dxg:GridControl ItemsSource="{Binding MarketBrowserData.MarketHistory}">
+                    <dxg:GridControl.View>
+                        <dxg:TableView NavigationStyle="Row"
+                                       ShowFixedTotalSummary="True" IsTotalSummaryMenuEnabled="True"
+                                       ShowGroupPanel="False"
+                                       ShowSearchPanelMode="Never" AutoWidth="True" />
+                    </dxg:GridControl.View>
+                    <dxg:GridControl.TotalSummary>
+                        <dxg:GridSummaryItem SummaryType="Count" Alignment="Right" />
+                    </dxg:GridControl.TotalSummary>
+                    <dxg:GridControl.Columns>
+                        <dxg:GridColumn FieldName="Date" />
+                        <dxg:GridColumn FieldName="LowPrice">
+                            <dxg:GridColumn.EditSettings>
+                                <dxe:TextEditSettings DisplayFormat="N" />
+                            </dxg:GridColumn.EditSettings>
+                        </dxg:GridColumn>
+                        <dxg:GridColumn FieldName="HighPrice">
+                            <dxg:GridColumn.EditSettings>
+                                <dxe:TextEditSettings DisplayFormat="N" />
+                            </dxg:GridColumn.EditSettings>
+                        </dxg:GridColumn>
+                        <dxg:GridColumn FieldName="AvgPrice">
+                            <dxg:GridColumn.EditSettings>
+                                <dxe:TextEditSettings DisplayFormat="N" />
+                            </dxg:GridColumn.EditSettings>
+                        </dxg:GridColumn>
+                        <dxg:GridColumn FieldName="Volume" />
+                        <dxg:GridColumn FieldName="OrderCount" />
+                    </dxg:GridControl.Columns>
+                </dxg:GridControl>
+
+            </dx:DXTabItem>
+
+            <dx:DXTabItem Header="History (Chart)">
+                <dxc:ChartControl x:Name="HistoryChart" DataSource="{Binding MarketBrowserData.MarketHistory}">
+                    <dxc:ChartControl.CrosshairOptions>
+                        <dxc:CrosshairOptions ShowArgumentLabels="True" SnapMode="NearestArgument"
+                                              ArgumentLineBrush="#FF3F3F3F" />
+                    </dxc:ChartControl.CrosshairOptions>
+                    <dxc:ChartControl.Legend>
+                        <dxc:Legend BorderThickness="1" HorizontalPosition="Center"
+                                    VerticalPosition="BottomOutside" Orientation="Horizontal" UseCheckBoxes="True" />
+                    </dxc:ChartControl.Legend>
+                    <dxc:XYDiagram2D>
+                        <dxc:XYDiagram2D.DefaultPane>
+                            <dxc:Pane Name="PricePane" />
+                        </dxc:XYDiagram2D.DefaultPane>
+                        <dxc:XYDiagram2D.Panes>
+                            <dxc:Pane x:Name="VolumePane" />
+                        </dxc:XYDiagram2D.Panes>
+                        <dxc:XYDiagram2D.NavigationOptions>
+                            <dxc:NavigationOptions />
+                        </dxc:XYDiagram2D.NavigationOptions>
+                        <dxc:XYDiagram2D.AxisX>
+
+                            <dxc:AxisX2D>
+
+                                <dxc:AxisX2D.Range>
+                                    <dxc:AxisRange MinValue="{Binding ViewStart}"
+                                                   MaxValue="{Binding ViewEnd}"
+                                                   SideMarginsEnabled="True" />
+                                </dxc:AxisX2D.Range>
+
+                                <dxc:AxisX2D.DateTimeOptions>
+                                    <dxc:DateTimeOptions />
+                                </dxc:AxisX2D.DateTimeOptions>
+                            </dxc:AxisX2D>
+                        </dxc:XYDiagram2D.AxisX>
+                        <dxc:XYDiagram2D.AxisY>
+                            <dxc:AxisY2D>
+                                <dxc:AxisY2D.VisibilityInPanes>
+                                    <dxc:VisibilityInPane Pane="{Binding ElementName=VolumePane}"
+                                                          Visible="False" />
+                                </dxc:AxisY2D.VisibilityInPanes>
+                                <dxc:AxisY2D.Title>
+                                    <dxc:AxisTitle Content="Price" />
+                                </dxc:AxisY2D.Title>
+                                <dxc:AxisY2D.NumericOptions>
+                                    <dxc:NumericOptions Format="Number" Precision="0" />
+                                </dxc:AxisY2D.NumericOptions>
+                                <dxc:AxisY2D.Range>
+                                    <dxc:AxisRange dxc:AxisY.AlwaysShowZeroLevel="False"
+                                                   SideMarginsEnabled="True" dxc:AxisY2D.AlwaysShowZeroLevel="False" />
+                                </dxc:AxisY2D.Range>
+                            </dxc:AxisY2D>
+                        </dxc:XYDiagram2D.AxisY>
+                        <dxc:XYDiagram2D.SecondaryAxesY>
+                            <dxc:SecondaryAxisY2D x:Name="VolumeAxisY">
+                                <dxc:AxisY2D.VisibilityInPanes>
+                                    <dxc:VisibilityInPane Pane="{Binding ElementName=PricePane}"
+                                                          Visible="False" />
+                                </dxc:AxisY2D.VisibilityInPanes>
+                                <dxc:SecondaryAxisY2D.Title>
+                                    <dxc:AxisTitle Content="Quantity" />
+                                </dxc:SecondaryAxisY2D.Title>
+                                <dxc:SecondaryAxisY2D.Label>
+                                    <dxc:AxisLabel />
+                                </dxc:SecondaryAxisY2D.Label>
+                            </dxc:SecondaryAxisY2D>
+                        </dxc:XYDiagram2D.SecondaryAxesY>
+                        <dxc:RangeAreaSeries2D DisplayName="Donchian Channel"
+                                               Marker1Visible="False" Marker2Visible="False"
+                                               ValueDataMember="DonchianLow" Value2DataMember="DonchianHigh"
+                                               ArgumentDataMember="Date"
+                                               Brush="{Binding Source={x:Static p:Settings.Default}, Path=DonchianChannelColor, Mode=TwoWay, Converter={converters:DrawingColorToSolidColorBrushConverter}}"
+                                               ArgumentScaleType="DateTime">
+                            <dxc:RangeAreaSeries2D.Border2>
+                                <dxc:SeriesBorder Brush="#FF94CBDA" />
+                            </dxc:RangeAreaSeries2D.Border2>
+                            <dxc:RangeAreaSeries2D.Border1>
+                                <dxc:SeriesBorder Brush="#FF94CBDA" />
+                            </dxc:RangeAreaSeries2D.Border1>
+
+                        </dxc:RangeAreaSeries2D>
+                        <dxc:LineSeries2D DisplayName="Donchian Center"
+                                          MarkerVisible="False"
+                                          ShowInLegend="True" ValueDataMember="DonchianCenter"
+                                          ArgumentDataMember="Date" ArgumentScaleType="DateTime"
+                                          Brush="{Binding Path=DonchianCenterColor, Converter={converters:DrawingColorToSolidColorBrushConverter}, Source={x:Static p:Settings.Default}, Mode=TwoWay}">
+                            <dxc:LineSeries2D.MarkerModel>
+                                <dxc:CircleMarker2DModel />
+                            </dxc:LineSeries2D.MarkerModel>
+                        </dxc:LineSeries2D>
+
+                        <dxc:PointSeries2D DisplayName="Average Price"
+                                           MarkerSize="3" ValueDataMember="AvgPrice" ArgumentDataMember="Date"
+                                           ArgumentScaleType="DateTime"
+                                           Brush="{Binding Path=AveragePriceColor, Converter={converters:DrawingColorToSolidColorBrushConverter}, Source={x:Static p:Settings.Default}, Mode=TwoWay}">
+
+
+                            <dxc:PointSeries2D.MarkerModel>
+                                <dxc:SquareMarker2DModel />
+                            </dxc:PointSeries2D.MarkerModel>
+                            <dxc:PointSeries2D.Indicators>
+                                <dxc:SimpleMovingAverage LegendText="5 Day Moving Average" ShowInLegend="True"
+                                                         PointsCount="5"
+                                                         Brush="{Binding Path=Moving5DayColor, Converter={converters:DrawingColorToSolidColorBrushConverter}, Source={x:Static p:Settings.Default}, Mode=TwoWay}" />
+
+                                <dxc:SimpleMovingAverage LegendText="20 Day Moving Average" ShowInLegend="True"
+                                                         PointsCount="20"
+                                                         Brush="{Binding Path=Moving20DayColor, Converter={converters:DrawingColorToSolidColorBrushConverter}, Source={x:Static p:Settings.Default}, Mode=TwoWay}" />
+                            </dxc:PointSeries2D.Indicators>
+
+                        </dxc:PointSeries2D>
+
+
+                        <dxc:BarSideBySideSeries2D DisplayName="Volume"
+                                                   dxc:XYDiagram2D.SeriesAxisY="{Binding ElementName=VolumeAxisY}"
+                                                   ArgumentDataMember="Date" ValueDataMember="Volume"
+                                                   ArgumentScaleType="DateTime"
+                                                   dxc:XYDiagram2D.SeriesPane="{Binding ElementName=VolumePane}"
+                                                   Brush="{Binding Path=VolumeColor, Converter={converters:DrawingColorToSolidColorBrushConverter}, Source={x:Static p:Settings.Default}, Mode=TwoWay}">
+
+                            <!--<dxc:SeriesPoint Argument="5/26/2014 12:00:00 AM" Value="4" />
+                            <dxc:SeriesPoint Argument="5/27/2014 12:00:00 AM" Value="4" />
+                            <dxc:SeriesPoint Argument="5/28/2014 12:00:00 AM" Value="4" />
+                            <dxc:SeriesPoint Argument="5/29/2014 12:00:00 AM" Value="4" />
+                            <dxc:SeriesPoint Argument="5/30/2014 12:00:00 AM" Value="4" />-->
+                        </dxc:BarSideBySideSeries2D>
+
+
+                    </dxc:XYDiagram2D>
+                </dxc:ChartControl>
+
+            </dx:DXTabItem>
+
+        </dx:DXTabControl>
+    </dxlc:DockLayoutControl>
+
+</UserControl>

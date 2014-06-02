@@ -1,0 +1,343 @@
+﻿<UserControl x:Class="eZet.EveProfiteer.Views.Tabs.TradeDetailsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/charts"
+             xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
+             xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+             xmlns:viewModels="clr-namespace:eZet.EveProfiteer.ViewModels"
+             xmlns:dxn="http://schemas.devexpress.com/winfx/2008/xaml/navbar"
+             xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
+             xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
+             xmlns:util="clr-namespace:eZet.EveProfiteer.Util"
+             xmlns:tabs="clr-namespace:eZet.EveProfiteer.ViewModels.Tabs"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="800"
+             d:DataContext="{d:DesignInstance Type=tabs:TradeDetailsViewModel, IsDesignTimeCreatable=False}">
+
+    <Grid>
+        <DockPanel>
+            <dxb:BarManager DockPanel.Dock="Top">
+                <dxb:BarManager.Items>
+                    <dxb:BarEditItem Name="ItemSelector" EditValue="{Binding SelectedItem, Mode=TwoWay}"
+                                     EditWidth="400"
+                                     Hint="Item">
+                        <dxb:BarEditItem.EditSettings>
+                            <dxe:ComboBoxEditSettings ItemsSource="{Binding InvTypes}"
+                                                      DisplayMember="TypeName"
+                                                      IncrementalFiltering="True"
+                                                      FilterCondition="Contains"
+                                                      ImmediatePopup="True"
+                                                      ValidateOnTextInput="False"
+                                                      />
+                        </dxb:BarEditItem.EditSettings>
+                    </dxb:BarEditItem>
+                    <dxb:BarButtonItem Name="ViewMarketDetails" Content="Market Details"
+                                       Command="{Binding ViewMarketDetailsCommand}" />
+                </dxb:BarManager.Items>
+
+                <dxb:BarManager.Bars>
+                    <dxb:Bar Caption="Trade Details">
+                        <dxb:BarEditItemLink BarItemName="ItemSelector" />
+                    </dxb:Bar>
+
+                    <dxb:Bar>
+                        <dxb:BarButtonItemLink dxb:BarItemName="ViewMarketDetails" />
+                    </dxb:Bar>
+                </dxb:BarManager.Bars>
+
+            </dxb:BarManager>
+
+            <dxlc:DockLayoutControl>
+                <Grid dxlc:DockLayoutControl.Dock="Left" dxlc:DockLayoutControl.AllowHorizontalSizing="True"
+                      Width="300">
+
+                    <dxn:NavBarControl AllowSelectItem="False">
+                        <dxn:NavBarControl.View>
+                            <dxn:ExplorerBarView AnimateGroupExpansion="False" />
+                        </dxn:NavBarControl.View>
+                        <dxn:NavBarGroup Name="ItemDetailsGroup" Header="Item Details" Focusable="False"
+                                         IsExpanded="False">
+                            <dxn:NavBarItem Name="TypeId" Focusable="False">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Id: " />
+                                    <TextBlock Text="{Binding SelectedItem.TypeId}" />
+                                </StackPanel>
+                            </dxn:NavBarItem>
+                            <dxn:NavBarItem>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Name: " />
+                                    <TextBlock Text="{Binding SelectedItem.TypeName}" />
+                                </StackPanel>
+                            </dxn:NavBarItem>
+                            <dxn:NavBarItem>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Mass: " />
+                                    <TextBlock Text="{Binding SelectedItem.Mass, StringFormat=N2}" />
+
+                                </StackPanel>
+                            </dxn:NavBarItem>
+                            <dxn:NavBarItem>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Volume: " />
+                                    <TextBlock Text="{Binding SelectedItem.Volume, StringFormat=N2}" />
+                                </StackPanel>
+                            </dxn:NavBarItem>
+                        </dxn:NavBarGroup>
+
+                        <dxn:NavBarGroup Name="TradeSummaryGroup" Header="Trade Summary">
+                            <dxn:NavBarItem>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Balance: " />
+                                    <TextBlock Text="{Binding TradeAggregate.Balance, StringFormat=N2}" />
+                                </StackPanel>
+                            </dxn:NavBarItem>
+                            <dxn:NavBarItem>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Profit: " />
+                                    <TextBlock Text="{Binding TradeAggregate.PerpetualAverageProfit, StringFormat=N2}" />
+                                </StackPanel>
+                            </dxn:NavBarItem>
+                            <dxn:NavBarItem>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Average Profit per day: " />
+                                    <TextBlock Text="{Binding TradeAggregate.AvgProfitPerDay, StringFormat=N2}" />
+                                </StackPanel>
+                            </dxn:NavBarItem>
+                            <dxn:NavBarItem>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Average profit per sale: " />
+                                    <TextBlock Text="{Binding TradeAggregate.AvgProfitPerSale, StringFormat=N2}" />
+                                </StackPanel>
+                            </dxn:NavBarItem>
+                            <dxn:NavBarItem>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Average margin: " />
+                                    <TextBlock Text="{Binding TradeAggregate.AvgMargin, StringFormat=P}" />
+                                </StackPanel>
+                            </dxn:NavBarItem>
+                            <dxn:NavBarItem>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Sum bought: " />
+                                    <TextBlock Text="{Binding TradeAggregate.BuyTotal, StringFormat=N2}" />
+                                </StackPanel>
+                            </dxn:NavBarItem>
+                            <dxn:NavBarItem>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Sum sold: " />
+                                    <TextBlock Text="{Binding TradeAggregate.SellTotal, StringFormat=N2}" />
+                                </StackPanel>
+                            </dxn:NavBarItem>
+                            <dxn:NavBarItem>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Average buy price: " />
+                                    <TextBlock Text="{Binding TradeAggregate.AvgBuyPrice, StringFormat=N2}" />
+                                </StackPanel>
+                            </dxn:NavBarItem>
+                            <dxn:NavBarItem>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Average sell price: " />
+                                    <TextBlock Text="{Binding TradeAggregate.AvgSellPrice, StringFormat=N2}" />
+                                </StackPanel>
+                            </dxn:NavBarItem>
+                            <dxn:NavBarItem>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Perpetual Avg. Cost: " />
+                                    <TextBlock Text="{Binding TradeAggregate.PerpetualAverageCost, StringFormat=N2}" />
+                                </StackPanel>
+                            </dxn:NavBarItem>
+                            <dxn:NavBarItem>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Quantity bought: " />
+                                    <TextBlock Text="{Binding TradeAggregate.BuyQuantity}" />
+                                </StackPanel>
+                            </dxn:NavBarItem>
+                            <dxn:NavBarItem>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Quantity sold: " />
+                                    <TextBlock Text="{Binding TradeAggregate.SellQuantity}" />
+                                </StackPanel>
+                            </dxn:NavBarItem>
+                            <dxn:NavBarItem>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Cost of Items Sold: " />
+                                    <TextBlock
+                                        Text="{Binding TradeAggregate.PerpetualAverageTotalCost, StringFormat=N2}" />
+                                </StackPanel>
+                            </dxn:NavBarItem>
+                            <dxn:NavBarItem>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Estimated stock (minimum): " />
+                                    <TextBlock Text="{Binding TradeAggregate.Stock}" />
+                                </StackPanel>
+                            </dxn:NavBarItem>
+                            <dxn:NavBarItem>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Unaccounted Stock: " />
+                                    <TextBlock Text="{Binding TradeAggregate.UnaccountedStock}" />
+                                </StackPanel>
+                            </dxn:NavBarItem>
+                            <dxn:NavBarItem>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Stock value: " />
+                                    <TextBlock Text="{Binding TradeAggregate.StockValue, StringFormat=N2}" />
+                                </StackPanel>
+                            </dxn:NavBarItem>
+                            <dxn:NavBarItem>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Active buyorder: " />
+                                    <TextBlock Text="{Binding TradeAggregate.Order.IsBuyOrder}" />
+                                </StackPanel>
+                            </dxn:NavBarItem>
+                            <dxn:NavBarItem>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Active sellorder: " />
+                                    <TextBlock Text="{Binding TradeAggregate.Order.IsSellOrder}" />
+                                </StackPanel>
+                            </dxn:NavBarItem>
+                            <dxn:NavBarItem>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Trade period: " />
+                                    <TextBlock Text="{Binding TradeAggregate.TradeDuration.TotalDays}" />
+                                    <TextBlock Text=" days" />
+                                </StackPanel>
+                            </dxn:NavBarItem>
+                            <dxn:NavBarItem>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="First transaction: " />
+                                    <TextBlock
+                                        Text="{Binding TradeAggregate.FirstTransactionDate, StringFormat={x:Static util:ConfigManager.DateTimeFormat}}" />
+                                </StackPanel>
+                            </dxn:NavBarItem>
+                            <dxn:NavBarItem>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Latest transaction: " />
+                                    <TextBlock
+                                        Text="{Binding TradeAggregate.LastTransactionDate, StringFormat={x:Static util:ConfigManager.DateTimeFormat}}" />
+                                </StackPanel>
+                            </dxn:NavBarItem>
+                        </dxn:NavBarGroup>
+
+                    </dxn:NavBarControl>
+                </Grid>
+
+                <dx:DXTabControl dxlc:DockLayoutControl.Dock="Client"
+                                 dxlc:DockLayoutControl.AllowHorizontalSizing="True">
+                    <dx:DXTabItem Header="Total">
+                        <dxc:ChartControl DataSource="{Binding TradeAggregate.TradeAggregates}">
+                            <dxc:ChartControl.CrosshairOptions>
+                                <dxc:CrosshairOptions />
+                            </dxc:ChartControl.CrosshairOptions>
+                            <dxc:ChartControl.Legend>
+                                <dxc:Legend BorderThickness="0" HorizontalPosition="Center"
+                                            VerticalPosition="BottomOutside" />
+                            </dxc:ChartControl.Legend>
+                            <dxc:XYDiagram2D EnableAxisXNavigation="True">
+                                <dxc:XYDiagram2D.AxisY>
+                                    <dxc:AxisY2D TickmarksMinorVisible="True">
+                                        <dxc:AxisY2D.NumericOptions>
+                                            <dxc:NumericOptions Format="Number" Precision="0" />
+                                        </dxc:AxisY2D.NumericOptions>
+                                        <dxc:AxisY2D.Range>
+                                            <dxc:AxisRange dxc:AxisY.AlwaysShowZeroLevel="False"
+                                                           SideMarginsEnabled="True" />
+                                        </dxc:AxisY2D.Range>
+                                    </dxc:AxisY2D>
+                                </dxc:XYDiagram2D.AxisY>
+                                <dxc:BarSideBySideSeries2D DisplayName="Sell Total"
+                                                           ArgumentDataMember="FirstTransactionDate"
+                                                           ValueDataMember="SellTotal"
+                                                           ArgumentScaleType="DateTime" ValueScaleType="Numerical"
+                                                           CrosshairLabelPattern="{}{S} : {V:N}" />
+                                <dxc:BarSideBySideSeries2D DisplayName="Buy Total"
+                                                           ArgumentDataMember="FirstTransactionDate"
+                                                           ValueDataMember="BuyTotal"
+                                                           CrosshairLabelPattern="{}{S} : {V:N}"
+                                                           ArgumentScaleType="DateTime" ValueScaleType="Numerical" />
+                                <dxc:BarSideBySideSeries2D DisplayName="Profit"
+                                                           ArgumentDataMember="FirstTransactionDate"
+                                                           ValueDataMember="PerpetualAverageProfit"
+                                                           CrosshairLabelPattern="{}{S} : {V:N}"
+                                                           ArgumentScaleType="DateTime" ValueScaleType="Numerical" />
+                            </dxc:XYDiagram2D>
+                        </dxc:ChartControl>
+
+                    </dx:DXTabItem>
+                    <dx:DXTabItem Header="Volume">
+                        <dxc:ChartControl DataSource="{Binding TradeAggregate.TradeAggregates}">
+                            <dxc:ChartControl.Legend>
+                                <dxc:Legend BorderThickness="0" HorizontalPosition="Center"
+                                            VerticalPosition="BottomOutside" />
+                            </dxc:ChartControl.Legend>
+                            <dxc:XYDiagram2D EnableAxisXNavigation="True">
+                                <dxc:XYDiagram2D.AxisY>
+                                    <dxc:AxisY2D TickmarksMinorVisible="True">
+                                        <dxc:AxisY2D.NumericOptions>
+                                            <dxc:NumericOptions Format="Number" Precision="0" />
+                                        </dxc:AxisY2D.NumericOptions>
+                                        <dxc:AxisY2D.Range>
+                                            <dxc:AxisRange dxc:AxisY.AlwaysShowZeroLevel="False"
+                                                           SideMarginsEnabled="True" />
+                                        </dxc:AxisY2D.Range>
+                                    </dxc:AxisY2D>
+                                </dxc:XYDiagram2D.AxisY>
+                                <dxc:BarSideBySideSeries2D DisplayName="Sold" ArgumentDataMember="FirstTransactionDate"
+                                                           ValueDataMember="SellQuantity" ArgumentScaleType="DateTime" />
+                                <dxc:BarSideBySideSeries2D DisplayName="Bought"
+                                                           ArgumentDataMember="FirstTransactionDate"
+                                                           ValueDataMember="BuyQuantity" ArgumentScaleType="DateTime" />
+                                <dxc:BarSideBySideSeries2D DisplayName="Stock"
+                                                           ArgumentDataMember="FirstTransactionDate"
+                                                           ValueDataMember="Stock" ArgumentScaleType="DateTime" />
+                            </dxc:XYDiagram2D>
+                        </dxc:ChartControl>
+                    </dx:DXTabItem>
+                    <dx:DXTabItem Header="Price">
+                        <dxc:ChartControl x:Name="PriceChart" DataSource="{Binding TradeAggregate.TradeAggregates}">
+                            <dxc:ChartControl.Legend>
+                                <dxc:Legend BorderThickness="0" HorizontalPosition="Center"
+                                            VerticalPosition="BottomOutside" />
+                            </dxc:ChartControl.Legend>
+                            <dxc:XYDiagram2D EnableAxisXNavigation="True">
+                                <dxc:XYDiagram2D.AxisY>
+                                    <dxc:AxisY2D TickmarksMinorVisible="True">
+                                        <dxc:AxisY2D.NumericOptions>
+                                            <dxc:NumericOptions Format="Number" Precision="0" />
+                                        </dxc:AxisY2D.NumericOptions>
+                                        <dxc:AxisY2D.Range>
+                                            <dxc:AxisRange dxc:AxisY.AlwaysShowZeroLevel="False"
+                                                           SideMarginsEnabled="True" />
+                                        </dxc:AxisY2D.Range>
+                                    </dxc:AxisY2D>
+                                </dxc:XYDiagram2D.AxisY>
+                                <dxc:LineSeries2D DisplayName="AvgSellPrice" ArgumentDataMember="FirstTransactionDate"
+                                                  ValueDataMember="AvgSellPrice" ArgumentScaleType="DateTime"
+                                                  CrosshairLabelPattern="{}{S} : {V:N}" />
+                                <dxc:LineSeries2D DisplayName="AvgBuyPrice" ArgumentDataMember="FirstTransactionDate"
+                                                  ValueDataMember="AvgBuyPrice" ArgumentScaleType="DateTime"
+                                                  CrosshairLabelPattern="{}{S} : {V:N}" />
+                                <dxc:RangeBarSideBySideSeries2D DisplayName="BuyPrice"
+                                                                ArgumentDataMember="FirstTransactionDate"
+                                                                Value2DataMember="MaxBuyPrice"
+                                                                ValueDataMember="MinBuyPrice"
+                                                                ArgumentScaleType="DateTime"
+                                                                CrosshairLabelPattern="{}{S} : {V1:N} : {V2:N}" />
+                                <dxc:RangeBarSideBySideSeries2D DisplayName="SellPrice"
+                                                                ArgumentDataMember="FirstTransactionDate"
+                                                                Value2DataMember="MaxSellPrice"
+                                                                ValueDataMember="MinSellPrice"
+                                                                ArgumentScaleType="DateTime"
+                                                                CrosshairLabelPattern="{}{S} : {V1:N} : {V2:N}" />
+                            </dxc:XYDiagram2D>
+                        </dxc:ChartControl>
+                    </dx:DXTabItem>
+
+                </dx:DXTabControl>
+
+            </dxlc:DockLayoutControl>
+
+        </DockPanel>
+    </Grid>
+
+</UserControl>

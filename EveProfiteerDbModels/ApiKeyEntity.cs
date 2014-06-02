@@ -24,7 +24,7 @@ namespace eZet.EveProfiteer.Models
         }
     
         public int Id { get; set; }
-        public int EntityId { get; set; }
+        public long EntityId { get; set; }
         public string Name { get; set; }
         public string Type { get; set; }
         public string ImagePath { get; set; }

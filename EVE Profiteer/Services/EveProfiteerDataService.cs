@@ -16,37 +16,42 @@ namespace eZet.EveProfiteer.Services {
         public EveProfiteerDbEntities Db { get; private set; }
 
         public IQueryable<InvType> GetMarketTypes() {
-            return Db.InvTypes.Where(t => t.Published == true && t.MarketGroupId != 0);
+            return Db.InvTypes.Where(t => t.Published == true && t.MarketGroupId != null);
         }
 
         public IQueryable<Order> GetOrders() {
             return Db.Orders.Where(order => order.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id);
         }
 
-        public async Task<BindableCollection<InvMarketGroup>> BuildMarketTree(PropertyChangedEventHandler itemPropertyChanged) {
-            var rootList = new BindableCollection<InvMarketGroup>();
+        public async Task<BindableCollection<TreeNode>> BuildBetterMarketTree(PropertyChangedEventHandler itemPropertyChanged) {
+            var rootList = new BindableCollection<TreeNode>();
             List<InvType> items = await GetMarketTypes().ToListAsync();
             List<InvMarketGroup> groupList = await Db.InvMarketGroups.ToListAsync();
-            Dictionary<int, InvMarketGroup> groups = groupList.ToDictionary(t => t.MarketGroupId);
+            ILookup<int, TreeNode> groups = groupList.Select(t => new TreeNode(t)).ToLookup(t => t.Id);
 
             foreach (InvType item in items) {
-                InvMarketGroup group;
-                int id = item.MarketGroupId ?? default(int);
-                groups.TryGetValue(id, out group);
-                if (group != null) group.Children.Add(item);
-                item.PropertyChanged += itemPropertyChanged;
+                var node = new TreeNode(item);
+                int id = item.MarketGroupId.GetValueOrDefault();
+                var group = groups[id].Single();
+                if (group != null) {
+                    group.Children.Add(node);
+                    node.Parent = group;
+                }
+                node.PropertyChanged += itemPropertyChanged;
             }
-            foreach (var key in groups) {
-                if (key.Value.ParentGroupId.HasValue) {
-                    InvMarketGroup group;
-                    int id = key.Value.ParentGroupId.Value;
-                    groups.TryGetValue(id, out group);
-                    if (group != null) group.Children.Add(key.Value);
+            foreach (var key in groupList) {
+                var node = groups[key.MarketGroupId].Single();
+                if (key.ParentGroupId.HasValue) {
+                    var parent = groups[key.ParentGroupId.GetValueOrDefault()].Single();
+                    parent.Children.Add(node);
+                    node.Parent = parent;
                 } else {
-                    rootList.Add(key.Value);
+                    rootList.Add(node);
                 }
             }
             return rootList;
         }
+
+
     }
 }

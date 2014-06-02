@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -9,6 +10,8 @@ using eZet.EveProfiteer.Framework;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
 using eZet.EveProfiteer.Util;
+using eZet.EveProfiteer.ViewModels.Dialogs;
+using eZet.EveProfiteer.ViewModels.Tabs;
 
 namespace eZet.EveProfiteer.ViewModels {
     public class ShellViewModel : Conductor<IScreen>.Collection.OneActive, IShell, IHandle<ViewTradeDetailsEventArgs>,
@@ -20,6 +23,7 @@ namespace eZet.EveProfiteer.ViewModels {
         private readonly IEventAggregator _eventAggregator;
         private readonly KeyManagementService _keyManagementService;
         private readonly IWindowManager _windowManager;
+        private readonly TraceSource _trace = new TraceSource("Main");
         private string _statusMessage;
 
         public ShellViewModel(IWindowManager windowManager, IEventAggregator eventAggregator,
@@ -31,6 +35,10 @@ namespace eZet.EveProfiteer.ViewModels {
             TransactionService = transactionService;
             _eveApiService = eveApiService;
             _dataService = dataService;
+
+            DisplayName = "EVE Profiteer";
+            StatusMessage = "Ready";
+
             ActiveKey = _keyManagementService.AllApiKeys().FirstOrDefault();
             _eventAggregator.Subscribe(this);
             if (ActiveKey != null)
@@ -39,10 +47,30 @@ namespace eZet.EveProfiteer.ViewModels {
             ManageKeysCommand = new DelegateCommand(ManageKeys);
             UpdateTransactionsCommand = new DelegateCommand(UpdateTransactions);
             UpdateItemCostsCommand = new DelegateCommand(UpdateItemCosts);
-            DisplayName = "EVE Profiteer";
-            StatusMessage = "Ready";
+
+
+            TradeSummary = IoC.Get<TradeSummaryViewModel>();
+            TradeAnalyzer = IoC.Get<TradeAnalyzerViewModel>();
+            TradeDetails = IoC.Get<TradeDetailsViewModel>();
+            MarketBrowser = IoC.Get<MarketBrowserViewModel>();
+            MarketAnalyzer = IoC.Get<MarketAnalyzerViewModel>();
+            OrderEditor = IoC.Get<OrderEditorViewModel>();
             SelectKey();
+            // ReSharper disable once CSharpWarnings::CS4014
+            InitAsync();
         }
+
+        public TradeSummaryViewModel TradeSummary { get; set; }
+
+        public TradeAnalyzerViewModel TradeAnalyzer { get; set; }
+
+        public TradeDetailsViewModel TradeDetails { get; set; }
+
+        public MarketBrowserViewModel MarketBrowser { get; set; }
+
+        public MarketAnalyzerViewModel MarketAnalyzer { get; set; }
+
+        public OrderEditorViewModel OrderEditor { get; set; }
 
         public string StatusMessage {
             get { return _statusMessage; }
@@ -72,22 +100,26 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         public void Handle(StatusChangedEventArgs message) {
+            _trace.TraceEvent(TraceEventType.Information, 0, "StatusChangedEventArgs: {0}", message.Status);
             StatusMessage = message.Status;
         }
 
         public void Handle(ViewMarketDetailsEventArgs message) {
-            ActivateItem(Items.Single(item => item.GetType() == typeof (MarketBrowserViewModel)));
+            _trace.TraceEvent(TraceEventType.Verbose, 0, "ViewMarketDetailsEventArgs");
+            ActivateItem(MarketBrowser);
         }
 
         public void Handle(ViewOrderEventArgs message) {
-            ActivateItem(Items.Single(item => item.GetType() == typeof (OrderEditorViewModel)));
+            _trace.TraceEvent(TraceEventType.Verbose, 0, "ViewOrdersEventArgs");
+            ActivateItem(OrderEditor);
         }
 
         public void Handle(ViewTradeDetailsEventArgs message) {
-            ActivateItem(Items.Single(item => item.GetType() == typeof (TradeDetailsViewModel)));
+            _trace.TraceEvent(TraceEventType.Verbose, 0, "ViewTradeDetailsEventArgs");
+            ActivateItem(TradeDetails);
         }
 
-        public void SelectKey() {
+        public async void SelectKey() {
             Items.Clear();
             ApplicationHelper.ActiveKeyEntity = ActiveKeyEntity;
             //ApplicationHelper.ActiveKey = ActiveKey;
@@ -98,12 +130,13 @@ namespace eZet.EveProfiteer.ViewModels {
             //var journal = IoC.Get<JournalViewModel>();
             //Items.Add(journal);
 
-            Items.Add(IoC.Get<TradeSummaryViewModel>());
-            Items.Add(IoC.Get<TradeAnalyzerViewModel>());
-            Items.Add(IoC.Get<TradeDetailsViewModel>());
-            Items.Add(IoC.Get<MarketBrowserViewModel>());
-            Items.Add(IoC.Get<MarketAnalyzerViewModel>());
-            Items.Add(IoC.Get<OrderEditorViewModel>());
+            Items.Add(TradeSummary);
+            Items.Add(TradeAnalyzer);
+            Items.Add(TradeDetails);
+            Items.Add(MarketBrowser);
+            Items.Add(MarketAnalyzer);
+            Items.Add(OrderEditor);
+
 
             //Items.Add(IoC.Get<TradeDetailsViewModel>());
             //Items.Add(IoC.Get<ProfitViewModel>());
@@ -114,25 +147,39 @@ namespace eZet.EveProfiteer.ViewModels {
             }
         }
 
+        public async void InitAsync() {
+            await TradeSummary.InitAsync();
+            await TradeDetails.InitAsync();
+            await MarketBrowser.InitAsync();
+            await MarketAnalyzer.InitAsync();
+            await OrderEditor.InitAsync();
+        }
+
         public void ManageKeys() {
             _windowManager.ShowDialog(IoC.Get<ManageKeysViewModel>());
         }
 
         public async void UpdateTransactions() {
+            _trace.TraceEvent(TraceEventType.Start, 0, "StartUpdateTransactions");
+
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Fetching new transactions..."));
             long latest = 0;
             latest = TransactionService.GetLatestId(ActiveKeyEntity);
+            _trace.TraceEvent(TraceEventType.Verbose, 0, "Latest transaction ID: " + latest);
+
             IEnumerable<Transaction> list =
                 await Task.Run(() => _eveApiService.GetNewTransactions(ActiveKey, ActiveKeyEntity, latest));
             IList<Transaction> transactions = list as IList<Transaction> ?? list.ToList();
+            _trace.TraceEvent(TraceEventType.Verbose, 0, "Fetched transactions: " + transactions.Count);
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Processing transactions..."));
             await TransactionService.ProcessTransactions(transactions);
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Transaction update complete"));
+            _trace.TraceEvent(TraceEventType.Stop, 0, "CompleteUpdateTransactions");
         }
 
         public async void UpdateItemCosts() {
-            await TransactionService.ProcessInventory(TransactionService.Db.Transactions.ToList());
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Saved"));
+            //await TransactionService.ProcessInventory(TransactionService.Db.Transactions.ToList());
+            //_eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Saved"));
         }
     }
 }

@@ -15,11 +15,11 @@ namespace eZet.EveProfiteer.Models {
 
         public ICollection<MarketAnalyzerEntry> Result { get; set; }
 
-        private IDictionary<long, ItemPrices.ItemPriceEntry> sellOrders { get; set; }
+        private IDictionary<int, ItemPrices.ItemPriceEntry> sellOrders { get; set; }
 
-        private IDictionary<long, ItemPrices.ItemPriceEntry> buyOrders { get; set; }
+        private IDictionary<int, ItemPrices.ItemPriceEntry> buyOrders { get; set; }
 
-        private ILookup<long, ItemHistory.ItemHistoryEntry> history { get; set; }
+        private ILookup<int, ItemHistory.ItemHistoryEntry> history { get; set; }
 
         private IEnumerable<InvType> itemData { get; set; }
 

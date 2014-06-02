@@ -2,9 +2,9 @@
 
 namespace eZet.EveProfiteer.Models {
     public class MarketHistoryEntry {
-        public int Volume { get; set; }
+        public long Volume { get; set; }
 
-        public int OrderCount { get; set; }
+        public long OrderCount { get; set; }
 
         public decimal LowPrice { get; set; }
 

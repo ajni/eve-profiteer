@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows;
 using Caliburn.Micro;
 using eZet.EveProfiteer.Framework;
@@ -7,9 +8,13 @@ using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Repository;
 using eZet.EveProfiteer.Services;
 using eZet.EveProfiteer.ViewModels;
+using eZet.EveProfiteer.ViewModels.Dialogs;
+using eZet.EveProfiteer.ViewModels.Tabs;
 
 namespace eZet.EveProfiteer {
     public class Bootstrapper : BootstrapperBase {
+
+        private TraceSource _trace = new TraceSource("Main");
         private SimpleContainer _container;
 
         public Bootstrapper() {
@@ -17,6 +22,7 @@ namespace eZet.EveProfiteer {
         }
 
         protected override void Configure() {
+
             _container = new SimpleContainer();
 
             _container.Singleton<IWindowManager, WindowManager>();
@@ -51,14 +57,11 @@ namespace eZet.EveProfiteer {
             _container.PerRequest<AddKeyViewModel>();
             _container.PerRequest<EditKeyViewModel>();
             _container.PerRequest<TradeSummaryViewModel>();
-            _container.PerRequest<TransactionsViewModel>();
             _container.PerRequest<MarketAnalyzerViewModel>();
-            _container.PerRequest<JournalViewModel>();
             _container.PerRequest<OrderEditorViewModel>();
             _container.PerRequest<TradeAnalyzerViewModel>();
             _container.PerRequest<TradeDetailsViewModel>();
             _container.PerRequest<MarketBrowserViewModel>();
-            //_container.PerRequest<EveProfiteerDbEntitiesViewModel>();
         }
 
         protected override object GetInstance(Type service, string key) {
@@ -79,7 +82,6 @@ namespace eZet.EveProfiteer {
 
         protected override void OnStartup(object sender, StartupEventArgs e) {
             DisplayRootViewFor<IShell>();
-            //DisplayRootViewFor<EveProfiteerDbEntitiesViewModel>();
         }
     }
 }

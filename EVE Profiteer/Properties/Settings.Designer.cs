@@ -37,18 +37,6 @@ namespace eZet.EveProfiteer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Highlight")]
-        public global::System.Drawing.Color Setting {
-            get {
-                return ((global::System.Drawing.Color)(this["Setting"]));
-            }
-            set {
-                this["Setting"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         public global::System.Drawing.Color BuyOrderColor {
             get {
                 return ((global::System.Drawing.Color)(this["BuyOrderColor"]));
@@ -71,6 +59,7 @@ namespace eZet.EveProfiteer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("224, 224, 224")]
         public global::System.Drawing.Color ActiveOrderColor {
             get {
                 return ((global::System.Drawing.Color)(this["ActiveOrderColor"]));
@@ -93,6 +82,7 @@ namespace eZet.EveProfiteer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("192, 192, 255")]
         public global::System.Drawing.Color DonchianChannelColor {
             get {
                 return ((global::System.Drawing.Color)(this["DonchianChannelColor"]));
@@ -104,6 +94,7 @@ namespace eZet.EveProfiteer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Blue")]
         public global::System.Drawing.Color DonchianCenterColor {
             get {
                 return ((global::System.Drawing.Color)(this["DonchianCenterColor"]));
@@ -115,6 +106,7 @@ namespace eZet.EveProfiteer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Yellow")]
         public global::System.Drawing.Color AveragePriceColor {
             get {
                 return ((global::System.Drawing.Color)(this["AveragePriceColor"]));
@@ -126,6 +118,7 @@ namespace eZet.EveProfiteer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Green")]
         public global::System.Drawing.Color Moving20DayColor {
             get {
                 return ((global::System.Drawing.Color)(this["Moving20DayColor"]));
@@ -137,12 +130,25 @@ namespace eZet.EveProfiteer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Red")]
         public global::System.Drawing.Color Moving5DayColor {
             get {
                 return ((global::System.Drawing.Color)(this["Moving5DayColor"]));
             }
             set {
                 this["Moving5DayColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("HotTrack")]
+        public global::System.Drawing.Color VolumeColor {
+            get {
+                return ((global::System.Drawing.Color)(this["VolumeColor"]));
+            }
+            set {
+                this["VolumeColor"] = value;
             }
         }
     }

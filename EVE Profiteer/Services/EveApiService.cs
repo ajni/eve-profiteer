@@ -22,7 +22,7 @@ namespace eZet.EveProfiteer.Services {
         }
 
         public string GetPortraint(ApiKeyEntity entity) {
-            return new Image().GetCharacterPortrait(entity.EntityId, Image.CharacterPortraitSize.X256);
+            return new Image().GetCharacterPortrait(entity.EntityId, Image.CharacterPortraitSize.X256, @"c:\Temp");
         }
 
 
@@ -56,22 +56,7 @@ namespace eZet.EveProfiteer.Services {
         private static IList<JournalEntry> getJournalEntries(ApiKey key, ApiKeyEntity entity, int rowLimit,
             long latestId = 0) {
             var list = new List<JournalEntry>();
-            var ckey = new CharacterKey(key.ApiKeyId, key.VCode);
-            EveApiResponse<WalletJournal> res =
-                ckey.Characters.Single(c => c.CharacterId == entity.EntityId).GetWalletJournal(rowLimit);
-            IEnumerable<WalletJournal.JournalEntry> transactions = res.Result.Journal.Where(f => f.RefId > latestId);
-            IList<WalletJournal.JournalEntry> enumerable = transactions as IList<WalletJournal.JournalEntry> ??
-                                                           transactions.ToList();
-            int count;
-            do {
-                count = res.Result.Journal.Count();
-                foreach (WalletJournal.JournalEntry t in enumerable) {
-                    var transaction = new JournalEntry();
-                    transaction.ApiKeyEntity = entity;
-                    list.Add(ApiEntityMapper.Map(t, transaction));
-                }
-                res = res.Result.GetOlder(rowLimit);
-            } while (res.Result.Journal.Count() != 0 && enumerable.Count() == count);
+
             return list;
         }
 

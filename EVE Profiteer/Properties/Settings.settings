@@ -5,9 +5,6 @@
     <Setting Name="DateFormat" Type="System.String" Scope="User">
       <Value Profile="(Default)">"dd-MM-yyyy"</Value>
     </Setting>
-    <Setting Name="Setting" Type="System.Drawing.Color" Scope="User">
-      <Value Profile="(Default)">Highlight</Value>
-    </Setting>
     <Setting Name="BuyOrderColor" Type="System.Drawing.Color" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
@@ -15,25 +12,28 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="ActiveOrderColor" Type="System.Drawing.Color" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">224, 224, 224</Value>
     </Setting>
     <Setting Name="InactiveOrderColor" Type="System.Drawing.Color" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="DonchianChannelColor" Type="System.Drawing.Color" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">192, 192, 255</Value>
     </Setting>
     <Setting Name="DonchianCenterColor" Type="System.Drawing.Color" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">Blue</Value>
     </Setting>
     <Setting Name="AveragePriceColor" Type="System.Drawing.Color" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">Yellow</Value>
     </Setting>
     <Setting Name="Moving20DayColor" Type="System.Drawing.Color" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">Green</Value>
     </Setting>
     <Setting Name="Moving5DayColor" Type="System.Drawing.Color" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">Red</Value>
+    </Setting>
+    <Setting Name="VolumeColor" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">HotTrack</Value>
     </Setting>
   </Settings>
 </SettingsFile>

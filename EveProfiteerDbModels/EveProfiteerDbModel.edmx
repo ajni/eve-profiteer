@@ -18,7 +18,7 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="EntityId" Type="int" Nullable="false" />
+          <Property Name="EntityId" Type="bigint" Nullable="false" />
           <Property Name="Name" Type="nvarchar(max)" />
           <Property Name="Type" Type="nvarchar(max)" />
           <Property Name="ImagePath" Type="nvarchar(max)" />
@@ -450,7 +450,7 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="EntityId" Type="Int32" Nullable="false" />
+          <Property Name="EntityId" Type="Int64" Nullable="false" />
           <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Type" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ImagePath" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
