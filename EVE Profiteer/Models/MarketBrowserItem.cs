@@ -4,16 +4,18 @@ using System.Linq;
 namespace eZet.EveProfiteer.Models {
     public class MarketBrowserItem {
         public MarketBrowserItem(InvType invType, IEnumerable<MarketHistoryEntry> marketHistory,
-            ICollection<MarketOrder> sellOrders, ICollection<MarketOrder> buyOrders, int donchianLength) {
+            IEnumerable<MarketOrder> sellOrders, IEnumerable<MarketOrder> buyOrders, int donchianLength) {
             InvType = invType;
             MarketHistory = marketHistory.OrderBy(entry => entry.Date).ToList();
-            BuyOrders = buyOrders;
-            SellOrders = sellOrders;
+            BuyOrders = buyOrders.OrderByDescending(t => t.Price).ToList();
+            SellOrders = sellOrders.OrderBy(t => t.Price).ToList();
             DonchianLength = donchianLength;
             initialize();
         }
 
         public int DonchianLength { get; set; }
+
+        public double CommodityChannelIndexFactor = 0.015;
 
         public InvType InvType { get; set; }
         public ICollection<MarketHistoryEntry> MarketHistory { get; set; }
@@ -38,6 +40,11 @@ namespace eZet.EveProfiteer.Models {
                     entry.DonchianLow = low.Min();
                 entry.DonchianCenter = (entry.DonchianHigh + entry.DonchianLow)/2;
             }
+        }
+
+        private void calcCCI(MarketHistoryEntry entry) {
+
+            
         }
     }
 }

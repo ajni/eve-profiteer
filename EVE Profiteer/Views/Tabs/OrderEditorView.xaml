@@ -6,7 +6,6 @@
              xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
              xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
              xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
-             xmlns:viewModels="clr-namespace:eZet.EveProfiteer.ViewModels"
              xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
              xmlns:tabs="clr-namespace:eZet.EveProfiteer.ViewModels.Tabs"
              mc:Ignorable="d"
@@ -20,8 +19,6 @@
                                EventName="RowUpdated" SourceName="OrdersView" />
         <dxmvvm:EventToCommand PassEventArgsToCommand="True" Command="{Binding ValidateOrderTypeCommand}"
                                EventName="Validate" SourceName="TypeNameEditor" />
-        <dxmvvm:EventToCommand PassEventArgsToCommand="True" Command="{Binding ValidateOrderCommand}"
-                               EventName="ValidateRow" SourceName="OrdersView" />
     </dxmvvm:Interaction.Triggers>
 
     <DockPanel>
@@ -40,13 +37,22 @@
                          SelectedItem="{Binding SelectedOrder}" CurrentItem="{Binding FocusedOrder}"
                          CustomSummary="Orders_OnCustomSummary">
             <dxg:GridControl.View>
-                <dxg:SelectionView Name="OrdersView" ShowAutoFilterRow="False" ShowTotalSummary="False"
+                <dxg:SelectionView Name="OrdersView"
+                                   ShowAutoFilterRow="False"
+                                   ShowTotalSummary="False"
                                    ShowFixedTotalSummary="True"
-                                   ShowGroupPanel="False" AutoWidth="True"
-                                   NavigationStyle="Cell" NewItemRowPosition="Top"
+                                   ShowGroupPanel="False"
+                                   AutoWidth="True"
+                                   NavigationStyle="Cell"
+                                   NewItemRowPosition="Top"
                                    ShowingEditor="GridViewBase_OnShowingEditor"
-                                   ShowSearchPanelMode="Default" SearchColumns="InvType.TypeName"
-                                   SearchPanelCriteriaOperatorType="And">
+                                   ShowSearchPanelMode="Default"
+                                   SearchColumns="TypeName"
+                                   SearchPanelCriteriaOperatorType="And"
+                                   AllowCommitOnValidationAttributeError="False"
+                                   InvalidRowException="OrdersView_OnInvalidRowException"
+                                   ValidateRow="OrdersView_OnValidateRow"
+                                   >
 
                     <dxg:SelectionView.RowCellMenuCustomizations>
                         <dxb:BarButtonItem Content="View market details"
@@ -80,7 +86,7 @@
             <dxg:GridControl.Columns>
                 <dxg:SelectAllColumn Focusable="False" />
 
-                <dxg:GridColumn Name="TypeNameEditor" FieldName="InvType.TypeName" Header="Type">
+                <dxg:GridColumn Name="TypeNameEditor" FieldName="TypeName" Header="Type">
                     <dxg:GridColumn.CellTemplate>
                         <DataTemplate>
                             <dxe:ComboBoxEdit Name="PART_Editor"

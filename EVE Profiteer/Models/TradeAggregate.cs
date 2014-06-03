@@ -83,7 +83,7 @@ namespace eZet.EveProfiteer.Models {
         public decimal Balance { get; private set; }
 
 
-        public decimal PerpetualAverageProfit { get; private set; }
+        public decimal PerpetualAverageGrossProfit { get; private set; }
 
         public decimal PerpetualAverageTotalCost { get; private set; }
 
@@ -147,16 +147,16 @@ namespace eZet.EveProfiteer.Models {
                 AvgSellPrice = SellTotal / SellQuantity;
 
             Balance = SellTotal - BuyTotal;
-            PerpetualAverageProfit = SellTotal - PerpetualAverageTotalCost;
+            PerpetualAverageGrossProfit = SellTotal - PerpetualAverageTotalCost;
 
             StockDelta = BuyQuantity - SellQuantity;
 
-            AvgProfitPerDay = PerpetualAverageProfit;
+            AvgProfitPerDay = PerpetualAverageGrossProfit;
             if (TradeDuration.TotalDays > 0)
                 AvgProfitPerDay /= (int)(Math.Ceiling(TradeDuration.TotalDays));
 
             if (SellQuantity > 0)
-                AvgProfitPerSale = PerpetualAverageProfit / SellQuantity;
+                AvgProfitPerSale = PerpetualAverageGrossProfit / SellQuantity;
             if (AvgSellPrice > 0)
                 AvgMargin = (double)(AvgProfitPerSale / AvgSellPrice);
 

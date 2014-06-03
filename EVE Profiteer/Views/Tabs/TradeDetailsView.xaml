@@ -95,19 +95,19 @@
                             </dxn:NavBarItem>
                             <dxn:NavBarItem>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="Profit: " />
-                                    <TextBlock Text="{Binding TradeAggregate.PerpetualAverageProfit, StringFormat=N2}" />
+                                    <TextBlock Text="Gross Profit: " />
+                                    <TextBlock Text="{Binding TradeAggregate.PerpetualAverageGrossProfit, StringFormat=N2}" />
                                 </StackPanel>
                             </dxn:NavBarItem>
                             <dxn:NavBarItem>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="Average Profit per day: " />
+                                    <TextBlock Text="Avg. Gross Profit per day: " />
                                     <TextBlock Text="{Binding TradeAggregate.AvgProfitPerDay, StringFormat=N2}" />
                                 </StackPanel>
                             </dxn:NavBarItem>
                             <dxn:NavBarItem>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="Average profit per sale: " />
+                                    <TextBlock Text="Avg. Gross profit per sale: " />
                                     <TextBlock Text="{Binding TradeAggregate.AvgProfitPerSale, StringFormat=N2}" />
                                 </StackPanel>
                             </dxn:NavBarItem>
@@ -131,14 +131,14 @@
                             </dxn:NavBarItem>
                             <dxn:NavBarItem>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="Average buy price: " />
-                                    <TextBlock Text="{Binding TradeAggregate.AvgBuyPrice, StringFormat=N2}" />
+                                    <TextBlock Text="Average sell price: " />
+                                    <TextBlock Text="{Binding TradeAggregate.AvgSellPrice, StringFormat=N2}" />
                                 </StackPanel>
                             </dxn:NavBarItem>
                             <dxn:NavBarItem>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="Average sell price: " />
-                                    <TextBlock Text="{Binding TradeAggregate.AvgSellPrice, StringFormat=N2}" />
+                                    <TextBlock Text="Average buy price: " />
+                                    <TextBlock Text="{Binding TradeAggregate.AvgBuyPrice, StringFormat=N2}" />
                                 </StackPanel>
                             </dxn:NavBarItem>
                             <dxn:NavBarItem>
@@ -149,14 +149,14 @@
                             </dxn:NavBarItem>
                             <dxn:NavBarItem>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="Quantity bought: " />
-                                    <TextBlock Text="{Binding TradeAggregate.BuyQuantity}" />
+                                    <TextBlock Text="Quantity sold: " />
+                                    <TextBlock Text="{Binding TradeAggregate.SellQuantity}" />
                                 </StackPanel>
                             </dxn:NavBarItem>
                             <dxn:NavBarItem>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="Quantity sold: " />
-                                    <TextBlock Text="{Binding TradeAggregate.SellQuantity}" />
+                                    <TextBlock Text="Quantity bought: " />
+                                    <TextBlock Text="{Binding TradeAggregate.BuyQuantity}" />
                                 </StackPanel>
                             </dxn:NavBarItem>
                             <dxn:NavBarItem>
@@ -255,9 +255,9 @@
                                                            ValueDataMember="BuyTotal"
                                                            CrosshairLabelPattern="{}{S} : {V:N}"
                                                            ArgumentScaleType="DateTime" ValueScaleType="Numerical" />
-                                <dxc:BarSideBySideSeries2D DisplayName="Profit"
+                                <dxc:BarSideBySideSeries2D DisplayName="Gross Profit"
                                                            ArgumentDataMember="FirstTransactionDate"
-                                                           ValueDataMember="PerpetualAverageProfit"
+                                                           ValueDataMember="PerpetualAverageGrossProfit"
                                                            CrosshairLabelPattern="{}{S} : {V:N}"
                                                            ArgumentScaleType="DateTime" ValueScaleType="Numerical" />
                             </dxc:XYDiagram2D>

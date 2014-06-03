@@ -89,7 +89,8 @@ namespace eZet.EveProfiteer.Services {
             return eveMarketData.GetScannerUri(options);
         }
 
-        public void LoadMarketData(ICollection<Order> orders, int dayLimit, int region = 10000002) {
+        public void LoadMarketData(IEnumerable<Order> enumerable, int dayLimit, int region = 10000002) {
+            var orders = enumerable as IList<Order> ?? enumerable.ToList();
             if (orders.Count == 0) return;
             var historyOptions = new EveMarketDataOptions();
             foreach (Order order in orders) {

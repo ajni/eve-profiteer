@@ -62,7 +62,7 @@
                 
                 <dxn:NavBarGroup Header="Profit Summary">
                     <dxn:NavBarItem>
-                        <TextBlock Text="{Binding Summary.PerpetualAverageProfit, StringFormat='Profit: {0:N2}'}" />
+                        <TextBlock Text="{Binding Summary.PerpetualAverageGrossProfit, StringFormat='Profit: {0:N2}'}" />
                     </dxn:NavBarItem>
                     <dxn:NavBarItem>
                         <TextBlock Text="{Binding Summary.PerpetualAverageTotalCost, StringFormat='Cost of goods sold: {0:N2}'}" />
@@ -131,8 +131,8 @@
                                                        ValueDataMember="BuyTotal"
                                                        CrosshairLabelPattern="{}{S} : {V:N2}"
                                                        ArgumentScaleType="DateTime" ValueScaleType="Numerical" />
-                            <dxc:BarSideBySideSeries2D DisplayName="Profit" ArgumentDataMember="FirstTransactionDate"
-                                                       ValueDataMember="PerpetualAverageProfit"
+                            <dxc:BarSideBySideSeries2D DisplayName="Gross Profit" ArgumentDataMember="FirstTransactionDate"
+                                                       ValueDataMember="PerpetualAverageGrossProfit"
                                                        CrosshairLabelPattern="{}{S} : {V:N2}"
                                                        ArgumentScaleType="DateTime" ValueScaleType="Numerical" />
                         </dxc:XYDiagram2D>

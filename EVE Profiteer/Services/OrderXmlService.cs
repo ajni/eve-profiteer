@@ -42,7 +42,8 @@ namespace eZet.EveProfiteer.Services {
             return orders;
         }
 
-        public void ExportOrders(string path, ICollection<Order> orders) {
+        public void ExportOrders(string path, IEnumerable<Order> enumerable) {
+            var orders = enumerable as IList<Order> ?? enumerable.ToList();
             OrderInstallerIoService.WriteBuyOrders(path + Path.DirectorySeparatorChar + BuyOrdersFileName,
                 ToBuyOrderCollection(orders));
             OrderInstallerIoService.WriteSellOrders(path + Path.DirectorySeparatorChar + SellOrdersFileName,

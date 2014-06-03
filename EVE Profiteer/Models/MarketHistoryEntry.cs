@@ -19,5 +19,11 @@ namespace eZet.EveProfiteer.Models {
         public decimal DonchianLow { get; set; }
 
         public decimal DonchianCenter { get; set; }
+
+        public decimal Moving20DayAvg { get; set; }
+
+        public decimal Moving5DayAvg { get; set; }
+
+        public double CommodityChannelIndex { get; set; }
     }
 }

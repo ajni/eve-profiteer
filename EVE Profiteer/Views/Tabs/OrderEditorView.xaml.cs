@@ -1,5 +1,6 @@
 ﻿using DevExpress.Data;
 using DevExpress.Xpf.Grid;
+using eZet.EveProfiteer.Models;
 using GridControl = DevExpress.XtraGrid.GridControl;
 
 namespace eZet.EveProfiteer.Views.Tabs {
@@ -16,8 +17,7 @@ namespace eZet.EveProfiteer.Views.Tabs {
         }
 
         private void GridViewBase_OnShowingEditor(object sender, ShowingEditorEventArgs e) {
-            var view = sender as SelectionView;
-            if (OrderEditorGrid.CurrentColumn.FieldName == "InvType.TypeName") {
+            if (OrderEditorGrid.CurrentColumn.FieldName == "TypeName") {
                 if (OrderEditorGrid.View.FocusedRowHandle != GridControl.NewItemRowHandle) {
                     e.Cancel = true;
                 }
@@ -25,24 +25,32 @@ namespace eZet.EveProfiteer.Views.Tabs {
         }
 
         private void Orders_OnCustomSummary(object sender, CustomSummaryEventArgs e) {
-            if (((GridSummaryItem) e.Item).FieldName == "IsSellOrder") {
+            if (((GridSummaryItem)e.Item).FieldName == "IsSellOrder") {
                 if (e.SummaryProcess == CustomSummaryProcess.Start) {
                     _sellOrders = 0;
-                }
-                else if (e.SummaryProcess == CustomSummaryProcess.Calculate && (bool) e.FieldValue) {
+                } else if (e.SummaryProcess == CustomSummaryProcess.Calculate && (bool)e.FieldValue) {
                     ++_sellOrders;
                     e.TotalValue = _sellOrders;
                 }
             }
-            if (((GridSummaryItem) e.Item).FieldName == "IsBuyOrder") {
+            if (((GridSummaryItem)e.Item).FieldName == "IsBuyOrder") {
                 if (e.SummaryProcess == CustomSummaryProcess.Start) {
                     _buyOrders = 0;
-                }
-                else if (e.SummaryProcess == CustomSummaryProcess.Calculate && (bool) e.FieldValue) {
+                } else if (e.SummaryProcess == CustomSummaryProcess.Calculate && (bool)e.FieldValue) {
                     ++_buyOrders;
                     e.TotalValue = _buyOrders;
                 }
             }
+        }
+
+        private void OrdersView_OnInvalidRowException(object sender, InvalidRowExceptionEventArgs e) {
+            e.ExceptionMode = ExceptionMode.NoAction;
+        }
+
+        private void OrdersView_OnValidateRow(object sender, GridRowValidationEventArgs e) {
+            var order = (OrderGridEntry)e.Row;
+            if (order.TypeId == 0)
+                e.IsValid = false;
         }
     }
 }

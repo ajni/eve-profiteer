@@ -100,7 +100,7 @@
                 <dxg:GridControl.TotalSummary>
                     <dxg:GridSummaryItem FieldName="InvType.TypeName" SummaryType="None" DisplayFormat="Summary" />
                     <dxg:GridSummaryItem FieldName="PeriodicAverageProfit" SummaryType="Sum" DisplayFormat="N2" />
-                    <dxg:GridSummaryItem FieldName="PerpetualAverageProfit" SummaryType="Sum" DisplayFormat="N2" />
+                    <dxg:GridSummaryItem FieldName="PerpetualAverageGrossProfit" SummaryType="Sum" DisplayFormat="N2" />
                     <dxg:GridSummaryItem FieldName="AvgProfitPerDay" SummaryType="Sum" DisplayFormat="N2" />
                     <dxg:GridSummaryItem FieldName="Balance" SummaryType="Sum" DisplayFormat="N2" />
                     <dxg:GridSummaryItem FieldName="SellTotal" SummaryType="Sum" DisplayFormat="N2" />
@@ -119,12 +119,12 @@
                             <dxe:TextEditSettings DisplayFormat="N2" />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="PerpetualAverageProfit" Header="Profit">
+                    <dxg:GridColumn FieldName="PerpetualAverageGrossProfit" Header="Gross Profit">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="N2" />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="AvgProfitPerDay" Header="Daily Profit">
+                    <dxg:GridColumn FieldName="AvgProfitPerDay" Header="Daily Gross Profit">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="N2" />
                         </dxg:GridColumn.EditSettings>
@@ -139,18 +139,18 @@
                             <dxe:TextEditSettings DisplayFormat="P" />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="BuyTotal">
-                        <dxg:GridColumn.EditSettings>
-                            <dxe:TextEditSettings DisplayFormat="N2" />
-                        </dxg:GridColumn.EditSettings>
-                    </dxg:GridColumn>
                     <dxg:GridColumn FieldName="SellTotal">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="N2" />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="BuyQuantity" Header="Qty Bought" />
+                    <dxg:GridColumn FieldName="BuyTotal">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N2" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
                     <dxg:GridColumn FieldName="SellQuantity" Header="Qty Sold" />
+                    <dxg:GridColumn FieldName="BuyQuantity" Header="Qty Bought" />
                     <dxg:GridColumn FieldName="AvgBuyPrice">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="N2" />

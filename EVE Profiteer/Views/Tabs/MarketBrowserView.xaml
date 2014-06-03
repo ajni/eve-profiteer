@@ -11,7 +11,6 @@
              xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
              xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
              xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/charts"
-             xmlns:eveOnlineDbModels="clr-namespace:eZet.EveProfiteer.Models;assembly=EveProfiteerDbModels"
              xmlns:p="clr-namespace:eZet.EveProfiteer.Properties"
              xmlns:tabs="clr-namespace:eZet.EveProfiteer.ViewModels.Tabs"
              xmlns:models="clr-namespace:eZet.EveProfiteer.Models"
