@@ -1,19 +1,20 @@
 ﻿using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using eZet.EveProfiteer.Models.Annotations;
 
 namespace eZet.EveProfiteer.Models {
-    public class OrderGridEntry : INotifyPropertyChanged {
+    public class OrderGridRow : INotifyPropertyChanged {
         private Order _order;
 
-        public OrderGridEntry() {
+        public OrderGridRow() {
             Order = new Order();
             Order.InvType = new InvType();
         }
 
-        public OrderGridEntry(Order order) {
+        public OrderGridRow(Order order) {
             Order = order;
         }
 
@@ -125,6 +126,48 @@ namespace eZet.EveProfiteer.Models {
         public Order Order {
             get { return _order; }
             set { _order = value; }
+        }
+
+        public Asset Asset {
+            get {
+                return Order.InvType.Assets.SingleOrDefault(asset => asset.ApiKeyEntity_Id == Order.ApiKeyEntity_Id);
+            }
+        }
+
+        public int Quantity {
+            get { return Asset != null ? Asset.Quantity : 0; }
+        }
+
+        public decimal CostPerUnit {
+            get { return Asset != null ? Asset.LatestAverageCost : 0; }
+        }
+
+        public decimal TotalMaxSellPrice {
+            get {
+                return MaxSellQuantity * MinSellPrice;
+            }
+            set { MaxSellQuantity = MinSellPrice != 0 ? (int)(value / MinSellPrice) : 0; }
+        }
+
+        public decimal TotalMinSellPrice {
+            get {
+                return MinSellQuantity * MinSellPrice;
+            }
+            set { MinSellQuantity = MinSellPrice != 0 ? (int)(value / MinSellPrice) : 0; }
+
+        }
+
+        public decimal TotalMaxBuyPrice {
+            get { return MaxBuyPrice * BuyQuantity; }
+            set { BuyQuantity = MaxBuyPrice != 0 ? (int)(value / MinSellPrice) : 0; }
+        }
+
+        public decimal ProfitPerUnit {
+            get { return CurrentSellPrice - CostPerUnit; }
+        }
+
+        public double Margin {
+            get { return (double)(ProfitPerUnit / CurrentSellPrice); }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

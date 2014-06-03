@@ -24,14 +24,14 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
         private readonly IEventAggregator _eventAggregator;
         private readonly OrderXmlService _orderXmlService;
         private readonly IWindowManager _windowManager;
-        private OrderGridEntry _focusedOrder;
+        private OrderGridRow _focusedOrder;
         private ICollection<InvType> _invTypes;
 
 
-        private BindableCollection<OrderGridEntry> _orders;
-        private OrderGridEntry _selectedOrder;
+        private BindableCollection<OrderGridRow> _orders;
+        private OrderGridRow _selectedOrder;
 
-        private BindableCollection<OrderGridEntry> _selectedOrders;
+        private BindableCollection<OrderGridRow> _selectedOrders;
 
         public OrderEditorViewModel(IWindowManager windowManager, IEventAggregator eventAggregator,
             OrderXmlService orderXmlService, EveProfiteerDataService dataService, EveMarketService eveMarketService) {
@@ -42,8 +42,8 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             _eveMarketService = eveMarketService;
             DisplayName = "Order Editor";
             _eventAggregator.Subscribe(this);
-            Orders = new BindableCollection<OrderGridEntry>();
-            SelectedOrders = new BindableCollection<OrderGridEntry>();
+            Orders = new BindableCollection<OrderGridRow>();
+            SelectedOrders = new BindableCollection<OrderGridRow>();
             DayLimit = 10;
             BuyOrderAvgOffset = 2;
             SellOrderAvgOffset = 2;
@@ -69,7 +69,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             }
         }
 
-        public OrderGridEntry FocusedOrder {
+        public OrderGridRow FocusedOrder {
             get { return _focusedOrder; }
             set {
                 if (Equals(value, _focusedOrder)) return;
@@ -78,7 +78,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             }
         }
 
-        public OrderGridEntry SelectedOrder {
+        public OrderGridRow SelectedOrder {
             get { return _selectedOrder; }
             set {
                 if (Equals(value, _selectedOrder)) return;
@@ -103,7 +103,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
 
         public int SellOrderAvgOffset { get; set; }
 
-        public BindableCollection<OrderGridEntry> Orders {
+        public BindableCollection<OrderGridRow> Orders {
             get { return _orders; }
             private set {
                 _orders = value;
@@ -111,7 +111,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             }
         }
 
-        public BindableCollection<OrderGridEntry> SelectedOrders {
+        public BindableCollection<OrderGridRow> SelectedOrders {
             get { return _selectedOrders; }
             set {
                 _selectedOrders = value;
@@ -121,13 +121,13 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
 
         public async Task InitAsync() {
             InvTypes = await _dataService.GetMarketTypes().AsNoTracking().OrderBy(t => t.TypeName).ToListAsync();
-            var orders = await _dataService.GetOrders().ToListAsync();
-            Orders.AddRange(orders.Select(order => new OrderGridEntry(order)));
+            var orders = await _dataService.GetOrders().Include("InvType").Include("InvType.Assets").ToListAsync();
+            Orders.AddRange(orders.Select(order => new OrderGridRow(order)));
             SelectedOrder = Orders.FirstOrDefault();
             FocusedOrder = Orders.FirstOrDefault();
         }
 
-        public void Handle(AddToOrdersEventArgs e) {
+        public async void Handle(AddToOrdersEventArgs e) {
             var orders = new List<Order>();
             foreach (InvType item in e.Items) {
                 var order = new Order();
@@ -138,10 +138,10 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
                 item.Orders.Add(order);
                 orders.Add(order);
             }
-            _eveMarketService.LoadMarketData(orders, DayLimit);
-            Orders.AddRange(orders.Select(order => new OrderGridEntry(order)));
+            await _eveMarketService.LoadMarketDataAsync(orders, DayLimit);
+            Orders.AddRange(orders.Select(order => new OrderGridRow(order)));
             SelectedOrders.Clear();
-            SelectedOrders.AddRange(orders.Select(order => new OrderGridEntry(order)));
+            SelectedOrders.AddRange(orders.Select(order => new OrderGridRow(order)));
             SelectedOrder = Orders.Last();
             FocusedOrder = SelectedOrder;
             //_eventAggregator.PublishOnUIThread(new OrdersChangedEventArgs(orders));
@@ -176,8 +176,8 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
                     eventArgs.SetError("An order for this item already exists.");
                 }
                 else {
-                    ((OrderGridEntry) eventArgs.Row).Order.TypeId = item.TypeId;
-                    ((OrderGridEntry) eventArgs.Row).Order.InvType = item;
+                    ((OrderGridRow) eventArgs.Row).Order.TypeId = item.TypeId;
+                    ((OrderGridRow) eventArgs.Row).Order.InvType = item;
                 }
             }
         }
@@ -216,15 +216,15 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
         }
 
 
-        public void ImportXml() {
+        public async void ImportXml() {
             var dialog = new FolderBrowserDialog();
             dialog.ShowNewFolderButton = false;
             dialog.SelectedPath = ConfigManager.OrderXmlPath;
             if (dialog.ShowDialog() == DialogResult.OK) {
                 ICollection<Order> orders = _orderXmlService.ImportOrders(dialog.SelectedPath);
-                _eveMarketService.LoadMarketData(orders, DayLimit);
+                await _eveMarketService.LoadMarketDataAsync(orders, DayLimit);
                 Orders.Clear();
-                Orders.AddRange(orders.Select(order => new OrderGridEntry(order)));
+                Orders.AddRange(orders.Select(order => new OrderGridRow(order)));
                 ConfigManager.OrderXmlPath = dialog.SelectedPath;
             }
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Order(s) imported"));
@@ -241,9 +241,9 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Order(s) exported"));
         }
 
-        public void UpdateMarketData() {
+        public async void UpdateMarketData() {
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Fetching market data..."));
-            _eveMarketService.LoadMarketData(Orders.Select(entry => entry.Order), DayLimit);
+            await _eveMarketService.LoadMarketDataAsync(Orders.Select(entry => entry.Order), DayLimit);
             Orders.Refresh();
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Market data updated"));
         }

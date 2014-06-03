@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mime;
+using System.Threading.Tasks;
 using DevExpress.XtraPrinting.Native;
 using eZet.EveLib.Modules;
 using eZet.EveLib.Modules.Models;
@@ -34,8 +36,7 @@ namespace eZet.EveProfiteer.Services {
                 MarketOrder marketOrder = ApiEntityMapper.Map(order, new MarketOrder());
                 if (order.OrderType == OrderType.Buy) {
                     buyOrders.Add(marketOrder);
-                }
-                else {
+                } else {
                     sellOrders.Add(marketOrder);
                 }
             }
@@ -85,28 +86,42 @@ namespace eZet.EveProfiteer.Services {
         }
 
         public Uri GetScannerLink(ICollection<int> items) {
-            var options = new EveMarketDataOptions {Items = items};
+            var options = new EveMarketDataOptions { Items = items };
             return eveMarketData.GetScannerUri(options);
         }
 
-        public void LoadMarketData(IEnumerable<Order> enumerable, int dayLimit, int region = 10000002) {
+        public Task LoadMarketDataAsync(IEnumerable<Order> enumerable, int dayLimit, int region = 10000002) {
+            return Task.Run(() => loadMarketData(enumerable, dayLimit, region));
+        }
+
+        private async Task loadMarketData(IEnumerable<Order> enumerable, int dayLimit, int region = 10000002) {
             var orders = enumerable as IList<Order> ?? enumerable.ToList();
             if (orders.Count == 0) return;
-            var historyOptions = new EveMarketDataOptions();
+            var options = new EveMarketDataOptions();
             foreach (Order order in orders) {
-                historyOptions.Items.Add(order.TypeId);
+                options.Items.Add(order.TypeId);
             }
-            historyOptions.AgeSpan = TimeSpan.FromDays(dayLimit);
-            historyOptions.Regions.Add(region);
-            EveMarketDataResponse<ItemHistory> history = eveMarketData.GetItemHistory(historyOptions);
+            options.AgeSpan = TimeSpan.FromDays(dayLimit);
+            options.AgeSpan = TimeSpan.FromDays(10);
+            options.Stations.Add(Properties.Settings.Default.DefaultStationId);
+            var pricesTask = eveMarketData.GetItemPriceAsync(options, OrderType.Both);
+            options.Regions.Add(region);
+            var historyTask = eveMarketData.GetItemHistoryAsync(options);
+            var prices = await pricesTask;
+            var priceLookup = prices.Result.Prices.ToLookup(f => f.TypeId);
+            var history = await historyTask;
             ILookup<int, ItemHistory.ItemHistoryEntry> historyLookup = history.Result.History.ToLookup(f => f.TypeId);
             foreach (Order order in orders) {
-                List<ItemHistory.ItemHistoryEntry> itemHistory = historyLookup[order.TypeId].ToList();
+                var itemHistory = historyLookup[order.TypeId].ToList();
+                var price = priceLookup[order.TypeId];
                 if (!itemHistory.IsEmpty()) {
                     order.AvgPrice = itemHistory.Average(f => f.AvgPrice);
                     order.AvgVolume = itemHistory.Average(f => f.Volume);
+                    order.CurrentBuyPrice = price.Single(t => t.OrderType == OrderType.Buy).Price;
+                    order.CurrentSellPrice = price.Single(t => t.OrderType == OrderType.Sell).Price;
                 }
             }
         }
+
     }
 }

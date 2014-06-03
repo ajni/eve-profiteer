@@ -151,5 +151,29 @@ namespace eZet.EveProfiteer.Properties {
                 this["VolumeColor"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int DefaultRegionId {
+            get {
+                return ((int)(this["DefaultRegionId"]));
+            }
+            set {
+                this["DefaultRegionId"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("60003760")]
+        public int DefaultStationId {
+            get {
+                return ((int)(this["DefaultStationId"]));
+            }
+            set {
+                this["DefaultStationId"] = value;
+            }
+        }
     }
 }

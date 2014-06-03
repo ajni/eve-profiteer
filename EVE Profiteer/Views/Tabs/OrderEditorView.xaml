@@ -42,19 +42,19 @@
                                    ShowTotalSummary="False"
                                    ShowFixedTotalSummary="True"
                                    ShowGroupPanel="False"
-                                   AutoWidth="True"
                                    NavigationStyle="Cell"
                                    NewItemRowPosition="Top"
-                                   ShowingEditor="GridViewBase_OnShowingEditor"
-                                   ShowSearchPanelMode="Default"
                                    SearchColumns="TypeName"
                                    SearchPanelCriteriaOperatorType="And"
-                                   AllowCommitOnValidationAttributeError="False"
+                                   ShowingEditor="GridViewBase_OnShowingEditor"
                                    InvalidRowException="OrdersView_OnInvalidRowException"
                                    ValidateRow="OrdersView_OnValidateRow"
+                                   AllowCascadeUpdate="True"
+                                   AllowGroupSummaryCascadeUpdate="True"
+                                   RowOpacityAnimationDuration="0.00:00:1"
+                                   AllowScrollToFocusedRow="False"
                                    >
-
-                    <dxg:SelectionView.RowCellMenuCustomizations>
+                    <dxg:TableView.RowCellMenuCustomizations>
                         <dxb:BarButtonItem Content="View market details"
                                            Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.ViewMarketDetailsCommand, RelativeSource={RelativeSource Self}}" />
                         <dxb:BarButtonItem Content="View trade details"
@@ -62,7 +62,7 @@
                         <dxb:BarItemSeparator />
                         <dxb:BarButtonItem Content="Delete order(s)"
                                            Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.DeleteOrdersCommand, RelativeSource={RelativeSource Self}}" />
-                    </dxg:SelectionView.RowCellMenuCustomizations>
+                    </dxg:TableView.RowCellMenuCustomizations>
 
                 </dxg:SelectionView>
 
@@ -83,101 +83,140 @@
                                      DisplayFormat="Buyorder total: {0:N0} isk"
                                      Alignment="Left" />
             </dxg:GridControl.TotalSummary>
-            <dxg:GridControl.Columns>
-                <dxg:SelectAllColumn Focusable="False" />
+            <dxg:GridControl.Bands>
+                <dxg:GridControlBand>
 
-                <dxg:GridColumn Name="TypeNameEditor" FieldName="TypeName" Header="Type">
-                    <dxg:GridColumn.CellTemplate>
-                        <DataTemplate>
-                            <dxe:ComboBoxEdit Name="PART_Editor"
-                                              IncrementalFiltering="True"
-                                              ImmediatePopup="True"
-                                              FilterCondition="Contains"
-                                              ValidateOnTextInput="False"
-                                              ValueMember="TypeName"
-                                              DisplayMember="TypeName"
-                                              ItemsSource="{Binding DataContext.InvTypes, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=dxg:GridControl}}" />
-                        </DataTemplate>
-                    </dxg:GridColumn.CellTemplate>
-                </dxg:GridColumn>
+                    <dxg:SelectAllColumn Focusable="False" />
+
+                    <dxg:GridColumn Name="TypeNameEditor" FieldName="TypeName" Header="Type">
+                        <!--<dxg:GridColumn.DisplayTemplate>
+                            <ControlTemplate>
+                                <dxg:NameTextControl TextValue="{Binding Value}"></dxg:NameTextControl>
+                            </ControlTemplate>
+                        </dxg:GridColumn.DisplayTemplate>-->
+                        <dxg:GridColumn.CellTemplate>
+                            <DataTemplate>
+                                <dxe:ComboBoxEdit Name="PART_Editor"
+                                                  IncrementalFiltering="True"
+                                                  ImmediatePopup="True"
+                                                  FilterCondition="Contains"
+                                                  ValidateOnTextInput="False"
+                                                  ValueMember="TypeName"
+                                                  DisplayMember="TypeName"
+                                                  ItemsSource="{Binding DataContext.InvTypes, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=dxg:GridControl}}" />
+                            </DataTemplate>
+                        </dxg:GridColumn.CellTemplate>
+                    </dxg:GridColumn>
+                </dxg:GridControlBand>
                 <!--//-->
 
+                <dxg:GridControlBand Header="Edit Order">
 
-                <dxg:GridColumn FieldName="IsBuyOrder" Header="Buy" Width="30">
-                    <dxg:GridColumn.DisplayTemplate>
-                        <ControlTemplate>
-                            <dxe:CheckEdit EditMode="InplaceInactive"
-                                           IsChecked="{Binding EditValue, RelativeSource={RelativeSource Mode=TemplatedParent}}"
-                                           VerticalAlignment="Center"
-                                           HorizontalAlignment="Center"
-                                           />
-                        </ControlTemplate>
-                    </dxg:GridColumn.DisplayTemplate>
-                    <dxg:GridColumn.EditTemplate>
-                        <ControlTemplate>
-                            <dxe:CheckEdit x:Name="PART_Editor" EditMode="InplaceActive"
-                                           IsChecked="{Binding EditValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource Mode=TemplatedParent}}" />
-                        </ControlTemplate>
-                    </dxg:GridColumn.EditTemplate>
-                </dxg:GridColumn>
+                    <dxg:GridColumn FieldName="IsBuyOrder" Header="Buy" Width="30">
+                        <dxg:GridColumn.DisplayTemplate>
+                            <ControlTemplate>
+                                <dxe:CheckEdit EditMode="InplaceInactive"
+                                               IsChecked="{Binding EditValue, RelativeSource={RelativeSource Mode=TemplatedParent}}"
+                                               VerticalAlignment="Center"
+                                               HorizontalAlignment="Center" />
+                            </ControlTemplate>
+                        </dxg:GridColumn.DisplayTemplate>
+                        <dxg:GridColumn.EditTemplate>
+                            <ControlTemplate>
+                                <dxe:CheckEdit x:Name="PART_Editor" EditMode="InplaceActive"
+                                               IsChecked="{Binding EditValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource Mode=TemplatedParent}}" />
+                            </ControlTemplate>
+                        </dxg:GridColumn.EditTemplate>
+                    </dxg:GridColumn>
 
-                <dxg:GridColumn FieldName="BuyQuantity" Header="Quantity" Width="50" />
-                <dxg:GridColumn FieldName="MaxBuyPrice">
-                    <dxg:GridColumn.EditSettings>
-                        <dxe:TextEditSettings DisplayFormat="N0" />
-                    </dxg:GridColumn.EditSettings>
-                </dxg:GridColumn>
-                <dxg:GridColumn FieldName="TotalMaxBuyPrice" Header="Buy Total" UnboundType="Decimal"
-                                UnboundExpression="[BuyQuantity] * [MaxBuyPrice]">
-                    <dxg:GridColumn.EditSettings>
-                        <dxe:TextEditSettings DisplayFormat="N0" />
-                    </dxg:GridColumn.EditSettings>
-                </dxg:GridColumn>
-                <dxg:GridColumn FieldName="IsSellOrder" Header="Sell" Width="30">
-                    <dxg:GridColumn.DisplayTemplate>
-                        <ControlTemplate>
-                            <dxe:CheckEdit EditMode="InplaceInactive"
-                                           IsChecked="{Binding EditValue, RelativeSource={RelativeSource Mode=TemplatedParent}}"
-                                           VerticalAlignment="Center" HorizontalAlignment="Center" />
-                        </ControlTemplate>
-                    </dxg:GridColumn.DisplayTemplate>
-                    <dxg:GridColumn.EditTemplate>
-                        <ControlTemplate>
-                            <dxe:CheckEdit x:Name="PART_Editor" EditMode="InplaceActive"
-                                           IsChecked="{Binding EditValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource Mode=TemplatedParent}}" />
-                        </ControlTemplate>
-                    </dxg:GridColumn.EditTemplate>
-                </dxg:GridColumn>
-                <dxg:GridColumn FieldName="MinSellQuantity" Header="Min Qty" Width="50" />
-                <dxg:GridColumn FieldName="MinSellPrice">
-                    <dxg:GridColumn.EditSettings>
-                        <dxe:TextEditSettings DisplayFormat="N0" />
-                    </dxg:GridColumn.EditSettings>
-                </dxg:GridColumn>
-                <dxg:GridColumn FieldName="TotalMinSellPrice" Header="Min Sell Total" UnboundType="Decimal"
-                                UnboundExpression="[MinSellQuantity] * [MinSellPrice]">
-                    <dxg:GridColumn.EditSettings>
-                        <dxe:TextEditSettings DisplayFormat="N0" />
-                    </dxg:GridColumn.EditSettings>
-                </dxg:GridColumn>
-                <dxg:GridColumn FieldName="MaxSellQuantity" Header="Max Qty" Width="50" />
-                <dxg:GridColumn FieldName="TotalMaxSellPrice" Header="Max Sell Total" UnboundType="Decimal"
-                                UnboundExpression="[MaxSellQuantity] * [MinSellPrice]">
-                    <dxg:GridColumn.EditSettings>
-                        <dxe:TextEditSettings DisplayFormat="N0" />
-                    </dxg:GridColumn.EditSettings>
-                </dxg:GridColumn>
-                <dxg:GridColumn AllowEditing="False" FieldName="AvgPrice">
-                    <dxg:GridColumn.EditSettings>
-                        <dxe:TextEditSettings DisplayFormat="N0" />
-                    </dxg:GridColumn.EditSettings>
-                </dxg:GridColumn>
-                <dxg:GridColumn AllowEditing="False" FieldName="AvgVolume" Width="50">
-                    <dxg:GridColumn.EditSettings>
-                        <dxe:TextEditSettings DisplayFormat="N0" />
-                    </dxg:GridColumn.EditSettings>
-                </dxg:GridColumn>
-            </dxg:GridControl.Columns>
+                    <dxg:GridColumn FieldName="BuyQuantity" Header="Quantity" Width="50" />
+                    <dxg:GridColumn FieldName="MaxBuyPrice">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N0" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn FieldName="TotalMaxBuyPrice" Header="Buy Total">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N0" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn FieldName="IsSellOrder" Header="Sell" Width="30">
+                        <dxg:GridColumn.DisplayTemplate>
+                            <ControlTemplate>
+                                <dxe:CheckEdit EditMode="InplaceInactive"
+                                               IsChecked="{Binding EditValue, RelativeSource={RelativeSource Mode=TemplatedParent}}"
+                                               VerticalAlignment="Center" HorizontalAlignment="Center" />
+                            </ControlTemplate>
+                        </dxg:GridColumn.DisplayTemplate>
+                        <dxg:GridColumn.EditTemplate>
+                            <ControlTemplate>
+                                <dxe:CheckEdit x:Name="PART_Editor" EditMode="InplaceActive"
+                                               IsChecked="{Binding EditValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource Mode=TemplatedParent}}" />
+                            </ControlTemplate>
+                        </dxg:GridColumn.EditTemplate>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn FieldName="MinSellQuantity" Header="Min Qty" Width="50" />
+                    <dxg:GridColumn FieldName="MinSellPrice">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N0" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn FieldName="TotalMinSellPrice" Header="Min Sell Total">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N0" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn Visible="False" FieldName="MaxSellQuantity" Header="Max Qty" Width="50" />
+                    <dxg:GridColumn Visible="False" FieldName="TotalMaxSellPrice" Header="Max Sell Total">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N0" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                </dxg:GridControlBand>
+
+                <dxg:GridControlBand Header="Stock">
+
+                    <dxg:GridColumn FieldName="Quantity" AllowEditing="False" />
+
+                    <dxg:GridColumn FieldName="CostPerUnit" AllowEditing="False">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N2" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn FieldName="ProfitPerUnit" AllowEditing="False">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N2" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn FieldName="Margin" AllowEditing="False">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="P2" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                </dxg:GridControlBand>
+                <dxg:GridControlBand Header="Market">
+                    <dxg:GridColumn FieldName="CurrentSellPrice" AllowEditing="False">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N2" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn FieldName="CurrentBuyPrice" AllowEditing="False">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N2" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn FieldName="AvgPrice" AllowEditing="False">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N0" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn FieldName="AvgVolume" AllowEditing="False" Width="50">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N0" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                </dxg:GridControlBand>
+            </dxg:GridControl.Bands>
         </dxg:GridControl>
     </DockPanel>
 </UserControl>
