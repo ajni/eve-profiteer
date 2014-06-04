@@ -115,6 +115,7 @@
     <Compile Include="EventConfig.cs" />
     <Compile Include="Ui\Converters\DrawingColorToSolidColorBrushConverter.cs" />
     <Compile Include="Ui\Converters\DoubleToIntConverter.cs" />
+    <Compile Include="Ui\Converters\OrderGridRowToBrushConverter.cs" />
     <Compile Include="Ui\Converters\OrderToBrushConverter.cs" />
     <Compile Include="Events\AddToOrdersEventArgs.cs" />
     <Compile Include="Framework\IShell.cs" />
@@ -299,13 +300,13 @@
       <Project>{1C0627DE-5E16-4079-9F4B-8A0092AE88AA}</Project>
       <Name>Io</Name>
     </ProjectReference>
-    <ProjectReference Include="..\EvePilot Order Editor\Order Editor Service.csproj">
-      <Project>{0FD4CF67-093D-465C-9AFD-EFB9A2F159F6}</Project>
-      <Name>Order Editor Service</Name>
-    </ProjectReference>
     <ProjectReference Include="..\EveProfiteerDbModels\EveProfiteerDbModels.csproj">
       <Project>{87F63027-90FC-4F87-8840-52C2FC5406B7}</Project>
       <Name>EveProfiteerDbModels</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OrderXmlHelper\OrderXmlHelper.csproj">
+      <Project>{0FD4CF67-093D-465C-9AFD-EFB9A2F159F6}</Project>
+      <Name>OrderXmlHelper</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

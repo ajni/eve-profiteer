@@ -169,15 +169,13 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             if (item == null) {
                 eventArgs.IsValid = false;
                 eventArgs.SetError("Invalid item.");
-            }
-            else {
+            } else {
                 if (Orders.SingleOrDefault(order => order.TypeId == item.TypeId) != null) {
                     eventArgs.IsValid = false;
                     eventArgs.SetError("An order for this item already exists.");
-                }
-                else {
-                    ((OrderGridRow) eventArgs.Row).Order.TypeId = item.TypeId;
-                    ((OrderGridRow) eventArgs.Row).Order.InvType = item;
+                } else {
+                    ((OrderGridRow)eventArgs.Row).Order.TypeId = item.TypeId;
+                    ((OrderGridRow)eventArgs.Row).Order.InvType = item;
                 }
             }
         }
@@ -249,11 +247,13 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
         }
 
         public void UpdatePriceLimits() {
-            foreach (var order in SelectedOrders) {
-                order.MaxBuyPrice = order.AvgPrice + order.AvgPrice*(decimal) (BuyOrderAvgOffset/100.0);
-                order.MinSellPrice = order.AvgPrice - order.AvgPrice*(decimal) (SellOrderAvgOffset/100.0);
+            foreach (var order in Orders) {
+                order.MaxBuyPrice = order.AvgPrice * (decimal)(1 + BuyOrderAvgOffset / 100.0);
+                order.MinSellPrice = order.AvgPrice * (decimal)(1 - SellOrderAvgOffset / 100.0);
+                if (order.Asset != null && order.Asset.LatestAverageCost > order.MinSellPrice)
+                    order.MinSellPrice = order.Asset.LatestAverageCost;
             }
-            Orders.Refresh();
+            //Orders.Refresh();
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Price limits updated"));
         }
 
@@ -263,22 +263,22 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             if (_windowManager.ShowDialog(vm) != true) return;
             foreach (var order in SelectedOrders) {
                 if (vm.SetBuyOrderTotal && order.MaxBuyPrice != 0) {
-                    order.BuyQuantity = (int) (vm.BuyOrderTotal/order.MaxBuyPrice);
+                    order.BuyQuantity = (int)(vm.BuyOrderTotal / order.MaxBuyPrice);
                     if (order.MaxBuyPrice > vm.BuyOrderTotal)
                         order.BuyQuantity = 1;
 
                     // set total as close to target as possible
-                    decimal total = order.MaxBuyPrice*order.BuyQuantity;
+                    decimal total = order.MaxBuyPrice * order.BuyQuantity;
                     if (vm.BuyOrderTotal - total > total + order.MaxBuyPrice - vm.BuyOrderTotal)
                         order.BuyQuantity += 1;
                 }
                 if (vm.SetMinSellOrderTotal && order.MinSellPrice != 0) {
-                    order.MinSellQuantity = (int) (vm.MinSellOrderTotal/order.MinSellPrice);
+                    order.MinSellQuantity = (int)(vm.MinSellOrderTotal / order.MinSellPrice);
                     if (order.MinSellQuantity == 1) order.MinSellQuantity = 0;
                 }
 
                 if (vm.SetMaxSellOrderTotal && order.MinSellPrice != 0) {
-                    order.MaxSellQuantity = (int) (vm.MaxSellOrderTotal/order.MinSellPrice);
+                    order.MaxSellQuantity = (int)(vm.MaxSellOrderTotal / order.MinSellPrice);
                     if (order.MaxSellQuantity == 0)
                         order.MaxSellQuantity = 1;
                 }

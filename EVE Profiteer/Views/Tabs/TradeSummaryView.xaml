@@ -62,16 +62,16 @@
                 
                 <dxn:NavBarGroup Header="Profit Summary">
                     <dxn:NavBarItem>
-                        <TextBlock Text="{Binding Summary.PerpetualAverageGrossProfit, StringFormat='Profit: {0:N2}'}" />
+                        <TextBlock Text="{Binding Summary.PerpetualAverageGrossProfit, StringFormat='Gross Profit: {0:N2}'}" />
                     </dxn:NavBarItem>
                     <dxn:NavBarItem>
-                        <TextBlock Text="{Binding Summary.PerpetualAverageTotalCost, StringFormat='Cost of goods sold: {0:N2}'}" />
+                        <TextBlock Text="{Binding Summary.PerpetualAverageTotalCost, StringFormat='Cost of units sold: {0:N2}'}" />
                     </dxn:NavBarItem>
                     <dxn:NavBarItem>
                         <TextBlock Text="{Binding Summary.AvgProfitPerDay, StringFormat='Avg Profit per Day {0:N2}'}" />
                     </dxn:NavBarItem>
                     <dxn:NavBarItem>
-                        <TextBlock Text="{Binding Summary.AvgProfitPerSale, StringFormat='Avg Profit per Sale {0:N2}'}" />
+                        <TextBlock Text="{Binding Summary.AvgProfitPerUnit, StringFormat='Avg Profit per Unit {0:N2}'}" />
                     </dxn:NavBarItem>
                     <dxn:NavBarItem>
                         <TextBlock Text="{Binding Summary.AvgMargin, StringFormat='Avg Margin {0:P}'}" />

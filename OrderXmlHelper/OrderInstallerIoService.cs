@@ -1,9 +1,9 @@
 ﻿using System.IO;
 using System.Xml;
-using eZet.Eve.OrderIoHelper.Models;
-using eZet.Utilities;
+using eZet.Eve.OrderXmlHelper.Models;
+using eZet.Utilities.Io;
 
-namespace eZet.Eve.OrderIoHelper {
+namespace eZet.Eve.OrderXmlHelper {
     public static class OrderInstallerIoService {
 
 

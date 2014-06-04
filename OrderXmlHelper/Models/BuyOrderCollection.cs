@@ -1,9 +1,9 @@
 ﻿using System.Collections.ObjectModel;
 using System.Runtime.Serialization;
 
-namespace eZet.Eve.OrderIoHelper.Models {
+namespace eZet.Eve.OrderXmlHelper.Models {
     [CollectionDataContract(Name = "DocumentElement", Namespace = "")]
-    public class SellOrderCollection : Collection<SellOrder> {
+    public class BuyOrderCollection : Collection<BuyOrder> {
 
 
 

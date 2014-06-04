@@ -6,7 +6,6 @@
              xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/charts"
              xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
              xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
-             xmlns:viewModels="clr-namespace:eZet.EveProfiteer.ViewModels"
              xmlns:dxn="http://schemas.devexpress.com/winfx/2008/xaml/navbar"
              xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
              xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
@@ -108,7 +107,7 @@
                             <dxn:NavBarItem>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="Avg. Gross profit per sale: " />
-                                    <TextBlock Text="{Binding TradeAggregate.AvgProfitPerSale, StringFormat=N2}" />
+                                    <TextBlock Text="{Binding TradeAggregate.AvgProfitPerUnit, StringFormat=N2}" />
                                 </StackPanel>
                             </dxn:NavBarItem>
                             <dxn:NavBarItem>

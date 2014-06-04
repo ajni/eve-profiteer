@@ -95,7 +95,7 @@ namespace eZet.EveProfiteer.Models {
 
         public decimal MinSellPrice {
             get { return _order.MinSellPrice; }
-            set { _order.MinSellPrice = value; }
+            set { _order.MinSellPrice = value; OnPropertyChanged(); OnPropertyChanged("TotalMinSellPrice"); OnPropertyChanged("TotalMaxSellPrice"); }
         }
 
         public int MinSellQuantity {
@@ -105,7 +105,7 @@ namespace eZet.EveProfiteer.Models {
 
         public decimal MaxBuyPrice {
             get { return _order.MaxBuyPrice; }
-            set { _order.MaxBuyPrice = value; }
+            set { _order.MaxBuyPrice = value; OnPropertyChanged(); OnPropertyChanged("TotalMaxBuyPrice"); }
         }
 
         public int BuyQuantity {
@@ -146,20 +146,20 @@ namespace eZet.EveProfiteer.Models {
             get {
                 return MaxSellQuantity * MinSellPrice;
             }
-            set { MaxSellQuantity = MinSellPrice != 0 ? (int)(value / MinSellPrice) : 0; }
+            set { MaxSellQuantity = MinSellPrice != 0 ? (int)(value / MinSellPrice) : 0; OnPropertyChanged(); }
         }
 
         public decimal TotalMinSellPrice {
             get {
                 return MinSellQuantity * MinSellPrice;
             }
-            set { MinSellQuantity = MinSellPrice != 0 ? (int)(value / MinSellPrice) : 0; }
+            set { MinSellQuantity = MinSellPrice != 0 ? (int)(value / MinSellPrice) : 0; OnPropertyChanged(); }
 
         }
 
         public decimal TotalMaxBuyPrice {
             get { return MaxBuyPrice * BuyQuantity; }
-            set { BuyQuantity = MaxBuyPrice != 0 ? (int)(value / MinSellPrice) : 0; }
+            set { BuyQuantity = MaxBuyPrice != 0 ? (int)(value / MinSellPrice) : 0; OnPropertyChanged(); }
         }
 
         public decimal ProfitPerUnit {

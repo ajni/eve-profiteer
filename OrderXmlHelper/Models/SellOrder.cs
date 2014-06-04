@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace eZet.Eve.OrderIoHelper.Models {
+namespace eZet.Eve.OrderXmlHelper.Models {
 
     [DataContract(Name = "SellOrderInstallerList", Namespace = "")]
     public class SellOrder {

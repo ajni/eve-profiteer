@@ -148,11 +148,17 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         public async void InitAsync() {
+            _trace.TraceEvent(TraceEventType.Verbose, 0, "TradeSummary.InitAsync");
             await TradeSummary.InitAsync();
+            _trace.TraceEvent(TraceEventType.Verbose, 0, "TradeDetails.InitAsync");
             await TradeDetails.InitAsync();
+            _trace.TraceEvent(TraceEventType.Verbose, 0, "MarketBrowser.InitAsync");
             await MarketBrowser.InitAsync();
+            _trace.TraceEvent(TraceEventType.Verbose, 0, "MarketAnalyzer.InitAsync");
             await MarketAnalyzer.InitAsync();
+            _trace.TraceEvent(TraceEventType.Verbose, 0, "OrderEditor.InitAsync");
             await OrderEditor.InitAsync();
+            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Ready"));
         }
 
         public void ManageKeys() {

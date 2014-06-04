@@ -69,7 +69,7 @@
 
             </dxb:BarManager.Items>
             <DockPanel>
-                <dxr:RibbonControl RibbonStyle="Office2010" DockPanel.Dock="Top">
+                <dxr:RibbonControl RibbonStyle="Office2010" DockPanel.Dock="Top" IsMinimized="True">
                     <dxr:RibbonControl.ApplicationMenu>
                         <dxr:ApplicationMenu>
                             <dxr:ApplicationMenu.ItemLinks>

@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using eZet.Eve.OrderIoHelper;
-using eZet.Eve.OrderIoHelper.Models;
+using eZet.Eve.OrderXmlHelper;
+using eZet.Eve.OrderXmlHelper.Models;
 using eZet.EveProfiteer.Models;
 
 namespace eZet.EveProfiteer.Services {

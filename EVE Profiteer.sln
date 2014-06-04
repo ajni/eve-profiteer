@@ -13,8 +13,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EveLib.Core", "..\EVE Libra
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EveLib.EveCentral", "..\EVE Library\EveLib.EveCentral\EveLib.EveCentral.csproj", "{FCD48E90-6605-4BC1-B761-0B37DF390990}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Order Editor Service", "EvePilot Order Editor\Order Editor Service.csproj", "{0FD4CF67-093D-465C-9AFD-EFB9A2F159F6}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EveProfiteerDbModels", "EveProfiteerDbModels\EveProfiteerDbModels.csproj", "{87F63027-90FC-4F87-8840-52C2FC5406B7}"
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "EveProfiteerDb", "EveProfiteerDb\EveProfiteerDb.sqlproj", "{7C38B246-CC8A-46C2-A525-4B62E701ED72}"
@@ -29,6 +27,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EveLib.EveCrest", "..\EVE Library\EveLib.EveCrest\EveLib.EveCrest.csproj", "{F81627B3-99AF-4B4F-926A-685D21569451}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Io", "..\NET Utilities\IoUtils\Io.csproj", "{1C0627DE-5E16-4079-9F4B-8A0092AE88AA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderXmlHelper", "OrderXmlHelper\OrderXmlHelper.csproj", "{0FD4CF67-093D-465C-9AFD-EFB9A2F159F6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -56,10 +56,6 @@ Global
 		{FCD48E90-6605-4BC1-B761-0B37DF390990}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FCD48E90-6605-4BC1-B761-0B37DF390990}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FCD48E90-6605-4BC1-B761-0B37DF390990}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0FD4CF67-093D-465C-9AFD-EFB9A2F159F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0FD4CF67-093D-465C-9AFD-EFB9A2F159F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0FD4CF67-093D-465C-9AFD-EFB9A2F159F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0FD4CF67-093D-465C-9AFD-EFB9A2F159F6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{87F63027-90FC-4F87-8840-52C2FC5406B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{87F63027-90FC-4F87-8840-52C2FC5406B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{87F63027-90FC-4F87-8840-52C2FC5406B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -78,6 +74,10 @@ Global
 		{1C0627DE-5E16-4079-9F4B-8A0092AE88AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1C0627DE-5E16-4079-9F4B-8A0092AE88AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1C0627DE-5E16-4079-9F4B-8A0092AE88AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0FD4CF67-093D-465C-9AFD-EFB9A2F159F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0FD4CF67-093D-465C-9AFD-EFB9A2F159F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0FD4CF67-093D-465C-9AFD-EFB9A2F159F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0FD4CF67-093D-465C-9AFD-EFB9A2F159F6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

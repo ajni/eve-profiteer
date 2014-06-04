@@ -7,8 +7,8 @@
     <ProjectGuid>{0FD4CF67-093D-465C-9AFD-EFB9A2F159F6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>eZet.Eve.OrderIoHelper</RootNamespace>
-    <AssemblyName>OrderIoHelper</AssemblyName>
+    <RootNamespace>eZet.Eve.OrderXmlHelper</RootNamespace>
+    <AssemblyName>OrderXmlHelper</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

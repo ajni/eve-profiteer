@@ -123,7 +123,7 @@ namespace eZet.EveProfiteer.Models {
 
         public decimal AvgProfitPerDay { get; private set; }
 
-        public decimal AvgProfitPerSale { get; private set; }
+        public decimal AvgProfitPerUnit { get; private set; }
 
         public double AvgMargin { get; private set; }
 
@@ -156,9 +156,9 @@ namespace eZet.EveProfiteer.Models {
                 AvgProfitPerDay /= (int)(Math.Ceiling(TradeDuration.TotalDays));
 
             if (SellQuantity > 0)
-                AvgProfitPerSale = PerpetualAverageGrossProfit / SellQuantity;
+                AvgProfitPerUnit = PerpetualAverageGrossProfit / SellQuantity;
             if (AvgSellPrice > 0)
-                AvgMargin = (double)(AvgProfitPerSale / AvgSellPrice);
+                AvgMargin = (double)(AvgProfitPerUnit / AvgSellPrice);
 
             // Set prices to NULL if they are 0, as they have not been set.
             MinSellPrice = MinSellPrice == decimal.MaxValue ? null : MinSellPrice;
