@@ -99,18 +99,22 @@
     </ApplicationDefinition>
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="EventManager.cs" />
+    <Compile Include="Events\AssetsUpdatedEvent.cs" />
     <Compile Include="Events\DeleteOrdersEventArgs.cs" />
     <Compile Include="Events\StatusChangedEventArgs.cs" />
     <Compile Include="Events\ViewOrderEventArgs.cs" />
     <Compile Include="Events\ViewTradeDetailsEventArgs.cs" />
+    <Compile Include="Models\AssetEntry.cs" />
     <Compile Include="Models\CharacterData.cs" />
     <Compile Include="Models\MarketHistoryEntry.cs" />
     <Compile Include="Models\OrderGridRow.cs" />
     <Compile Include="Models\OverviewData.cs" />
+    <Compile Include="Models\ProductionBatchEntry.cs" />
     <Compile Include="Models\TradeAggregate.cs" />
     <Compile Include="Models\MarketBrowserItem.cs" />
     <Compile Include="Models\MarketOrder.cs" />
     <Compile Include="Models\TreeNode.cs" />
+    <Compile Include="Services\AssetService.cs" />
     <Compile Include="Services\EveProfiteerDataService.cs" />
     <Compile Include="EventConfig.cs" />
     <Compile Include="Ui\Converters\DrawingColorToSolidColorBrushConverter.cs" />
@@ -141,6 +145,8 @@
     <Compile Include="ViewModels\Dialogs\AddKeyViewModel.cs" />
     <Compile Include="ViewModels\Dialogs\EditOrderDialogViewModel.cs" />
     <Compile Include="Models\TransactionAggregateSummary.cs" />
+    <Compile Include="ViewModels\Tabs\AssetsViewModel.cs" />
+    <Compile Include="ViewModels\Tabs\ProductionViewModel.cs" />
     <Compile Include="ViewModels\Tabs\TradeDetailsViewModel.cs" />
     <Compile Include="ViewModels\Dialogs\ManageKeysViewModel.cs" />
     <Compile Include="ViewModels\Tabs\MarketBrowserViewModel.cs" />
@@ -168,6 +174,10 @@
     <Compile Include="Views\Dialogs\AddKeyView.xaml.cs">
       <DependentUpon>AddKeyView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Tabs\AssetsView.xaml.cs">
+      <DependentUpon>AssetsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Tabs\ProductionView.cs" />
     <Compile Include="Views\Tabs\TradeSummaryView.xaml.cs">
       <DependentUpon>TradeSummaryView.xaml</DependentUpon>
     </Compile>
@@ -208,6 +218,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Dialogs\AddKeyView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Tabs\AssetsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

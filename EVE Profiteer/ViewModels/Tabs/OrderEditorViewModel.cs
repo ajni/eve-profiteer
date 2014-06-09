@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
@@ -40,13 +39,15 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             _orderXmlService = orderXmlService;
             _dataService = dataService;
             _eveMarketService = eveMarketService;
-            DisplayName = "Order Editor";
+            DisplayName = "Orders";
             _eventAggregator.Subscribe(this);
             Orders = new BindableCollection<OrderGridRow>();
             SelectedOrders = new BindableCollection<OrderGridRow>();
             DayLimit = 10;
-            BuyOrderAvgOffset = 2;
-            SellOrderAvgOffset = 2;
+            AvgPriceBuyOffset = -0.02;
+            AvgPriceSellOffset = -0.02;
+            MinProfitMargin = 0.06;
+            MaxProfitMargin = 0.1;
             ViewTradeDetailsCommand =
                 new DelegateCommand(
                     () => _eventAggregator.PublishOnUIThread(new ViewTradeDetailsEventArgs(FocusedOrder.Order.InvType)),
@@ -56,7 +57,6 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
                     () => _eventAggregator.PublishOnUIThread(new ViewMarketDetailsEventArgs(FocusedOrder.Order.InvType)),
                     () => FocusedOrder != null);
             DeleteOrdersCommand = new DelegateCommand(DeleteOrders);
-            SaveOrderCommand = new DelegateCommand<RowEventArgs>(ExecuteSaveOrder);
             ValidateOrderTypeCommand = new DelegateCommand<GridCellValidationEventArgs>(ExecuteValidateOrderType);
         }
 
@@ -95,13 +95,16 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
 
         public ICommand DeleteOrdersCommand { get; private set; }
 
-        public ICommand SaveOrderCommand { get; private set; }
-
         public int DayLimit { get; set; }
 
-        public int BuyOrderAvgOffset { get; set; }
+        public double AvgPriceBuyOffset { get; set; }
 
-        public int SellOrderAvgOffset { get; set; }
+        public double AvgPriceSellOffset { get; set; }
+
+
+        public double MinProfitMargin { get; set; }
+
+        public double MaxProfitMargin { get; set; }
 
         public BindableCollection<OrderGridRow> Orders {
             get { return _orders; }
@@ -119,13 +122,6 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             }
         }
 
-        public async Task InitAsync() {
-            InvTypes = await _dataService.GetMarketTypes().AsNoTracking().OrderBy(t => t.TypeName).ToListAsync();
-            var orders = await _dataService.GetOrders().Include("InvType").Include("InvType.Assets").ToListAsync();
-            Orders.AddRange(orders.Select(order => new OrderGridRow(order)));
-            SelectedOrder = Orders.FirstOrDefault();
-            FocusedOrder = Orders.FirstOrDefault();
-        }
 
         public async void Handle(AddToOrdersEventArgs e) {
             var orders = new List<Order>();
@@ -144,8 +140,11 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             SelectedOrders.AddRange(orders.Select(order => new OrderGridRow(order)));
             SelectedOrder = Orders.Last();
             FocusedOrder = SelectedOrder;
-            //_eventAggregator.PublishOnUIThread(new OrdersChangedEventArgs(orders));
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Order(s) added"));
+            _eventAggregator.PublishOnUIThread(new OrdersChangedEventArgs {Added = orders});
+            string msg = "Order(s) added";
+            if (orders.Count == 1)
+                msg = "'" + orders.Single().InvType.TypeName + "' added to Orders";
+            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs(msg));
         }
 
         public void Handle(DeleteOrdersEventArgs message) {
@@ -153,9 +152,18 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
         }
 
         public void Handle(ViewOrderEventArgs message) {
-            var order = Orders.Single(entry => entry.Order.InvType.TypeId == message.InvType.TypeId);
+            OrderGridRow order = Orders.Single(entry => entry.Order.InvType.TypeId == message.InvType.TypeId);
             FocusedOrder = order;
             SelectedOrder = order;
+        }
+
+        public async Task InitAsync() {
+            InvTypes = await _dataService.GetMarketTypes().AsNoTracking().OrderBy(t => t.TypeName).ToListAsync();
+            List<Order> orders =
+                await _dataService.GetOrders().Include("InvType").Include("InvType.Assets").ToListAsync();
+            Orders.AddRange(orders.Select(order => new OrderGridRow(order)));
+            SelectedOrder = Orders.FirstOrDefault();
+            FocusedOrder = Orders.FirstOrDefault();
         }
 
         private void ExecuteValidateOrderType(GridCellValidationEventArgs eventArgs) {
@@ -169,35 +177,25 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             if (item == null) {
                 eventArgs.IsValid = false;
                 eventArgs.SetError("Invalid item.");
-            } else {
-                if (Orders.SingleOrDefault(order => order.TypeId == item.TypeId) != null) {
+            }
+            else {
+                if (Orders.SingleOrDefault(order => order.Order.TypeId == item.TypeId) != null) {
                     eventArgs.IsValid = false;
                     eventArgs.SetError("An order for this item already exists.");
-                } else {
-                    ((OrderGridRow)eventArgs.Row).Order.TypeId = item.TypeId;
-                    ((OrderGridRow)eventArgs.Row).Order.InvType = item;
+                }
+                else {
+                    ((OrderGridRow) eventArgs.Row).Order.TypeId = item.TypeId;
+                    ((OrderGridRow) eventArgs.Row).Order.InvType = item;
                 }
             }
         }
 
-        private void ExecuteSaveOrder(RowEventArgs e) {
-            //var order = (Order) e.Row;
-            //_dataService.Db.Orders.Add(order);
-        }
-
         private void DeleteOrders() {
             _dataService.Db.Orders.RemoveRange(SelectedOrders.Select(entry => entry.Order));
-            foreach (var entry in SelectedOrders.ToList()) {
+            foreach (OrderGridRow entry in SelectedOrders.ToList()) {
                 Orders.Remove(entry);
             }
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Order(s) deleted"));
-        }
-
-        private void OrdersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
-            //if (e.NewItems != null)
-            //    _dataService.Db.Orders.Add(e.NewItems.OfType<Order>().Single());
-            //if (e.OldItems != null)
-            //    _dataService.Db.Orders.RemoveRange(e.OldItems.OfType<Order>());
         }
 
 
@@ -206,8 +204,8 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
 
         public void SaveChanges() {
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Saving orders..."));
-            var newEntries = Orders.Where(order => order.Id == 0).ToList();
-            newEntries.Apply(order => order.ApiKeyEntity_Id = ApplicationHelper.ActiveKeyEntity.Id);
+            List<OrderGridRow> newEntries = Orders.Where(order => order.Order.Id == 0).ToList();
+            newEntries.Apply(order => order.Order.ApiKeyEntity_Id = ApplicationHelper.ActiveKeyEntity.Id);
             _dataService.Db.Orders.AddRange(newEntries.Select(entry => entry.Order));
             _dataService.Db.SaveChanges();
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Order(s) saved"));
@@ -247,13 +245,22 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
         }
 
         public void UpdatePriceLimits() {
-            foreach (var order in Orders) {
-                order.MaxBuyPrice = order.AvgPrice * (decimal)(1 + BuyOrderAvgOffset / 100.0);
-                order.MinSellPrice = order.AvgPrice * (decimal)(1 - SellOrderAvgOffset / 100.0);
-                if (order.Asset != null && order.Asset.LatestAverageCost > order.MinSellPrice)
-                    order.MinSellPrice = order.Asset.LatestAverageCost;
+            Orders.IsNotifying = false;
+            foreach (OrderGridRow order in Orders) {
+                order.MaxBuyPrice = order.AvgPrice*(decimal) (1 + AvgPriceBuyOffset);
+                order.MinSellPrice = order.AvgPrice*(decimal) (1 + AvgPriceSellOffset);
+                if (order.MinPriceMargin > MaxProfitMargin) {
+                    if (order.Asset != null)
+                        order.MinSellPrice = order.Asset.LatestAverageCost/(decimal) (1 - MaxProfitMargin);
+                }
+                if (order.MinPriceMargin < MinProfitMargin) {
+                    if (order.Asset != null)
+                        order.MinSellPrice = order.Asset.LatestAverageCost/(decimal) (1 - MinProfitMargin);
+                    else order.MinSellPrice = order.AvgPrice;
+                }
             }
-            //Orders.Refresh();
+            Orders.IsNotifying = true;
+            Orders.Refresh();
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Price limits updated"));
         }
 
@@ -261,24 +268,24 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
         public void EditOrdersDialog() {
             var vm = new EditOrderDialogViewModel();
             if (_windowManager.ShowDialog(vm) != true) return;
-            foreach (var order in SelectedOrders) {
+            foreach (OrderGridRow order in SelectedOrders) {
                 if (vm.SetBuyOrderTotal && order.MaxBuyPrice != 0) {
-                    order.BuyQuantity = (int)(vm.BuyOrderTotal / order.MaxBuyPrice);
+                    order.BuyQuantity = (int) (vm.BuyOrderTotal/order.MaxBuyPrice);
                     if (order.MaxBuyPrice > vm.BuyOrderTotal)
                         order.BuyQuantity = 1;
 
                     // set total as close to target as possible
-                    decimal total = order.MaxBuyPrice * order.BuyQuantity;
+                    decimal total = order.MaxBuyPrice*order.BuyQuantity;
                     if (vm.BuyOrderTotal - total > total + order.MaxBuyPrice - vm.BuyOrderTotal)
                         order.BuyQuantity += 1;
                 }
                 if (vm.SetMinSellOrderTotal && order.MinSellPrice != 0) {
-                    order.MinSellQuantity = (int)(vm.MinSellOrderTotal / order.MinSellPrice);
+                    order.MinSellQuantity = (int) (vm.MinSellOrderTotal/order.MinSellPrice);
                     if (order.MinSellQuantity == 1) order.MinSellQuantity = 0;
                 }
 
                 if (vm.SetMaxSellOrderTotal && order.MinSellPrice != 0) {
-                    order.MaxSellQuantity = (int)(vm.MaxSellOrderTotal / order.MinSellPrice);
+                    order.MaxSellQuantity = (int) (vm.MaxSellOrderTotal/order.MinSellPrice);
                     if (order.MaxSellQuantity == 0)
                         order.MaxSellQuantity = 1;
                 }

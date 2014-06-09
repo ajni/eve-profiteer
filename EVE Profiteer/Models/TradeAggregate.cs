@@ -82,7 +82,6 @@ namespace eZet.EveProfiteer.Models {
 
         public decimal Balance { get; private set; }
 
-
         public decimal PerpetualAverageGrossProfit { get; private set; }
 
         public decimal PerpetualAverageTotalCost { get; private set; }

@@ -12,18 +12,13 @@ namespace eZet.EveProfiteer.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Asset
+    public partial class InvTypeMaterials
     {
-        public int Id { get; set; }
-        public int InvTypes_TypeId { get; set; }
+        public int TypeId { get; set; }
+        public int MaterialTypeId { get; set; }
         public int Quantity { get; set; }
-        public decimal TotalCost { get; set; }
-        public int ApiKeyEntity_Id { get; set; }
-        public int UnaccountedQuantity { get; set; }
-        public decimal LatestAverageCost { get; set; }
-        public int ActualQuantity { get; set; }
     
-        public virtual ApiKeyEntity ApiKeyEntity { get; set; }
-        public virtual InvType invType { get; set; }
+        public virtual InvType InvType { get; set; }
+        public virtual InvType MaterialType { get; set; }
     }
 }

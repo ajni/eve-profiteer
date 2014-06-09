@@ -129,36 +129,42 @@
 
         <dxg:GridControl Name="MarketAnalyzerGrid" dxlc:DockLayoutControl.Dock="Client"
                          dxlc:DockLayoutControl.AllowVerticalSizing="True"
-                         ItemsSource="{Binding MarketAnalyzerResults}" SelectionMode="Row">
+                         ItemsSource="{Binding MarketAnalyzerResults}" SelectionMode="Row" CopyingToClipboard="MarketAnalyzerGrid_OnCopyingToClipboard" ClipboardCopyMode="ExcludeHeader">
             <dxg:GridControl.Bands>
                 <dxg:GridControlBand>
                     <dxg:GridColumn FieldName="InvType.TypeName" Header="Item" />
                 </dxg:GridControlBand>
 
+                <!--CURRENT--> 
                 <dxg:GridControlBand Header="Current">
                     <dxg:GridColumn FieldName="DailyProfit">
-                        <dxg:GridColumn.EditSettings>
-                            <dxe:TextEditSettings DisplayFormat="N2" />
-                        </dxg:GridColumn.EditSettings>
-                    </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="ProfitPerItem">
-                        <dxg:GridColumn.EditSettings>
-                            <dxe:TextEditSettings DisplayFormat="N2" />
-                        </dxg:GridColumn.EditSettings>
-                    </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="VolumeMedian">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="N0" />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="BuyPrice">
+                    <dxg:GridColumn FieldName="ProfitPerUnit">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N0" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn FieldName="BuyPriceIndex">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="N2" />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="SellPrice">
+                    <dxg:GridColumn FieldName="SellPriceIndex">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="N2" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn FieldName="BuyPrice">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N0" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn FieldName="SellPrice">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N0" />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
                     <dxg:GridColumn FieldName="Margin">
@@ -168,30 +174,64 @@
                     </dxg:GridColumn>
                 </dxg:GridControlBand>
 
-                <dxg:GridControlBand Header="Averages for period">
-                    <dxg:GridColumn FieldName="AvgPrice">
+                <!--AVERAGE-->
+                <dxg:GridControlBand Header="Average">
+                    <dxg:GridColumn FieldName="AvgDailyProfit" Header="Daily Profit">
                         <dxg:GridColumn.EditSettings>
-                            <dxe:TextEditSettings DisplayFormat="N2" />
+                            <dxe:TextEditSettings DisplayFormat="N0" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn FieldName="AvgProfitPerUnit" Header="Profit pr Unit">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N0" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn FieldName="AvgPrice" Header="Avg Price">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N0" />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
                     <dxg:GridColumn FieldName="AvgMinPrice" Header="Min Price">
                         <dxg:GridColumn.EditSettings>
-                            <dxe:TextEditSettings DisplayFormat="N2" />
+                            <dxe:TextEditSettings DisplayFormat="N0" />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
                     <dxg:GridColumn FieldName="AvgMaxPrice" Header="Max Price">
                         <dxg:GridColumn.EditSettings>
-                            <dxe:TextEditSettings DisplayFormat="N2" />
-                        </dxg:GridColumn.EditSettings>
-                    </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="AvgProfitPerItem" Header="Profit/Item">
-                        <dxg:GridColumn.EditSettings>
-                            <dxe:TextEditSettings DisplayFormat="N2" />
+                            <dxe:TextEditSettings DisplayFormat="N0" />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
                     <dxg:GridColumn FieldName="AvgMargin" Header="Margin">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="P2" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                </dxg:GridControlBand>
+
+                <dxg:GridControlBand Header="Volume">
+                    <dxg:GridColumn Visible="False" FieldName="VolumeMedian" Header="Median">
+                    <dxg:GridColumn.EditSettings>
+                        <dxe:TextEditSettings DisplayFormat="N0" />
+                    </dxg:GridColumn.EditSettings>
+                </dxg:GridColumn>
+                    <dxg:GridColumn Visible="False" FieldName="VolumeAverage" Header="Avg">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N0" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn FieldName="VolumeAdjustedAverage" Header="Adjusted Avg">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N0" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn Visible="False" FieldName="VolumeStandardDeviation">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N0" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn Visible="False" FieldName="VolumeVariance">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N0" />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
                 </dxg:GridControlBand>
@@ -202,26 +242,7 @@
                                     Header="Manufacturable" />-->
                     <dxg:GridColumn FieldName="Order.IsSellOrder" Header="Sell Order" />
                     <dxg:GridColumn FieldName="Order.IsBuyOrder" Header="Buy Order" />
-                    <dxg:GridColumn FieldName="VolumeAdjustedAverage">
-                        <dxg:GridColumn.EditSettings>
-                            <dxe:TextEditSettings DisplayFormat="N0" />
-                        </dxg:GridColumn.EditSettings>
-                    </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="VolumeAverage">
-                        <dxg:GridColumn.EditSettings>
-                            <dxe:TextEditSettings DisplayFormat="N0" />
-                        </dxg:GridColumn.EditSettings>
-                    </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="VolumeStandardDeviation">
-                        <dxg:GridColumn.EditSettings>
-                            <dxe:TextEditSettings DisplayFormat="N2" />
-                        </dxg:GridColumn.EditSettings>
-                    </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="VolumeVariance">
-                        <dxg:GridColumn.EditSettings>
-                            <dxe:TextEditSettings DisplayFormat="N2" />
-                        </dxg:GridColumn.EditSettings>
-                    </dxg:GridColumn>
+           
                 </dxg:GridControlBand>
 
             </dxg:GridControl.Bands>

@@ -1,6 +1,5 @@
 ﻿using System.Windows;
 using eZet.EveProfiteer.Models;
-using ApiKey = eZet.EveLib.Modules.ApiKey;
 
 namespace eZet.EveProfiteer.Util {
     public static class ApplicationHelper {

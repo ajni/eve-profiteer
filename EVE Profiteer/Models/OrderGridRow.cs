@@ -18,6 +18,19 @@ namespace eZet.EveProfiteer.Models {
             Order = order;
         }
 
+
+        public Asset Asset {
+            get {
+                return Order.InvType.Assets.SingleOrDefault(asset => asset.ApiKeyEntity_Id == Order.ApiKeyEntity_Id);
+            }
+        }
+
+
+        public Order Order {
+            get { return _order; }
+            set { _order = value; }
+        }
+
         public StaStation staStation {
             get { return _order.staStation; }
             set { _order.staStation = value; }
@@ -33,24 +46,26 @@ namespace eZet.EveProfiteer.Models {
             set { InvType.TypeName = value; }
         }
 
-        public ApiKeyEntity ApiKeyEntity {
-            get { return _order.ApiKeyEntity; }
-            set { _order.ApiKeyEntity = value; }
-        }
-
-        public int? StationId {
-            get { return _order.StationId; }
-            set { _order.StationId = value; }
-        }
-
-        public string Notes {
-            get { return _order.Notes; }
-            set { _order.Notes = value; }
-        }
+        #region Edit Order
 
         public bool IsBuyOrder {
             get { return _order.IsBuyOrder; }
             set { _order.IsBuyOrder = value; }
+        }
+
+
+        public int BuyQuantity {
+            get { return _order.BuyQuantity; }
+            set { _order.BuyQuantity = value; }
+        }
+
+        public decimal MaxBuyPrice {
+            get { return _order.MaxBuyPrice; }
+            set {
+                _order.MaxBuyPrice = value;
+                OnPropertyChanged();
+                OnPropertyChanged("TotalMaxBuyPrice");
+            }
         }
 
         public bool IsSellOrder {
@@ -58,10 +73,119 @@ namespace eZet.EveProfiteer.Models {
             set { _order.IsSellOrder = value; }
         }
 
-        public int ApiKeyEntity_Id {
-            get { return _order.ApiKeyEntity_Id; }
-            set { _order.ApiKeyEntity_Id = value; }
+
+        public int MaxSellQuantity {
+            get { return _order.MaxSellQuantity; }
+            set { _order.MaxSellQuantity = value; }
         }
+
+        public decimal MinSellPrice {
+            get { return _order.MinSellPrice; }
+            set {
+                _order.MinSellPrice = value;
+                OnPropertyChanged();
+                OnPropertyChanged("TotalMinSellPrice");
+                OnPropertyChanged("TotalMaxSellPrice");
+            }
+        }
+
+        public int MinSellQuantity {
+            get { return _order.MinSellQuantity; }
+            set { _order.MinSellQuantity = value; }
+        }
+
+        public DateTime UpdateTime {
+            get { return _order.UpdateTime; }
+            set { _order.UpdateTime = value; }
+        }
+
+
+        public decimal TotalMaxSellPrice {
+            get { return MaxSellQuantity*MinSellPrice; }
+            set {
+                MaxSellQuantity = MinSellPrice != 0 ? (int) (value/MinSellPrice) : 0;
+                OnPropertyChanged();
+            }
+        }
+
+        public decimal TotalMinSellPrice {
+            get { return MinSellQuantity*MinSellPrice; }
+            set {
+                MinSellQuantity = MinSellPrice != 0 ? (int) (value/MinSellPrice) : 0;
+                OnPropertyChanged();
+            }
+        }
+
+        public decimal TotalMaxBuyPrice {
+            get { return MaxBuyPrice*BuyQuantity; }
+            set {
+                BuyQuantity = MaxBuyPrice != 0 ? (int) (value/MinSellPrice) : 0;
+                OnPropertyChanged();
+            }
+        }
+        #endregion
+
+        #region Inventory
+
+        public int InventoryQuantity {
+            get { return Asset != null ? Asset.Quantity : 0; }
+        }
+
+        public decimal InventoryBalancePerUnit {
+            get { return InventoryValuePerUnit - InventoryCostPerUnit; }
+        }
+
+        public decimal InventoryValuePerUnit {
+            get { return AvgPrice; }
+        }
+
+        public decimal InventoryCostPerUnit {
+            get { return Asset != null ? Asset.LatestAverageCost : 0; }
+        }
+
+        public decimal InventoryTotalBalance {
+            get { return InventoryTotalValue - InventoryTotalCost; }
+        }
+
+        public decimal InventoryTotalValue {
+            get { return InventoryValuePerUnit*InventoryQuantity; }
+        }
+
+        public decimal InventoryTotalCost {
+            get { return Asset != null ? Asset.TotalCost : 0; }
+        }
+
+        #endregion
+
+        #region Estimated Profit
+
+        public decimal CurrentPriceProfitPerUnit {
+            get { return CurrentSellPrice - InventoryCostPerUnit; }
+        }
+
+        public double CurrentPriceMargin {
+            get { return CurrentSellPrice != 0 ? (double) (CurrentPriceProfitPerUnit/CurrentSellPrice) : 0; }
+        }
+
+        public decimal AvgPriceProfitPerUnit {
+            get { return AvgPrice - InventoryCostPerUnit; }
+        }
+
+        public double AvgPriceMargin {
+            get { return AvgPrice != 0 ? (double) (AvgPriceProfitPerUnit/AvgPrice): 0; }
+        }
+
+        public decimal MinPriceProfitPerUnit {
+            get { return MinSellPrice - InventoryCostPerUnit; }
+        }
+
+        public double MinPriceMargin {
+            get { return MinSellPrice != 0 ? (double) (MinPriceProfitPerUnit/MinSellPrice): 0; }
+        }
+
+        #endregion
+
+        #region Market
 
         public decimal AvgPrice {
             get { return _order.AvgPrice; }
@@ -83,92 +207,8 @@ namespace eZet.EveProfiteer.Models {
             set { _order.AvgVolume = value; }
         }
 
-        public DateTime UpdateTime {
-            get { return _order.UpdateTime; }
-            set { _order.UpdateTime = value; }
-        }
+        #endregion
 
-        public int MaxSellQuantity {
-            get { return _order.MaxSellQuantity; }
-            set { _order.MaxSellQuantity = value; }
-        }
-
-        public decimal MinSellPrice {
-            get { return _order.MinSellPrice; }
-            set { _order.MinSellPrice = value; OnPropertyChanged(); OnPropertyChanged("TotalMinSellPrice"); OnPropertyChanged("TotalMaxSellPrice"); }
-        }
-
-        public int MinSellQuantity {
-            get { return _order.MinSellQuantity; }
-            set { _order.MinSellQuantity = value; }
-        }
-
-        public decimal MaxBuyPrice {
-            get { return _order.MaxBuyPrice; }
-            set { _order.MaxBuyPrice = value; OnPropertyChanged(); OnPropertyChanged("TotalMaxBuyPrice"); }
-        }
-
-        public int BuyQuantity {
-            get { return _order.BuyQuantity; }
-            set { _order.BuyQuantity = value; }
-        }
-
-        public int TypeId {
-            get { return _order.TypeId; }
-            set { _order.TypeId = value; }
-        }
-
-        public int Id {
-            get { return _order.Id; }
-            set { _order.Id = value; }
-        }
-
-        public Order Order {
-            get { return _order; }
-            set { _order = value; }
-        }
-
-        public Asset Asset {
-            get {
-                return Order.InvType.Assets.SingleOrDefault(asset => asset.ApiKeyEntity_Id == Order.ApiKeyEntity_Id);
-            }
-        }
-
-        public int Quantity {
-            get { return Asset != null ? Asset.Quantity : 0; }
-        }
-
-        public decimal CostPerUnit {
-            get { return Asset != null ? Asset.LatestAverageCost : 0; }
-        }
-
-        public decimal TotalMaxSellPrice {
-            get {
-                return MaxSellQuantity * MinSellPrice;
-            }
-            set { MaxSellQuantity = MinSellPrice != 0 ? (int)(value / MinSellPrice) : 0; OnPropertyChanged(); }
-        }
-
-        public decimal TotalMinSellPrice {
-            get {
-                return MinSellQuantity * MinSellPrice;
-            }
-            set { MinSellQuantity = MinSellPrice != 0 ? (int)(value / MinSellPrice) : 0; OnPropertyChanged(); }
-
-        }
-
-        public decimal TotalMaxBuyPrice {
-            get { return MaxBuyPrice * BuyQuantity; }
-            set { BuyQuantity = MaxBuyPrice != 0 ? (int)(value / MinSellPrice) : 0; OnPropertyChanged(); }
-        }
-
-        public decimal ProfitPerUnit {
-            get { return CurrentSellPrice - CostPerUnit; }
-        }
-
-        public double Margin {
-            get { return (double)(ProfitPerUnit / CurrentSellPrice); }
-        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

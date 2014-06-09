@@ -26,8 +26,6 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <dxmvvm:Interaction.Triggers>
-        <dxmvvm:EventToCommand PassEventArgsToCommand="True" Command="{Binding SaveOrderCommand}"
-                               EventName="RowUpdated" SourceName="OrdersView" />
         <dxmvvm:EventToCommand PassEventArgsToCommand="True" Command="{Binding ValidateOrderTypeCommand}"
                                EventName="Validate" SourceName="TypeNameEditor" />
     </dxmvvm:Interaction.Triggers>
@@ -49,7 +47,7 @@
             <dxg:GridControl.View>
                 <dxg:SelectionView Name="OrdersView"
                                    ShowAutoFilterRow="False"
-                                   ShowTotalSummary="False"
+                                   ShowTotalSummary="True"
                                    ShowFixedTotalSummary="True"
                                    ShowGroupPanel="False"
                                    NavigationStyle="Cell"
@@ -80,6 +78,10 @@
 
             </dxg:GridControl.View>
             <dxg:GridControl.TotalSummary>
+                <dxg:GridSummaryItem FieldName="InventoryTotalBalance" SummaryType="Sum" DisplayFormat="{}{0:N0}"/>
+                <dxg:GridSummaryItem FieldName="InventoryTotalValue" SummaryType="Sum" DisplayFormat="{}{0:N0}"/>
+                <dxg:GridSummaryItem FieldName="InventoryTotalCost" SummaryType="Sum" DisplayFormat="{}{0:N0}"/>
+
                 <dxg:GridSummaryItem FieldName="IsBuyOrder"
                                      SummaryType="Custom"
                                      Alignment="Right"
@@ -99,7 +101,7 @@
                                      Alignment="Left" />
             </dxg:GridControl.TotalSummary>
             <dxg:GridControl.Bands>
-                
+
                 <!--MAIN-->
                 <dxg:GridControlBand>
 
@@ -121,7 +123,7 @@
                     </dxg:GridColumn>
                 </dxg:GridControlBand>
 
-                
+
                 <!--EDIT ORDER-->
                 <dxg:GridControlBand Header="Edit Order">
                     <dxg:GridColumn FieldName="IsBuyOrder" Header="Buy" Width="30" FixedWidth="True">
@@ -166,13 +168,13 @@
                             </ControlTemplate>
                         </dxg:GridColumn.EditTemplate>
                     </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="MinSellQuantity" Header="Min Qty" Width="50" FixedWidth="True"/>
+                    <dxg:GridColumn Visible="False" FieldName="MinSellQuantity" Header="Min Qty" Width="50" FixedWidth="True"/>
                     <dxg:GridColumn FieldName="MinSellPrice">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="N0" />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="TotalMinSellPrice" Header="Min Sell Total">
+                    <dxg:GridColumn Visible="False" FieldName="TotalMinSellPrice" Header="Min Sell Total">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="N0" />
                         </dxg:GridColumn.EditSettings>
@@ -185,46 +187,95 @@
                     </dxg:GridColumn>
                 </dxg:GridControlBand>
 
-                
-                <!--STOCK-->
-                <dxg:GridControlBand Header="Stock">
-                    <dxg:GridColumn FieldName="Quantity" Header="Qty" AllowEditing="False" Width="50" FixedWidth="True"/>
-                    <dxg:GridColumn FieldName="CostPerUnit" AllowEditing="False">
+
+                <!--INVENTORY-->
+                <dxg:GridControlBand Header="Inventory">
+                    <dxg:GridColumn FieldName="InventoryQuantity" Header="Qty" AllowEditing="False" Width="50" FixedWidth="True"/>
+                    <dxg:GridColumn Visible="False" FieldName="InventoryBalancePerUnit" Header="Balance PU" AllowEditing="False">
                         <dxg:GridColumn.EditSettings>
-                            <dxe:TextEditSettings DisplayFormat="N2" />
+                            <dxe:TextEditSettings DisplayFormat="N0" />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="ProfitPerUnit" AllowEditing="False">
+                    <dxg:GridColumn Visible="False" FieldName="InventoryValuePerUnit" Header="Value PU" AllowEditing="False">
                         <dxg:GridColumn.EditSettings>
-                            <dxe:TextEditSettings DisplayFormat="N2" />
+                            <dxe:TextEditSettings DisplayFormat="N0" />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="Margin" AllowEditing="False" Width="80">
+                    <dxg:GridColumn FieldName="InventoryCostPerUnit" Header="Cost PU" AllowEditing="False">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N0" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn Visible="False" FieldName="InventoryTotalBalance" Header="Total Balance" AllowEditing="False">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N0" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn Visible="False" FieldName="InventoryTotalValue" Header="Total Value" AllowEditing="False">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N0" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn FieldName="InventoryTotalCost" Header="Total Cost" AllowEditing="False">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N0" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                </dxg:GridControlBand>
+
+                <!--Estimated Profit-->
+                <dxg:GridControlBand Header="Estimated Profit">
+                    <dxg:GridColumn FieldName="CurrentPriceProfitPerUnit" Header="Curr Profit" AllowEditing="False">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N0" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn FieldName="CurrentPriceMargin" Header="Curr Margin" AllowEditing="False" Width="80">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="P2" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn FieldName="AvgPriceProfitPerUnit" Header="Avg Profit" AllowEditing="False">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N0" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn FieldName="AvgPriceMargin" Header="Avg Margin"  AllowEditing="False" Width="80">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="P2" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn FieldName="MinPriceProfitPerUnit" Header="Min Profit" AllowEditing="False">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N0" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn FieldName="MinPriceMargin" Header="Min Margin" AllowEditing="False" Width="80">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="P2" />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
                 </dxg:GridControlBand>
-              
-                
-                <!--MARKET--> 
+
+
+                <!--MARKET-->
                 <dxg:GridControlBand Header="Market">
-                    <dxg:GridColumn FieldName="CurrentSellPrice" AllowEditing="False">
-                        <dxg:GridColumn.EditSettings>
-                            <dxe:TextEditSettings DisplayFormat="N2" />
-                        </dxg:GridColumn.EditSettings>
-                    </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="CurrentBuyPrice" AllowEditing="False">
-                        <dxg:GridColumn.EditSettings>
-                            <dxe:TextEditSettings DisplayFormat="N2" />
-                        </dxg:GridColumn.EditSettings>
-                    </dxg:GridColumn>
                     <dxg:GridColumn FieldName="AvgPrice" AllowEditing="False">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="N0" />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="AvgVolume" AllowEditing="False" Width="50" FixedWidth="True">
+                    <dxg:GridColumn FieldName="CurrentSellPrice" AllowEditing="False">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N0" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn FieldName="CurrentBuyPrice" AllowEditing="False">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:TextEditSettings DisplayFormat="N0" />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn FieldName="AvgVolume" AllowEditing="False" Width="80" FixedWidth="True">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="N0" />
                         </dxg:GridColumn.EditSettings>

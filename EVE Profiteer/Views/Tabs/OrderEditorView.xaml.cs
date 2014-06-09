@@ -49,7 +49,7 @@ namespace eZet.EveProfiteer.Views.Tabs {
 
         private void OrdersView_OnValidateRow(object sender, GridRowValidationEventArgs e) {
             var order = (OrderGridRow)e.Row;
-            if (order.TypeId == 0)
+            if (order.Order.TypeId == 0)
                 e.IsValid = false;
         }
     }

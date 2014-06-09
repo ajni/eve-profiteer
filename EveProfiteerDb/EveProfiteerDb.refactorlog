@@ -210,4 +210,46 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="CurrentStock" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="d48a3238-167d-4b90-9468-280dbd89353e" ChangeDateTime="06/05/2014 16:07:35">
+    <Property Name="ElementName" Value="[dbo].[Assets].[Quantity]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Assets]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="EstimatedQuantity" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="27e536e0-e513-45bd-ad5e-3a8fb4ea0ef1" ChangeDateTime="06/05/2014 16:19:55">
+    <Property Name="ElementName" Value="[dbo].[Assets].[Quantity]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Assets]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="ActualQuantity" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="2654daa7-e3e2-4126-ab9e-4e3c1872bd48" ChangeDateTime="06/05/2014 16:20:01">
+    <Property Name="ElementName" Value="[dbo].[Assets].[EstimatedQuantity]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Assets]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Quantity" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="0ad90514-0810-44c2-95e1-63e18cffd50c" ChangeDateTime="06/09/2014 10:52:41">
+    <Property Name="ElementName" Value="[dbo].[BatchMaterials].[BatchId]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[BatchMaterials]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="TypeId" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="0072ed03-b6ee-46c0-b891-5ecdc36455ad" ChangeDateTime="06/09/2014 11:22:23">
+    <Property Name="ElementName" Value="[dbo].[ProductionBatches].[TotalCost]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[ProductionBatches]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="MiscCost" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="194faa2b-8a65-4cfd-9df1-2662ba245c62" ChangeDateTime="06/09/2014 11:22:34">
+    <Property Name="ElementName" Value="[dbo].[ProductionBatches].[MiscCost]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[ProductionBatches]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="OtherCost" />
+  </Operation>
 </Operations>

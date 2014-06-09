@@ -2,8 +2,9 @@
 (
 	[Id] INT IDENTITY NOT NULL PRIMARY KEY, 
     [InvTypes_TypeId] INT NOT NULL, 
-    [Quantity] INT NOT NULL, 
-    [TotalCost] DECIMAL(18, 5) NOT NULL,
+    [Quantity] INT NOT NULL DEFAULT 0, 
+    [ActualQuantity] INT NOT NULL DEFAULT 0, 
+    [TotalCost] DECIMAL(18, 5) NOT NULL DEFAULT 0,
 	[ApiKeyEntity_Id] INT NOT NULL, 
     [UnaccountedQuantity] INT NOT NULL DEFAULT 0, 
     [LatestAverageCost] DECIMAL(18, 5) NOT NULL DEFAULT 0, 

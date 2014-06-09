@@ -82,7 +82,7 @@ namespace eZet.EveProfiteer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("192, 192, 255")]
+        [global::System.Configuration.DefaultSettingValueAttribute("ActiveCaption")]
         public global::System.Drawing.Color DonchianChannelColor {
             get {
                 return ((global::System.Drawing.Color)(this["DonchianChannelColor"]));
@@ -106,7 +106,7 @@ namespace eZet.EveProfiteer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Yellow")]
+        [global::System.Configuration.DefaultSettingValueAttribute("InfoText")]
         public global::System.Drawing.Color AveragePriceColor {
             get {
                 return ((global::System.Drawing.Color)(this["AveragePriceColor"]));
@@ -154,7 +154,7 @@ namespace eZet.EveProfiteer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        [global::System.Configuration.DefaultSettingValueAttribute("10000002")]
         public int DefaultRegionId {
             get {
                 return ((int)(this["DefaultRegionId"]));

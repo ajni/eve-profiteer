@@ -19,6 +19,9 @@ namespace eZet.EveProfiteer.Models
             this.Orders = new HashSet<Order>();
             this.Transactions = new HashSet<Transaction>();
             this.Assets = new HashSet<Asset>();
+            this.BatchMaterials = new HashSet<BatchMaterial>();
+            this.ProductionBatches1 = new HashSet<ProductionBatch>();
+            this.InvTypeMaterials = new HashSet<InvTypeMaterials>();
         }
     
         public int TypeId { get; set; }
@@ -40,5 +43,9 @@ namespace eZet.EveProfiteer.Models
         public virtual ICollection<Transaction> Transactions { get; set; }
         public virtual InvGroup InvGroup { get; set; }
         public virtual ICollection<Asset> Assets { get; set; }
+        public virtual ICollection<BatchMaterial> BatchMaterials { get; set; }
+        public virtual ICollection<ProductionBatch> ProductionBatches1 { get; set; }
+        public virtual InvBlueprintType InvBlueprintType { get; set; }
+        public virtual ICollection<InvTypeMaterials> InvTypeMaterials { get; set; }
     }
 }

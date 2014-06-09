@@ -40,10 +40,39 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="InvTypes_TypeId" Type="int" Nullable="false" />
           <Property Name="Quantity" Type="int" Nullable="false" />
+          <Property Name="ActualQuantity" Type="int" Nullable="false" />
           <Property Name="TotalCost" Type="decimal" Precision="18" Scale="5" Nullable="false" />
           <Property Name="ApiKeyEntity_Id" Type="int" Nullable="false" />
           <Property Name="UnaccountedQuantity" Type="int" Nullable="false" />
           <Property Name="LatestAverageCost" Type="decimal" Precision="18" Scale="5" Nullable="false" />
+        </EntityType>
+        <EntityType Name="BatchMaterials">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TypeId" Type="int" Nullable="false" />
+          <Property Name="BatchId" Type="int" Nullable="false" />
+          <Property Name="Quantity" Type="int" Nullable="false" />
+          <Property Name="TotalCost" Type="decimal" Precision="18" Scale="5" Nullable="false" />
+        </EntityType>
+        <EntityType Name="invBlueprintTypes">
+          <Key>
+            <PropertyRef Name="blueprintTypeID" />
+          </Key>
+          <Property Name="blueprintTypeID" Type="int" Nullable="false" />
+          <Property Name="parentBlueprintTypeID" Type="int" />
+          <Property Name="productTypeID" Type="int" />
+          <Property Name="productionTime" Type="int" />
+          <Property Name="techLevel" Type="smallint" />
+          <Property Name="researchProductivityTime" Type="int" />
+          <Property Name="researchMaterialTime" Type="int" />
+          <Property Name="researchCopyTime" Type="int" />
+          <Property Name="researchTechTime" Type="int" />
+          <Property Name="productivityModifier" Type="int" />
+          <Property Name="materialModifier" Type="smallint" />
+          <Property Name="wasteFactor" Type="smallint" />
+          <Property Name="maxProductionLimit" Type="int" />
         </EntityType>
         <EntityType Name="invGroups">
           <Key>
@@ -72,6 +101,15 @@
           <Property Name="description" Type="nvarchar" MaxLength="3000" />
           <Property Name="iconID" Type="int" />
           <Property Name="hasTypes" Type="bit" />
+        </EntityType>
+        <EntityType Name="invTypeMaterials">
+          <Key>
+            <PropertyRef Name="typeID" />
+            <PropertyRef Name="materialTypeID" />
+          </Key>
+          <Property Name="typeID" Type="int" Nullable="false" />
+          <Property Name="materialTypeID" Type="int" Nullable="false" />
+          <Property Name="quantity" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="invTypes">
           <Key>
@@ -152,6 +190,21 @@
           <Property Name="Notes" Type="text" />
           <Property Name="StationId" Type="int" />
         </EntityType>
+        <EntityType Name="ProductionBatches">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProductTypeId" Type="int" Nullable="false" />
+          <Property Name="BlueprintTypeId" Type="int" Nullable="false" />
+          <Property Name="ProductionQuantity" Type="int" Nullable="false" />
+          <Property Name="QuantityLeft" Type="int" Nullable="false" />
+          <Property Name="Date" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="OtherCost" Type="decimal" Precision="18" Scale="5" Nullable="false" />
+          <Property Name="TotalSales" Type="decimal" Precision="18" Scale="5" Nullable="false" />
+          <Property Name="BlueprintME" Type="int" Nullable="false" />
+          <Property Name="CharacterME" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="staStations">
           <Key>
             <PropertyRef Name="stationID" />
@@ -198,6 +251,30 @@
           <Property Name="CurrentStock" Type="int" Nullable="false" />
           <Property Name="UnaccountedStock" Type="int" Nullable="false" />
         </EntityType>
+        <Association Name="FK_BatchMaterials_ToInvTypes">
+          <End Role="invTypes" Type="Self.invTypes" Multiplicity="1" />
+          <End Role="BatchMaterials" Type="Self.BatchMaterials" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="invTypes">
+              <PropertyRef Name="typeID" />
+            </Principal>
+            <Dependent Role="BatchMaterials">
+              <PropertyRef Name="TypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_BatchMaterials_ToProductionBatches">
+          <End Role="ProductionBatches" Type="Self.ProductionBatches" Multiplicity="1" />
+          <End Role="BatchMaterials" Type="Self.BatchMaterials" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductionBatches">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="BatchMaterials">
+              <PropertyRef Name="BatchId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_dbo_ApiKeyApiKeyEntities_dbo_ApiKeyEntities_ApiKeyEntity_Id">
           <End Role="ApiKeyEntities" Type="Self.ApiKeyEntities" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -310,6 +387,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ProductionBatches_ToInvBlueprintTypes">
+          <End Role="invBlueprintTypes" Type="Self.invBlueprintTypes" Multiplicity="1" />
+          <End Role="ProductionBatches" Type="Self.ProductionBatches" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="invBlueprintTypes">
+              <PropertyRef Name="blueprintTypeID" />
+            </Principal>
+            <Dependent Role="ProductionBatches">
+              <PropertyRef Name="BlueprintTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductionBatches_ToInvTypes">
+          <End Role="invTypes" Type="Self.invTypes" Multiplicity="1" />
+          <End Role="ProductionBatches" Type="Self.ProductionBatches" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="invTypes">
+              <PropertyRef Name="typeID" />
+            </Principal>
+            <Dependent Role="ProductionBatches">
+              <PropertyRef Name="ProductTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Transaction_ToInvType">
           <End Role="invTypes" Type="Self.invTypes" Multiplicity="1" />
           <End Role="Transactions" Type="Self.Transactions" Multiplicity="*" />
@@ -327,14 +428,26 @@
           <EntitySet Name="ApiKeyEntities" EntityType="Self.ApiKeyEntities" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ApiKeys" EntityType="Self.ApiKeys" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Assets" EntityType="Self.Assets" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="BatchMaterials" EntityType="Self.BatchMaterials" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="invBlueprintTypes" EntityType="Self.invBlueprintTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="invGroups" EntityType="Self.invGroups" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="invMarketGroups" EntityType="Self.invMarketGroups" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="invTypeMaterials" EntityType="Self.invTypeMaterials" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="invTypes" EntityType="Self.invTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="JournalEntries" EntityType="Self.JournalEntries" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="mapRegions" EntityType="Self.mapRegions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Orders" EntityType="Self.Orders" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProductionBatches" EntityType="Self.ProductionBatches" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="staStations" EntityType="Self.staStations" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Transactions" EntityType="Self.Transactions" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_BatchMaterials_ToInvTypes" Association="Self.FK_BatchMaterials_ToInvTypes">
+            <End Role="invTypes" EntitySet="invTypes" />
+            <End Role="BatchMaterials" EntitySet="BatchMaterials" />
+          </AssociationSet>
+          <AssociationSet Name="FK_BatchMaterials_ToProductionBatches" Association="Self.FK_BatchMaterials_ToProductionBatches">
+            <End Role="ProductionBatches" EntitySet="ProductionBatches" />
+            <End Role="BatchMaterials" EntitySet="BatchMaterials" />
+          </AssociationSet>
           <AssociationSet Name="FK_dbo_ApiKeyApiKeyEntities_dbo_ApiKeyEntities_ApiKeyEntity_Id" Association="Self.FK_dbo_ApiKeyApiKeyEntities_dbo_ApiKeyEntities_ApiKeyEntity_Id">
             <End Role="ApiKeyEntities" EntitySet="ApiKeyEntities" />
             <End Role="ApiKeyApiKeyEntities" EntitySet="ApiKeyApiKeyEntities" />
@@ -370,6 +483,14 @@
           <AssociationSet Name="FK_Orders_ToStaStations" Association="Self.FK_Orders_ToStaStations">
             <End Role="staStations" EntitySet="staStations" />
             <End Role="Orders" EntitySet="Orders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductionBatches_ToInvBlueprintTypes" Association="Self.FK_ProductionBatches_ToInvBlueprintTypes">
+            <End Role="invBlueprintTypes" EntitySet="invBlueprintTypes" />
+            <End Role="ProductionBatches" EntitySet="ProductionBatches" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductionBatches_ToInvTypes" Association="Self.FK_ProductionBatches_ToInvTypes">
+            <End Role="invTypes" EntitySet="invTypes" />
+            <End Role="ProductionBatches" EntitySet="ProductionBatches" />
           </AssociationSet>
           <AssociationSet Name="FK_Transaction_ToInvType" Association="Self.FK_Transaction_ToInvType">
             <End Role="invTypes" EntitySet="invTypes" />
@@ -443,6 +564,38 @@
           <AssociationSet Name="FK_dbo_Assets_dbo_ToInvTypes" Association="EveProfiteerDbModel.FK_dbo_Assets_dbo_ToInvTypes">
             <End Role="InvType" EntitySet="InvTypes" />
             <End Role="Asset" EntitySet="Assets" />
+          </AssociationSet>
+          <EntitySet Name="BatchMaterials" EntityType="EveProfiteerDbModel.BatchMaterial" />
+          <EntitySet Name="InvBlueprintTypes1" EntityType="EveProfiteerDbModel.InvBlueprintType" />
+          <EntitySet Name="InvTypeMaterials" EntityType="EveProfiteerDbModel.InvTypeMaterials" />
+          <EntitySet Name="ProductionBatches" EntityType="EveProfiteerDbModel.ProductionBatch" />
+          <AssociationSet Name="FK_BatchMaterials_ToInvTypes" Association="EveProfiteerDbModel.FK_BatchMaterials_ToInvTypes">
+            <End Role="InvType" EntitySet="InvTypes" />
+            <End Role="BatchMaterial" EntitySet="BatchMaterials" />
+          </AssociationSet>
+          <AssociationSet Name="FK_BatchMaterials_ToProductionBatches" Association="EveProfiteerDbModel.FK_BatchMaterials_ToProductionBatches">
+            <End Role="ProductionBatch" EntitySet="ProductionBatches" />
+            <End Role="BatchMaterial" EntitySet="BatchMaterials" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductType_ToInvTypes" Association="EveProfiteerDbModel.FK_ProductType_ToInvTypes">
+            <End Role="InvType" EntitySet="InvTypes" />
+            <End Role="ProductionBatch" EntitySet="ProductionBatches" />
+          </AssociationSet>
+          <AssociationSet Name="InvTypeInvBlueprintType" Association="EveProfiteerDbModel.InvTypeInvBlueprintType">
+            <End Role="InvType" EntitySet="InvTypes" />
+            <End Role="InvBlueprintType" EntitySet="InvBlueprintTypes1" />
+          </AssociationSet>
+          <AssociationSet Name="InvTypeinvTypeMaterial" Association="EveProfiteerDbModel.InvTypeinvTypeMaterial">
+            <End Role="InvType" EntitySet="InvTypes" />
+            <End Role="invTypeMaterial" EntitySet="InvTypeMaterials" />
+          </AssociationSet>
+          <AssociationSet Name="InvTypeinvTypeMaterial1" Association="EveProfiteerDbModel.InvTypeinvTypeMaterial1">
+            <End Role="InvType" EntitySet="InvTypes" />
+            <End Role="invTypeMaterial" EntitySet="InvTypeMaterials" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductionBatches_ToInvBlueprintTypes" Association="EveProfiteerDbModel.FK_ProductionBatches_ToInvBlueprintTypes">
+            <End Role="InvBlueprintType" EntitySet="InvBlueprintTypes1" />
+            <End Role="ProductionBatch" EntitySet="ProductionBatches" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="ApiKeyEntity">
@@ -545,6 +698,10 @@
           <NavigationProperty Name="Transactions" Relationship="EveProfiteerDbModel.FK_Transaction_ToInvType" FromRole="invType" ToRole="Transaction" />
           <NavigationProperty Name="InvGroup" Relationship="EveProfiteerDbModel.invGroupInvType" FromRole="InvType" ToRole="invGroup" />
           <NavigationProperty Name="Assets" Relationship="EveProfiteerDbModel.FK_dbo_Assets_dbo_ToInvTypes" FromRole="InvType" ToRole="Asset" />
+          <NavigationProperty Name="BatchMaterials" Relationship="EveProfiteerDbModel.FK_BatchMaterials_ToInvTypes" FromRole="InvType" ToRole="BatchMaterial" />
+          <NavigationProperty Name="ProductionBatches1" Relationship="EveProfiteerDbModel.FK_ProductType_ToInvTypes" FromRole="InvType" ToRole="ProductionBatch" />
+          <NavigationProperty Name="InvBlueprintType" Relationship="EveProfiteerDbModel.InvTypeInvBlueprintType" FromRole="InvType" ToRole="InvBlueprintType" />
+          <NavigationProperty Name="InvTypeMaterials" Relationship="EveProfiteerDbModel.InvTypeinvTypeMaterial" FromRole="InvType" ToRole="invTypeMaterial" />
         </EntityType>
         <EntityType Name="MapRegion">
           <Key>
@@ -779,10 +936,11 @@
           <Property Name="Quantity" Type="Int32" Nullable="false" />
           <Property Name="TotalCost" Type="Decimal" Nullable="false" Precision="18" Scale="5" />
           <Property Name="ApiKeyEntity_Id" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="ApiKeyEntity" Relationship="EveProfiteerDbModel.FK_dbo_Assets_dbo_ToApiKeyEntities" FromRole="Asset" ToRole="ApiKeyEntity" />
-          <NavigationProperty Name="invType" Relationship="EveProfiteerDbModel.FK_dbo_Assets_dbo_ToInvTypes" FromRole="Asset" ToRole="InvType" />
           <Property Name="UnaccountedQuantity" Type="Int32" Nullable="false" />
           <Property Name="LatestAverageCost" Type="Decimal" Nullable="false" Precision="18" Scale="5" />
+          <NavigationProperty Name="ApiKeyEntity" Relationship="EveProfiteerDbModel.FK_dbo_Assets_dbo_ToApiKeyEntities" FromRole="Asset" ToRole="ApiKeyEntity" />
+          <NavigationProperty Name="invType" Relationship="EveProfiteerDbModel.FK_dbo_Assets_dbo_ToInvTypes" FromRole="Asset" ToRole="InvType" />
+          <Property Name="ActualQuantity" Type="Int32" Nullable="false" />
         </EntityType>
         <Association Name="FK_dbo_Assets_dbo_ToApiKeyEntities">
           <End Type="EveProfiteerDbModel.ApiKeyEntity" Role="ApiKeyEntity" Multiplicity="1" />
@@ -805,6 +963,151 @@
             </Principal>
             <Dependent Role="Asset">
               <PropertyRef Name="InvTypes_TypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="BatchMaterial">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TypeId" Type="Int32" Nullable="false" />
+          <Property Name="BatchId" Type="Int32" Nullable="false" />
+          <Property Name="Quantity" Type="Int32" Nullable="false" />
+          <Property Name="TotalCost" Type="Decimal" Nullable="false" Precision="18" Scale="5" />
+          <NavigationProperty Name="invType" Relationship="EveProfiteerDbModel.FK_BatchMaterials_ToInvTypes" FromRole="BatchMaterial" ToRole="InvType" />
+          <NavigationProperty Name="ProductionBatch" Relationship="EveProfiteerDbModel.FK_BatchMaterials_ToProductionBatches" FromRole="BatchMaterial" ToRole="ProductionBatch" />
+        </EntityType>
+        <EntityType Name="InvBlueprintType">
+          <Key>
+            <PropertyRef Name="BlueprintTypeId" />
+          </Key>
+          <Property Name="BlueprintTypeId" Type="Int32" Nullable="false" />
+          <Property Name="ParentBlueprintTypeID" Type="Int32" />
+          <Property Name="ProductTypeID" Type="Int32" />
+          <Property Name="ProductionTime" Type="Int32" />
+          <Property Name="TechLevel" Type="Int16" />
+          <Property Name="ResearchProductivityTime" Type="Int32" />
+          <Property Name="ResearchMaterialTime" Type="Int32" />
+          <Property Name="ResearchCopyTime" Type="Int32" />
+          <Property Name="ResearchTechTime" Type="Int32" />
+          <Property Name="ProductivityModifier" Type="Int32" />
+          <Property Name="MaterialModifier" Type="Int16" />
+          <Property Name="WasteFactor" Type="Int16" />
+          <Property Name="MaxProductionLimit" Type="Int32" />
+          <NavigationProperty Name="InvType" Relationship="EveProfiteerDbModel.InvTypeInvBlueprintType" FromRole="InvBlueprintType" ToRole="InvType" />
+          <NavigationProperty Name="ProductionBatches" Relationship="EveProfiteerDbModel.FK_ProductionBatches_ToInvBlueprintTypes" FromRole="InvBlueprintType" ToRole="ProductionBatch" />
+        </EntityType>
+        <EntityType Name="InvTypeMaterials">
+          <Key>
+            <PropertyRef Name="TypeId" />
+            <PropertyRef Name="MaterialTypeId" />
+          </Key>
+          <Property Name="TypeId" Type="Int32" Nullable="false" />
+          <Property Name="MaterialTypeId" Type="Int32" Nullable="false" />
+          <Property Name="Quantity" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="InvType" Relationship="EveProfiteerDbModel.InvTypeinvTypeMaterial" FromRole="invTypeMaterial" ToRole="InvType" />
+          <NavigationProperty Name="MaterialType" Relationship="EveProfiteerDbModel.InvTypeinvTypeMaterial1" FromRole="invTypeMaterial" ToRole="InvType" />
+        </EntityType>
+        <EntityType Name="ProductionBatch">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProductTypeId" Type="Int32" Nullable="false" />
+          <Property Name="BlueprintTypeId" Type="Int32" Nullable="false" />
+          <Property Name="ProductionQuantity" Type="Int32" Nullable="false" />
+          <Property Name="QuantityLeft" Type="Int32" Nullable="false" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="OtherCost" Type="Decimal" Nullable="false" Precision="18" Scale="5" />
+          <Property Name="TotalSales" Type="Decimal" Nullable="false" Precision="18" Scale="5" />
+          <Property Name="BlueprintME" Type="Int32" Nullable="false" />
+          <Property Name="CharacterME" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="BatchMaterials" Relationship="EveProfiteerDbModel.FK_BatchMaterials_ToProductionBatches" FromRole="ProductionBatch" ToRole="BatchMaterial" />
+          <NavigationProperty Name="InvType" Relationship="EveProfiteerDbModel.FK_ProductType_ToInvTypes" FromRole="ProductionBatch" ToRole="InvType" />
+          <NavigationProperty Name="InvBlueprintType" Relationship="EveProfiteerDbModel.FK_ProductionBatches_ToInvBlueprintTypes" FromRole="ProductionBatch" ToRole="InvBlueprintType" />
+        </EntityType>
+        <Association Name="FK_BatchMaterials_ToInvTypes">
+          <End Type="EveProfiteerDbModel.InvType" Role="InvType" Multiplicity="1" />
+          <End Type="EveProfiteerDbModel.BatchMaterial" Role="BatchMaterial" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="InvType">
+              <PropertyRef Name="TypeId" />
+            </Principal>
+            <Dependent Role="BatchMaterial">
+              <PropertyRef Name="TypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_BatchMaterials_ToProductionBatches">
+          <End Type="EveProfiteerDbModel.ProductionBatch" Role="ProductionBatch" Multiplicity="1" />
+          <End Type="EveProfiteerDbModel.BatchMaterial" Role="BatchMaterial" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductionBatch">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="BatchMaterial">
+              <PropertyRef Name="BatchId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductType_ToInvTypes">
+          <End Type="EveProfiteerDbModel.InvType" Role="InvType" Multiplicity="1" />
+          <End Type="EveProfiteerDbModel.ProductionBatch" Role="ProductionBatch" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="InvType">
+              <PropertyRef Name="TypeId" />
+            </Principal>
+            <Dependent Role="ProductionBatch">
+              <PropertyRef Name="ProductTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="InvTypeInvBlueprintType">
+          <End Type="EveProfiteerDbModel.InvType" Role="InvType" Multiplicity="1" />
+          <End Type="EveProfiteerDbModel.InvBlueprintType" Role="InvBlueprintType" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="InvType">
+              <PropertyRef Name="TypeId" />
+            </Principal>
+            <Dependent Role="InvBlueprintType">
+              <PropertyRef Name="BlueprintTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="InvTypeinvTypeMaterial">
+          <End Type="EveProfiteerDbModel.InvType" Role="InvType" Multiplicity="1" />
+          <End Type="EveProfiteerDbModel.InvTypeMaterials" Role="invTypeMaterial" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="InvType">
+              <PropertyRef Name="TypeId" />
+            </Principal>
+            <Dependent Role="invTypeMaterial">
+              <PropertyRef Name="TypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="InvTypeinvTypeMaterial1">
+          <End Type="EveProfiteerDbModel.InvType" Role="InvType" Multiplicity="1" />
+          <End Type="EveProfiteerDbModel.InvTypeMaterials" Role="invTypeMaterial" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="InvType">
+              <PropertyRef Name="TypeId" />
+            </Principal>
+            <Dependent Role="invTypeMaterial">
+              <PropertyRef Name="MaterialTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductionBatches_ToInvBlueprintTypes">
+          <End Type="EveProfiteerDbModel.InvBlueprintType" Role="InvBlueprintType" Multiplicity="1" />
+          <End Type="EveProfiteerDbModel.ProductionBatch" Role="ProductionBatch" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="InvBlueprintType">
+              <PropertyRef Name="BlueprintTypeId" />
+            </Principal>
+            <Dependent Role="ProductionBatch">
+              <PropertyRef Name="BlueprintTypeId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1008,12 +1311,68 @@
           <EntitySetMapping Name="Assets">
             <EntityTypeMapping TypeName="EveProfiteerDbModel.Asset">
               <MappingFragment StoreEntitySet="Assets">
+                <ScalarProperty Name="ActualQuantity" ColumnName="ActualQuantity" />
                 <ScalarProperty Name="LatestAverageCost" ColumnName="LatestAverageCost" />
                 <ScalarProperty Name="UnaccountedQuantity" ColumnName="UnaccountedQuantity" />
                 <ScalarProperty Name="ApiKeyEntity_Id" ColumnName="ApiKeyEntity_Id" />
                 <ScalarProperty Name="TotalCost" ColumnName="TotalCost" />
                 <ScalarProperty Name="Quantity" ColumnName="Quantity" />
                 <ScalarProperty Name="InvTypes_TypeId" ColumnName="InvTypes_TypeId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="BatchMaterials">
+            <EntityTypeMapping TypeName="EveProfiteerDbModel.BatchMaterial">
+              <MappingFragment StoreEntitySet="BatchMaterials">
+                <ScalarProperty Name="TotalCost" ColumnName="TotalCost" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="BatchId" ColumnName="BatchId" />
+                <ScalarProperty Name="TypeId" ColumnName="TypeId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="InvBlueprintTypes1">
+            <EntityTypeMapping TypeName="EveProfiteerDbModel.InvBlueprintType">
+              <MappingFragment StoreEntitySet="invBlueprintTypes">
+                <ScalarProperty Name="MaxProductionLimit" ColumnName="maxProductionLimit" />
+                <ScalarProperty Name="WasteFactor" ColumnName="wasteFactor" />
+                <ScalarProperty Name="MaterialModifier" ColumnName="materialModifier" />
+                <ScalarProperty Name="ProductivityModifier" ColumnName="productivityModifier" />
+                <ScalarProperty Name="ResearchTechTime" ColumnName="researchTechTime" />
+                <ScalarProperty Name="ResearchCopyTime" ColumnName="researchCopyTime" />
+                <ScalarProperty Name="ResearchMaterialTime" ColumnName="researchMaterialTime" />
+                <ScalarProperty Name="ResearchProductivityTime" ColumnName="researchProductivityTime" />
+                <ScalarProperty Name="TechLevel" ColumnName="techLevel" />
+                <ScalarProperty Name="ProductionTime" ColumnName="productionTime" />
+                <ScalarProperty Name="ProductTypeID" ColumnName="productTypeID" />
+                <ScalarProperty Name="ParentBlueprintTypeID" ColumnName="parentBlueprintTypeID" />
+                <ScalarProperty Name="BlueprintTypeId" ColumnName="blueprintTypeID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="InvTypeMaterials">
+            <EntityTypeMapping TypeName="EveProfiteerDbModel.InvTypeMaterials">
+              <MappingFragment StoreEntitySet="invTypeMaterials">
+                <ScalarProperty Name="Quantity" ColumnName="quantity" />
+                <ScalarProperty Name="MaterialTypeId" ColumnName="materialTypeID" />
+                <ScalarProperty Name="TypeId" ColumnName="typeID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ProductionBatches">
+            <EntityTypeMapping TypeName="EveProfiteerDbModel.ProductionBatch">
+              <MappingFragment StoreEntitySet="ProductionBatches">
+                <ScalarProperty Name="CharacterME" ColumnName="CharacterME" />
+                <ScalarProperty Name="BlueprintME" ColumnName="BlueprintME" />
+                <ScalarProperty Name="TotalSales" ColumnName="TotalSales" />
+                <ScalarProperty Name="OtherCost" ColumnName="OtherCost" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="QuantityLeft" ColumnName="QuantityLeft" />
+                <ScalarProperty Name="ProductionQuantity" ColumnName="ProductionQuantity" />
+                <ScalarProperty Name="BlueprintTypeId" ColumnName="BlueprintTypeId" />
+                <ScalarProperty Name="ProductTypeId" ColumnName="ProductTypeId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

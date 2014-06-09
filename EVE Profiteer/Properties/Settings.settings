@@ -18,13 +18,13 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="DonchianChannelColor" Type="System.Drawing.Color" Scope="User">
-      <Value Profile="(Default)">192, 192, 255</Value>
+      <Value Profile="(Default)">ActiveCaption</Value>
     </Setting>
     <Setting Name="DonchianCenterColor" Type="System.Drawing.Color" Scope="User">
       <Value Profile="(Default)">Blue</Value>
     </Setting>
     <Setting Name="AveragePriceColor" Type="System.Drawing.Color" Scope="User">
-      <Value Profile="(Default)">Yellow</Value>
+      <Value Profile="(Default)">InfoText</Value>
     </Setting>
     <Setting Name="Moving20DayColor" Type="System.Drawing.Color" Scope="User">
       <Value Profile="(Default)">Green</Value>
@@ -36,7 +36,7 @@
       <Value Profile="(Default)">HotTrack</Value>
     </Setting>
     <Setting Name="DefaultRegionId" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">0</Value>
+      <Value Profile="(Default)">10000002</Value>
     </Setting>
     <Setting Name="DefaultStationId" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">60003760</Value>

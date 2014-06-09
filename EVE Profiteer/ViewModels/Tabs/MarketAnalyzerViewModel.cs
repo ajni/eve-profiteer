@@ -4,9 +4,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Data.Entity;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Controls;
 using System.Windows.Input;
 using Caliburn.Micro;
 using DevExpress.Xpf.Mvvm;
@@ -14,7 +12,6 @@ using eZet.EveProfiteer.Events;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
 using eZet.EveProfiteer.Util;
-using eZet.EveProfiteer.ViewModels.Dialogs;
 
 namespace eZet.EveProfiteer.ViewModels.Tabs {
     public class MarketAnalyzerViewModel : Screen, IHandle<OrdersChangedEventArgs> {
@@ -22,6 +19,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
         private readonly EveMarketService _eveMarketService;
         private readonly IEventAggregator _eventAggregator;
         private readonly IWindowManager _windowManager;
+        private BindableCollection<TreeNode> _betterTreeRootNodes;
         private int _dayLimit = 10;
         private BindableCollection<MarketAnalyzerEntry> _marketAnalyzerResults;
         private ICollection<MapRegion> _regions;
@@ -30,7 +28,6 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
         private StaStation _selectedStation;
         private ICollection<StaStation> _stations;
         private BindableCollection<InvMarketGroup> _treeRootNodes;
-        private BindableCollection<TreeNode> _betterTreeRootNodes;
 
         public MarketAnalyzerViewModel(IWindowManager windowManager, IEventAggregator eventAggregator,
             EveProfiteerDataService dataService,
@@ -157,16 +154,15 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             }
         }
 
-
-
         public void Handle(OrdersChangedEventArgs ordersChangedEventArgs) {
             ILookup<int, MarketAnalyzerEntry> lookup = MarketAnalyzerResults.ToLookup(f => f.InvType.TypeId);
-            foreach (Order order in ordersChangedEventArgs.Orders) {
+            foreach (Order order in ordersChangedEventArgs.Added) {
                 if (lookup.Contains(order.TypeId)) {
                     lookup[order.TypeId].Single().Order = order;
-                    MarketAnalyzerResults.NotifyOfPropertyChange(null);
+                    //MarketAnalyzerResults.NotifyOfPropertyChange(null);
                 }
             }
+            MarketAnalyzerResults.Refresh();
         }
 
         public bool CanScannerLinkAction() {
@@ -193,8 +189,8 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             SelectedStation = Stations.Single(station => station.StationId == ConfigManager.DefaultStation);
         }
 
-        private void BetterTreeRootNodesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs) {
-
+        private void BetterTreeRootNodesOnCollectionChanged(object sender,
+            NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs) {
             throw new NotImplementedException();
         }
 
@@ -212,52 +208,54 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
 
 
         private async void ExecuteAnalyze() {
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Analyzing..."));
-            var cts = new CancellationTokenSource();
-            var progressVm = new AnalyzerProgressViewModel(cts);
-            MarketAnalyzer res = await GetMarketAnalyzer(SelectedItems.Select(t => t.InvType).ToList());
-            LoadOrderData(res.Result);
+            MarketAnalyzer res =
+                await GetMarketAnalyzer(SelectedItems.Select(t => t.InvType).ToList()).ConfigureAwait(false);
             MarketAnalyzerResults = new BindableCollection<MarketAnalyzerEntry>(res.Result);
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Analysis complete"));
         }
 
-        private void LoadOrderData(IEnumerable<MarketAnalyzerEntry> items) {
-            items.Apply(
-                item =>
-                    item.Order =
-                        item.InvType.Orders.SingleOrDefault(
-                            order => order.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id));
+        private async Task LoadOrderData(IEnumerable<MarketAnalyzerEntry> items) {
+            var orders = await _dataService.GetOrders().ToListAsync();
+            var lookup = orders.ToLookup(order => order.TypeId);
+            items.Apply(item => item.Order = lookup[item.InvType.TypeId].SingleOrDefault());
         }
-
-    
 
 
         private bool canAddToOrders(ICollection<object> objects) {
             if (objects == null || !objects.Any())
                 return false;
-            List<MarketAnalyzerEntry> items = objects.Select(item => (MarketAnalyzerEntry) item).ToList();
+            List<MarketAnalyzerEntry> items = objects.Select(item => (MarketAnalyzerEntry)item).ToList();
             return items.All(item => item.Order == null);
         }
 
         private void executeAddToOrders(ICollection<object> objects) {
-            List<InvType> items = objects.Select(item => ((MarketAnalyzerEntry) item).InvType).ToList();
-      _eventAggregator.PublishOnUIThread(new AddToOrdersEventArgs(items));
+            List<InvType> items = objects.Select(item => ((MarketAnalyzerEntry)item).InvType).ToList();
+            _eventAggregator.PublishOnUIThread(new AddToOrdersEventArgs(items));
         }
 
         private async void ExecuteLoadOrders() {
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Analyzing orders..."));
             List<InvType> items =
                 _dataService.Db.Orders.Where(order => order.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id)
                     .Select(order => order.InvType).ToList();
-            MarketAnalyzer res = await GetMarketAnalyzer(items);
-            LoadOrderData(res.Result);
+            MarketAnalyzer res = await GetMarketAnalyzer(items).ConfigureAwait(false);
             MarketAnalyzerResults = new BindableCollection<MarketAnalyzerEntry>(res.Result);
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Analysis complete"));
         }
 
-        private async Task<MarketAnalyzer> GetMarketAnalyzer(ICollection<InvType> items) {
-            return await
-                Task.Run(() => _eveMarketService.AnalyzeMarket(SelectedRegion, SelectedStation, items, DayLimit));
+        private Task<MarketAnalyzer> GetMarketAnalyzer(ICollection<InvType> items) {
+            return analyze(items);
+            //return Task.Run(() => analyze(items));
+        }
+
+        private async Task<MarketAnalyzer> analyze(ICollection<InvType> items) {
+            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Fetching market data..."));
+            MarketAnalyzer analyzer =
+                await
+                    _eveMarketService.GetMarketAnalyzerData(SelectedRegion, SelectedStation, items, DayLimit)
+                        .ConfigureAwait(false);
+            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Analyzing market data..."));
+            analyzer.Analyze();
+            await LoadOrderData(analyzer.Result).ConfigureAwait(false);
+            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Market analysis complete"));
+            return analyzer;
         }
 
         private void treeViewCheckBox_PropertyChanged(object sender, PropertyChangedEventArgs e) {

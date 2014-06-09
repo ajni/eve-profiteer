@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using MoreLinq;
 
 namespace eZet.EveProfiteer.Models {
     public class MarketBrowserItem {
@@ -24,7 +25,13 @@ namespace eZet.EveProfiteer.Models {
 
         public ICollection<MarketOrder> BuyOrders { get; private set; }
 
+        public decimal CurrentBuyPrice { get; private set; }
+
+        public decimal CurrentSellPrice { get; private set; }
+
         private void initialize() {
+            CurrentBuyPrice = BuyOrders.MaxBy(order => order.Price).Price;
+            CurrentSellPrice = SellOrders.MinBy(order => order.Price).Price;
             var high = new List<decimal>();
             var low = new List<decimal>();
             foreach (MarketHistoryEntry entry in MarketHistory) {
@@ -38,13 +45,13 @@ namespace eZet.EveProfiteer.Models {
                     entry.DonchianHigh = high.Max();
                 if (low.Any())
                     entry.DonchianLow = low.Min();
-                entry.DonchianCenter = (entry.DonchianHigh + entry.DonchianLow)/2;
+                entry.DonchianCenter = (entry.DonchianHigh + entry.DonchianLow) / 2;
             }
         }
 
         private void calcCCI(MarketHistoryEntry entry) {
 
-            
+
         }
     }
 }

@@ -4,10 +4,9 @@ using eZet.EveProfiteer.Models;
 
 namespace eZet.EveProfiteer.Events {
     public class OrdersChangedEventArgs : EventArgs {
-        public OrdersChangedEventArgs(List<Order> orders) {
-            Orders = orders;
-        }
 
-        public ICollection<Order> Orders { get; private set; }
+        public ICollection<Order> Added { get; set; }
+        public ICollection<Order> Removed { get; set; }
+        public ICollection<Order> Changed { get; set; }
     }
 }

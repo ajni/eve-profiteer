@@ -61,6 +61,9 @@
     <Compile Include="Asset.cs">
       <DependentUpon>EveProfiteerDbModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="BatchMaterial.cs">
+      <DependentUpon>EveProfiteerDbModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="EveProfiteerDbModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -76,6 +79,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>EveProfiteerDbModel.edmx</DependentUpon>
     </Compile>
+    <Compile Include="InvBlueprintType.cs">
+      <DependentUpon>EveProfiteerDbModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="InvGroup.cs">
       <DependentUpon>EveProfiteerDbModel.tt</DependentUpon>
     </Compile>
@@ -85,6 +91,9 @@
     <Compile Include="InvType.cs">
       <DependentUpon>EveProfiteerDbModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="InvTypeMaterials.cs">
+      <DependentUpon>EveProfiteerDbModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="JournalEntry.cs">
       <DependentUpon>EveProfiteerDbModel.tt</DependentUpon>
     </Compile>
@@ -92,6 +101,9 @@
       <DependentUpon>EveProfiteerDbModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Order.cs">
+      <DependentUpon>EveProfiteerDbModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ProductionBatch.cs">
       <DependentUpon>EveProfiteerDbModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\Annotations.cs" />

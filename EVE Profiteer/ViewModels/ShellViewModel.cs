@@ -19,6 +19,7 @@ namespace eZet.EveProfiteer.ViewModels {
         IHandle<StatusChangedEventArgs> {
         private readonly TransactionService TransactionService;
         private readonly EveProfiteerDataService _dataService;
+        private readonly AssetService _assetService;
         private readonly EveApiService _eveApiService;
         private readonly IEventAggregator _eventAggregator;
         private readonly KeyManagementService _keyManagementService;
@@ -28,13 +29,14 @@ namespace eZet.EveProfiteer.ViewModels {
 
         public ShellViewModel(IWindowManager windowManager, IEventAggregator eventAggregator,
             KeyManagementService keyManagementService,
-            TransactionService transactionService, EveApiService eveApiService, EveProfiteerDataService dataService) {
+            TransactionService transactionService, EveApiService eveApiService, EveProfiteerDataService dataService, AssetService assetService) {
             _windowManager = windowManager;
             _eventAggregator = eventAggregator;
             _keyManagementService = keyManagementService;
             TransactionService = transactionService;
             _eveApiService = eveApiService;
             _dataService = dataService;
+            _assetService = assetService;
 
             DisplayName = "EVE Profiteer";
             StatusMessage = "Ready";
@@ -47,6 +49,7 @@ namespace eZet.EveProfiteer.ViewModels {
             ManageKeysCommand = new DelegateCommand(ManageKeys);
             UpdateTransactionsCommand = new DelegateCommand(UpdateTransactions);
             UpdateItemCostsCommand = new DelegateCommand(UpdateItemCosts);
+            UpdateAssetsCommand = new DelegateCommand(ExecuteUpdateAssets);
 
 
             TradeSummary = IoC.Get<TradeSummaryViewModel>();
@@ -55,10 +58,13 @@ namespace eZet.EveProfiteer.ViewModels {
             MarketBrowser = IoC.Get<MarketBrowserViewModel>();
             MarketAnalyzer = IoC.Get<MarketAnalyzerViewModel>();
             OrderEditor = IoC.Get<OrderEditorViewModel>();
+            Assets = IoC.Get<AssetsViewModel>();
+            ProductionModel = IoC.Get<ProductionViewModel>();
             SelectKey();
-            // ReSharper disable once CSharpWarnings::CS4014
             InitAsync();
         }
+
+        public AssetsViewModel Assets { get; set; }
 
         public TradeSummaryViewModel TradeSummary { get; set; }
 
@@ -71,6 +77,7 @@ namespace eZet.EveProfiteer.ViewModels {
         public MarketAnalyzerViewModel MarketAnalyzer { get; set; }
 
         public OrderEditorViewModel OrderEditor { get; set; }
+        public ProductionViewModel ProductionModel { get; set; }
 
         public string StatusMessage {
             get { return _statusMessage; }
@@ -87,6 +94,8 @@ namespace eZet.EveProfiteer.ViewModels {
 
         public ICommand UpdateItemCostsCommand { get; private set; }
 
+        public ICommand UpdateAssetsCommand { get; private set; }
+
         public ICommand ManageKeysCommand { get; private set; }
 
         public ICommand UpdateTransactionsCommand { get; private set; }
@@ -96,7 +105,7 @@ namespace eZet.EveProfiteer.ViewModels {
         public static ApiKeyEntity ActiveKeyEntity { get; private set; }
 
         public void Handle(AddToOrdersEventArgs message) {
-            ActivateItem(Items.Single(item => item.GetType() == typeof (OrderEditorViewModel)));
+            //ActivateItem(Items.Single(item => item.GetType() == typeof (OrderEditorViewModel)));
         }
 
         public void Handle(StatusChangedEventArgs message) {
@@ -122,6 +131,7 @@ namespace eZet.EveProfiteer.ViewModels {
         public async void SelectKey() {
             Items.Clear();
             ApplicationHelper.ActiveKeyEntity = ActiveKeyEntity;
+            ApplicationHelper.ActiveKey = ActiveKey;
             //ApplicationHelper.ActiveKey = ActiveKey;
 
 
@@ -136,6 +146,7 @@ namespace eZet.EveProfiteer.ViewModels {
             Items.Add(MarketBrowser);
             Items.Add(MarketAnalyzer);
             Items.Add(OrderEditor);
+            Items.Add(Assets);
 
 
             //Items.Add(IoC.Get<TradeDetailsViewModel>());
@@ -158,11 +169,20 @@ namespace eZet.EveProfiteer.ViewModels {
             await MarketAnalyzer.InitAsync();
             _trace.TraceEvent(TraceEventType.Verbose, 0, "OrderEditor.InitAsync");
             await OrderEditor.InitAsync();
+            _trace.TraceEvent(TraceEventType.Verbose, 0, "Assets.InitAsync");
+            await Assets.InitAsync();
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Ready"));
         }
 
         public void ManageKeys() {
             _windowManager.ShowDialog(IoC.Get<ManageKeysViewModel>());
+        }
+
+        public async void ExecuteUpdateAssets() {
+            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Fetching assets..."));
+            await _assetService.UpdateAssets();
+            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Assets updated"));
+            await _eventAggregator.PublishOnUIThreadAsync(new AssetsUpdatedEvent()).ConfigureAwait(false);
         }
 
         public async void UpdateTransactions() {

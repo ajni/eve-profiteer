@@ -1,6 +1,10 @@
-﻿using DevExpress.Data;
+﻿using System.Linq;
+using System.Windows;
+using DevExpress.Charts.Native;
+using DevExpress.Data;
 using DevExpress.Xpf.Bars;
 using DevExpress.Xpf.Grid;
+using eZet.EveProfiteer.Models;
 
 namespace eZet.EveProfiteer.Views.Tabs {
     /// <summary>
@@ -18,6 +22,14 @@ namespace eZet.EveProfiteer.Views.Tabs {
             col.AllowUnboundExpressionEditor = true;
             col.UnboundType = UnboundColumnType.Decimal;
             MarketAnalyzerGrid.Columns.Add(col);
+        }
+
+        private void MarketAnalyzerGrid_OnCopyingToClipboard(object sender, CopyingToClipboardEventArgs e) {
+            if (e.RowHandles.Count() == 1) {
+                var row = (MarketAnalyzerEntry)e.Source.DataControl.GetRow(e.RowHandles.Single());
+                Clipboard.SetText(row.InvType.TypeName);
+                e.Handled = true;
+            }
         }
     }
 }

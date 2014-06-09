@@ -46,8 +46,8 @@
                                    Command="{Binding UpdateTransactionsCommand}"
                                    Glyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_16x16.png"
                                    LargeGlyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_32x32.png" />
-                <dxb:BarButtonItem x:Name="UpdateItemCosts" Content="Update Item Costs"
-                                   Command="{Binding UpdateItemCostsCommand}"
+                <dxb:BarButtonItem x:Name="UpdateAssets" Content="Update Assets"
+                                   Command="{Binding UpdateAssetsCommand}"
                                    Glyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_16x16.png"
                                    LargeGlyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_32x32.png" />
                 <dxb:BarButtonItem x:Name="Settings" Content="Settings"
@@ -87,7 +87,7 @@
                                                  IsCaptionButtonEnabled="True">
                                 <dxb:BarItemLink BarItemName="UpdateTransactions" RibbonStyle="All" />
                                 <dxb:BarItemLink BarItemName="ManageKeys" RibbonStyle="All" />
-                                <dxb:BarItemLink BarItemName="UpdateItemCosts" RibbonStyle="All" />
+                                <dxb:BarItemLink BarItemName="UpdateAssets" RibbonStyle="All" />
                                 <dxb:BarItemLink BarItemName="Settings" RibbonStyle="All" />
                             </dxr:RibbonPageGroup>
                         </dxr:RibbonPage>

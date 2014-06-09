@@ -44,7 +44,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             SelectItemCommand = new DelegateCommand<TreeNode>(ExecuteSelectItem);
             AddToOrdersCommand = new DelegateCommand(ExecuteAddToOrders, CanAddToOrders);
             ViewTradeDetailsCommand = new DelegateCommand(ExecuteViewTradeDetails, CanViewTradeDetails);
-            ViewEnd = DateTime.UtcNow.AddDays(-2).Date;
+            ViewEnd = DateTime.UtcNow.Date;
             ViewStart = ViewEnd.AddMonths(-6).Date;
             PropertyChanged += OnPropertyChanged;
             DateTimeMeasurement = DateTimeMeasurementUnit.Week;

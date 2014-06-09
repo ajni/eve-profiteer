@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using eZet.EveLib.Modules;
 using eZet.EveLib.Modules.Models;
 using eZet.EveLib.Modules.Models.Character;
@@ -30,7 +31,7 @@ namespace eZet.EveProfiteer.Services {
             var ckey = new CharacterKey(key.ApiKeyId, key.VCode);
             var list = new List<ApiKeyEntity>();
             foreach (Character c in ckey.Characters) {
-                list.Add(new ApiKeyEntity {EntityId = c.CharacterId, Name = c.CharacterName, Type = "Character"});
+                list.Add(new ApiKeyEntity { EntityId = c.CharacterId, Name = c.CharacterName, Type = "Character" });
             }
             return list;
         }
@@ -51,6 +52,14 @@ namespace eZet.EveProfiteer.Services {
         public IList<JournalEntry> GetAllJournalEntries(ApiKey key, ApiKeyEntity entity,
             Func<JournalEntry> transactionFactory) {
             return getJournalEntries(key, entity, 5000);
+        }
+
+        public async Task<AssetList> GetAssets(ApiKey key, ApiKeyEntity entity) {
+            var data = new CharacterData();
+            var ckey = await new CharacterKey(key.ApiKeyId, key.VCode).InitAsync();
+            Character character = ckey.Characters.Single(c => c.CharacterId == entity.EntityId);
+            var assets = await character.GetAssetListAsync().ConfigureAwait(false);
+            return assets.Result;
         }
 
         private static IList<JournalEntry> getJournalEntries(ApiKey key, ApiKeyEntity entity, int rowLimit,
@@ -81,5 +90,6 @@ namespace eZet.EveProfiteer.Services {
             }
             return transactions;
         }
+
     }
 }

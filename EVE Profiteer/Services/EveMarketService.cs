@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Mime;
 using System.Threading.Tasks;
+using Caliburn.Micro;
 using DevExpress.XtraPrinting.Native;
 using eZet.EveLib.Modules;
 using eZet.EveLib.Modules.Models;
@@ -51,7 +51,7 @@ namespace eZet.EveProfiteer.Services {
             return item;
         }
 
-        public MarketAnalyzer AnalyzeMarket(MapRegion region, StaStation station, ICollection<InvType> items,
+        public async Task<MarketAnalyzer> GetMarketAnalyzerData(MapRegion region, StaStation station, ICollection<InvType> items,
             int dayLimit) {
             var historyOptions = new EveMarketDataOptions();
             historyOptions.AgeSpan = TimeSpan.FromDays(dayLimit);
@@ -68,12 +68,17 @@ namespace eZet.EveProfiteer.Services {
                 historyOptions.Items.Add(item.TypeId);
                 priceOptions.Items.Add(item.TypeId);
                 if (historyOptions.Items.Count > 1000) {
-                    history.AddRange(eveMarketData.GetItemHistory(historyOptions).Result.History);
+                    var response = await eveMarketData.GetItemHistoryAsync(historyOptions).ConfigureAwait(false);
+                    history.AddRange(response.Result.History);
                     historyOptions.Items.Clear();
                 }
                 if (priceOptions.Items.Count > 1000) {
-                    sellOrders.AddRange(eveMarketData.GetItemPrice(priceOptions, OrderType.Sell).Result.Prices);
-                    buyOrders.AddRange(eveMarketData.GetItemPrice(priceOptions, OrderType.Buy).Result.Prices);
+                    var sellOrdersTask =
+                        await eveMarketData.GetItemPriceAsync(priceOptions, OrderType.Sell).ConfigureAwait(false);
+                    sellOrders.AddRange(sellOrdersTask.Result.Prices);
+                    var buyOrdersTask =
+                        await eveMarketData.GetItemPriceAsync(priceOptions, OrderType.Buy).ConfigureAwait(false);
+                    buyOrders.AddRange(buyOrdersTask.Result.Prices);
                     priceOptions.Items.Clear();
                 }
             }
@@ -81,7 +86,6 @@ namespace eZet.EveProfiteer.Services {
             buyOrders.AddRange(eveMarketData.GetItemPrice(priceOptions, OrderType.Buy).Result.Prices);
             history.AddRange(eveMarketData.GetItemHistory(historyOptions).Result.History);
             var res = new MarketAnalyzer(items, sellOrders, buyOrders, history);
-            res.Analyze();
             return res;
         }
 
@@ -121,6 +125,25 @@ namespace eZet.EveProfiteer.Services {
                     order.CurrentSellPrice = price.Single(t => t.OrderType == OrderType.Sell).Price;
                 }
             }
+        }
+
+        public async Task<EveMarketDataRowCollection<ItemPrices.ItemPriceEntry>> GetPriceData(IEnumerable<int> types,
+            int station) {
+            var options = new EveMarketDataOptions();
+            types.Apply(type => options.Items.Add(type));
+            options.Stations.Add(station);
+            var res = await eveMarketData.GetItemPriceAsync(options, OrderType.Both).ConfigureAwait(false);
+            return res.Result.Prices;
+        }
+
+        public async Task<EveMarketDataRowCollection<ItemHistory.ItemHistoryEntry>> GetHistoryData(IEnumerable<int> types,
+    int region, int days) {
+            var options = new EveMarketDataOptions();
+            types.Apply(type => options.Items.Add(type));
+            options.Regions.Add(region);
+            options.AgeSpan = TimeSpan.FromDays(days);
+            var res = await eveMarketData.GetItemHistoryAsync(options).ConfigureAwait(false);
+            return res.Result.History;
         }
 
     }
