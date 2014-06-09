@@ -41,5 +41,17 @@
     <Setting Name="DefaultStationId" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">60003760</Value>
     </Setting>
+    <Setting Name="SellPriceOffset" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">-0.02</Value>
+    </Setting>
+    <Setting Name="BuyPriceOffset" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">-0.02</Value>
+    </Setting>
+    <Setting Name="MinProfitMargin" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0.06</Value>
+    </Setting>
+    <Setting Name="MaxProfitMargin" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0.1</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -27,6 +27,10 @@ namespace eZet.EveProfiteer.Services {
             return Db.Assets.Where(asset => asset.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id);
         }
 
+        public IQueryable<InvBlueprintType> GetBlueprints() {
+            return Db.InvBlueprintTypes.Include("BlueprintInvType").Include("ProductInvType").Where(bp => bp.BlueprintInvType.Published == true);
+        }
+
         public async Task<BindableCollection<TreeNode>> BuildBetterMarketTree(PropertyChangedEventHandler itemPropertyChanged) {
             var rootList = new BindableCollection<TreeNode>();
             List<InvType> items = await GetMarketTypes().ToListAsync();

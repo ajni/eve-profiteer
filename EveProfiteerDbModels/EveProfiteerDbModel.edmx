@@ -204,6 +204,7 @@
           <Property Name="TotalSales" Type="decimal" Precision="18" Scale="5" Nullable="false" />
           <Property Name="BlueprintME" Type="int" Nullable="false" />
           <Property Name="CharacterME" Type="int" Nullable="false" />
+          <Property Name="ApiKeyEntityId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="staStations">
           <Key>
@@ -387,6 +388,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ProductionBatches_ToApiKeyEntities">
+          <End Role="ApiKeyEntities" Type="Self.ApiKeyEntities" Multiplicity="1" />
+          <End Role="ProductionBatches" Type="Self.ProductionBatches" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ApiKeyEntities">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProductionBatches">
+              <PropertyRef Name="ApiKeyEntityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ProductionBatches_ToInvBlueprintTypes">
           <End Role="invBlueprintTypes" Type="Self.invBlueprintTypes" Multiplicity="1" />
           <End Role="ProductionBatches" Type="Self.ProductionBatches" Multiplicity="*" />
@@ -484,6 +497,10 @@
             <End Role="staStations" EntitySet="staStations" />
             <End Role="Orders" EntitySet="Orders" />
           </AssociationSet>
+          <AssociationSet Name="FK_ProductionBatches_ToApiKeyEntities" Association="Self.FK_ProductionBatches_ToApiKeyEntities">
+            <End Role="ApiKeyEntities" EntitySet="ApiKeyEntities" />
+            <End Role="ProductionBatches" EntitySet="ProductionBatches" />
+          </AssociationSet>
           <AssociationSet Name="FK_ProductionBatches_ToInvBlueprintTypes" Association="Self.FK_ProductionBatches_ToInvBlueprintTypes">
             <End Role="invBlueprintTypes" EntitySet="invBlueprintTypes" />
             <End Role="ProductionBatches" EntitySet="ProductionBatches" />
@@ -566,7 +583,7 @@
             <End Role="Asset" EntitySet="Assets" />
           </AssociationSet>
           <EntitySet Name="BatchMaterials" EntityType="EveProfiteerDbModel.BatchMaterial" />
-          <EntitySet Name="InvBlueprintTypes1" EntityType="EveProfiteerDbModel.InvBlueprintType" />
+          <EntitySet Name="InvBlueprintTypes" EntityType="EveProfiteerDbModel.InvBlueprintType" />
           <EntitySet Name="InvTypeMaterials" EntityType="EveProfiteerDbModel.InvTypeMaterials" />
           <EntitySet Name="ProductionBatches" EntityType="EveProfiteerDbModel.ProductionBatch" />
           <AssociationSet Name="FK_BatchMaterials_ToInvTypes" Association="EveProfiteerDbModel.FK_BatchMaterials_ToInvTypes">
@@ -583,7 +600,7 @@
           </AssociationSet>
           <AssociationSet Name="InvTypeInvBlueprintType" Association="EveProfiteerDbModel.InvTypeInvBlueprintType">
             <End Role="InvType" EntitySet="InvTypes" />
-            <End Role="InvBlueprintType" EntitySet="InvBlueprintTypes1" />
+            <End Role="InvBlueprintType" EntitySet="InvBlueprintTypes" />
           </AssociationSet>
           <AssociationSet Name="InvTypeinvTypeMaterial" Association="EveProfiteerDbModel.InvTypeinvTypeMaterial">
             <End Role="InvType" EntitySet="InvTypes" />
@@ -594,8 +611,16 @@
             <End Role="invTypeMaterial" EntitySet="InvTypeMaterials" />
           </AssociationSet>
           <AssociationSet Name="FK_ProductionBatches_ToInvBlueprintTypes" Association="EveProfiteerDbModel.FK_ProductionBatches_ToInvBlueprintTypes">
-            <End Role="InvBlueprintType" EntitySet="InvBlueprintTypes1" />
+            <End Role="InvBlueprintType" EntitySet="InvBlueprintTypes" />
             <End Role="ProductionBatch" EntitySet="ProductionBatches" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductionBatches_ToApiKeyEntities" Association="EveProfiteerDbModel.FK_ProductionBatches_ToApiKeyEntities">
+            <End Role="ApiKeyEntity" EntitySet="ApiKeyEntities" />
+            <End Role="ProductionBatch" EntitySet="ProductionBatches" />
+          </AssociationSet>
+          <AssociationSet Name="InvTypeInvBlueprintType1" Association="EveProfiteerDbModel.InvTypeInvBlueprintType1">
+            <End Role="InvType" EntitySet="InvTypes" />
+            <End Role="InvBlueprintType" EntitySet="InvBlueprintTypes" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="ApiKeyEntity">
@@ -613,6 +638,7 @@
           <NavigationProperty Name="Transactions" Relationship="EveProfiteerDbModel.FK_dbo_Transactions_dbo_ApiKeyEntities_ApiKeyEntity_Id" FromRole="ApiKeyEntity" ToRole="Transaction" />
           <NavigationProperty Name="Orders" Relationship="EveProfiteerDbModel.FK_Orders_ToApiKeyEntities" FromRole="ApiKeyEntity" ToRole="Order" />
           <NavigationProperty Name="Assets" Relationship="EveProfiteerDbModel.FK_dbo_Assets_dbo_ToApiKeyEntities" FromRole="ApiKeyEntity" ToRole="Asset" />
+          <NavigationProperty Name="ProductionBatches" Relationship="EveProfiteerDbModel.FK_ProductionBatches_ToApiKeyEntities" FromRole="ApiKeyEntity" ToRole="ProductionBatch" />
         </EntityType>
         <EntityType Name="ApiKey">
           <Key>
@@ -702,6 +728,7 @@
           <NavigationProperty Name="ProductionBatches1" Relationship="EveProfiteerDbModel.FK_ProductType_ToInvTypes" FromRole="InvType" ToRole="ProductionBatch" />
           <NavigationProperty Name="InvBlueprintType" Relationship="EveProfiteerDbModel.InvTypeInvBlueprintType" FromRole="InvType" ToRole="InvBlueprintType" />
           <NavigationProperty Name="InvTypeMaterials" Relationship="EveProfiteerDbModel.InvTypeinvTypeMaterial" FromRole="InvType" ToRole="invTypeMaterial" />
+          <NavigationProperty Name="InvProductType" Relationship="EveProfiteerDbModel.InvTypeInvBlueprintType1" FromRole="InvType" ToRole="InvBlueprintType" />
         </EntityType>
         <EntityType Name="MapRegion">
           <Key>
@@ -995,8 +1022,9 @@
           <Property Name="MaterialModifier" Type="Int16" />
           <Property Name="WasteFactor" Type="Int16" />
           <Property Name="MaxProductionLimit" Type="Int32" />
-          <NavigationProperty Name="InvType" Relationship="EveProfiteerDbModel.InvTypeInvBlueprintType" FromRole="InvBlueprintType" ToRole="InvType" />
+          <NavigationProperty Name="BlueprintInvType" Relationship="EveProfiteerDbModel.InvTypeInvBlueprintType" FromRole="InvBlueprintType" ToRole="InvType" />
           <NavigationProperty Name="ProductionBatches" Relationship="EveProfiteerDbModel.FK_ProductionBatches_ToInvBlueprintTypes" FromRole="InvBlueprintType" ToRole="ProductionBatch" />
+          <NavigationProperty Name="ProductInvType" Relationship="EveProfiteerDbModel.InvTypeInvBlueprintType1" FromRole="InvBlueprintType" ToRole="InvType" />
         </EntityType>
         <EntityType Name="InvTypeMaterials">
           <Key>
@@ -1026,6 +1054,8 @@
           <NavigationProperty Name="BatchMaterials" Relationship="EveProfiteerDbModel.FK_BatchMaterials_ToProductionBatches" FromRole="ProductionBatch" ToRole="BatchMaterial" />
           <NavigationProperty Name="InvType" Relationship="EveProfiteerDbModel.FK_ProductType_ToInvTypes" FromRole="ProductionBatch" ToRole="InvType" />
           <NavigationProperty Name="InvBlueprintType" Relationship="EveProfiteerDbModel.FK_ProductionBatches_ToInvBlueprintTypes" FromRole="ProductionBatch" ToRole="InvBlueprintType" />
+          <Property Name="ApiKeyEntityId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="ApiKeyEntity" Relationship="EveProfiteerDbModel.FK_ProductionBatches_ToApiKeyEntities" FromRole="ProductionBatch" ToRole="ApiKeyEntity" />
         </EntityType>
         <Association Name="FK_BatchMaterials_ToInvTypes">
           <End Type="EveProfiteerDbModel.InvType" Role="InvType" Multiplicity="1" />
@@ -1108,6 +1138,30 @@
             </Principal>
             <Dependent Role="ProductionBatch">
               <PropertyRef Name="BlueprintTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductionBatches_ToApiKeyEntities">
+          <End Type="EveProfiteerDbModel.ApiKeyEntity" Role="ApiKeyEntity" Multiplicity="1" />
+          <End Type="EveProfiteerDbModel.ProductionBatch" Role="ProductionBatch" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ApiKeyEntity">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProductionBatch">
+              <PropertyRef Name="ApiKeyEntityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="InvTypeInvBlueprintType1">
+          <End Type="EveProfiteerDbModel.InvType" Role="InvType" Multiplicity="0..1" />
+          <End Type="EveProfiteerDbModel.InvBlueprintType" Role="InvBlueprintType" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="InvType">
+              <PropertyRef Name="TypeId" />
+            </Principal>
+            <Dependent Role="InvBlueprintType">
+              <PropertyRef Name="ProductTypeID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1333,7 +1387,7 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="InvBlueprintTypes1">
+          <EntitySetMapping Name="InvBlueprintTypes">
             <EntityTypeMapping TypeName="EveProfiteerDbModel.InvBlueprintType">
               <MappingFragment StoreEntitySet="invBlueprintTypes">
                 <ScalarProperty Name="MaxProductionLimit" ColumnName="maxProductionLimit" />
@@ -1364,6 +1418,7 @@
           <EntitySetMapping Name="ProductionBatches">
             <EntityTypeMapping TypeName="EveProfiteerDbModel.ProductionBatch">
               <MappingFragment StoreEntitySet="ProductionBatches">
+                <ScalarProperty Name="ApiKeyEntityId" ColumnName="ApiKeyEntityId" />
                 <ScalarProperty Name="CharacterME" ColumnName="CharacterME" />
                 <ScalarProperty Name="BlueprintME" ColumnName="BlueprintME" />
                 <ScalarProperty Name="TotalSales" ColumnName="TotalSales" />

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows;
 using Caliburn.Micro;
+using DevExpress.Xpf.Core;
+using DevExpress.Xpf.Mvvm;
 using eZet.EveProfiteer.Framework;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Repository;
@@ -50,11 +52,15 @@ namespace eZet.EveProfiteer {
             _container.PerRequest<RepositoryService<ApiKeyEntity>>();
             _container.PerRequest<KeyManagementService>();
             _container.PerRequest<AssetService>();
+            _container.PerRequest<ProductionService>();
+            
+            _container.PerRequest<IDialogService, DialogService>();
 
 
             // View Models
             _container.PerRequest<IShell, ShellViewModel>();
             _container.PerRequest<ManageKeysViewModel>();
+            _container.PerRequest<NewProductionBatchViewModel>();
             _container.PerRequest<AddKeyViewModel>();
             _container.PerRequest<EditKeyViewModel>();
             _container.PerRequest<TradeSummaryViewModel>();
@@ -65,6 +71,7 @@ namespace eZet.EveProfiteer {
             _container.PerRequest<MarketBrowserViewModel>();
             _container.PerRequest<AssetsViewModel>();
             _container.PerRequest<ProductionViewModel>();
+            _container.PerRequest<UpdatePriceLimitsViewModel>();
         }
 
         protected override object GetInstance(Type service, string key) {

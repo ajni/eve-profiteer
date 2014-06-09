@@ -44,10 +44,6 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             Orders = new BindableCollection<OrderGridRow>();
             SelectedOrders = new BindableCollection<OrderGridRow>();
             DayLimit = 10;
-            AvgPriceBuyOffset = -0.02;
-            AvgPriceSellOffset = -0.02;
-            MinProfitMargin = 0.06;
-            MaxProfitMargin = 0.1;
             ViewTradeDetailsCommand =
                 new DelegateCommand(
                     () => _eventAggregator.PublishOnUIThread(new ViewTradeDetailsEventArgs(FocusedOrder.Order.InvType)),
@@ -96,15 +92,6 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
         public ICommand DeleteOrdersCommand { get; private set; }
 
         public int DayLimit { get; set; }
-
-        public double AvgPriceBuyOffset { get; set; }
-
-        public double AvgPriceSellOffset { get; set; }
-
-
-        public double MinProfitMargin { get; set; }
-
-        public double MaxProfitMargin { get; set; }
 
         public BindableCollection<OrderGridRow> Orders {
             get { return _orders; }
@@ -245,18 +232,22 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
         }
 
         public void UpdatePriceLimits() {
-            Orders.IsNotifying = false;
-            foreach (OrderGridRow order in Orders) {
-                order.MaxBuyPrice = order.AvgPrice*(decimal) (1 + AvgPriceBuyOffset);
-                order.MinSellPrice = order.AvgPrice*(decimal) (1 + AvgPriceSellOffset);
-                if (order.MinPriceMargin > MaxProfitMargin) {
-                    if (order.Asset != null)
-                        order.MinSellPrice = order.Asset.LatestAverageCost/(decimal) (1 - MaxProfitMargin);
-                }
-                if (order.MinPriceMargin < MinProfitMargin) {
-                    if (order.Asset != null)
-                        order.MinSellPrice = order.Asset.LatestAverageCost/(decimal) (1 - MinProfitMargin);
-                    else order.MinSellPrice = order.AvgPrice;
+            var vm = IoC.Get<UpdatePriceLimitsViewModel>();
+            var result = _windowManager.ShowDialog(vm);
+            if (result == true) {
+                Orders.IsNotifying = false;
+                foreach (OrderGridRow order in Orders) {
+                    order.MaxBuyPrice = order.AvgPrice*(decimal) (1 + vm.AvgPriceBuyOffset / 100);
+                    order.MinSellPrice = order.AvgPrice*(decimal) (1 + vm.AvgPriceSellOffset / 100);
+                    if (order.MinPriceMargin > vm.MaxProfitMargin / 100) {
+                        if (order.Asset != null)
+                            order.MinSellPrice = order.Asset.LatestAverageCost/(decimal) (1 - vm.MaxProfitMargin / 100);
+                    }
+                    if (order.MinPriceMargin < vm.MinProfitMargin / 100) {
+                        if (order.Asset != null)
+                            order.MinSellPrice = order.Asset.LatestAverageCost/(decimal) (1 - vm.MinProfitMargin / 100);
+                        else order.MinSellPrice = order.AvgPrice;
+                    }
                 }
             }
             Orders.IsNotifying = true;

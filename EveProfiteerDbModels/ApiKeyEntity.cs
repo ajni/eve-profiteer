@@ -21,6 +21,7 @@ namespace eZet.EveProfiteer.Models
             this.Transactions = new HashSet<Transaction>();
             this.Orders = new HashSet<Order>();
             this.Assets = new HashSet<Asset>();
+            this.ProductionBatches = new HashSet<ProductionBatch>();
         }
     
         public int Id { get; set; }
@@ -35,5 +36,6 @@ namespace eZet.EveProfiteer.Models
         public virtual ICollection<Transaction> Transactions { get; set; }
         public virtual ICollection<Order> Orders { get; set; }
         public virtual ICollection<Asset> Assets { get; set; }
+        public virtual ICollection<ProductionBatch> ProductionBatches { get; set; }
     }
 }

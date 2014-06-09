@@ -175,5 +175,53 @@ namespace eZet.EveProfiteer.Properties {
                 this["DefaultStationId"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("-0.02")]
+        public double SellPriceOffset {
+            get {
+                return ((double)(this["SellPriceOffset"]));
+            }
+            set {
+                this["SellPriceOffset"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("-0.02")]
+        public double BuyPriceOffset {
+            get {
+                return ((double)(this["BuyPriceOffset"]));
+            }
+            set {
+                this["BuyPriceOffset"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double MinProfitMargin {
+            get {
+                return ((double)(this["MinProfitMargin"]));
+            }
+            set {
+                this["MinProfitMargin"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double MaxProfitMargin {
+            get {
+                return ((double)(this["MaxProfitMargin"]));
+            }
+            set {
+                this["MaxProfitMargin"] = value;
+            }
+        }
     }
 }

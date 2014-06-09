@@ -29,9 +29,11 @@ namespace eZet.EveProfiteer.Models
         public decimal TotalSales { get; set; }
         public int BlueprintME { get; set; }
         public int CharacterME { get; set; }
+        public int ApiKeyEntityId { get; set; }
     
         public virtual ICollection<BatchMaterial> BatchMaterials { get; set; }
         public virtual InvType InvType { get; set; }
         public virtual InvBlueprintType InvBlueprintType { get; set; }
+        public virtual ApiKeyEntity ApiKeyEntity { get; set; }
     }
 }

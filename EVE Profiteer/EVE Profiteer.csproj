@@ -46,7 +46,9 @@
     </Reference>
     <Reference Include="DevExpress.Charts.v13.2.Core, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
     <Reference Include="DevExpress.Data.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
-    <Reference Include="DevExpress.Images.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Images.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
     <Reference Include="DevExpress.Printing.v13.2.Core, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.Utils.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.Xpf.Charts.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
@@ -69,6 +71,15 @@
     </Reference>
     <Reference Include="Essential.Diagnostics">
       <HintPath>..\packages\Essential.Diagnostics.1.2.501.0\lib\Essential.Diagnostics.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Common">
+      <HintPath>..\packages\EnterpriseLibrary.Common.6.0.1304.0\lib\NET45\Microsoft.Practices.EnterpriseLibrary.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Validation">
+      <HintPath>..\packages\EnterpriseLibrary.Validation.6.0.1304.0\lib\NET45\Microsoft.Practices.EnterpriseLibrary.Validation.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Validation.Integration.WPF">
+      <HintPath>..\packages\EnterpriseLibrary.Validation.Integration.WPF.6.0.1304.0\lib\NET45\Microsoft.Practices.EnterpriseLibrary.Validation.Integration.WPF.dll</HintPath>
     </Reference>
     <Reference Include="MoreLinq">
       <HintPath>..\packages\morelinq.2.0.0-alpha01\lib\net35\MoreLinq.dll</HintPath>
@@ -117,6 +128,8 @@
     <Compile Include="Services\AssetService.cs" />
     <Compile Include="Services\EveProfiteerDataService.cs" />
     <Compile Include="EventConfig.cs" />
+    <Compile Include="Services\ProductionService.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="Ui\Converters\DrawingColorToSolidColorBrushConverter.cs" />
     <Compile Include="Ui\Converters\DoubleToIntConverter.cs" />
     <Compile Include="Ui\Converters\OrderGridRowToBrushConverter.cs" />
@@ -140,11 +153,14 @@
     <Compile Include="Util\ProgressType.cs" />
     <Compile Include="Util\SettingsBindingExtension.cs" />
     <Compile Include="Models\CheckableTreeNode.cs" />
+    <Compile Include="Models\BatchMaterialEntry.cs" />
+    <Compile Include="ViewModels\Dialogs\NewProductionBatchViewModel.cs" />
     <Compile Include="ViewModels\Dialogs\AnalyzerProgressViewModel.cs" />
     <Compile Include="ViewModels\Dialogs\EditKeyViewModel.cs" />
     <Compile Include="ViewModels\Dialogs\AddKeyViewModel.cs" />
     <Compile Include="ViewModels\Dialogs\EditOrderDialogViewModel.cs" />
     <Compile Include="Models\TransactionAggregateSummary.cs" />
+    <Compile Include="ViewModels\Dialogs\UpdatePriceLimitsViewModel.cs" />
     <Compile Include="ViewModels\Tabs\AssetsViewModel.cs" />
     <Compile Include="ViewModels\Tabs\ProductionViewModel.cs" />
     <Compile Include="ViewModels\Tabs\TradeDetailsViewModel.cs" />
@@ -174,10 +190,18 @@
     <Compile Include="Views\Dialogs\AddKeyView.xaml.cs">
       <DependentUpon>AddKeyView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Dialogs\NewProductionBatchView.xaml.cs">
+      <DependentUpon>NewProductionBatchView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Dialogs\UpdatePriceLimitsView.xaml.cs">
+      <DependentUpon>UpdatePriceLimitsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Tabs\AssetsView.xaml.cs">
       <DependentUpon>AssetsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Tabs\ProductionView.cs" />
+    <Compile Include="Views\Tabs\ProductionView.xaml.cs">
+      <DependentUpon>ProductionView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Tabs\TradeSummaryView.xaml.cs">
       <DependentUpon>TradeSummaryView.xaml</DependentUpon>
     </Compile>
@@ -221,7 +245,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Dialogs\NewProductionBatchView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Dialogs\UpdatePriceLimitsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Tabs\AssetsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Tabs\ProductionView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -284,7 +320,6 @@
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
   </ItemGroup>

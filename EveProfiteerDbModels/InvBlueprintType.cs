@@ -33,7 +33,8 @@ namespace eZet.EveProfiteer.Models
         public Nullable<short> WasteFactor { get; set; }
         public Nullable<int> MaxProductionLimit { get; set; }
     
-        public virtual InvType InvType { get; set; }
+        public virtual InvType BlueprintInvType { get; set; }
         public virtual ICollection<ProductionBatch> ProductionBatches { get; set; }
+        public virtual InvType ProductInvType { get; set; }
     }
 }

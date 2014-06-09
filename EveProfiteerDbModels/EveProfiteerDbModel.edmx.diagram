@@ -4,8 +4,8 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="0caaf97a5753493f83222f2e2bfc00a4" Name="Diagram1" ZoomLevel="95">
-        <EntityTypeShape EntityType="EveProfiteerDbModel.ApiKeyEntity" Width="1.5" PointX="9.5" PointY="20.75" />
+      <Diagram DiagramId="0caaf97a5753493f83222f2e2bfc00a4" Name="Diagram1" ZoomLevel="94">
+        <EntityTypeShape EntityType="EveProfiteerDbModel.ApiKeyEntity" Width="1.5" PointX="9.5" PointY="20.625" />
         <EntityTypeShape EntityType="EveProfiteerDbModel.ApiKey" Width="1.5" PointX="13.625" PointY="20.5" />
         <EntityTypeShape EntityType="EveProfiteerDbModel.JournalEntry" Width="1.5" PointX="6.125" PointY="25.75" />
         <AssociationConnector Association="EveProfiteerDbModel.FK_dbo_JournalEntries_dbo_ApiKeyEntities_ApiKeyEntity_Id" />
@@ -40,6 +40,8 @@
         <AssociationConnector Association="EveProfiteerDbModel.InvTypeinvTypeMaterial" />
         <AssociationConnector Association="EveProfiteerDbModel.InvTypeinvTypeMaterial1" />
         <AssociationConnector Association="EveProfiteerDbModel.FK_ProductionBatches_ToInvBlueprintTypes" />
+        <AssociationConnector Association="EveProfiteerDbModel.FK_ProductionBatches_ToApiKeyEntities" />
+        <AssociationConnector Association="EveProfiteerDbModel.InvTypeInvBlueprintType1" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

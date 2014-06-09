@@ -147,6 +147,7 @@ namespace eZet.EveProfiteer.ViewModels {
             Items.Add(MarketAnalyzer);
             Items.Add(OrderEditor);
             Items.Add(Assets);
+            Items.Add(ProductionModel);
 
 
             //Items.Add(IoC.Get<TradeDetailsViewModel>());
@@ -171,6 +172,8 @@ namespace eZet.EveProfiteer.ViewModels {
             await OrderEditor.InitAsync();
             _trace.TraceEvent(TraceEventType.Verbose, 0, "Assets.InitAsync");
             await Assets.InitAsync();
+            _trace.TraceEvent(TraceEventType.Verbose, 0, "Assets.InitAsync");
+            await ProductionModel.InitAsync();
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Ready"));
         }
 

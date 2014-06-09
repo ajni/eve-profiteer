@@ -252,4 +252,11 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="OtherCost" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="2a6a8bb1-77df-46dd-8bc5-5104739763d1" ChangeDateTime="06/09/2014 12:32:45">
+    <Property Name="ElementName" Value="[dbo].[ProductionBatches].[ApiKeyEntity]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[ProductionBatches]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="ApiKeyEntityId" />
+  </Operation>
 </Operations>
