@@ -178,7 +178,7 @@ namespace eZet.EveProfiteer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("-0.02")]
+        [global::System.Configuration.DefaultSettingValueAttribute("-2")]
         public double SellPriceOffset {
             get {
                 return ((double)(this["SellPriceOffset"]));
@@ -190,7 +190,7 @@ namespace eZet.EveProfiteer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("-0.02")]
+        [global::System.Configuration.DefaultSettingValueAttribute("-2")]
         public double BuyPriceOffset {
             get {
                 return ((double)(this["BuyPriceOffset"]));
@@ -202,7 +202,7 @@ namespace eZet.EveProfiteer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        [global::System.Configuration.DefaultSettingValueAttribute("6")]
         public double MinProfitMargin {
             get {
                 return ((double)(this["MinProfitMargin"]));
@@ -214,13 +214,49 @@ namespace eZet.EveProfiteer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
         public double MaxProfitMargin {
             get {
                 return ((double)(this["MaxProfitMargin"]));
             }
             set {
                 this["MaxProfitMargin"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("200000000")]
+        public decimal MaxBuyOrderTotal {
+            get {
+                return ((decimal)(this["MaxBuyOrderTotal"]));
+            }
+            set {
+                this["MaxBuyOrderTotal"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("20000000")]
+        public decimal MinSellOrderTotal {
+            get {
+                return ((decimal)(this["MinSellOrderTotal"]));
+            }
+            set {
+                this["MinSellOrderTotal"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("500000000")]
+        public decimal MaxSellOrderTotal {
+            get {
+                return ((decimal)(this["MaxSellOrderTotal"]));
+            }
+            set {
+                this["MaxSellOrderTotal"] = value;
             }
         }
     }

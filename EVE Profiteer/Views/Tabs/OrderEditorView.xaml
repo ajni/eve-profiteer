@@ -36,8 +36,7 @@
             <Button Margin="5" Name="ImportXml">Import</Button>
             <Button Margin="5" Name="ExportXml">Export</Button>
             <Button Margin="5" Name="SaveChanges">Save</Button>
-            <Button Margin="5" Name="EditOrdersDialog">Edit</Button>
-            <Button Margin="5" Name="UpdatePriceLimits">Update price limits</Button>
+            <Button Margin="5" Name="ExecuteEditAll">Edit All</Button>
             <Button Margin="5" Name="UpdateMarketData">Update Market Data</Button>
         </StackPanel>
 

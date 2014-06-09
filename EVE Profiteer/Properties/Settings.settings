@@ -42,16 +42,25 @@
       <Value Profile="(Default)">60003760</Value>
     </Setting>
     <Setting Name="SellPriceOffset" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">-0.02</Value>
+      <Value Profile="(Default)">-2</Value>
     </Setting>
     <Setting Name="BuyPriceOffset" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">-0.02</Value>
+      <Value Profile="(Default)">-2</Value>
     </Setting>
     <Setting Name="MinProfitMargin" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">0.06</Value>
+      <Value Profile="(Default)">6</Value>
     </Setting>
     <Setting Name="MaxProfitMargin" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">0.1</Value>
+      <Value Profile="(Default)">10</Value>
+    </Setting>
+    <Setting Name="MaxBuyOrderTotal" Type="System.Decimal" Scope="User">
+      <Value Profile="(Default)">200000000</Value>
+    </Setting>
+    <Setting Name="MinSellOrderTotal" Type="System.Decimal" Scope="User">
+      <Value Profile="(Default)">20000000</Value>
+    </Setting>
+    <Setting Name="MaxSellOrderTotal" Type="System.Decimal" Scope="User">
+      <Value Profile="(Default)">500000000</Value>
     </Setting>
   </Settings>
 </SettingsFile>

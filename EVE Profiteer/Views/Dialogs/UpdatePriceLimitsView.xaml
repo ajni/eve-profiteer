@@ -9,7 +9,7 @@
     xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
     x:Class="eZet.EveProfiteer.Views.Dialogs.UpdatePriceLimitsView"
     mc:Ignorable="d"
-    Width="300"
+    Width="600"
     Height="500"
     d:DataContext="{d:DesignInstance d:Type=dialogs:UpdatePriceLimitsViewModel, IsDesignTimeCreatable=False}"
     d:DesignHeight="500" d:DesignWidth="300">
@@ -18,7 +18,7 @@
         <dxlc:LayoutControl Header="Header" Orientation="Vertical" UseLayoutRounding="True" View="GroupBox">
             <dxlc:LayoutGroup Header="Price limits" Orientation="Vertical" UseLayoutRounding="True" View="GroupBox">
                 <dxlc:LayoutItem Label="Update price limits ">
-                    <dxe:CheckEdit EditValue="{Binding AvgPriceBuyOffset}"/>
+                    <dxe:CheckEdit EditValue="{Binding UpdatePriceLimits}"/>
                 </dxlc:LayoutItem>
                 <dxlc:LayoutItem IsEnabled="{Binding UpdatePriceLimits}" Label="Buy Price Offset">
                     <dxe:TextEdit EditValue="{Binding AvgPriceBuyOffset}" MaskType="Numeric" Mask="P1" MaskUseAsDisplayFormat="True"/>
@@ -35,16 +35,22 @@
             </dxlc:LayoutGroup>
             <dxlc:LayoutGroup Header="Quantities" Orientation="Vertical" UseLayoutRounding="True" View="GroupBox">
                 <dxlc:LayoutItem Label="Update quantities ">
-                    <dxe:CheckEdit EditValue="{Binding AvgPriceBuyOffset}" AllowUpdateTwoWayBoundPropertiesOnSynchronization="False" />
+                    <dxe:CheckEdit EditValue="{Binding UpdateQuantities}"/>
                 </dxlc:LayoutItem>
-                <dxlc:LayoutItem IsEnabled="True" Label="Max in Buy Orders">
-                    <dxe:TextEdit EditValue="{Binding AvgPriceBuyOffset}" MaskType="Numeric" Mask="N0"/>
+                <dxlc:LayoutItem IsEnabled="{Binding UpdateQuantities}" Label="Max in Buy Orders">
+                    <dxe:TextEdit EditValue="{Binding MaxBuyOrderTotal}" MaskType="Numeric" Mask="N0"/>
                 </dxlc:LayoutItem>
                 <dxlc:LayoutItem IsEnabled="{Binding UpdateQuantities}" Label="Min in Sell Orders">
-                    <dxe:TextEdit EditValue="{Binding AvgPriceSellOffset}" MaskType="Numeric" Mask="N0"/>
+                    <dxe:TextEdit EditValue="{Binding MinSellOrderTotal}" MaskType="Numeric" Mask="N0"/>
                 </dxlc:LayoutItem>
                 <dxlc:LayoutItem IsEnabled="{Binding UpdateQuantities}" Label="Max in Sell Orders">
-                    <dxe:TextEdit EditValue="{Binding MinProfitMargin}" MaskType="Numeric" Mask="N0"/>
+                    <dxe:TextEdit EditValue="{Binding MaxSellOrderTotal}" MaskType="Numeric" Mask="N0"/>
+                </dxlc:LayoutItem>
+            </dxlc:LayoutGroup>
+            <dxlc:LayoutGroup>
+
+                <dxlc:LayoutItem Label="Remember values">
+                    <dxe:CheckEdit EditValue="{Binding RememberSettings}"/>
                 </dxlc:LayoutItem>
             </dxlc:LayoutGroup>
         </dxlc:LayoutControl>
