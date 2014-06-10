@@ -133,7 +133,9 @@
     <Compile Include="Services\AssetService.cs" />
     <Compile Include="Services\EveProfiteerDataService.cs" />
     <Compile Include="EventConfig.cs" />
+    <Compile Include="Services\JournalService.cs" />
     <Compile Include="Services\ProductionService.cs" />
+    <Compile Include="Services\ShellService.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Ui\Converters\DrawingColorToSolidColorBrushConverter.cs" />
     <Compile Include="Ui\Converters\DoubleToIntConverter.cs" />
@@ -150,7 +152,6 @@
     <Compile Include="Services\EveMarketService.cs" />
     <Compile Include="Services\OrderXmlService.cs" />
     <Compile Include="Services\RepositoryService.cs" />
-    <Compile Include="Services\TransactionService.cs" />
     <Compile Include="Ui\Converters\RoutedPropertyChangedEventArgsConverter.cs" />
     <Compile Include="Util\ApiEntityMapper.cs" />
     <Compile Include="Util\ApplicationHelper.cs" />
@@ -175,6 +176,7 @@
     <Compile Include="Events\OrdersChangedEventArgs.cs" />
     <Compile Include="ViewModels\Tabs\TradeAnalyzerViewModel.cs" />
     <Compile Include="Events\ViewMarketDetailsEventArgs.cs" />
+    <Compile Include="ViewModels\Tabs\TransactionsViewModel.cs" />
     <Compile Include="Views\Dialogs\EditOrderDialogView.xaml.cs">
       <DependentUpon>EditOrderDialogView.xaml</DependentUpon>
     </Compile>
@@ -233,6 +235,9 @@
     </Compile>
     <Compile Include="Views\Tabs\TradeAnalyzerView.xaml.cs">
       <DependentUpon>TradeAnalyzerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Tabs\TransactionsView.xaml.cs">
+      <DependentUpon>TransactionsView.xaml</DependentUpon>
     </Compile>
     <Page Include="Views\Dialogs\EditOrderDialogView.xaml">
       <SubType>Designer</SubType>
@@ -299,6 +304,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Tabs\TradeAnalyzerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Tabs\TransactionsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

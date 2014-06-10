@@ -17,29 +17,29 @@ namespace eZet.EveProfiteer.ViewModels {
     public class ShellViewModel : Conductor<IScreen>.Collection.OneActive, IShell, IHandle<ViewTradeDetailsEventArgs>,
         IHandle<ViewMarketDetailsEventArgs>, IHandle<ViewOrderEventArgs>, IHandle<AddToOrdersEventArgs>,
         IHandle<StatusChangedEventArgs> {
-        private readonly TransactionService TransactionService;
         private readonly EveProfiteerDataService _dataService;
         private readonly AssetService _assetService;
+        private readonly ShellService _shellService;
         private readonly EveApiService _eveApiService;
         private readonly IEventAggregator _eventAggregator;
         private readonly KeyManagementService _keyManagementService;
         private readonly IWindowManager _windowManager;
-        private readonly TraceSource _trace = new TraceSource("Main");
+        private readonly TraceSource _trace = new TraceSource("EveProfiteer", SourceLevels.All);
         private string _statusMessage;
 
         public ShellViewModel(IWindowManager windowManager, IEventAggregator eventAggregator,
-            KeyManagementService keyManagementService,
-            TransactionService transactionService, EveApiService eveApiService, EveProfiteerDataService dataService, AssetService assetService) {
+            KeyManagementService keyManagementService, EveApiService eveApiService, EveProfiteerDataService dataService, AssetService assetService, ShellService shellService) {
             _windowManager = windowManager;
             _eventAggregator = eventAggregator;
             _keyManagementService = keyManagementService;
-            TransactionService = transactionService;
             _eveApiService = eveApiService;
             _dataService = dataService;
             _assetService = assetService;
+            _shellService = shellService;
 
             DisplayName = "EVE Profiteer";
             StatusMessage = "Ready";
+
 
             ActiveKey = _keyManagementService.AllApiKeys().FirstOrDefault();
             _eventAggregator.Subscribe(this);
@@ -47,9 +47,10 @@ namespace eZet.EveProfiteer.ViewModels {
                 ActiveKeyEntity = ActiveKey.ApiKeyEntities.Single(f => f.EntityId == 977615922);
 
             ManageKeysCommand = new DelegateCommand(ManageKeys);
-            UpdateTransactionsCommand = new DelegateCommand(UpdateTransactions);
+            UpdateTransactionsCommand = new DelegateCommand(ExecuteUpdateTransactions);
             UpdateItemCostsCommand = new DelegateCommand(UpdateItemCosts);
             UpdateAssetsCommand = new DelegateCommand(ExecuteUpdateAssets);
+            UpdateJournalCommand = new DelegateCommand(ExecuteUpdateJournal);
 
 
             TradeSummary = IoC.Get<TradeSummaryViewModel>();
@@ -60,6 +61,7 @@ namespace eZet.EveProfiteer.ViewModels {
             OrderEditor = IoC.Get<OrderEditorViewModel>();
             Assets = IoC.Get<AssetsViewModel>();
             ProductionModel = IoC.Get<ProductionViewModel>();
+            TransactionsViewModel = IoC.Get<TransactionsViewModel>();
             SelectKey();
             InitAsync();
         }
@@ -78,6 +80,8 @@ namespace eZet.EveProfiteer.ViewModels {
 
         public OrderEditorViewModel OrderEditor { get; set; }
         public ProductionViewModel ProductionModel { get; set; }
+
+        public TransactionsViewModel TransactionsViewModel { get; set; }
 
         public string StatusMessage {
             get { return _statusMessage; }
@@ -99,6 +103,8 @@ namespace eZet.EveProfiteer.ViewModels {
         public ICommand ManageKeysCommand { get; private set; }
 
         public ICommand UpdateTransactionsCommand { get; private set; }
+        
+        public ICommand UpdateJournalCommand { get; private set; }
 
         public static ApiKey ActiveKey { get; private set; }
 
@@ -148,6 +154,7 @@ namespace eZet.EveProfiteer.ViewModels {
             Items.Add(OrderEditor);
             Items.Add(Assets);
             Items.Add(ProductionModel);
+            Items.Add(TransactionsViewModel);
 
 
             //Items.Add(IoC.Get<TradeDetailsViewModel>());
@@ -160,20 +167,25 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         public async void InitAsync() {
-            _trace.TraceEvent(TraceEventType.Verbose, 0, "TradeSummary.InitAsync");
+            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Initializing..."));
+
+
+            _trace.TraceEvent(TraceEventType.Verbose, 0, "TradeSummaryViewModel.InitAsync");
             await TradeSummary.InitAsync();
-            _trace.TraceEvent(TraceEventType.Verbose, 0, "TradeDetails.InitAsync");
+            _trace.TraceEvent(TraceEventType.Verbose, 0, "TradeDetailsViewModel.InitAsync");
             await TradeDetails.InitAsync();
-            _trace.TraceEvent(TraceEventType.Verbose, 0, "MarketBrowser.InitAsync");
+            _trace.TraceEvent(TraceEventType.Verbose, 0, "MarketBrowserViewModel.InitAsync");
             await MarketBrowser.InitAsync();
-            _trace.TraceEvent(TraceEventType.Verbose, 0, "MarketAnalyzer.InitAsync");
+            _trace.TraceEvent(TraceEventType.Verbose, 0, "MarketAnalyzerViewModel.InitAsync");
             await MarketAnalyzer.InitAsync();
-            _trace.TraceEvent(TraceEventType.Verbose, 0, "OrderEditor.InitAsync");
+            _trace.TraceEvent(TraceEventType.Verbose, 0, "OrderEditorViewModel.InitAsync");
             await OrderEditor.InitAsync();
-            _trace.TraceEvent(TraceEventType.Verbose, 0, "Assets.InitAsync");
+            _trace.TraceEvent(TraceEventType.Verbose, 0, "AssetsViewModel.InitAsync");
             await Assets.InitAsync();
-            _trace.TraceEvent(TraceEventType.Verbose, 0, "Assets.InitAsync");
+            _trace.TraceEvent(TraceEventType.Verbose, 0, "ProductionViewModel.InitAsync");
             await ProductionModel.InitAsync();
+            _trace.TraceEvent(TraceEventType.Verbose, 0, "TransactionsViewModel.InitAsync");
+            await TransactionsViewModel.InitAsync();
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Ready"));
         }
 
@@ -183,27 +195,17 @@ namespace eZet.EveProfiteer.ViewModels {
 
         public async void ExecuteUpdateAssets() {
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Fetching assets..."));
-            await _assetService.UpdateAssets();
+            await _assetService.UpdateAssets().ConfigureAwait(false);
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Assets updated"));
             await _eventAggregator.PublishOnUIThreadAsync(new AssetsUpdatedEvent()).ConfigureAwait(false);
         }
 
-        public async void UpdateTransactions() {
-            _trace.TraceEvent(TraceEventType.Start, 0, "StartUpdateTransactions");
+        public async void ExecuteUpdateTransactions() {
+            await _shellService.UpdateTransactions().ConfigureAwait(false);
+        }
 
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Fetching new transactions..."));
-            long latest = 0;
-            latest = TransactionService.GetLatestId(ActiveKeyEntity);
-            _trace.TraceEvent(TraceEventType.Verbose, 0, "Latest transaction ID: " + latest);
-
-            IEnumerable<Transaction> list =
-                await Task.Run(() => _eveApiService.GetNewTransactions(ActiveKey, ActiveKeyEntity, latest));
-            IList<Transaction> transactions = list as IList<Transaction> ?? list.ToList();
-            _trace.TraceEvent(TraceEventType.Verbose, 0, "Fetched transactions: " + transactions.Count);
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Processing transactions..."));
-            await TransactionService.ProcessTransactions(transactions);
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Transaction update complete"));
-            _trace.TraceEvent(TraceEventType.Stop, 0, "CompleteUpdateTransactions");
+        public async void ExecuteUpdateJournal() {
+            await _shellService.UpdateJournal().ConfigureAwait(false);
         }
 
         public async void UpdateItemCosts() {

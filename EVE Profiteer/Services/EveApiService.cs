@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using eZet.EveLib.Modules;
 using eZet.EveLib.Modules.Models;
@@ -17,8 +18,6 @@ namespace eZet.EveProfiteer.Services {
             var ckey = new CharacterKey(key.ApiKeyId, key.VCode);
             Character character = ckey.Characters.Single(c => c.CharacterId == entity.EntityId);
             EveApiResponse<CharacterInfo> info = character.GetCharacterInfo();
-
-
             return data;
         }
 
@@ -36,45 +35,65 @@ namespace eZet.EveProfiteer.Services {
             return list;
         }
 
-        public IEnumerable<Transaction> GetNewTransactions(ApiKey key, ApiKeyEntity entity, long latestId) {
-            return getTransactions(key, entity, 2000, latestId);
+        public Task<IList<Transaction>> GetNewTransactionsAsync(ApiKey key, ApiKeyEntity entity, long latestId) {
+            return getTransactionsAsync(key, entity, 5000, latestId);
         }
 
-        public IEnumerable<Transaction> GetAllTransactions(ApiKey key, ApiKeyEntity entity,
+        public Task<IList<Transaction>> GetAllTransactionsAsync(ApiKey key, ApiKeyEntity entity,
             Func<Transaction> transactionFactory) {
-            return getTransactions(key, entity, 5000);
+            return getTransactionsAsync(key, entity, 5000);
         }
 
-        public IList<JournalEntry> GetNewJournalEntries(ApiKey key, ApiKeyEntity entity, long latestId) {
-            return getJournalEntries(key, entity, 100, latestId);
+        public Task<IList<JournalEntry>> GetNewJournalEntriesAsync(ApiKey key, ApiKeyEntity entity, long latestId) {
+            return getJournalEntries(key, entity, 5000, latestId);
         }
 
-        public IList<JournalEntry> GetAllJournalEntries(ApiKey key, ApiKeyEntity entity,
+        public Task<IList<JournalEntry>> GetAllJournalEntriesAsync(ApiKey key, ApiKeyEntity entity,
             Func<JournalEntry> transactionFactory) {
             return getJournalEntries(key, entity, 5000);
         }
 
-        public async Task<AssetList> GetAssets(ApiKey key, ApiKeyEntity entity) {
+        public async Task<AssetList> GetAssetsAsync(ApiKey key, ApiKeyEntity entity) {
             var data = new CharacterData();
-            var ckey = await new CharacterKey(key.ApiKeyId, key.VCode).InitAsync();
+            var ckey = await new CharacterKey(key.ApiKeyId, key.VCode).InitAsync().ConfigureAwait(false);
             Character character = ckey.Characters.Single(c => c.CharacterId == entity.EntityId);
             var assets = await character.GetAssetListAsync().ConfigureAwait(false);
             return assets.Result;
         }
 
-        private static IList<JournalEntry> getJournalEntries(ApiKey key, ApiKeyEntity entity, int rowLimit,
-            long latestId = 0) {
+        private static async Task<IList<JournalEntry>> getJournalEntries(ApiKey key, ApiKeyEntity apiKeyEntity,
+            int rowLimit,
+            long limitId = 0) {
             var list = new List<JournalEntry>();
-
+            var ckey = await new CharacterKey(key.ApiKeyId, key.VCode).InitAsync().ConfigureAwait(false);
+            Character entity = ckey.Characters.Single(c => c.CharacterId == apiKeyEntity.EntityId);
+            var res = await entity.GetWalletJournalAsync(rowLimit).ConfigureAwait(false);
+            while (res.Result.Journal.Count > 0) {
+                var sortedList = res.Result.Journal.OrderByDescending(f => f.RefId);
+                foreach (var entry in sortedList) {
+                    if (entry.RefId == limitId) {
+                        return list;
+                    }
+                    var newEntry = new JournalEntry();
+                    newEntry.ApiKeyEntity_Id = apiKeyEntity.Id;
+                    list.Add(ApiEntityMapper.Map(entry, newEntry));
+                }
+                try {
+                    res =
+                        await entity.GetWalletJournalAsync(rowLimit, sortedList.Last().RefId).ConfigureAwait(false);
+                } catch (Exception e) {
+                    return list;
+                }
+            }
             return list;
         }
 
-        private static IEnumerable<Transaction> getTransactions(ApiKey key, ApiKeyEntity apiKeyEntity, int rowLimit,
+        private static async Task<IList<Transaction>> getTransactionsAsync(ApiKey key, ApiKeyEntity apiKeyEntity, int rowLimit,
             long limitId = 0) {
             var transactions = new List<Transaction>();
-            var ckey = new CharacterKey(key.ApiKeyId, key.VCode);
+            var ckey = await new CharacterKey(key.ApiKeyId, key.VCode).InitAsync().ConfigureAwait(false);
             Character entity = ckey.Characters.Single(c => c.CharacterId == apiKeyEntity.EntityId);
-            EveApiResponse<WalletTransactions> res = entity.GetWalletTransactions(rowLimit);
+            EveApiResponse<WalletTransactions> res = await entity.GetWalletTransactionsAsync(rowLimit).ConfigureAwait(false);
             while (res.Result.Transactions.Count > 0) {
                 IOrderedEnumerable<WalletTransactions.Transaction> sortedList =
                     res.Result.Transactions.OrderByDescending(f => f.TransactionId);

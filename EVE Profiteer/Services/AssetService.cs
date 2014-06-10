@@ -13,7 +13,7 @@ namespace eZet.EveProfiteer.Services {
         private readonly EveApiService _eveApiService;
         private readonly EveMarketService _marketService;
 
-        private readonly TraceSource _trace = new TraceSource("Main");
+        private readonly TraceSource _trace = new TraceSource("EveProfiteer", SourceLevels.All);
 
         public AssetService(EveProfiteerDataService dataService, EveApiService eveApiService, EveMarketService marketService) {
             _dataService = dataService;
@@ -22,7 +22,7 @@ namespace eZet.EveProfiteer.Services {
         }
 
         public async Task<int> UpdateAssets() {
-            var result = await _eveApiService.GetAssets(ApplicationHelper.ActiveKey, ApplicationHelper.ActiveKeyEntity).ConfigureAwait(false);
+            var result = await _eveApiService.GetAssetsAsync(ApplicationHelper.ActiveKey, ApplicationHelper.ActiveKeyEntity).ConfigureAwait(false);
             var groups = result.Flatten().Where(asset => !asset.Singleton).GroupBy(asset => asset.TypeId).ToList();
             var assets = await _dataService.GetAssets().ToListAsync().ConfigureAwait(false);
             var lookup = assets.ToLookup(asset => asset.InvTypes_TypeId);

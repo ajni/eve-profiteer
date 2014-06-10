@@ -50,6 +50,10 @@
                                    Command="{Binding UpdateAssetsCommand}"
                                    Glyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_16x16.png"
                                    LargeGlyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_32x32.png" />
+                <dxb:BarButtonItem x:Name="UpdateJournal" Content="Update Journal"
+                                   Command="{Binding UpdateJournalCommand}"
+                                   Glyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_16x16.png"
+                                   LargeGlyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_32x32.png" />
                 <dxb:BarButtonItem x:Name="Settings" Content="Settings"
                                    LargeGlyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/setup/properties_32x32.png"
                                    Glyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Setup/Properties_16x16.png" />
@@ -88,6 +92,7 @@
                                 <dxb:BarItemLink BarItemName="UpdateTransactions" RibbonStyle="All" />
                                 <dxb:BarItemLink BarItemName="ManageKeys" RibbonStyle="All" />
                                 <dxb:BarItemLink BarItemName="UpdateAssets" RibbonStyle="All" />
+                                <dxb:BarItemLink BarItemName="UpdateJournal" RibbonStyle="All" />
                                 <dxb:BarItemLink BarItemName="Settings" RibbonStyle="All" />
                             </dxr:RibbonPageGroup>
                         </dxr:RibbonPage>

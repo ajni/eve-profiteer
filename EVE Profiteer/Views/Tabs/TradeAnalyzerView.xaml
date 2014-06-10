@@ -73,13 +73,13 @@
             <dxg:GridControl x:Name="TradeAnalyzerGrid" ItemsSource="{Binding Items}"
                              CustomRowFilter="TradeAnalyzerGrid_OnCustomRowFilter">
                 <dxg:GridControl.View>
-                    <dxg:SelectionView ShowTotalSummary="True" ShowFixedTotalSummary="True"
+                    <dxg:TableView ShowTotalSummary="True" ShowFixedTotalSummary="True"
                                        RowStyle="{StaticResource RowBackgroundStyle}"
                                        ShowGroupPanel="False" IsRowCellMenuEnabled="True" ShowSearchPanelMode="Default"
                                        SearchColumns="InvType.TypeName"
                                        SearchPanelCriteriaOperatorType="And" AutoScrollOnSorting="False"
                                        NavigationStyle="Row" AllowEditing="False">
-                        <dxg:SelectionView.RowCellMenuCustomizations>
+                        <dxg:TableView.RowCellMenuCustomizations>
                             <dxb:BarButtonItem Content="View market details"
                                                Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.ViewMarketDetailsCommand, RelativeSource={RelativeSource Self}}"
                                                CommandParameter="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataControl.CurrentItem, RelativeSource={RelativeSource Self}}" />
@@ -93,8 +93,8 @@
                             <dxb:BarButtonItem Content="Add to orders"
                                                Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.AddToOrdersCommand, RelativeSource={RelativeSource Self}}"
                                                CommandParameter="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataControl.SelectedItems, RelativeSource={RelativeSource Self}}" />
-                        </dxg:SelectionView.RowCellMenuCustomizations>
-                    </dxg:SelectionView>
+                        </dxg:TableView.RowCellMenuCustomizations>
+                    </dxg:TableView>
                 </dxg:GridControl.View>
 
                 <dxg:GridControl.TotalSummary>

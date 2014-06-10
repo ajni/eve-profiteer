@@ -16,7 +16,7 @@ using eZet.EveProfiteer.ViewModels.Tabs;
 namespace eZet.EveProfiteer {
     public class Bootstrapper : BootstrapperBase {
 
-        private TraceSource _trace = new TraceSource("Main");
+        private TraceSource _trace = new TraceSource("EveProfiteer", SourceLevels.All);
         private SimpleContainer _container;
 
         public Bootstrapper() {
@@ -45,7 +45,6 @@ namespace eZet.EveProfiteer {
 
             // Services
             _container.PerRequest<EveApiService>();
-            _container.PerRequest<TransactionService>();
             _container.PerRequest<EveMarketService>();
             _container.PerRequest<OrderXmlService>();
             _container.PerRequest<RepositoryService<ApiKey>>();
@@ -53,10 +52,8 @@ namespace eZet.EveProfiteer {
             _container.PerRequest<KeyManagementService>();
             _container.PerRequest<AssetService>();
             _container.PerRequest<ProductionService>();
+            _container.PerRequest<ShellService>();
             
-            _container.PerRequest<IDialogService, DialogService>();
-
-
             // View Models
             _container.PerRequest<IShell, ShellViewModel>();
             _container.PerRequest<ManageKeysViewModel>();
@@ -72,6 +69,7 @@ namespace eZet.EveProfiteer {
             _container.PerRequest<AssetsViewModel>();
             _container.PerRequest<ProductionViewModel>();
             _container.PerRequest<UpdatePriceLimitsViewModel>();
+            _container.PerRequest<TransactionsViewModel>();
         }
 
         protected override object GetInstance(Type service, string key) {
