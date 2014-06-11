@@ -1,19 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Caliburn.Micro;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
 using Screen = Caliburn.Micro.Screen;
 
 namespace eZet.EveProfiteer.ViewModels.Tabs {
     public class TransactionsViewModel : Screen {
-        private readonly EveProfiteerDataService _dataService;
+        private readonly TransactionService _transactionService;
         private ViewPeriodEnum _selectedViewPeriod;
-        private BindableCollection<Transaction> _gridRows;
+        private IQueryable<Transaction> _transactions;
 
 
         public enum ViewPeriodEnum {
@@ -26,14 +24,33 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             Period
         }
 
-        public IQueryable<Transaction> Transactions { get; set; }
-
-
-        public TransactionsViewModel(EveProfiteerDataService dataService) {
-            _dataService = dataService;
-            DisplayName = "Transactions";
-            Transactions = dataService.Db.Transactions;
+        public IQueryable<Transaction> Transactions {
+            get { return _transactions; }
+            set {
+                if (Equals(value, _transactions)) return;
+                _transactions = value;
+                NotifyOfPropertyChange();
+            }
         }
+
+
+        public TransactionsViewModel(TransactionService transactionService) {
+            _transactionService = transactionService;
+            DisplayName = "Transactions";
+            DateTimeFormat = Properties.Settings.Default.DateTimeFormat;
+        }
+
+        protected override void OnActivate() {
+            if (Transactions == null)
+                Transactions = _transactionService.GetTransactions();
+        }
+
+        protected override void OnDeactivate(bool close) {
+            Transactions = null;
+            _transactionService.Deactivate();
+        }
+
+        public string DateTimeFormat { get; private set; }
 
         public DateTime ActualViewStart { get; private set; }
 

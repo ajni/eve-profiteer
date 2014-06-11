@@ -32,8 +32,11 @@ namespace eZet.EveProfiteer.Models
         public decimal PerpetualAverageCost { get; set; }
         public int CurrentStock { get; set; }
         public int UnaccountedStock { get; set; }
+        public decimal TaxLiability { get; set; }
+        public decimal BrokerFee { get; set; }
     
         public virtual ApiKeyEntity ApiKeyEntity { get; set; }
         public virtual InvType InvType { get; set; }
+        public virtual InvType ClientType { get; set; }
     }
 }

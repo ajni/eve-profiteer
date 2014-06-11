@@ -73,6 +73,7 @@
     <Build Include="dbo\Tables\Assets.sql" />
     <Build Include="dbo\Tables\ProductionBatches.sql" />
     <Build Include="dbo\Tables\BatchMaterials.sql" />
+    <Build Include="dbo\Tables\RefTypes.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="EveProfiteerDb.refactorlog" />

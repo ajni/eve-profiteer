@@ -12,19 +12,14 @@ using eZet.EveProfiteer.Services;
 namespace eZet.EveProfiteer.ViewModels.Tabs {
     public class AssetsViewModel : Screen, IHandle<AssetsUpdatedEvent> {
         private readonly AssetService _assetService;
-        private readonly EveProfiteerDataService _dataService;
-        private readonly EveApiService _eveApiService;
         private readonly IEventAggregator _eventAggregator;
         private BindableCollection<AssetEntry> _assets;
         private AssetEntry _focusedRow;
         private AssetEntry _selectedRow;
         private BindableCollection<AssetEntry> _selectedRows;
 
-        public AssetsViewModel(IEventAggregator eventAggregator, EveProfiteerDataService dataService,
-            EveApiService eveApiService, AssetService assetService) {
+        public AssetsViewModel(IEventAggregator eventAggregator, AssetService assetService) {
             _eventAggregator = eventAggregator;
-            _dataService = dataService;
-            _eveApiService = eveApiService;
             _assetService = assetService;
             DisplayName = "Assets";
             AgeSpan = 10;
@@ -87,7 +82,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
 
         private async Task UpdateMarketData() {
             Assets.IsNotifying = false;
-            await _assetService.UpdateAssetData(Assets, Settings.Default.DefaultRegionId,
+            await _assetService.UpdateMarketData(Assets, Settings.Default.DefaultRegionId,
                 Settings.Default.DefaultStationId, AgeSpan).ConfigureAwait(false);
             Assets.IsNotifying = true;
             Assets.Refresh();

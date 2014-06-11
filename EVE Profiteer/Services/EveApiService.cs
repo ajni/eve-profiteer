@@ -25,6 +25,10 @@ namespace eZet.EveProfiteer.Services {
             return new Image().GetCharacterPortrait(entity.EntityId, Image.CharacterPortraitSize.X256, @"c:\Temp");
         }
 
+        public Task<EveApiResponse<ReferenceTypes>> GetRefTypesAsync() {
+            return new Misc().GetReferenceTypesAsync();
+        }
+
 
         public IList<ApiKeyEntity> GetApiKeyEntities(ApiKey key) {
             var ckey = new CharacterKey(key.ApiKeyId, key.VCode);

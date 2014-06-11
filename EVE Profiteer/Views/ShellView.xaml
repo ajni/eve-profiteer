@@ -10,9 +10,7 @@
                     mc:Ignorable="d"
                     d:DataContext="{d:DesignInstance Type=viewModels:ShellViewModel, IsDesignTimeCreatable=False}"
                     Loaded="Window_Loaded">
-
     <Grid UseLayoutRounding="True">
-
         <dxb:BarManager>
             <dxb:BarManager.Items>
                 <dxb:BarButtonItem x:Name="biFileOpen" Content="Open"
@@ -54,9 +52,21 @@
                                    Command="{Binding UpdateJournalCommand}"
                                    Glyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_16x16.png"
                                    LargeGlyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_32x32.png" />
+                <dxb:BarButtonItem x:Name="RecalculateInventory" Content="Recalculate Inventory"
+                                   Command="{Binding RecalculateInventoryCommand}"
+                                   Glyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_16x16.png"
+                                   LargeGlyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_32x32.png" />
                 <dxb:BarButtonItem x:Name="Settings" Content="Settings"
                                    LargeGlyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/setup/properties_32x32.png"
                                    Glyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Setup/Properties_16x16.png" />
+                <dxb:BarButtonItem x:Name="UpdateApi" Content="UpdateAPI"
+                                   Command="{Binding UpdateApiCommand}"
+                                   Glyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_16x16.png"
+                                   LargeGlyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_32x32.png" />
+                <dxb:BarButtonItem x:Name="UpdateRefTypes" Content="UpdateRefTypes"
+                                   Command="{Binding UpdateRefTypesCommand}"
+                                   Glyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_16x16.png"
+                                   LargeGlyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_32x32.png" />
                 <dxb:BarSubItem x:Name="biFile" Content="File">
                     <dxb:BarButtonItemLink BarItemName="biFileOpen" />
                     <dxb:BarButtonItemLink BarItemName="biFileNew" />
@@ -94,6 +104,9 @@
                                 <dxb:BarItemLink BarItemName="UpdateAssets" RibbonStyle="All" />
                                 <dxb:BarItemLink BarItemName="UpdateJournal" RibbonStyle="All" />
                                 <dxb:BarItemLink BarItemName="Settings" RibbonStyle="All" />
+                                <dxb:BarItemLink BarItemName="RecalculateInventory" RibbonStyle="All" />
+                                <dxb:BarItemLink BarItemName="UpdateRefTypes" RibbonStyle="All" />
+                                <dxb:BarItemLink BarItemName="UpdateApi" RibbonStyle="All" />
                             </dxr:RibbonPageGroup>
                         </dxr:RibbonPage>
                     </dxr:RibbonDefaultPageCategory>

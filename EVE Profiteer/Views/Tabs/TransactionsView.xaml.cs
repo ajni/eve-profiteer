@@ -25,17 +25,17 @@ namespace eZet.EveProfiteer.Views.Tabs {
         }
 
         private void ViewPeriodSelector_OnEditValueChanged(object sender, RoutedEventArgs e) {
-            var value = (TransactionsViewModel.ViewPeriodEnum)((BarEditItem)sender).EditValue;
-            if (value == TransactionsViewModel.ViewPeriodEnum.Period) {
-                StartDate.IsEnabled = true;
-                EndDate.IsEnabled = true;
-            } else if (value == TransactionsViewModel.ViewPeriodEnum.Since) {
-                StartDate.IsEnabled = true;
-                EndDate.IsEnabled = false;
-            } else {
-                StartDate.IsEnabled = false;
-                EndDate.IsEnabled = false;
-            }
+            //var value = (TransactionsViewModel.ViewPeriodEnum)((BarEditItem)sender).EditValue;
+            //if (value == TransactionsViewModel.ViewPeriodEnum.Period) {
+            //    StartDate.IsEnabled = true;
+            //    EndDate.IsEnabled = true;
+            //} else if (value == TransactionsViewModel.ViewPeriodEnum.Since) {
+            //    StartDate.IsEnabled = true;
+            //    EndDate.IsEnabled = false;
+            //} else {
+            //    StartDate.IsEnabled = false;
+            //    EndDate.IsEnabled = false;
+            //}
         }
     }
 }

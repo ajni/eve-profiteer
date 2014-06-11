@@ -17,6 +17,8 @@
     [PerpetualAverageCost] DECIMAL(18, 5) NOT NULL, 
     [CurrentStock] INT NOT NULL DEFAULT 0, 
     [UnaccountedStock] INT NOT NULL DEFAULT 0, 
+    [TaxLiability] DECIMAL(18, 2) NOT NULL DEFAULT 0, 
+    [BrokerFee] DECIMAL(18, 2) NOT NULL DEFAULT 0, 
     CONSTRAINT [PK_dbo.Transactions] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK_dbo.Transactions_dbo.ApiKeyEntities_ApiKeyEntity_Id] FOREIGN KEY ([ApiKeyEntity_Id]) REFERENCES [dbo].[ApiKeyEntities] ([Id]), 
 	CONSTRAINT [FK_Transaction_ToInvType] FOREIGN KEY ([TypeId]) REFERENCES [invTypes]([typeID]), 

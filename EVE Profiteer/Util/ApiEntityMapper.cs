@@ -1,5 +1,6 @@
 ﻿using eZet.EveLib.Modules.Models;
 using eZet.EveLib.Modules.Models.Character;
+using eZet.EveLib.Modules.Models.Misc;
 using eZet.EveProfiteer.Models;
 
 namespace eZet.EveProfiteer.Util {
@@ -26,7 +27,7 @@ namespace eZet.EveProfiteer.Util {
         public static JournalEntry Map(WalletJournal.JournalEntry source, JournalEntry target) {
             target.Date = source.Date;
             target.RefId = source.RefId;
-            target.refTypeId = source.refTypeId;
+            target.RefTypeId = source.RefTypeId;
             target.OwnerId = source.OwnerId;
             target.OwnerName = source.OwnerName;
             target.ParticipantId = source.ParticipantId;
@@ -38,6 +39,8 @@ namespace eZet.EveProfiteer.Util {
             target.Reason = source.Reason;
             target.TaxReceiverId = source.TaxReceiverId;
             target.TaxAmount = source.TaxAmount;
+            target.OwnerTypeId = source.OwnerTypeId;
+            target.ParticipantTypeId = source.ParticipantTypeId;
             return target;
         }
 
@@ -65,6 +68,12 @@ namespace eZet.EveProfiteer.Util {
             target.HighPrice = source.HighPrice;
             target.AvgPrice = source.AvgPrice;
             target.Date = source.Date;
+            return target;
+        }
+
+        public static RefType Map(ReferenceTypes.ReferenceType source, RefType target) {
+            target.Id = source.RefTypeId;
+            target.Name = source.RefTypeName;
             return target;
         }
     }

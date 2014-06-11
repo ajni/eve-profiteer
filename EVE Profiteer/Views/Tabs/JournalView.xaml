@@ -1,18 +1,18 @@
-﻿<UserControl x:Class="eZet.EveProfiteer.Views.Tabs.TransactionsView"
+﻿<UserControl x:Class="eZet.EveProfiteer.Views.Tabs.JournalView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:tabs="clr-namespace:eZet.EveProfiteer.ViewModels.Tabs"
              xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
              xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
              xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
              xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
-             mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance d:Type=tabs:TransactionsViewModel, IsDesignTimeCreatable=False}"
+             xmlns:tabs="clr-namespace:eZet.EveProfiteer.ViewModels.Tabs"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance d:Type=tabs:JournalViewModel, IsDesignTimeCreatable=False}"
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <dx:EntityInstantFeedbackDataSource Name="DataSource" KeyExpression="Id" QueryableSource="{Binding Transactions}"></dx:EntityInstantFeedbackDataSource>
+        <dx:EntityInstantFeedbackDataSource Name="DataSource" KeyExpression="Id" QueryableSource="{Binding Journal}"></dx:EntityInstantFeedbackDataSource>
 
         <DockPanel>
             <dxb:BarManager DockPanel.Dock="Top">
@@ -64,8 +64,7 @@
                                    AutoScrollOnSorting="False"
                                    NavigationStyle="Row"
                                    AllowEditing="False"
-                                   AllowHorizontalScrollingVirtualization="True"
-                                   AllowCascadeUpdate="True"
+                                   AllowCascadeUpdate="False"
                                    RowOpacityAnimationDuration="0.00:00:1"
                                    AllowGroupSummaryCascadeUpdate="True"
                                    ShowFilterPanelMode="ShowAlways">
@@ -86,23 +85,27 @@
                         </dxg:TableView.RowCellMenuCustomizations>
                     </dxg:TableView>
                 </dxg:GridControl.View>
-
                 <dxg:GridControl.TotalSummary>
-                    <dxg:GridSummaryItem SummaryType="Count" Alignment="Right" DisplayFormat="Transactions: {0}" />
+                    <dxg:GridSummaryItem SummaryType="Count" Alignment="Right" DisplayFormat="Journal entries: {0}" />
                 </dxg:GridControl.TotalSummary>
-
                 <dxg:GridControl.Columns>
-                    <dxg:GridColumn FieldName="InvType.TypeName" Header="Item" Width="300"/>
-                    <dxg:GridColumn FieldName="TransactionDate" Header="Date" EditSettings="{StaticResource DateTimeEdit}" Width="120"/>
-                    <dxg:GridColumn FieldName="Quantity" Header="Qty" EditSettings="{StaticResource N0Edit}" Width="50"/>
-                    <dxg:GridColumn FieldName="Price" EditSettings="{StaticResource N2Edit}" />
-                    <dxg:GridColumn FieldName="ClientName" Header="Client"/>
-                    <dxg:GridColumn FieldName="StationName" Header="Station" Width="200"/>
-                    <dxg:GridColumn FieldName="TransactionType" Header="Type" Width="50" FixedWidth="True"/>
-                    <dxg:GridColumn FieldName="TransactionFor" Width="100"/>
-                    <dxg:GridColumn AllowEditing="True" FieldName="PerpetualAverageCost" EditSettings="{StaticResource N2Edit}" />
-                    <dxg:GridColumn FieldName="CurrentStock" EditSettings="{StaticResource N0Edit}" Width="50"/>
-                    <dxg:GridColumn FieldName="UnaccountedStock" EditSettings="{StaticResource N0Edit}" Width="50"/>
+                    <dxg:GridColumn FieldName="RefId" Visible="False"/>
+                    <dxg:GridColumn FieldName="Date" EditSettings="{StaticResource DateTimeEdit}"/>
+                    <dxg:GridColumn FieldName="RefTypeId" Visible="False"/>
+                    <dxg:GridColumn FieldName="RefType.Name" Header="Type"/>
+                    <dxg:GridColumn FieldName="OwnerId" Visible="False"/>
+                    <dxg:GridColumn FieldName="OwnerName" Header="Owner"/>
+                    <dxg:GridColumn FieldName="ParticipantId" Visible="False"/>
+                    <dxg:GridColumn FieldName="ParticipantName" Header="Participant"/>
+                    <dxg:GridColumn FieldName="ArgumentId" Visible="False"/>
+                    <dxg:GridColumn FieldName="ArgumentName" Header="Argument"/>
+                    <dxg:GridColumn FieldName="Amount" EditSettings="{StaticResource N2Edit}"/>
+                    <dxg:GridColumn FieldName="BalanceAfter" EditSettings="{StaticResource N2Edit}"/>
+                    <dxg:GridColumn FieldName="Reason" />
+                    <dxg:GridColumn FieldName="TaxAmount" EditSettings="{StaticResource N2Edit}"/>
+                    <dxg:GridColumn FieldName="TaxReceiverId"/>
+                    <dxg:GridColumn FieldName="OwnerTypeId" Visible="False"/>
+                    <dxg:GridColumn FieldName="ParticipantTypeId" Visible="False"/>
                 </dxg:GridControl.Columns>
             </dxg:GridControl>
 

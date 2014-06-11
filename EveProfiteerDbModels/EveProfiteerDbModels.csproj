@@ -108,6 +108,9 @@
     </Compile>
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RefType.cs">
+      <DependentUpon>EveProfiteerDbModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="StaStation.cs">
       <DependentUpon>EveProfiteerDbModel.tt</DependentUpon>
     </Compile>

@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="DateFormat" Type="System.String" Scope="User">
-      <Value Profile="(Default)">"dd-MM-yyyy"</Value>
+      <Value Profile="(Default)">dd/MM/yyyy</Value>
     </Setting>
     <Setting Name="BuyOrderColor" Type="System.Drawing.Color" Scope="User">
       <Value Profile="(Default)" />
@@ -61,6 +61,15 @@
     </Setting>
     <Setting Name="MaxSellOrderTotal" Type="System.Decimal" Scope="User">
       <Value Profile="(Default)">500000000</Value>
+    </Setting>
+    <Setting Name="TaxRate" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0.75</Value>
+    </Setting>
+    <Setting Name="BrokerFeeRate" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0.73</Value>
+    </Setting>
+    <Setting Name="DateTimeFormat" Type="System.String" Scope="User">
+      <Value Profile="(Default)">dd/MM/yy hh:mm:ss</Value>
     </Setting>
   </Settings>
 </SettingsFile>

@@ -136,7 +136,7 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Date" Type="datetime" Nullable="false" />
           <Property Name="RefId" Type="bigint" Nullable="false" />
-          <Property Name="refTypeId" Type="bigint" Nullable="false" />
+          <Property Name="refTypeId" Type="int" Nullable="false" />
           <Property Name="OwnerName" Type="nvarchar(max)" />
           <Property Name="OwnerId" Type="bigint" Nullable="false" />
           <Property Name="ParticipantName" Type="nvarchar(max)" />
@@ -149,6 +149,8 @@
           <Property Name="TaxReceiverId" Type="nvarchar(max)" />
           <Property Name="TaxAmount" Type="nvarchar(max)" />
           <Property Name="ApiKeyEntity_Id" Type="int" />
+          <Property Name="OwnerTypeId" Type="int" Nullable="false" />
+          <Property Name="ParticipantTypeId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="mapRegions">
           <Key>
@@ -206,6 +208,13 @@
           <Property Name="CharacterME" Type="int" Nullable="false" />
           <Property Name="ApiKeyEntityId" Type="int" Nullable="false" />
         </EntityType>
+        <EntityType Name="RefTypes">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+        </EntityType>
         <EntityType Name="staStations">
           <Key>
             <PropertyRef Name="stationID" />
@@ -251,6 +260,8 @@
           <Property Name="PerpetualAverageCost" Type="decimal" Precision="18" Scale="5" Nullable="false" />
           <Property Name="CurrentStock" Type="int" Nullable="false" />
           <Property Name="UnaccountedStock" Type="int" Nullable="false" />
+          <Property Name="TaxLiability" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="BrokerFee" Type="decimal" Precision="18" Scale="2" Nullable="false" />
         </EntityType>
         <Association Name="FK_BatchMaterials_ToInvTypes">
           <End Role="invTypes" Type="Self.invTypes" Multiplicity="1" />
@@ -451,6 +462,7 @@
           <EntitySet Name="mapRegions" EntityType="Self.mapRegions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Orders" EntityType="Self.Orders" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductionBatches" EntityType="Self.ProductionBatches" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="RefTypes" EntityType="Self.RefTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="staStations" EntityType="Self.staStations" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Transactions" EntityType="Self.Transactions" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_BatchMaterials_ToInvTypes" Association="Self.FK_BatchMaterials_ToInvTypes">
@@ -622,6 +634,23 @@
             <End Role="InvType" EntitySet="InvTypes" />
             <End Role="InvBlueprintType" EntitySet="InvBlueprintTypes" />
           </AssociationSet>
+          <AssociationSet Name="Transaction_ClientTypeId_ToInvType" Association="EveProfiteerDbModel.Transaction_ClientTypeId_ToInvType">
+            <End Role="Transaction" EntitySet="Transactions" />
+            <End Role="InvType" EntitySet="InvTypes" />
+          </AssociationSet>
+          <AssociationSet Name="JournalEntry_OwnerTypeId_ToInvType" Association="EveProfiteerDbModel.JournalEntry_OwnerTypeId_ToInvType">
+            <End Role="JournalEntry" EntitySet="JournalEntries" />
+            <End Role="InvType" EntitySet="InvTypes" />
+          </AssociationSet>
+          <AssociationSet Name="JournalEntry_ParticipantTypeId_ToInvType" Association="EveProfiteerDbModel.JournalEntry_ParticipantTypeId_ToInvType">
+            <End Role="JournalEntry" EntitySet="JournalEntries" />
+            <End Role="InvType" EntitySet="InvTypes" />
+          </AssociationSet>
+          <EntitySet Name="RefTypes" EntityType="EveProfiteerDbModel.RefType" />
+          <AssociationSet Name="RefTypeJournalEntry" Association="EveProfiteerDbModel.RefTypeJournalEntry">
+            <End Role="RefType" EntitySet="RefTypes" />
+            <End Role="JournalEntry" EntitySet="JournalEntries" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="ApiKeyEntity">
           <Key>
@@ -657,7 +686,7 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="RefId" Type="Int64" Nullable="false" />
-          <Property Name="refTypeId" Type="Int64" Nullable="false" />
+          <Property Name="RefTypeId" Type="Int32" Nullable="false" />
           <Property Name="OwnerName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="OwnerId" Type="Int64" Nullable="false" />
           <Property Name="ParticipantName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
@@ -671,6 +700,11 @@
           <Property Name="TaxAmount" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ApiKeyEntity_Id" Type="Int32" />
           <NavigationProperty Name="ApiKeyEntity" Relationship="EveProfiteerDbModel.FK_dbo_JournalEntries_dbo_ApiKeyEntities_ApiKeyEntity_Id" FromRole="JournalEntry" ToRole="ApiKeyEntity" />
+          <Property Name="OwnerTypeId" Type="Int32" Nullable="false" />
+          <Property Name="ParticipantTypeId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="OwnerType" Relationship="EveProfiteerDbModel.JournalEntry_OwnerTypeId_ToInvType" FromRole="JournalEntry" ToRole="InvType" />
+          <NavigationProperty Name="ParticipantType" Relationship="EveProfiteerDbModel.JournalEntry_ParticipantTypeId_ToInvType" FromRole="JournalEntry" ToRole="InvType" />
+          <NavigationProperty Name="RefType" Relationship="EveProfiteerDbModel.RefTypeJournalEntry" FromRole="JournalEntry" ToRole="RefType" />
         </EntityType>
         <Association Name="FK_dbo_JournalEntries_dbo_ApiKeyEntities_ApiKeyEntity_Id">
           <End Type="EveProfiteerDbModel.ApiKeyEntity" Role="ApiKeyEntity" Multiplicity="0..1" />
@@ -822,6 +856,9 @@
           <Property Name="PerpetualAverageCost" Type="Decimal" Precision="18" Scale="5" Nullable="false" />
           <Property Name="CurrentStock" Type="Int32" Nullable="false" />
           <Property Name="UnaccountedStock" Type="Int32" Nullable="false" />
+          <Property Name="TaxLiability" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="BrokerFee" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <NavigationProperty Name="ClientType" Relationship="EveProfiteerDbModel.Transaction_ClientTypeId_ToInvType" FromRole="Transaction" ToRole="InvType" />
           </EntityType>
         <Association Name="FK_dbo_Transactions_dbo_ApiKeyEntities_ApiKeyEntity_Id">
           <End Type="EveProfiteerDbModel.ApiKeyEntity" Role="ApiKeyEntity" Multiplicity="1" />
@@ -1165,6 +1202,62 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="Transaction_ClientTypeId_ToInvType">
+          <End Type="EveProfiteerDbModel.Transaction" Role="Transaction" Multiplicity="*" />
+          <End Type="EveProfiteerDbModel.InvType" Role="InvType" Multiplicity="1" />
+          <ReferentialConstraint>
+            <Principal Role="InvType">
+              <PropertyRef Name="TypeId" />
+            </Principal>
+            <Dependent Role="Transaction">
+              <PropertyRef Name="ClientTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="JournalEntry_OwnerTypeId_ToInvType">
+          <End Type="EveProfiteerDbModel.JournalEntry" Role="JournalEntry" Multiplicity="*" />
+          <End Type="EveProfiteerDbModel.InvType" Role="InvType" Multiplicity="1" />
+          <ReferentialConstraint>
+            <Principal Role="InvType">
+              <PropertyRef Name="TypeId" />
+            </Principal>
+            <Dependent Role="JournalEntry">
+              <PropertyRef Name="OwnerTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="JournalEntry_ParticipantTypeId_ToInvType">
+          <End Type="EveProfiteerDbModel.JournalEntry" Role="JournalEntry" Multiplicity="*" />
+          <End Type="EveProfiteerDbModel.InvType" Role="InvType" Multiplicity="1" />
+          <ReferentialConstraint>
+            <Principal Role="InvType">
+              <PropertyRef Name="TypeId" />
+            </Principal>
+            <Dependent Role="JournalEntry">
+              <PropertyRef Name="ParticipantTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="RefType">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="JournalEntries" Relationship="EveProfiteerDbModel.RefTypeJournalEntry" FromRole="RefType" ToRole="JournalEntry" />
+        </EntityType>
+        <Association Name="RefTypeJournalEntry">
+          <End Type="EveProfiteerDbModel.RefType" Role="RefType" Multiplicity="1" />
+          <End Type="EveProfiteerDbModel.JournalEntry" Role="JournalEntry" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RefType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="JournalEntry">
+              <PropertyRef Name="RefTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1196,6 +1289,8 @@
           <EntitySetMapping Name="JournalEntries">
             <EntityTypeMapping TypeName="EveProfiteerDbModel.JournalEntry">
               <MappingFragment StoreEntitySet="JournalEntries">
+                <ScalarProperty Name="ParticipantTypeId" ColumnName="ParticipantTypeId" />
+                <ScalarProperty Name="OwnerTypeId" ColumnName="OwnerTypeId" />
                 <ScalarProperty Name="ApiKeyEntity_Id" ColumnName="ApiKeyEntity_Id" />
                 <ScalarProperty Name="TaxAmount" ColumnName="TaxAmount" />
                 <ScalarProperty Name="TaxReceiverId" ColumnName="TaxReceiverId" />
@@ -1208,7 +1303,7 @@
                 <ScalarProperty Name="ParticipantName" ColumnName="ParticipantName" />
                 <ScalarProperty Name="OwnerId" ColumnName="OwnerId" />
                 <ScalarProperty Name="OwnerName" ColumnName="OwnerName" />
-                <ScalarProperty Name="refTypeId" ColumnName="refTypeId" />
+                <ScalarProperty Name="RefTypeId" ColumnName="refTypeId" />
                 <ScalarProperty Name="RefId" ColumnName="RefId" />
                 <ScalarProperty Name="Date" ColumnName="Date" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
@@ -1299,6 +1394,8 @@
           <EntitySetMapping Name="Transactions">
             <EntityTypeMapping TypeName="EveProfiteerDbModel.Transaction">
               <MappingFragment StoreEntitySet="Transactions">
+                <ScalarProperty Name="BrokerFee" ColumnName="BrokerFee" />
+                <ScalarProperty Name="TaxLiability" ColumnName="TaxLiability" />
                 <ScalarProperty Name="UnaccountedStock" ColumnName="UnaccountedStock" />
                 <ScalarProperty Name="CurrentStock" ColumnName="CurrentStock" />
                 <ScalarProperty Name="PerpetualAverageCost" ColumnName="PerpetualAverageCost" />
@@ -1428,6 +1525,14 @@
                 <ScalarProperty Name="ProductionQuantity" ColumnName="ProductionQuantity" />
                 <ScalarProperty Name="BlueprintTypeId" ColumnName="BlueprintTypeId" />
                 <ScalarProperty Name="ProductTypeId" ColumnName="ProductTypeId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RefTypes">
+            <EntityTypeMapping TypeName="EveProfiteerDbModel.RefType">
+              <MappingFragment StoreEntitySet="RefTypes">
+                <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

@@ -136,6 +136,7 @@
     <Compile Include="Services\JournalService.cs" />
     <Compile Include="Services\ProductionService.cs" />
     <Compile Include="Services\ShellService.cs" />
+    <Compile Include="Services\TransactionService.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Ui\Converters\DrawingColorToSolidColorBrushConverter.cs" />
     <Compile Include="Ui\Converters\DoubleToIntConverter.cs" />
@@ -168,6 +169,7 @@
     <Compile Include="Models\TransactionAggregateSummary.cs" />
     <Compile Include="ViewModels\Dialogs\UpdatePriceLimitsViewModel.cs" />
     <Compile Include="ViewModels\Tabs\AssetsViewModel.cs" />
+    <Compile Include="ViewModels\Tabs\JournalViewModel.cs" />
     <Compile Include="ViewModels\Tabs\ProductionViewModel.cs" />
     <Compile Include="ViewModels\Tabs\TradeDetailsViewModel.cs" />
     <Compile Include="ViewModels\Dialogs\ManageKeysViewModel.cs" />
@@ -205,6 +207,9 @@
     </Compile>
     <Compile Include="Views\Tabs\AssetsView.xaml.cs">
       <DependentUpon>AssetsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Tabs\JournalView.xaml.cs">
+      <DependentUpon>JournalView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Tabs\ProductionView.xaml.cs">
       <DependentUpon>ProductionView.xaml</DependentUpon>
@@ -264,6 +269,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Tabs\AssetsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Tabs\JournalView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

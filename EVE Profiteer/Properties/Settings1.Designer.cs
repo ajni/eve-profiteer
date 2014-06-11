@@ -25,7 +25,7 @@ namespace eZet.EveProfiteer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("\"dd-MM-yyyy\"")]
+        [global::System.Configuration.DefaultSettingValueAttribute("dd/MM/yyyy")]
         public string DateFormat {
             get {
                 return ((string)(this["DateFormat"]));
@@ -257,6 +257,42 @@ namespace eZet.EveProfiteer.Properties {
             }
             set {
                 this["MaxSellOrderTotal"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.75")]
+        public double TaxRate {
+            get {
+                return ((double)(this["TaxRate"]));
+            }
+            set {
+                this["TaxRate"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.73")]
+        public double BrokerFeeRate {
+            get {
+                return ((double)(this["BrokerFeeRate"]));
+            }
+            set {
+                this["BrokerFeeRate"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("dd/MM/yy hh:mm:ss")]
+        public string DateTimeFormat {
+            get {
+                return ((string)(this["DateTimeFormat"]));
+            }
+            set {
+                this["DateTimeFormat"] = value;
             }
         }
     }

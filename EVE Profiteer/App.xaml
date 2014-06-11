@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:eZet.EveProfiteer"
              xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+             xmlns:p="clr-namespace:eZet.EveProfiteer.Properties"
              x:Class="eZet.EveProfiteer.App"
              >
     <Application.Resources>
@@ -34,7 +35,10 @@
             </Style>
             <dxe:TextEditSettings x:Key="N0Edit" DisplayFormat="N0"></dxe:TextEditSettings>
             <dxe:TextEditSettings x:Key="N2Edit" DisplayFormat="N2"></dxe:TextEditSettings>
-            <dxe:TextEditSettings x:Key="P2Column" DisplayFormat="P2"></dxe:TextEditSettings>
+            <dxe:TextEditSettings x:Key="P2Edit" DisplayFormat="P2"></dxe:TextEditSettings>
+            <dxe:DateEditSettings x:Key="DateTimeEdit" DisplayFormat="{Binding Source={x:Static p:Settings.Default}, Path=DateTimeFormat, Mode=TwoWay}"></dxe:DateEditSettings>
+
+            <dxe:DateEditSettings x:Key="DateEdit" DisplayFormat="{Binding Source={x:Static p:Settings.Default}, Path=DateFormat, Mode=TwoWay}"></dxe:DateEditSettings>
 
         </ResourceDictionary>
     </Application.Resources>

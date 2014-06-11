@@ -259,4 +259,32 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="ApiKeyEntityId" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="88201b7c-0774-4664-85a2-427bf9974a0c" ChangeDateTime="06/10/2014 17:19:06">
+    <Property Name="ElementName" Value="[dbo].[JournalEntries].[refTypeId]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[JournalEntries]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="RefTypeId" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="df765a2f-7f15-4930-8f86-7342f3692b43" ChangeDateTime="06/11/2014 10:54:04">
+    <Property Name="ElementName" Value="[dbo].[Transactions].[Tax]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Transactions]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="TaxLiability" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="5bc85c21-e39e-4328-ac1b-4d0df2fdbd69" ChangeDateTime="06/11/2014 13:05:52">
+    <Property Name="ElementName" Value="[dbo].[RefIds].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[RefIds]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="RefId" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="3d4332f6-553b-4b44-8e9e-5b910eaefbee" ChangeDateTime="06/11/2014 13:05:57">
+    <Property Name="ElementName" Value="[dbo].[RefIds].[RefId]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[RefIds]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Id" />
+  </Operation>
 </Operations>
