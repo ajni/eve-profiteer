@@ -52,8 +52,8 @@
                                    Command="{Binding UpdateJournalCommand}"
                                    Glyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_16x16.png"
                                    LargeGlyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_32x32.png" />
-                <dxb:BarButtonItem x:Name="RecalculateInventory" Content="Recalculate Inventory"
-                                   Command="{Binding RecalculateInventoryCommand}"
+                <dxb:BarButtonItem x:Name="ProcessAllTransactions" Content="ProcessAllTransaction"
+                                   Command="{Binding ProcessAllTransactionsCommand}"
                                    Glyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_16x16.png"
                                    LargeGlyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_32x32.png" />
                 <dxb:BarButtonItem x:Name="Settings" Content="Settings"
@@ -80,7 +80,6 @@
                 </dxb:BarSubItem>
                 <dxb:BarStaticItem Name="Status" Content="{Binding StatusMessage}" />
                 <dxb:BarStaticItem Name="CurrentEntity" Content="{Binding CurrentEntityName}" />
-
             </dxb:BarManager.Items>
             <DockPanel>
                 <dxr:RibbonControl RibbonStyle="Office2010" DockPanel.Dock="Top" IsMinimized="True">
@@ -104,7 +103,7 @@
                                 <dxb:BarItemLink BarItemName="UpdateAssets" RibbonStyle="All" />
                                 <dxb:BarItemLink BarItemName="UpdateJournal" RibbonStyle="All" />
                                 <dxb:BarItemLink BarItemName="Settings" RibbonStyle="All" />
-                                <dxb:BarItemLink BarItemName="RecalculateInventory" RibbonStyle="All" />
+                                <dxb:BarItemLink BarItemName="ProcessAllTransactions" RibbonStyle="All" />
                                 <dxb:BarItemLink BarItemName="UpdateRefTypes" RibbonStyle="All" />
                                 <dxb:BarItemLink BarItemName="UpdateApi" RibbonStyle="All" />
                             </dxr:RibbonPageGroup>

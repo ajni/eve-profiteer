@@ -1,4 +1,4 @@
-﻿namespace eZet.Eve.EveProfiteer.Entities {
+﻿namespace eZet.EveProfiteer.Util {
     public struct ProgressType {
         public ProgressType(int percent, string status) : this() {
             Percent = percent;

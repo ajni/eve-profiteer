@@ -286,7 +286,7 @@ namespace eZet.EveProfiteer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("dd/MM/yy hh:mm:ss")]
+        [global::System.Configuration.DefaultSettingValueAttribute("dd/MM/yy HH:mm:ss")]
         public string DateTimeFormat {
             get {
                 return ((string)(this["DateTimeFormat"]));

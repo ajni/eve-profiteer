@@ -43,7 +43,7 @@ namespace eZet.EveProfiteer.ViewModels {
 
             ManageKeysCommand = new DelegateCommand(ManageKeys);
             UpdateTransactionsCommand = new DelegateCommand(ExecuteUpdateTransactions);
-            RecalculateInventoryCommand = new DelegateCommand(ExecuteRecalculateInventory);
+            ProcessAllTransactionsCommand = new DelegateCommand(ExecuteProcessAllTransactions);
             UpdateAssetsCommand = new DelegateCommand(ExecuteUpdateAssets);
             UpdateJournalCommand = new DelegateCommand(ExecuteUpdateJournal);
             UpdateApiCommand = new DelegateCommand(ExecuteUpdateApi);
@@ -98,7 +98,7 @@ namespace eZet.EveProfiteer.ViewModels {
             get { return ApplicationHelper.ActiveKeyEntity.Name; }
         }
 
-        public ICommand RecalculateInventoryCommand { get; private set; }
+        public ICommand ProcessAllTransactionsCommand { get; private set; }
 
         public ICommand UpdateAssetsCommand { get; private set; }
 
@@ -236,10 +236,10 @@ namespace eZet.EveProfiteer.ViewModels {
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Reference Types Updated"));
         }
 
-        public async void ExecuteRecalculateInventory() {
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Updating inventory..."));
-            await _shellService.CalculateInventoryAsync();
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Inventory updated"));
+        public async void ExecuteProcessAllTransactions() {
+            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Processing All Transactions..."));
+            await _shellService.ProcessAllTransactionsAsync();
+            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("All Transactions Processed"));
         }
     }
 }

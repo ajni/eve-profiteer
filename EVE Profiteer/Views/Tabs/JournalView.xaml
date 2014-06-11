@@ -55,7 +55,7 @@
                 <dxg:GridControl.View>
                     <dxg:TableView ShowTotalSummary="False"
                                    ShowFixedTotalSummary="True"
-                                   ShowGroupPanel="True"
+                                   NewItemRowPosition="None"
                                    ShowAutoFilterRow="True"
                                    IsRowCellMenuEnabled="True"
                                    ShowSearchPanelMode="Default"

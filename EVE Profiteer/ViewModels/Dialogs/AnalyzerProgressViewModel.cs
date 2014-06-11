@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using Caliburn.Micro;
-using eZet.Eve.EveProfiteer.Entities;
+using eZet.EveProfiteer.Util;
 
 namespace eZet.EveProfiteer.ViewModels.Dialogs {
     public class AnalyzerProgressViewModel : PropertyChangedBase {

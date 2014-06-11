@@ -69,7 +69,7 @@
       <Value Profile="(Default)">0.73</Value>
     </Setting>
     <Setting Name="DateTimeFormat" Type="System.String" Scope="User">
-      <Value Profile="(Default)">dd/MM/yy hh:mm:ss</Value>
+      <Value Profile="(Default)">dd/MM/yy HH:mm:ss</Value>
     </Setting>
   </Settings>
 </SettingsFile>

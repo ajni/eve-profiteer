@@ -104,7 +104,7 @@ namespace eZet.EveProfiteer.Services {
                             _eveApiService.GetNewTransactionsAsync(ApplicationHelper.ActiveKey,
                                 ApplicationHelper.ActiveKeyEntity, latest));
             _trace.TraceEvent(TraceEventType.Verbose, 0, "Fetched transactions: " + transactions.Count);
-            await UpdateInventoryAsync(transactions).ConfigureAwait(false);
+            await processTransactionsAsync(transactions).ConfigureAwait(false);
             await insertTransactions(transactions).ConfigureAwait(false);
             _trace.TraceEvent(TraceEventType.Stop, 0, "CompleteUpdateTransactions");
         }
@@ -122,15 +122,15 @@ namespace eZet.EveProfiteer.Services {
             _trace.TraceEvent(TraceEventType.Stop, 0, "CompleteUpdateJournal");
         }
 
-        public async Task CalculateInventoryAsync() {
-            IList<Transaction> transactions;
+        public async Task ProcessAllTransactionsAsync() {
             using (var db = getDb()) {
                 var assets = await db.Assets.Where(asset => asset.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id).ToListAsync().ConfigureAwait(false);
                 db.Assets.RemoveRange(assets);
                 await db.SaveChangesAsync().ConfigureAwait(false);
-                transactions = await db.Transactions.Where(t => t.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id).ToListAsync().ConfigureAwait(false);
+                IList<Transaction> transactions = await db.Transactions.Where(t => t.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id).ToListAsync().ConfigureAwait(false);
+                await processTransactionsAsync(transactions);
+                await db.SaveChangesAsync().ConfigureAwait(false);
             }
-            await UpdateInventoryAsync(transactions);
         }
 
         private async Task insertJournalEntries(IEnumerable<JournalEntry> entries) {
@@ -178,7 +178,7 @@ namespace eZet.EveProfiteer.Services {
             }
         }
 
-        public async Task UpdateInventoryAsync(IEnumerable<Transaction> transactions) {
+        public async Task processTransactionsAsync(IEnumerable<Transaction> transactions) {
             using (var db = getDb()) {
                 db.Configuration.AutoDetectChangesEnabled = false;
                 List<Asset> assets =
@@ -196,8 +196,9 @@ namespace eZet.EveProfiteer.Services {
                         db.Assets.Add(asset);
                         assetLookup.Add(asset.InvTypes_TypeId, asset);
                     }
+                    var total = transaction.Quantity * transaction.Price;
+                    transaction.BrokerFee = total * (decimal)Properties.Settings.Default.BrokerFeeRate / 100;
                     if (transaction.TransactionType == TransactionType.Buy) {
-                        var total = transaction.Price * transaction.Quantity;
                         total *= (decimal)(1 + Properties.Settings.Default.BrokerFeeRate / 100);
                         asset.TotalCost += total;
                         asset.Quantity += transaction.Quantity;
@@ -206,11 +207,9 @@ namespace eZet.EveProfiteer.Services {
                         transaction.CurrentStock = asset.Quantity;
                     } else if (transaction.TransactionType == TransactionType.Sell) {
                         transaction.PerpetualAverageCost = asset.LatestAverageCost;
-                        var total = transaction.Quantity * asset.LatestAverageCost;
                         transaction.TaxLiability = total * (decimal)Properties.Settings.Default.TaxRate / 100;
-                        transaction.BrokerFee = total * (decimal)Properties.Settings.Default.BrokerFeeRate / 100;
                         if (asset.Quantity > 0) {
-                            asset.TotalCost -= total;
+                            asset.TotalCost -= transaction.Quantity * asset.LatestAverageCost;
                             asset.Quantity -= transaction.Quantity;
                             transaction.CurrentStock = asset.Quantity;
                             if (asset.Quantity <= 0) {

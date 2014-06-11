@@ -54,17 +54,14 @@
             <dxg:GridControl ItemsSource="{Binding ElementName=DataSource, Path=Data}">
                 <dxg:GridControl.View>
                     <dxg:TableView ShowTotalSummary="False"
-                                   ShowFixedTotalSummary="True"
-                                   ShowGroupPanel="True"
+                                   NewItemRowPosition="None"
                                    ShowAutoFilterRow="True"
-                                   IsRowCellMenuEnabled="True"
-                                   ShowSearchPanelMode="Default"
+                                   ShowFixedTotalSummary="True"
                                    SearchColumns="InvType.TypeName"
                                    SearchPanelCriteriaOperatorType="And"
                                    AutoScrollOnSorting="False"
-                                   NavigationStyle="Row"
+                                   NavigationStyle="Cell"
                                    AllowEditing="False"
-                                   AllowHorizontalScrollingVirtualization="True"
                                    AllowCascadeUpdate="True"
                                    RowOpacityAnimationDuration="0.00:00:1"
                                    AllowGroupSummaryCascadeUpdate="True"
@@ -93,16 +90,19 @@
 
                 <dxg:GridControl.Columns>
                     <dxg:GridColumn FieldName="InvType.TypeName" Header="Item" Width="300"/>
-                    <dxg:GridColumn FieldName="TransactionDate" Header="Date" EditSettings="{StaticResource DateTimeEdit}" Width="120"/>
-                    <dxg:GridColumn FieldName="Quantity" Header="Qty" EditSettings="{StaticResource N0Edit}" Width="50"/>
-                    <dxg:GridColumn FieldName="Price" EditSettings="{StaticResource N2Edit}" />
-                    <dxg:GridColumn FieldName="ClientName" Header="Client"/>
-                    <dxg:GridColumn FieldName="StationName" Header="Station" Width="200"/>
+                    <dxg:GridColumn FieldName="TransactionDate" Header="Date" EditSettings="{StaticResource DateTimeEdit}" Width="110"/>
                     <dxg:GridColumn FieldName="TransactionType" Header="Type" Width="50" FixedWidth="True"/>
-                    <dxg:GridColumn FieldName="TransactionFor" Width="100"/>
+                    <dxg:GridColumn FieldName="Price" EditSettings="{StaticResource N2Edit}" Width="80"/>
+                    <dxg:GridColumn FieldName="Quantity" Header="Qty" EditSettings="{StaticResource N0Edit}" Width="50"/>
+                    <dxg:GridColumn FieldName="Total" UnboundExpression="[Price] * [Quantity]" UnboundType="Decimal" EditSettings="{StaticResource N2Edit}" Width="80"/>
+                    <dxg:GridColumn FieldName="TaxLiability" EditSettings="{StaticResource N2Edit}" Width="80"/>
+                    <dxg:GridColumn FieldName="BrokerFee" EditSettings="{StaticResource N2Edit}" Width="80"/>
                     <dxg:GridColumn AllowEditing="True" FieldName="PerpetualAverageCost" EditSettings="{StaticResource N2Edit}" />
                     <dxg:GridColumn FieldName="CurrentStock" EditSettings="{StaticResource N0Edit}" Width="50"/>
                     <dxg:GridColumn FieldName="UnaccountedStock" EditSettings="{StaticResource N0Edit}" Width="50"/>
+                    <dxg:GridColumn FieldName="ClientName" Header="Client"/>
+                    <dxg:GridColumn FieldName="TransactionFor" Width="100"/>
+                    <dxg:GridColumn FieldName="StationName" Header="Station" Width="200"/>
                 </dxg:GridControl.Columns>
             </dxg:GridControl>
 

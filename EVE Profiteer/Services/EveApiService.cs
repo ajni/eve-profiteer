@@ -26,7 +26,7 @@ namespace eZet.EveProfiteer.Services {
         }
 
         public Task<EveApiResponse<ReferenceTypes>> GetRefTypesAsync() {
-            return new Misc().GetReferenceTypesAsync();
+            return new EveLib.Modules.Eve().GetReferenceTypesAsync();
         }
 
 
