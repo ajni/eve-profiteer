@@ -52,18 +52,18 @@
                                    Command="{Binding UpdateJournalCommand}"
                                    Glyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_16x16.png"
                                    LargeGlyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_32x32.png" />
-                <dxb:BarButtonItem x:Name="ProcessAllTransactions" Content="ProcessAllTransaction"
+                <dxb:BarButtonItem x:Name="ReprocessAllTransactions" Content="Reprocess All Transaction"
                                    Command="{Binding ProcessAllTransactionsCommand}"
                                    Glyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_16x16.png"
                                    LargeGlyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_32x32.png" />
                 <dxb:BarButtonItem x:Name="Settings" Content="Settings"
                                    LargeGlyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/setup/properties_32x32.png"
                                    Glyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Setup/Properties_16x16.png" />
-                <dxb:BarButtonItem x:Name="UpdateApi" Content="UpdateAPI"
+                <dxb:BarButtonItem x:Name="UpdateApi" Content="Update API"
                                    Command="{Binding UpdateApiCommand}"
                                    Glyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_16x16.png"
                                    LargeGlyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_32x32.png" />
-                <dxb:BarButtonItem x:Name="UpdateRefTypes" Content="UpdateRefTypes"
+                <dxb:BarButtonItem x:Name="UpdateRefTypes" Content="Update Reference Types"
                                    Command="{Binding UpdateRefTypesCommand}"
                                    Glyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_16x16.png"
                                    LargeGlyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_32x32.png" />
@@ -94,21 +94,77 @@
 
                         </dxr:ApplicationMenu>
                     </dxr:RibbonControl.ApplicationMenu>
-                    <dxr:RibbonDefaultPageCategory Caption="defaultCategory">
+                    <dxr:RibbonDefaultPageCategory Caption="Default">
                         <dxr:RibbonPage Caption="Home">
                             <dxr:RibbonPageGroup Caption="Manage" ShowCaptionButton="False"
                                                  IsCaptionButtonEnabled="True">
-                                <dxb:BarItemLink BarItemName="UpdateTransactions" RibbonStyle="All" />
                                 <dxb:BarItemLink BarItemName="ManageKeys" RibbonStyle="All" />
-                                <dxb:BarItemLink BarItemName="UpdateAssets" RibbonStyle="All" />
-                                <dxb:BarItemLink BarItemName="UpdateJournal" RibbonStyle="All" />
                                 <dxb:BarItemLink BarItemName="Settings" RibbonStyle="All" />
-                                <dxb:BarItemLink BarItemName="ProcessAllTransactions" RibbonStyle="All" />
-                                <dxb:BarItemLink BarItemName="UpdateRefTypes" RibbonStyle="All" />
-                                <dxb:BarItemLink BarItemName="UpdateApi" RibbonStyle="All" />
+
                             </dxr:RibbonPageGroup>
                         </dxr:RibbonPage>
+                        <dxr:RibbonPage Caption="Update">
+                            <dxr:RibbonPageGroup Caption="API" ShowCaptionButton="False"
+                                                 IsCaptionButtonEnabled="True">
+                                <dxb:BarItemLink BarItemName="UpdateApi" RibbonStyle="All" />
+                                <dxb:BarItemLink BarItemName="UpdateTransactions" RibbonStyle="SmallWithText" />
+                                <dxb:BarItemLink BarItemName="UpdateAssets" RibbonStyle="SmallWithText" />
+                                <dxb:BarItemLink BarItemName="UpdateJournal" RibbonStyle="SmallWithText" />
+                            </dxr:RibbonPageGroup>
+                            <dxr:RibbonPageGroup Caption="Internal" ShowCaptionButton="False"
+                                                 IsCaptionButtonEnabled="True">
+                                <dxb:BarItemLink BarItemName="ReprocessAllTransactions" RibbonStyle="All" />
+                                <dxb:BarItemLink BarItemName="UpdateRefTypes" RibbonStyle="All" />
+                            </dxr:RibbonPageGroup>
+
+                        </dxr:RibbonPage>
+                        <dxr:RibbonPage Caption="Tools">
+                            <dxr:RibbonPageGroup Caption="Manage" ShowCaptionButton="False"
+                                                 IsCaptionButtonEnabled="True">
+         
+                            </dxr:RibbonPageGroup>
+
+                        </dxr:RibbonPage>
+                        <dxr:RibbonPage Caption="Help">
+                            <dxr:RibbonPageGroup Caption="Help" ShowCaptionButton="False"
+                                                 IsCaptionButtonEnabled="True">
+
+                            </dxr:RibbonPageGroup>
+                            <dxr:RibbonPageGroup Caption="About" ShowCaptionButton="False"
+                                                 IsCaptionButtonEnabled="True">
+
+                            </dxr:RibbonPageGroup>
+
+                        </dxr:RibbonPage>
                     </dxr:RibbonDefaultPageCategory>
+                    <dxr:RibbonPageCategory Caption="Modules">
+                        <dxr:RibbonPage Caption="Trading">
+
+                        </dxr:RibbonPage>
+                        <dxr:RibbonPage Caption="Manufacturing">
+
+                        </dxr:RibbonPage>
+                        <dxr:RibbonPage Caption="PI">
+
+                        </dxr:RibbonPage>
+                        <dxr:RibbonPage Caption="Other">
+
+                        </dxr:RibbonPage>
+                    </dxr:RibbonPageCategory>
+                    <dxr:RibbonPageCategory Caption="Reports" Color="#FF7EB5C5">
+                        <dxr:RibbonPage Caption="Trading">
+
+                        </dxr:RibbonPage>
+                        <dxr:RibbonPage Caption="Manufacturing">
+
+                        </dxr:RibbonPage>
+                        <dxr:RibbonPage Caption="PI">
+
+                        </dxr:RibbonPage>
+                        <dxr:RibbonPage Caption="Other">
+
+                        </dxr:RibbonPage>
+                    </dxr:RibbonPageCategory>
                 </dxr:RibbonControl>
                 <dxr:RibbonStatusBarControl DockPanel.Dock="Bottom">
                     <dxr:RibbonStatusBarControl.LeftItemLinks>

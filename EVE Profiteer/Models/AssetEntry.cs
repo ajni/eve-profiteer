@@ -44,7 +44,7 @@ namespace eZet.EveProfiteer.Models {
 
         public decimal AvgCostPerUnit { get { return _asset.LatestAverageCost; } }
 
-        public decimal TotalCost { get { return _asset.TotalCost; } }
+        public decimal TotalCost { get { return _asset.MaterialCost; } }
 
         public decimal ValuePerUnit { get; set; }
 

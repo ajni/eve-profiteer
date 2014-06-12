@@ -29,11 +29,13 @@ namespace eZet.EveProfiteer.Models
         public int ApiKeyEntity_Id { get; set; }
         public long JournalTransactionId { get; set; }
         public int ClientTypeId { get; set; }
-        public decimal PerpetualAverageCost { get; set; }
-        public int CurrentStock { get; set; }
-        public int UnaccountedStock { get; set; }
         public decimal TaxLiability { get; set; }
         public decimal BrokerFee { get; set; }
+        public int PostTransactionStock { get; set; }
+        public int UnaccountedQuantity { get; set; }
+        public decimal PerpetualAverageCost { get; set; }
+        public Nullable<decimal> CogsBrokerFees { get; set; }
+        public Nullable<decimal> CogsMaterialCost { get; set; }
     
         public virtual ApiKeyEntity ApiKeyEntity { get; set; }
         public virtual InvType InvType { get; set; }

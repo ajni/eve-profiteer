@@ -41,10 +41,11 @@
           <Property Name="InvTypes_TypeId" Type="int" Nullable="false" />
           <Property Name="Quantity" Type="int" Nullable="false" />
           <Property Name="ActualQuantity" Type="int" Nullable="false" />
-          <Property Name="TotalCost" Type="decimal" Precision="18" Scale="5" Nullable="false" />
+          <Property Name="MaterialCost" Type="decimal" Precision="18" Scale="5" Nullable="false" />
           <Property Name="ApiKeyEntity_Id" Type="int" Nullable="false" />
           <Property Name="UnaccountedQuantity" Type="int" Nullable="false" />
           <Property Name="LatestAverageCost" Type="decimal" Precision="18" Scale="5" Nullable="false" />
+          <Property Name="BrokerFees" Type="decimal" Precision="18" Scale="5" Nullable="false" />
         </EntityType>
         <EntityType Name="BatchMaterials">
           <Key>
@@ -258,10 +259,12 @@
           <Property Name="JournalTransactionId" Type="bigint" Nullable="false" />
           <Property Name="ClientTypeId" Type="int" Nullable="false" />
           <Property Name="PerpetualAverageCost" Type="decimal" Precision="18" Scale="5" Nullable="false" />
-          <Property Name="CurrentStock" Type="int" Nullable="false" />
-          <Property Name="UnaccountedStock" Type="int" Nullable="false" />
+          <Property Name="PostTransactionStock" Type="int" Nullable="false" />
+          <Property Name="UnaccountedQuantity" Type="int" Nullable="false" />
           <Property Name="TaxLiability" Type="decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="BrokerFee" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="CogsBrokerFees" Type="decimal" Precision="18" Scale="5" />
+          <Property Name="CogsMaterialCost" Type="decimal" Precision="18" Scale="5" />
         </EntityType>
         <Association Name="FK_BatchMaterials_ToInvTypes">
           <End Role="invTypes" Type="Self.invTypes" Multiplicity="1" />
@@ -853,12 +856,14 @@
           <Property Name="ClientTypeId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="ApiKeyEntity" Relationship="EveProfiteerDbModel.FK_dbo_Transactions_dbo_ApiKeyEntities_ApiKeyEntity_Id" FromRole="Transaction" ToRole="ApiKeyEntity" />
           <NavigationProperty Name="InvType" Relationship="EveProfiteerDbModel.FK_Transaction_ToInvType" FromRole="Transaction" ToRole="invType" />
-          <Property Name="PerpetualAverageCost" Type="Decimal" Precision="18" Scale="5" Nullable="false" />
-          <Property Name="CurrentStock" Type="Int32" Nullable="false" />
-          <Property Name="UnaccountedStock" Type="Int32" Nullable="false" />
           <Property Name="TaxLiability" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
           <Property Name="BrokerFee" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
           <NavigationProperty Name="ClientType" Relationship="EveProfiteerDbModel.Transaction_ClientTypeId_ToInvType" FromRole="Transaction" ToRole="InvType" />
+          <Property Name="PostTransactionStock" Type="Int32" Nullable="false" />
+          <Property Name="UnaccountedQuantity" Type="Int32" Nullable="false" />
+          <Property Name="PerpetualAverageCost" Type="Decimal" Nullable="false" Precision="18" Scale="5" />
+          <Property Name="CogsBrokerFees" Type="Decimal" Precision="18" Scale="5" />
+          <Property Name="CogsMaterialCost" Type="Decimal" Precision="18" Scale="5" />
           </EntityType>
         <Association Name="FK_dbo_Transactions_dbo_ApiKeyEntities_ApiKeyEntity_Id">
           <End Type="EveProfiteerDbModel.ApiKeyEntity" Role="ApiKeyEntity" Multiplicity="1" />
@@ -998,13 +1003,14 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="InvTypes_TypeId" Type="Int32" Nullable="false" />
           <Property Name="Quantity" Type="Int32" Nullable="false" />
-          <Property Name="TotalCost" Type="Decimal" Nullable="false" Precision="18" Scale="5" />
           <Property Name="ApiKeyEntity_Id" Type="Int32" Nullable="false" />
           <Property Name="UnaccountedQuantity" Type="Int32" Nullable="false" />
           <Property Name="LatestAverageCost" Type="Decimal" Nullable="false" Precision="18" Scale="5" />
           <NavigationProperty Name="ApiKeyEntity" Relationship="EveProfiteerDbModel.FK_dbo_Assets_dbo_ToApiKeyEntities" FromRole="Asset" ToRole="ApiKeyEntity" />
           <NavigationProperty Name="invType" Relationship="EveProfiteerDbModel.FK_dbo_Assets_dbo_ToInvTypes" FromRole="Asset" ToRole="InvType" />
           <Property Name="ActualQuantity" Type="Int32" Nullable="false" />
+          <Property Name="BrokerFees" Type="Decimal" Nullable="false" Precision="18" Scale="5" />
+          <Property Name="MaterialCost" Type="Decimal" Nullable="false" Precision="18" Scale="5" />
         </EntityType>
         <Association Name="FK_dbo_Assets_dbo_ToApiKeyEntities">
           <End Type="EveProfiteerDbModel.ApiKeyEntity" Role="ApiKeyEntity" Multiplicity="1" />
@@ -1394,11 +1400,13 @@
           <EntitySetMapping Name="Transactions">
             <EntityTypeMapping TypeName="EveProfiteerDbModel.Transaction">
               <MappingFragment StoreEntitySet="Transactions">
+                <ScalarProperty Name="CogsMaterialCost" ColumnName="CogsMaterialCost" />
+                <ScalarProperty Name="CogsBrokerFees" ColumnName="CogsBrokerFees" />
+                <ScalarProperty Name="PerpetualAverageCost" ColumnName="PerpetualAverageCost" />
+                <ScalarProperty Name="UnaccountedQuantity" ColumnName="UnaccountedQuantity" />
+                <ScalarProperty Name="PostTransactionStock" ColumnName="PostTransactionStock" />
                 <ScalarProperty Name="BrokerFee" ColumnName="BrokerFee" />
                 <ScalarProperty Name="TaxLiability" ColumnName="TaxLiability" />
-                <ScalarProperty Name="UnaccountedStock" ColumnName="UnaccountedStock" />
-                <ScalarProperty Name="CurrentStock" ColumnName="CurrentStock" />
-                <ScalarProperty Name="PerpetualAverageCost" ColumnName="PerpetualAverageCost" />
                 <ScalarProperty Name="ClientTypeId" ColumnName="ClientTypeId" />
                 <ScalarProperty Name="JournalTransactionId" ColumnName="JournalTransactionId" />
                 <ScalarProperty Name="ApiKeyEntity_Id" ColumnName="ApiKeyEntity_Id" />
@@ -1462,11 +1470,12 @@
           <EntitySetMapping Name="Assets">
             <EntityTypeMapping TypeName="EveProfiteerDbModel.Asset">
               <MappingFragment StoreEntitySet="Assets">
+                <ScalarProperty Name="MaterialCost" ColumnName="MaterialCost" />
+                <ScalarProperty Name="BrokerFees" ColumnName="BrokerFees" />
                 <ScalarProperty Name="ActualQuantity" ColumnName="ActualQuantity" />
                 <ScalarProperty Name="LatestAverageCost" ColumnName="LatestAverageCost" />
                 <ScalarProperty Name="UnaccountedQuantity" ColumnName="UnaccountedQuantity" />
                 <ScalarProperty Name="ApiKeyEntity_Id" ColumnName="ApiKeyEntity_Id" />
-                <ScalarProperty Name="TotalCost" ColumnName="TotalCost" />
                 <ScalarProperty Name="Quantity" ColumnName="Quantity" />
                 <ScalarProperty Name="InvTypes_TypeId" ColumnName="InvTypes_TypeId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />

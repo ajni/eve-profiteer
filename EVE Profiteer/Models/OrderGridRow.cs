@@ -152,7 +152,7 @@ namespace eZet.EveProfiteer.Models {
         }
 
         public decimal InventoryTotalCost {
-            get { return Asset != null ? Asset.TotalCost : 0; }
+            get { return Asset != null ? Asset.MaterialCost : 0; }
         }
 
         #endregion

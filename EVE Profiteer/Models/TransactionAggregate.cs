@@ -4,23 +4,23 @@ using System.Linq;
 using MoreLinq;
 
 namespace eZet.EveProfiteer.Models {
-    public class TradeAggregate {
-        public TradeAggregate() {
+    public class TransactionAggregate {
+        public TransactionAggregate() {
             FirstTransactionDate = DateTime.MaxValue;
             LastTransactionDate = DateTime.MinValue;
             MinSellPrice = decimal.MaxValue;
             MinBuyPrice = decimal.MaxValue;
-            TradeAggregates = new List<TradeAggregate>();
+            TradeAggregates = new List<TransactionAggregate>();
         }
 
-        public TradeAggregate(IEnumerable<Transaction> transactions)
+        public TransactionAggregate(IEnumerable<Transaction> transactions)
             : this() {
             Transactions = transactions;
             processTransactions();
             calculateTotals();
         }
 
-        public TradeAggregate(InvType invType, IEnumerable<Transaction> transactions, Order order = null)
+        public TransactionAggregate(InvType invType, IEnumerable<Transaction> transactions, Order order = null)
             : this() {
             InvType = invType;
             Transactions = transactions;
@@ -29,17 +29,17 @@ namespace eZet.EveProfiteer.Models {
             calculateTotals();
         }
 
-        public TradeAggregate(ICollection<TradeAggregate> tradeAggregates)
+        public TransactionAggregate(ICollection<TransactionAggregate> tradeAggregates)
             : this() {
             TradeAggregates = tradeAggregates;
             processAggregates();
             calculateTotals();
         }
 
-        public TradeAggregate(IEnumerable<IGrouping<DateTime, Transaction>> grouping)
+        public TransactionAggregate(IEnumerable<IGrouping<DateTime, Transaction>> grouping)
             : this() {
             foreach (var group in grouping) {
-                var entry = new TradeAggregate(group);
+                var entry = new TransactionAggregate(group);
                 processAggregate(entry);
                 TradeAggregates.Add(entry);
             }
@@ -47,12 +47,12 @@ namespace eZet.EveProfiteer.Models {
             calculateTotals();
         }
 
-        public TradeAggregate(IEnumerable<IGrouping<DateTime, Transaction>> grouping, InvType invType, Order order)
+        public TransactionAggregate(IEnumerable<IGrouping<DateTime, Transaction>> grouping, InvType invType, Order order)
             : this() {
             InvType = invType;
             Order = order;
             foreach (var group in grouping) {
-                var entry = new TradeAggregate(group);
+                var entry = new TransactionAggregate(group);
                 processAggregate(entry);
                 TradeAggregates.Add(entry);
             }
@@ -60,10 +60,10 @@ namespace eZet.EveProfiteer.Models {
             calculateTotals();
         }
 
-        public TradeAggregate(IEnumerable<IGrouping<InvType, Transaction>> grouping)
+        public TransactionAggregate(IEnumerable<IGrouping<InvType, Transaction>> grouping)
             : this() {
             foreach (var group in grouping) {
-                var entry = new TradeAggregate(group.Key, group);
+                var entry = new TransactionAggregate(group.Key, group);
                 processAggregate(entry);
                 TradeAggregates.Add(entry);
             }
@@ -71,24 +71,27 @@ namespace eZet.EveProfiteer.Models {
             calculateTotals();
         }
 
-        public ICollection<TradeAggregate> TradeAggregates { get; private set; }
+        public ICollection<TransactionAggregate> TradeAggregates { get; private set; }
 
         public IEnumerable<Transaction> Transactions { get; private set; }
 
         public Order Order { get; private set; }
 
         public InvType InvType { get; private set; }
-
-
+        
         public decimal Balance { get; private set; }
 
-        public decimal PerpetualAverageGrossProfit { get; private set; }
+        public decimal GrossProfit { get; private set; }
 
-        public decimal PerpetualAverageTotalCost { get; private set; }
+        public decimal CostOfGoodsSold { get; private set; }
+
+        public decimal MaterialCostOfGoodsSold { get; private set; }
+
+        public decimal BrokerFeesOfGoodsSold { get; private set; }
 
         public decimal BuyTotal { get; private set; }
 
-        public decimal SellTotal { get; private set; }
+        public decimal Sales { get; private set; }
 
         public int BuyQuantity { get; private set; }
 
@@ -124,7 +127,7 @@ namespace eZet.EveProfiteer.Models {
 
         public decimal AvgProfitPerUnit { get; private set; }
 
-        public double AvgMargin { get; private set; }
+        public double AvgGrossMargin { get; private set; }
 
         public decimal ClosingSellPrice { get; private set; }
 
@@ -135,6 +138,18 @@ namespace eZet.EveProfiteer.Models {
         public decimal OpeningSellPrice { get; private set; }
 
         public decimal PerpetualAverageCost { get; private set; }
+        
+        public decimal SalesTax { get; private set; }
+
+        public decimal BuyOrderBrokerFees { get; private set; }
+
+        public decimal SellOrderBrokerFees { get; private set; }
+
+        public decimal OperatingProfit { get; private set; }
+
+        public decimal NetProfit { get; private set; }
+
+        public decimal SgaExpenses { get; private set; }
 
 
         private void calculateTotals() {
@@ -143,21 +158,25 @@ namespace eZet.EveProfiteer.Models {
             if (BuyQuantity > 0)
                 AvgBuyPrice = BuyTotal / BuyQuantity;
             if (SellQuantity > 0)
-                AvgSellPrice = SellTotal / SellQuantity;
+                AvgSellPrice = Sales / SellQuantity;
 
-            Balance = SellTotal - BuyTotal;
-            PerpetualAverageGrossProfit = SellTotal - PerpetualAverageTotalCost;
+            Balance = Sales - BuyTotal;
+            GrossProfit = Sales - CostOfGoodsSold;
+            SgaExpenses = SellOrderBrokerFees;
+            OperatingProfit = GrossProfit - SgaExpenses;
+            NetProfit = OperatingProfit - SalesTax;
+
 
             StockDelta = BuyQuantity - SellQuantity;
 
-            AvgProfitPerDay = PerpetualAverageGrossProfit;
+            AvgProfitPerDay = GrossProfit;
             if (TradeDuration.TotalDays > 0)
                 AvgProfitPerDay /= (int)(Math.Ceiling(TradeDuration.TotalDays));
 
             if (SellQuantity > 0)
-                AvgProfitPerUnit = PerpetualAverageGrossProfit / SellQuantity;
+                AvgProfitPerUnit = GrossProfit / SellQuantity;
             if (AvgSellPrice > 0)
-                AvgMargin = (double)(AvgProfitPerUnit / AvgSellPrice);
+                AvgGrossMargin = (double)(AvgProfitPerUnit / AvgSellPrice);
 
             // Set prices to NULL if they are 0, as they have not been set.
             MinSellPrice = MinSellPrice == decimal.MaxValue ? null : MinSellPrice;
@@ -180,14 +199,19 @@ namespace eZet.EveProfiteer.Models {
                         MaxBuyPrice = Math.Max(MaxBuyPrice.GetValueOrDefault(), transaction.Price);
                         BuyQuantity += transaction.Quantity;
                         BuyTotal += transaction.Quantity * transaction.Price;
+                        BuyOrderBrokerFees += transaction.BrokerFee;
                         break;
                     case TransactionType.Sell:
                         MinSellPrice = Math.Min(MinSellPrice.GetValueOrDefault(), transaction.Price);
                         MaxSellPrice = Math.Max(MaxSellPrice.GetValueOrDefault(), transaction.Price);
                         SellQuantity += transaction.Quantity;
-                        SellTotal += transaction.Quantity * transaction.Price;
-                        PerpetualAverageTotalCost += transaction.Quantity * transaction.PerpetualAverageCost;
-                        UnaccountedStock += transaction.UnaccountedStock;
+                        Sales += transaction.Quantity * transaction.Price;
+                        CostOfGoodsSold += transaction.PerpetualAverageCost*transaction.Quantity;
+                        UnaccountedStock += transaction.UnaccountedQuantity;
+                        SalesTax += transaction.TaxLiability;
+                        SellOrderBrokerFees += transaction.BrokerFee;
+                        MaterialCostOfGoodsSold += transaction.CogsMaterialCost.GetValueOrDefault();
+                        BrokerFeesOfGoodsSold += transaction.CogsBrokerFees.GetValueOrDefault();
                         break;
                     default:
                         throw new InvalidOperationException();
@@ -196,7 +220,7 @@ namespace eZet.EveProfiteer.Models {
 
             // TODO Only makes sense for type aggregates
             Transaction latest = Transactions.MaxBy(t => t.TransactionDate);
-            Stock = latest.CurrentStock;
+            Stock = latest.PostTransactionStock;
             StockValue = Stock * latest.PerpetualAverageCost;
             PerpetualAverageCost = latest.PerpetualAverageCost;
 
@@ -223,7 +247,7 @@ namespace eZet.EveProfiteer.Models {
         }
 
         private void processAggregates() {
-            foreach (TradeAggregate entry in TradeAggregates) {
+            foreach (TransactionAggregate entry in TradeAggregates) {
                 processAggregate(entry);
             }
             processAggregateCollection();
@@ -231,17 +255,17 @@ namespace eZet.EveProfiteer.Models {
 
         private void processAggregateCollection() {
             if (!TradeAggregates.Any()) return;
-            TradeAggregate latest = TradeAggregates.MaxBy(t => t.LastTransactionDate);
+            TransactionAggregate latest = TradeAggregates.MaxBy(t => t.LastTransactionDate);
             Stock = latest.Stock;
             StockValue = latest.StockValue;
 
-            TradeAggregate first = TradeAggregates.MinBy(t => t.FirstTransactionDate);
+            TransactionAggregate first = TradeAggregates.MinBy(t => t.FirstTransactionDate);
             if (first != null) {
                 OpeningBuyPrice = first.OpeningBuyPrice;
                 OpeningSellPrice = first.OpeningSellPrice;
             }
 
-            TradeAggregate last = TradeAggregates.MaxBy(t => t.FirstTransactionDate);
+            TransactionAggregate last = TradeAggregates.MaxBy(t => t.FirstTransactionDate);
             if (last != null) {
                 ClosingBuyPrice = last.ClosingBuyPrice;
                 ClosingSellPrice = last.ClosingSellPrice;
@@ -249,17 +273,22 @@ namespace eZet.EveProfiteer.Models {
             }
         }
 
-        private void processAggregate(TradeAggregate aggregate) {
+        private void processAggregate(TransactionAggregate aggregate) {
             if (aggregate.FirstTransactionDate < FirstTransactionDate)
                 FirstTransactionDate = aggregate.FirstTransactionDate;
             if (aggregate.LastTransactionDate > LastTransactionDate)
                 LastTransactionDate = aggregate.LastTransactionDate;
             BuyTotal += aggregate.BuyTotal;
-            SellTotal += aggregate.SellTotal;
+            Sales += aggregate.Sales;
             BuyQuantity += aggregate.BuyQuantity;
             SellQuantity += aggregate.SellQuantity;
-            PerpetualAverageTotalCost += aggregate.PerpetualAverageTotalCost;
+            CostOfGoodsSold += aggregate.CostOfGoodsSold;
             UnaccountedStock += aggregate.UnaccountedStock;
+            SalesTax += aggregate.SalesTax;
+            BuyOrderBrokerFees += aggregate.BuyOrderBrokerFees;
+            SellOrderBrokerFees += aggregate.SellOrderBrokerFees;
+            MaterialCostOfGoodsSold += aggregate.MaterialCostOfGoodsSold;
+            BrokerFeesOfGoodsSold += aggregate.BrokerFeesOfGoodsSold;
         }
     }
 }

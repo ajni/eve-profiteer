@@ -81,7 +81,7 @@
                         </dxg:GridControlBand>
                         <dxg:GridControlBand Header="Inventory">
                             <dxg:GridColumn FieldName="CostPerUnit" />
-                            <dxg:GridColumn FieldName="TotalCost" />
+                            <dxg:GridColumn FieldName="MaterialCost" />
                             <dxg:GridColumn FieldName="CalculatedInventory" />
                             <dxg:GridColumn FieldName="ActualInventory" />
                         </dxg:GridControlBand>

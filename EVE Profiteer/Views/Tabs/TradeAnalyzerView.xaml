@@ -100,10 +100,10 @@
                 <dxg:GridControl.TotalSummary>
                     <dxg:GridSummaryItem FieldName="InvType.TypeName" SummaryType="None" DisplayFormat="Summary" />
                     <dxg:GridSummaryItem FieldName="PeriodicAverageProfit" SummaryType="Sum" DisplayFormat="N2" />
-                    <dxg:GridSummaryItem FieldName="PerpetualAverageGrossProfit" SummaryType="Sum" DisplayFormat="N2" />
+                    <dxg:GridSummaryItem FieldName="GrossProfit" SummaryType="Sum" DisplayFormat="N2" />
                     <dxg:GridSummaryItem FieldName="AvgProfitPerDay" SummaryType="Sum" DisplayFormat="N2" />
                     <dxg:GridSummaryItem FieldName="Balance" SummaryType="Sum" DisplayFormat="N2" />
-                    <dxg:GridSummaryItem FieldName="SellTotal" SummaryType="Sum" DisplayFormat="N2" />
+                    <dxg:GridSummaryItem FieldName="Sales" SummaryType="Sum" DisplayFormat="N2" />
                     <dxg:GridSummaryItem FieldName="BuyTotal" SummaryType="Sum" DisplayFormat="N2" />
                     <dxg:GridSummaryItem FieldName="Transactions.Count" SummaryType="Sum" DisplayFormat="N0" />
                     <dxg:GridSummaryItem FieldName="SellQuantity" SummaryType="Sum" DisplayFormat="N0" />
@@ -119,7 +119,7 @@
                             <dxe:TextEditSettings DisplayFormat="N2" />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="PerpetualAverageGrossProfit" Header="Gross Profit">
+                    <dxg:GridColumn FieldName="GrossProfit" Header="Gross Profit">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="N2" />
                         </dxg:GridColumn.EditSettings>
@@ -134,12 +134,12 @@
                             <dxe:TextEditSettings DisplayFormat="N2" />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="AvgMargin">
+                    <dxg:GridColumn FieldName="AvgGrossMargin">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="P" />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="SellTotal">
+                    <dxg:GridColumn FieldName="Sales">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="N2" />
                         </dxg:GridColumn.EditSettings>

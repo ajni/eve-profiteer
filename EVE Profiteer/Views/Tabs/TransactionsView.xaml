@@ -5,7 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:tabs="clr-namespace:eZet.EveProfiteer.ViewModels.Tabs"
              xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
-             xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
              xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
              xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
              mc:Ignorable="d"
@@ -98,8 +97,8 @@
                     <dxg:GridColumn FieldName="TaxLiability" EditSettings="{StaticResource N2Edit}" Width="80"/>
                     <dxg:GridColumn FieldName="BrokerFee" EditSettings="{StaticResource N2Edit}" Width="80"/>
                     <dxg:GridColumn AllowEditing="True" FieldName="PerpetualAverageCost" EditSettings="{StaticResource N2Edit}" />
-                    <dxg:GridColumn FieldName="CurrentStock" EditSettings="{StaticResource N0Edit}" Width="50"/>
-                    <dxg:GridColumn FieldName="UnaccountedStock" EditSettings="{StaticResource N0Edit}" Width="50"/>
+                    <dxg:GridColumn FieldName="PostTransactionStock" EditSettings="{StaticResource N0Edit}" Width="50"/>
+                    <dxg:GridColumn FieldName="UnaccountedQuantity" EditSettings="{StaticResource N0Edit}" Width="50"/>
                     <dxg:GridColumn FieldName="ClientName" Header="Client"/>
                     <dxg:GridColumn FieldName="TransactionFor" Width="100"/>
                     <dxg:GridColumn FieldName="StationName" Header="Station" Width="200"/>

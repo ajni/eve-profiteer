@@ -117,11 +117,12 @@
     <Compile Include="Events\ViewTradeDetailsEventArgs.cs" />
     <Compile Include="Models\AssetEntry.cs" />
     <Compile Include="Models\CharacterData.cs" />
+    <Compile Include="Models\JournalAggregate.cs" />
     <Compile Include="Models\MarketHistoryEntry.cs" />
     <Compile Include="Models\OrderGridRow.cs" />
     <Compile Include="Models\OverviewData.cs" />
     <Compile Include="Models\ProductionBatchEntry.cs" />
-    <Compile Include="Models\TradeAggregate.cs" />
+    <Compile Include="Models\TransactionAggregate.cs" />
     <Compile Include="Models\MarketBrowserItem.cs" />
     <Compile Include="Models\MarketOrder.cs" />
     <Compile Include="Models\TreeNode.cs" />

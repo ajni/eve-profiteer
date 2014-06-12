@@ -17,11 +17,12 @@ namespace eZet.EveProfiteer.Models
         public int Id { get; set; }
         public int InvTypes_TypeId { get; set; }
         public int Quantity { get; set; }
-        public decimal TotalCost { get; set; }
         public int ApiKeyEntity_Id { get; set; }
         public int UnaccountedQuantity { get; set; }
         public decimal LatestAverageCost { get; set; }
         public int ActualQuantity { get; set; }
+        public decimal BrokerFees { get; set; }
+        public decimal MaterialCost { get; set; }
     
         public virtual ApiKeyEntity ApiKeyEntity { get; set; }
         public virtual InvType invType { get; set; }

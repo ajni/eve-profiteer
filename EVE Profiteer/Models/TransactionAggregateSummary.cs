@@ -9,13 +9,13 @@ namespace eZet.EveProfiteer.Models {
             InvType = invType;
             Transactions = transactions;
             Order = order;
-            Entries = new List<TradeAggregate>();
+            Entries = new List<TransactionAggregate>();
             initialize();
         }
 
         public TransactionAggregateSummary(IEnumerable<Transaction> transactions) {
             Transactions = transactions;
-            Entries = new List<TradeAggregate>();
+            Entries = new List<TransactionAggregate>();
             initialize();
         }
 
@@ -23,7 +23,7 @@ namespace eZet.EveProfiteer.Models {
         public IEnumerable<Transaction> Transactions { get; set; }
         public Order Order { get; set; }
 
-        public ICollection<TradeAggregate> Entries { get; set; }
+        public ICollection<TransactionAggregate> Entries { get; set; }
 
         public decimal Balance { get; private set; }
 
@@ -79,14 +79,14 @@ namespace eZet.EveProfiteer.Models {
             FirstTransactionDate = DateTime.MaxValue;
             LastTransactionDate = DateTime.MinValue;
             foreach (var transactions in groups) {
-                var entry = new TradeAggregate(transactions);
+                var entry = new TransactionAggregate(transactions);
                 Entries.Add(entry);
                 Balance += entry.Balance;
                 SellQuantity += entry.SellQuantity;
                 BuyQuantity += entry.BuyQuantity;
                 BuyTotal += entry.BuyTotal;
-                SellTotal += entry.SellTotal;
-                PerpetualAverageTotalCost += entry.PerpetualAverageTotalCost;
+                SellTotal += entry.Sales;
+                PerpetualAverageTotalCost += entry.CostOfGoodsSold;
                 UnaccountedStock += entry.UnaccountedStock;
                 if (entry.FirstTransactionDate < FirstTransactionDate)
                     FirstTransactionDate = entry.FirstTransactionDate;
@@ -102,7 +102,7 @@ namespace eZet.EveProfiteer.Models {
                 AvgSellPrice = SellTotal/SellQuantity;
 
             Transaction latest = Transactions.MaxBy(t => t.TransactionDate);
-            Stock = latest.CurrentStock;
+            Stock = latest.PostTransactionStock;
             StockValue = Stock*latest.PerpetualAverageCost;
             PerpetualAverageCost = latest.PerpetualAverageCost;
 

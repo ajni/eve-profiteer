@@ -80,11 +80,11 @@
 
                     <!-- BATCH -->
                     <dxg:GridControlBand Header="Total cost">
-                        <dxg:GridColumn FieldName="MaterialCost" AllowEditing="False" Width="80"
+                        <dxg:GridColumn FieldName="TotalCost" AllowEditing="False" Width="80"
                                     FixedWidth="True" />
                         <dxg:GridColumn FieldName="OtherCost" AllowEditing="False" Width="80"
                                     FixedWidth="True" />
-                        <dxg:GridColumn FieldName="TotalCost"/>
+                        <dxg:GridColumn FieldName="MaterialCost"/>
                         <dxg:GridColumn FieldName="ProductionQuantity" AllowEditing="False" Width="80"
                                     FixedWidth="True" />
                     </dxg:GridControlBand>

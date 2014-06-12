@@ -16,7 +16,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
         private readonly EveProfiteerDataService _dataService;
         private readonly IEventAggregator _eventAggregator;
         private InvType _selectedItem;
-        private TradeAggregate _tradeAggregate;
+        private TransactionAggregate _transactionAggregate;
 
         public TradeDetailsViewModel(IEventAggregator eventAggregator, EveProfiteerDataService dataService) {
             _eventAggregator = eventAggregator;
@@ -32,12 +32,12 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
 
         public ICommand ViewMarketDetailsCommand { get; private set; }
 
-        public TradeAggregate TradeAggregate {
-            get { return _tradeAggregate; }
+        public TransactionAggregate TransactionAggregate {
+            get { return _transactionAggregate; }
             set {
-                if (Equals(value, _tradeAggregate)) return;
-                _tradeAggregate = value;
-                NotifyOfPropertyChange(() => TradeAggregate);
+                if (Equals(value, _transactionAggregate)) return;
+                _transactionAggregate = value;
+                NotifyOfPropertyChange(() => TransactionAggregate);
             }
         }
 
@@ -78,9 +78,9 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             if (transactions.Any()) {
                 Order order =
                     type.Orders.SingleOrDefault(t => t.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id);
-            TradeAggregate = new TradeAggregate(transactions.GroupBy(t => t.TransactionDate.Date), type, order);
+            TransactionAggregate = new TransactionAggregate(transactions.GroupBy(t => t.TransactionDate.Date), type, order);
             } else {
-                TradeAggregate = new TradeAggregate();
+                TransactionAggregate = new TransactionAggregate();
             }
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Trade details loaded"));
         }

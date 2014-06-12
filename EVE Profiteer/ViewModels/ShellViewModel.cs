@@ -50,34 +50,34 @@ namespace eZet.EveProfiteer.ViewModels {
             UpdateRefTypesCommand = new DelegateCommand(ExecuteUpdateRefTypes);
 
 
-            TradeSummary = IoC.Get<TradeSummaryViewModel>();
+            TradeSummaryViewModel = IoC.Get<TradeSummaryViewModel>();
             TradeAnalyzer = IoC.Get<TradeAnalyzerViewModel>();
-            TradeDetails = IoC.Get<TradeDetailsViewModel>();
-            MarketBrowser = IoC.Get<MarketBrowserViewModel>();
-            MarketAnalyzer = IoC.Get<MarketAnalyzerViewModel>();
-            OrderEditor = IoC.Get<OrderEditorViewModel>();
-            Assets = IoC.Get<AssetsViewModel>();
-            ProductionModel = IoC.Get<ProductionViewModel>();
+            TradeDetailsViewModel = IoC.Get<TradeDetailsViewModel>();
+            MarketBrowserViewModel = IoC.Get<MarketBrowserViewModel>();
+            MarketAnalyzerViewModel = IoC.Get<MarketAnalyzerViewModel>();
+            OrderEditorViewModel = IoC.Get<OrderEditorViewModel>();
+            AssetsViewModel = IoC.Get<AssetsViewModel>();
+            ProductionViewModel = IoC.Get<ProductionViewModel>();
             TransactionsViewModel = IoC.Get<TransactionsViewModel>();
             JournalViewModel = IoC.Get<JournalViewModel>();
             SelectKey();
             Task.Run(() => InitAsync());
         }
 
-        public AssetsViewModel Assets { get; set; }
+        public AssetsViewModel AssetsViewModel { get; set; }
 
-        public TradeSummaryViewModel TradeSummary { get; set; }
+        public TradeSummaryViewModel TradeSummaryViewModel { get; set; }
 
         public TradeAnalyzerViewModel TradeAnalyzer { get; set; }
 
-        public TradeDetailsViewModel TradeDetails { get; set; }
+        public TradeDetailsViewModel TradeDetailsViewModel { get; set; }
 
-        public MarketBrowserViewModel MarketBrowser { get; set; }
+        public MarketBrowserViewModel MarketBrowserViewModel { get; set; }
 
-        public MarketAnalyzerViewModel MarketAnalyzer { get; set; }
+        public MarketAnalyzerViewModel MarketAnalyzerViewModel { get; set; }
 
-        public OrderEditorViewModel OrderEditor { get; set; }
-        public ProductionViewModel ProductionModel { get; set; }
+        public OrderEditorViewModel OrderEditorViewModel { get; set; }
+        public ProductionViewModel ProductionViewModel { get; set; }
 
         public TransactionsViewModel TransactionsViewModel { get; set; }
 
@@ -129,17 +129,17 @@ namespace eZet.EveProfiteer.ViewModels {
 
         public void Handle(ViewMarketDetailsEventArgs message) {
             _trace.TraceEvent(TraceEventType.Verbose, 0, "ViewMarketDetailsEventArgs");
-            ActivateItem(MarketBrowser);
+            ActivateItem(MarketBrowserViewModel);
         }
 
         public void Handle(ViewOrderEventArgs message) {
             _trace.TraceEvent(TraceEventType.Verbose, 0, "ViewOrdersEventArgs");
-            ActivateItem(OrderEditor);
+            ActivateItem(OrderEditorViewModel);
         }
 
         public void Handle(ViewTradeDetailsEventArgs message) {
             _trace.TraceEvent(TraceEventType.Verbose, 0, "ViewTradeDetailsEventArgs");
-            ActivateItem(TradeDetails);
+            ActivateItem(TradeDetailsViewModel);
         }
 
         public async void SelectKey() {
@@ -154,14 +154,14 @@ namespace eZet.EveProfiteer.ViewModels {
             //var journal = IoC.Get<JournalViewModel>();
             //Items.Add(journal);
 
-            Items.Add(TradeSummary);
+            Items.Add(TradeSummaryViewModel);
             Items.Add(TradeAnalyzer);
-            Items.Add(TradeDetails);
-            Items.Add(MarketBrowser);
-            Items.Add(MarketAnalyzer);
-            Items.Add(OrderEditor);
-            Items.Add(Assets);
-            Items.Add(ProductionModel);
+            Items.Add(TradeDetailsViewModel);
+            Items.Add(MarketBrowserViewModel);
+            Items.Add(MarketAnalyzerViewModel);
+            Items.Add(OrderEditorViewModel);
+            Items.Add(AssetsViewModel);
+            Items.Add(ProductionViewModel);
             Items.Add(TransactionsViewModel);
             Items.Add(JournalViewModel);
 
@@ -180,21 +180,23 @@ namespace eZet.EveProfiteer.ViewModels {
 
 
             _trace.TraceEvent(TraceEventType.Verbose, 0, "TradeSummaryViewModel.InitAsync");
-            await TradeSummary.InitAsync();
+            await TradeSummaryViewModel.InitAsync();
             _trace.TraceEvent(TraceEventType.Verbose, 0, "TradeDetailsViewModel.InitAsync");
-            await TradeDetails.InitAsync();
+            await TradeDetailsViewModel.InitAsync();
             _trace.TraceEvent(TraceEventType.Verbose, 0, "MarketBrowserViewModel.InitAsync");
-            await MarketBrowser.InitAsync();
+            await MarketBrowserViewModel.InitAsync();
             _trace.TraceEvent(TraceEventType.Verbose, 0, "MarketAnalyzerViewModel.InitAsync");
-            await MarketAnalyzer.InitAsync();
+            await MarketAnalyzerViewModel.InitAsync();
             _trace.TraceEvent(TraceEventType.Verbose, 0, "OrderEditorViewModel.InitAsync");
-            await OrderEditor.InitAsync();
+            await OrderEditorViewModel.InitAsync();
             _trace.TraceEvent(TraceEventType.Verbose, 0, "AssetsViewModel.InitAsync");
-            await Assets.InitAsync();
+            await AssetsViewModel.InitAsync();
             _trace.TraceEvent(TraceEventType.Verbose, 0, "ProductionViewModel.InitAsync");
-            await ProductionModel.InitAsync();
+            await ProductionViewModel.InitAsync();
             _trace.TraceEvent(TraceEventType.Verbose, 0, "TransactionsViewModel.InitAsync");
             await TransactionsViewModel.InitAsync();
+            _trace.TraceEvent(TraceEventType.Verbose, 0, "JournalViewModel.InitAsync");
+            await JournalViewModel.InitAsync();
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Ready"));
         }
 

@@ -59,27 +59,54 @@
                     <dxn:ExplorerBarView AnimateGroupExpansion="False"/>
                 </dxn:NavBarControl.View>
 
-                <dxn:NavBarGroup Header="Profit Summary">
+                <dxn:NavBarGroup Header="Income Statement (Trade)">
                     <dxn:NavBarItem>
-                        <TextBlock Text="{Binding Summary.PerpetualAverageGrossProfit, StringFormat='Gross Profit: {0:N2}'}" />
+                        <TextBlock Text="{Binding Summary.Sales, StringFormat='Sales Revenue: {0:N2}'}" />
                     </dxn:NavBarItem>
                     <dxn:NavBarItem>
-                        <TextBlock Text="{Binding Summary.PerpetualAverageTotalCost, StringFormat='Cost of units sold: {0:N2}'}" />
+                        <TextBlock Text="{Binding Summary.CostOfGoodsSold, StringFormat='Cost of goods sold: {0:N2}'}" />
                     </dxn:NavBarItem>
                     <dxn:NavBarItem>
-                        <TextBlock Text="{Binding Summary.AvgProfitPerDay, StringFormat='Avg Profit per Day {0:N2}'}" />
+                        <TextBlock Text="{Binding Summary.GrossProfit, StringFormat='Gross Profit: {0:N2}'}" />
                     </dxn:NavBarItem>
                     <dxn:NavBarItem>
-                        <TextBlock Text="{Binding Summary.AvgProfitPerUnit, StringFormat='Avg Profit per Unit {0:N2}'}" />
+                        <TextBlock Text="{Binding Summary.SgaExpenses, StringFormat='SGA Expenses: {0:N2}'}" />
                     </dxn:NavBarItem>
                     <dxn:NavBarItem>
-                        <TextBlock Text="{Binding Summary.AvgMargin, StringFormat='Avg Margin {0:P}'}" />
+                        <TextBlock Text="{Binding Summary.OperatingProfit, StringFormat='Operating Profit: {0:N2}'}" />
+                    </dxn:NavBarItem>
+                    <dxn:NavBarItem>
+                        <TextBlock Text="{Binding Summary.SalesTax, StringFormat='Sales Tax: {0:N2}'}" />
+                    </dxn:NavBarItem>
+                    <dxn:NavBarItem>
+                        <TextBlock Text="{Binding Summary.NetProfit, StringFormat='Net Profit: {0:N2}'}" />
                     </dxn:NavBarItem>
                 </dxn:NavBarGroup>
 
-                <dxn:NavBarGroup Header="Trade Summary">
+                <dxn:NavBarGroup Header="Cost of Goods Sold (Detailed)">
                     <dxn:NavBarItem>
-                        <TextBlock Text="{Binding Summary.SellTotal, StringFormat='Total sum sold: {0:N2}'}" />
+                        <TextBlock Text="{Binding Summary.MaterialCostOfGoodsSold, StringFormat='Material Cost: {0:N2}'}" />
+                    </dxn:NavBarItem>
+                    <dxn:NavBarItem>
+                        <TextBlock Text="{Binding Summary.BrokerFeesOfGoodsSold, StringFormat='Broker Fees: {0:N2}'}" />
+                    </dxn:NavBarItem>
+                </dxn:NavBarGroup>
+
+                <dxn:NavBarGroup Header="SGA Expenses (Detailed)">
+                    <dxn:NavBarItem>
+                        <TextBlock Text="{Binding Summary.SellOrderBrokerFees, StringFormat='Broker Fees: {0:N2}'}" />
+                    </dxn:NavBarItem>
+                </dxn:NavBarGroup>
+
+                <dxn:NavBarGroup Header="Period">
+                    <dxn:NavBarItem>
+                        <TextBlock Text="{Binding Summary.AvgProfitPerDay, StringFormat='Avg Profit per Day: {0:N2}'}" />
+                    </dxn:NavBarItem>
+                    <dxn:NavBarItem>
+                        <TextBlock Text="{Binding Summary.AvgProfitPerUnit, StringFormat='Avg Profit per Unit: {0:N2}'}" />
+                    </dxn:NavBarItem>
+                    <dxn:NavBarItem>
+                        <TextBlock Text="{Binding Summary.AvgGrossMargin, StringFormat='Avg Gross Margin: {0:P}'}" />
                     </dxn:NavBarItem>
                     <dxn:NavBarItem>
                         <TextBlock Text="{Binding Summary.BuyTotal, StringFormat='Total sum bought: {0:N2}'}" />
@@ -88,61 +115,25 @@
                         <TextBlock Text="{Binding Summary.Balance, StringFormat='Balance: {0:N2}'}" />
                     </dxn:NavBarItem>
                     <dxn:NavBarItem>
-                        <TextBlock Text="{Binding Summary.BuyQuantity, StringFormat='Quantity bought: {0:N0}'}" />
+                        <TextBlock Text="{Binding Summary.BuyQuantity, StringFormat='Quantity Bought: {0:N0}'}" />
                     </dxn:NavBarItem>
                     <dxn:NavBarItem>
-                        <TextBlock Text="{Binding Summary.SellQuantity, StringFormat='Quantity sold: {0:N0}'}" />
+                        <TextBlock Text="{Binding Summary.SellQuantity, StringFormat='Quantity Sold: {0:N0}'}" />
                     </dxn:NavBarItem>
                 </dxn:NavBarGroup>
-
             </dxn:NavBarControl>
 
             <dx:DXTabControl dxlc:DockLayoutControl.Dock="Client" dxlc:DockLayoutControl.AllowHorizontalSizing="True">
-                <dx:DXTabItem Header="Balance">
 
-                    <dxc:ChartControl x:Name="BalanceChart" DataSource="{Binding Summary.TradeAggregates}">
-                        <dxc:ChartControl.CrosshairOptions>
-                            <dxc:CrosshairOptions />
-                        </dxc:ChartControl.CrosshairOptions>
-                        <dxc:ChartControl.Legend>
-                            <dxc:Legend BorderThickness="0" HorizontalPosition="Center"
-                                        VerticalPosition="BottomOutside" />
-                        </dxc:ChartControl.Legend>
-                        <dxc:XYDiagram2D EnableAxisXNavigation="True">
-                            <dxc:XYDiagram2D.AxisY>
-                                <dxc:AxisY2D TickmarksMinorVisible="True">
-                                    <dxc:AxisY2D.NumericOptions>
-                                        <dxc:NumericOptions Format="Number" Precision="0" />
-                                    </dxc:AxisY2D.NumericOptions>
-                                    <dxc:AxisY2D.Range>
-                                        <dxc:AxisRange dxc:AxisY.AlwaysShowZeroLevel="False"
-                                                       SideMarginsEnabled="True" />
-                                    </dxc:AxisY2D.Range>
-                                </dxc:AxisY2D>
-                            </dxc:XYDiagram2D.AxisY>
-                            <dxc:BarSideBySideSeries2D DisplayName="Net Sales"
-                                                       ArgumentDataMember="FirstTransactionDate"
-                                                       ValueDataMember="SellTotal"
-                                                       ArgumentScaleType="DateTime" ValueScaleType="Numerical"
-                                                       CrosshairLabelPattern="{}{S} : {V:N2}" />
-                            <dxc:BarSideBySideSeries2D DisplayName="Transaction Outgoings"
-                                                       ArgumentDataMember="FirstTransactionDate"
-                                                       ValueDataMember="BuyTotal"
-                                                       CrosshairLabelPattern="{}{S} : {V:N2}"
-                                                       ArgumentScaleType="DateTime" ValueScaleType="Numerical" />
-                        </dxc:XYDiagram2D>
-                    </dxc:ChartControl>
 
-                </dx:DXTabItem>
-                
                 <dx:DXTabItem Header="Profit">
                     <dxc:ChartControl x:Name="ProfitChart" DataSource="{Binding Summary.TradeAggregates}">
                         <dxc:ChartControl.CrosshairOptions>
                             <dxc:CrosshairOptions />
                         </dxc:ChartControl.CrosshairOptions>
                         <dxc:ChartControl.Legend>
-                            <dxc:Legend BorderThickness="0" HorizontalPosition="Center"
-                                        VerticalPosition="BottomOutside" />
+                            <dxc:Legend BorderThickness="0" HorizontalPosition="Center" Orientation="Horizontal"
+                                        VerticalPosition="BottomOutside" UseCheckBoxes="True"/>
                         </dxc:ChartControl.Legend>
                         <dxc:XYDiagram2D EnableAxisXNavigation="True">
                             <dxc:XYDiagram2D.AxisY>
@@ -156,36 +147,29 @@
                                     </dxc:AxisY2D.Range>
                                 </dxc:AxisY2D>
                             </dxc:XYDiagram2D.AxisY>
-                            <dxc:BarSideBySideSeries2D DisplayName="Net Sales"
-                                                       ArgumentDataMember="FirstTransactionDate"
-                                                       ValueDataMember="SellTotal"
-                                                       ArgumentScaleType="DateTime" ValueScaleType="Numerical"
-                                                       CrosshairLabelPattern="{}{S} : {V:N2}" />
-                            <dxc:BarSideBySideSeries2D DisplayName="Cost of goods sold"
-                                                       ArgumentDataMember="FirstTransactionDate"
-                                                       ValueDataMember="PerpetualAverageTotalCost"
+                            <dxc:LineSeries2D DisplayName="Net Profit" ArgumentDataMember="FirstTransactionDate"
+                                                       ValueDataMember="NetProfit"
                                                        CrosshairLabelPattern="{}{S} : {V:N2}"
                                                        ArgumentScaleType="DateTime" ValueScaleType="Numerical" />
-                            <dxc:BarSideBySideSeries2D DisplayName="Gross Profit" ArgumentDataMember="FirstTransactionDate"
-                                                       ValueDataMember="PerpetualAverageGrossProfit"
+                            <dxc:LineSeries2D DisplayName="Operating Profit" ArgumentDataMember="FirstTransactionDate" CheckedInLegend="False"
+                                                       ValueDataMember="OperatingProfit"
                                                        CrosshairLabelPattern="{}{S} : {V:N2}"
                                                        ArgumentScaleType="DateTime" ValueScaleType="Numerical" />
-                            <!--<dxc:BarSideBySideSeries2D DisplayName="Net Profit" ArgumentDataMember="FirstTransactionDate"
-                                                       ValueDataMember="PerpetualAverageGrossProfit"
+                            <dxc:LineSeries2D DisplayName="Gross Profit" ArgumentDataMember="FirstTransactionDate" CheckedInLegend="False"
+                                                       ValueDataMember="GrossProfit"
                                                        CrosshairLabelPattern="{}{S} : {V:N2}"
-                                                       ArgumentScaleType="DateTime" ValueScaleType="Numerical" />-->
+                                                       ArgumentScaleType="DateTime" ValueScaleType="Numerical" />
                         </dxc:XYDiagram2D>
                     </dxc:ChartControl>
                 </dx:DXTabItem>
-
                 <dx:DXTabItem Header="Margin">
                     <dxc:ChartControl x:Name="MarginChart" DataSource="{Binding Summary.TradeAggregates}">
                         <dxc:ChartControl.CrosshairOptions>
                             <dxc:CrosshairOptions />
                         </dxc:ChartControl.CrosshairOptions>
                         <dxc:ChartControl.Legend>
-                            <dxc:Legend BorderThickness="0" HorizontalPosition="Center"
-                                        VerticalPosition="BottomOutside" />
+                            <dxc:Legend BorderThickness="0" HorizontalPosition="Center" Orientation="Horizontal"
+                				VerticalPosition="BottomOutside" UseCheckBoxes="True"/>
                         </dxc:ChartControl.Legend>
                         <dxc:XYDiagram2D EnableAxisXNavigation="True">
                             <dxc:XYDiagram2D.AxisY>
@@ -195,19 +179,59 @@
                                     </dxc:AxisY2D.NumericOptions>
                                     <dxc:AxisY2D.Range>
                                         <dxc:AxisRange dxc:AxisY.AlwaysShowZeroLevel="False"
+                							SideMarginsEnabled="True" />
+                                    </dxc:AxisY2D.Range>
+                                </dxc:AxisY2D>
+                            </dxc:XYDiagram2D.AxisY>
+                            <dxc:LineSeries2D DisplayName="Gross Margin (Line)"
+                				ArgumentDataMember="FirstTransactionDate"
+                				ValueDataMember="AvgGrossMargin"
+                				ArgumentScaleType="DateTime"
+                				CrosshairLabelPattern="{}{S} : {V:N2}" ValueScaleType="Numerical" >
+                                <dxc:LineSeries2D.Indicators>
+                                    <dxc:RegressionLine LegendText="Regression Line" ShowInLegend="True" CheckableInLegend="True"/>
+                                    <dxc:WeightedMovingAverage LegendText="Weighted Moving Average" ShowInLegend="True" CheckableInLegend="True"/>
+                                </dxc:LineSeries2D.Indicators>
+                            </dxc:LineSeries2D>
+                        </dxc:XYDiagram2D>
+                    </dxc:ChartControl>
+                </dx:DXTabItem>
+                <dx:DXTabItem Header="Balance">
+
+                    <dxc:ChartControl x:Name="BalanceChart" DataSource="{Binding Summary.TradeAggregates}">
+                        <dxc:ChartControl.CrosshairOptions>
+                            <dxc:CrosshairOptions />
+                        </dxc:ChartControl.CrosshairOptions>
+                        <dxc:ChartControl.Legend>
+                            <dxc:Legend BorderThickness="0" HorizontalPosition="Center" Orientation="Horizontal"
+                                        VerticalPosition="BottomOutside" UseCheckBoxes="True" />
+                        </dxc:ChartControl.Legend>
+                        <dxc:XYDiagram2D EnableAxisXNavigation="True">
+                            <dxc:XYDiagram2D.AxisY>
+                                <dxc:AxisY2D TickmarksMinorVisible="True">
+                                    <dxc:AxisY2D.NumericOptions>
+                                        <dxc:NumericOptions Format="Number" Precision="0" />
+                                    </dxc:AxisY2D.NumericOptions>
+                                    <dxc:AxisY2D.Range>
+                                        <dxc:AxisRange dxc:AxisY.AlwaysShowZeroLevel="False"
                                                        SideMarginsEnabled="True" />
                                     </dxc:AxisY2D.Range>
                                 </dxc:AxisY2D>
                             </dxc:XYDiagram2D.AxisY>
-                            <dxc:BarSideBySideSeries2D DisplayName="Margin"
+                            <dxc:LineSeries2D DisplayName="Net Sales"
                                                        ArgumentDataMember="FirstTransactionDate"
-                                                       ValueDataMember="AvgMargin"
-                                                       ArgumentScaleType="DateTime"
-                                                       CrosshairLabelPattern="{}{S} : {V:N2}" ValueScaleType="Numerical" />
+                                                       ValueDataMember="Sales"
+                                                       ArgumentScaleType="DateTime" ValueScaleType="Numerical"
+                                                       CrosshairLabelPattern="{}{S} : {V:N2}" />
+                            <dxc:LineSeries2D DisplayName="Transaction Outgoings"
+                                                       ArgumentDataMember="FirstTransactionDate"
+                                                       ValueDataMember="BuyTotal"
+                                                       CrosshairLabelPattern="{}{S} : {V:N2}"
+                                                       ArgumentScaleType="DateTime" ValueScaleType="Numerical" />
                         </dxc:XYDiagram2D>
                     </dxc:ChartControl>
-                </dx:DXTabItem>
 
+                </dx:DXTabItem>
 
             </dx:DXTabControl>
 

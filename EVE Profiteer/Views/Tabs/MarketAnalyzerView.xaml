@@ -201,7 +201,7 @@
                             <dxe:TextEditSettings DisplayFormat="N0" />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="AvgMargin" Header="Margin">
+                    <dxg:GridColumn FieldName="AvgGrossMargin" Header="Gross Margin">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="P2" />
                         </dxg:GridColumn.EditSettings>

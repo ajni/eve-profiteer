@@ -33,15 +33,15 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             _eventAggregator = eventAggregator;
             _dataService = dataService;
             DisplayName = "Trade Analyzer";
-            Items = new BindableCollection<TradeAggregate>();
-            ViewTradeDetailsCommand = new DelegateCommand<TradeAggregate>(ExecuteViewTradeDetails,
+            Items = new BindableCollection<TransactionAggregate>();
+            ViewTradeDetailsCommand = new DelegateCommand<TransactionAggregate>(ExecuteViewTradeDetails,
                 entry => entry != null);
             ViewMarketDetailsCommand =
-                new DelegateCommand<TradeAggregate>(
+                new DelegateCommand<TransactionAggregate>(
                     item => _eventAggregator.PublishOnUIThread(new ViewMarketDetailsEventArgs(item.InvType)),
                     entry => entry != null);
             ViewPeriodCommand = new DelegateCommand(ViewPeriod);
-            ViewOrderCommand = new DelegateCommand<TradeAggregate>(ExecuteViewOrder, CanViewOrder);
+            ViewOrderCommand = new DelegateCommand<TransactionAggregate>(ExecuteViewOrder, CanViewOrder);
             AddToOrdersCommand = new DelegateCommand<ICollection<object>>(ExecuteAddToOrders, CanAddToOrders);
 
             PeriodSelectorStart = DateTime.UtcNow.AddMonths(-1);
@@ -79,30 +79,30 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             }
         }
 
-        public BindableCollection<TradeAggregate> Items { get; private set; }
+        public BindableCollection<TransactionAggregate> Items { get; private set; }
 
         private bool CanAddToOrders(ICollection<object> arg) {
             if (arg == null || !arg.Any())
                 return false;
-            List<TradeAggregate> items = arg.Select(item => (TradeAggregate) item).ToList();
+            List<TransactionAggregate> items = arg.Select(item => (TransactionAggregate) item).ToList();
             return items.All(item => item.Order == null);
         }
 
         private void ExecuteAddToOrders(ICollection<object> obj) {
-            List<InvType> items = obj.Select(item => ((TradeAggregate) item).InvType).ToList();
+            List<InvType> items = obj.Select(item => ((TransactionAggregate) item).InvType).ToList();
             _eventAggregator.PublishOnUIThread(new AddToOrdersEventArgs(items));
         }
 
 
-        private bool CanViewOrder(TradeAggregate entry) {
+        private bool CanViewOrder(TransactionAggregate entry) {
             return entry != null && entry.Order != null;
         }
 
-        private void ExecuteViewOrder(TradeAggregate entry) {
+        private void ExecuteViewOrder(TransactionAggregate entry) {
             _eventAggregator.PublishOnUIThread(new ViewOrderEventArgs(entry.InvType));
         }
 
-        private void ExecuteViewTradeDetails(TradeAggregate entry) {
+        private void ExecuteViewTradeDetails(TransactionAggregate entry) {
             _eventAggregator.PublishOnUIThread(new ViewTradeDetailsEventArgs(entry.InvType));
         }
 
@@ -156,7 +156,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
                 _dataService.Db.Orders.Where(order => order.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id)
                     .ToLookup(order => order.TypeId);
             foreach (var transactionCollection in transactionGroups) {
-                Items.Add(new TradeAggregate(transactionCollection.First().InvType, transactionCollection.ToList(),
+                Items.Add(new TransactionAggregate(transactionCollection.First().InvType, transactionCollection.ToList(),
                     orders[transactionCollection.First().TypeId].SingleOrDefault()));
             }
             Items.IsNotifying = true;

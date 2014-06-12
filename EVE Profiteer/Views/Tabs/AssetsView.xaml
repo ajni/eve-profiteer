@@ -98,7 +98,7 @@
                             <dxe:TextEditSettings DisplayFormat="N0" />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="TotalCost" Header="Total Cost">
+                    <dxg:GridColumn FieldName="MaterialCost" Header="Total Cost">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="N0" />
                         </dxg:GridColumn.EditSettings>

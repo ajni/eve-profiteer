@@ -25,7 +25,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
         private readonly EveProfiteerDataService _dataService;
         private readonly IEventAggregator _eventAggregator;
         private ViewPeriodEnum _selectedViewPeriod;
-        private TradeAggregate _summary;
+        private TransactionAggregate _summary;
 
 
         public TradeSummaryViewModel(EveProfiteerDataService dataService, IEventAggregator eventAggregator) {
@@ -34,7 +34,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             DisplayName = "Trade summary";
             PeriodSelectorStart = DateTime.UtcNow.AddMonths(-1);
             PeriodSelectorEnd = DateTime.UtcNow;
-            _selectedViewPeriod = ViewPeriodEnum.Week;
+            _selectedViewPeriod = ViewPeriodEnum.Month;
             ViewPeriodCommand = new DelegateCommand(ExecuteViewPeriod);
         }
 
@@ -60,7 +60,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             }
         }
 
-        public TradeAggregate Summary {
+        public TransactionAggregate Summary {
             get { return _summary; }
             private set {
                 if (Equals(value, _summary)) return;
@@ -120,7 +120,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
                         .Where(t => t.TransactionDate > start.Date && t.TransactionDate <= end.Date)
                         .ToListAsync();
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Analyzing..."));
-            Summary = new TradeAggregate(transactions.GroupBy(t => t.TransactionDate.Date));
+            Summary = new TransactionAggregate(transactions.GroupBy(t => t.TransactionDate.Date));
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Analysis complete"));
         }
     }
