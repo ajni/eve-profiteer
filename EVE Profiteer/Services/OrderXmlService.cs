@@ -35,8 +35,7 @@ namespace eZet.EveProfiteer.Services {
                 foreach (SellOrder sellOrder in sellOrders) {
                     orders.Add(CreateOrder(null, sellOrder));
                 }
-            }
-            catch (FileNotFoundException) {
+            } catch (FileNotFoundException) {
             }
             loadType(orders);
             return orders;
@@ -63,7 +62,7 @@ namespace eZet.EveProfiteer.Services {
         private static BuyOrderCollection ToBuyOrderCollection(IEnumerable<Order> orders) {
             var buyOrders = new BuyOrderCollection();
             foreach (Order order in orders.Where(order => order.IsBuyOrder)) {
-                buyOrders.Add(ToBuyOrder(order));
+                if (!order.InvType.TypeName.StartsWith("Eifyr"))buyOrders.Add(ToBuyOrder(order));
             }
             return buyOrders;
         }
@@ -71,7 +70,8 @@ namespace eZet.EveProfiteer.Services {
         private static SellOrderCollection ToSellOrderCollection(IEnumerable<Order> orders) {
             var sellOrders = new SellOrderCollection();
             foreach (Order order in orders.Where(order => order.IsSellOrder)) {
-                sellOrders.Add(ToSellOrder(order));
+                if (!order.InvType.TypeName.StartsWith("Eifyr"))
+                    sellOrders.Add(ToSellOrder(order));
             }
             return sellOrders;
         }
@@ -81,7 +81,7 @@ namespace eZet.EveProfiteer.Services {
             var sellOrder = new SellOrder {
                 TypeName = order.InvType.TypeName,
                 TypeId = order.TypeId,
-                MinPrice = (long) order.MinSellPrice,
+                MinPrice = (long)order.MinSellPrice,
                 MaxQuantity = order.MaxSellQuantity,
                 Quantity = order.MinSellQuantity,
                 UpdateTime = DateTime.UtcNow,
@@ -93,7 +93,7 @@ namespace eZet.EveProfiteer.Services {
             var buyOrder = new BuyOrder {
                 ItemName = order.InvType.TypeName,
                 ItemId = order.TypeId,
-                MaxPrice = (long) order.MaxBuyPrice,
+                MaxPrice = (long)order.MaxBuyPrice,
                 Quantity = order.BuyQuantity,
                 //UpdateTime = DateTime.UtcNow,
             };
