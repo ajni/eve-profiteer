@@ -84,7 +84,7 @@ namespace eZet.EveProfiteer.Models {
                 Balance += entry.Balance;
                 SellQuantity += entry.SellQuantity;
                 BuyQuantity += entry.BuyQuantity;
-                BuyTotal += entry.BuyTotal;
+                BuyTotal += entry.MaterialCost;
                 SellTotal += entry.Sales;
                 PerpetualAverageTotalCost += entry.CostOfGoodsSold;
                 UnaccountedStock += entry.UnaccountedStock;

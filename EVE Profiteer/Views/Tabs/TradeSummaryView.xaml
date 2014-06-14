@@ -100,16 +100,16 @@
 
                 <dxn:NavBarGroup Header="Period">
                     <dxn:NavBarItem>
-                        <TextBlock Text="{Binding Summary.AvgProfitPerDay, StringFormat='Avg Profit per Day: {0:N2}'}" />
+                        <TextBlock Text="{Binding Summary.AvgGrossProfitPerDay, StringFormat='Avg Profit per Day: {0:N2}'}" />
                     </dxn:NavBarItem>
                     <dxn:NavBarItem>
-                        <TextBlock Text="{Binding Summary.AvgProfitPerUnit, StringFormat='Avg Profit per Unit: {0:N2}'}" />
+                        <TextBlock Text="{Binding Summary.AvgGrossProfitPerUnit, StringFormat='Avg Profit per Unit: {0:N2}'}" />
                     </dxn:NavBarItem>
                     <dxn:NavBarItem>
                         <TextBlock Text="{Binding Summary.AvgGrossMargin, StringFormat='Avg Gross Margin: {0:P}'}" />
                     </dxn:NavBarItem>
                     <dxn:NavBarItem>
-                        <TextBlock Text="{Binding Summary.BuyTotal, StringFormat='Total sum bought: {0:N2}'}" />
+                        <TextBlock Text="{Binding Summary.MaterialCost, StringFormat='Total sum bought: {0:N2}'}" />
                     </dxn:NavBarItem>
                     <dxn:NavBarItem>
                         <TextBlock Text="{Binding Summary.Balance, StringFormat='Balance: {0:N2}'}" />
@@ -225,7 +225,7 @@
                                                        CrosshairLabelPattern="{}{S} : {V:N2}" />
                             <dxc:LineSeries2D DisplayName="Transaction Outgoings"
                                                        ArgumentDataMember="FirstTransactionDate"
-                                                       ValueDataMember="BuyTotal"
+                                                       ValueDataMember="MaterialCost"
                                                        CrosshairLabelPattern="{}{S} : {V:N2}"
                                                        ArgumentScaleType="DateTime" ValueScaleType="Numerical" />
                         </dxc:XYDiagram2D>

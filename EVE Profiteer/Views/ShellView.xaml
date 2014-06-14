@@ -52,8 +52,12 @@
                                    Command="{Binding UpdateJournalCommand}"
                                    Glyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_16x16.png"
                                    LargeGlyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_32x32.png" />
-                <dxb:BarButtonItem x:Name="ReprocessAllTransactions" Content="Reprocess All Transaction"
+                <dxb:BarButtonItem x:Name="ReprocessAllTransactions" Content="Reprocess All Transactions"
                                    Command="{Binding ProcessAllTransactionsCommand}"
+                                   Glyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_16x16.png"
+                                   LargeGlyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_32x32.png" />
+                <dxb:BarButtonItem x:Name="ProcessUnaccountedTransactions" Content="Process Unaccounted Transactions"
+                                   Command="{Binding ProcessUnaccountedTransactionsCommand}"
                                    Glyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_16x16.png"
                                    LargeGlyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_32x32.png" />
                 <dxb:BarButtonItem x:Name="Settings" Content="Settings"
@@ -114,6 +118,7 @@
                             <dxr:RibbonPageGroup Caption="Internal" ShowCaptionButton="False"
                                                  IsCaptionButtonEnabled="True">
                                 <dxb:BarItemLink BarItemName="ReprocessAllTransactions" RibbonStyle="All" />
+                                <dxb:BarItemLink BarItemName="ProcessUnaccountedTransactions" RibbonStyle="All" />
                                 <dxb:BarItemLink BarItemName="UpdateRefTypes" RibbonStyle="All" />
                             </dxr:RibbonPageGroup>
 

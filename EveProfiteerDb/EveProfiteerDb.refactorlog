@@ -343,4 +343,11 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="CustomCost" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="98795a9a-e76e-4145-86bc-7c7e282dc3b5" ChangeDateTime="06/14/2014 11:55:49">
+    <Property Name="ElementName" Value="[dbo].[FifoCost].[TransactionId]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[FifoCost]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="BuyTransactionId" />
+  </Operation>
 </Operations>

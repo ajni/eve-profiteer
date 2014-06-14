@@ -119,7 +119,7 @@
     <Compile Include="Models\CharacterData.cs" />
     <Compile Include="Models\JournalAggregate.cs" />
     <Compile Include="Models\MarketHistoryEntry.cs" />
-    <Compile Include="Models\OrderGridRow.cs" />
+    <Compile Include="Models\OrderVm.cs" />
     <Compile Include="Models\OverviewData.cs" />
     <Compile Include="Models\ProductionBatchEntry.cs" />
     <Compile Include="Models\TransactionAggregate.cs" />
@@ -137,6 +137,7 @@
     <Compile Include="Services\JournalService.cs" />
     <Compile Include="Services\ProductionService.cs" />
     <Compile Include="Services\ShellService.cs" />
+    <Compile Include="Services\TransactionDetailsService.cs" />
     <Compile Include="Services\TransactionService.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Ui\Converters\DrawingColorToSolidColorBrushConverter.cs" />
@@ -172,7 +173,7 @@
     <Compile Include="ViewModels\Tabs\AssetsViewModel.cs" />
     <Compile Include="ViewModels\Tabs\JournalViewModel.cs" />
     <Compile Include="ViewModels\Tabs\ProductionViewModel.cs" />
-    <Compile Include="ViewModels\Tabs\TradeDetailsViewModel.cs" />
+    <Compile Include="ViewModels\Tabs\TransactionDetailsViewModel.cs" />
     <Compile Include="ViewModels\Dialogs\ManageKeysViewModel.cs" />
     <Compile Include="ViewModels\Tabs\MarketBrowserViewModel.cs" />
     <Compile Include="ViewModels\Tabs\OrderEditorViewModel.cs" />
@@ -218,8 +219,8 @@
     <Compile Include="Views\Tabs\TradeSummaryView.xaml.cs">
       <DependentUpon>TradeSummaryView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Tabs\TradeDetailsView.xaml.cs">
-      <DependentUpon>TradeDetailsView.xaml</DependentUpon>
+    <Compile Include="Views\Tabs\TransactionDetailsView.xaml.cs">
+      <DependentUpon>TransactionDetailsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Tabs\MarketBrowserView.xaml.cs">
       <DependentUpon>MarketBrowserView.xaml</DependentUpon>
@@ -285,7 +286,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Tabs\TradeDetailsView.xaml">
+    <Page Include="Views\Tabs\TransactionDetailsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -101,10 +101,10 @@
                     <dxg:GridSummaryItem FieldName="InvType.TypeName" SummaryType="None" DisplayFormat="Summary" />
                     <dxg:GridSummaryItem FieldName="PeriodicAverageProfit" SummaryType="Sum" DisplayFormat="N2" />
                     <dxg:GridSummaryItem FieldName="GrossProfit" SummaryType="Sum" DisplayFormat="N2" />
-                    <dxg:GridSummaryItem FieldName="AvgProfitPerDay" SummaryType="Sum" DisplayFormat="N2" />
+                    <dxg:GridSummaryItem FieldName="AvgGrossProfitPerDay" SummaryType="Sum" DisplayFormat="N2" />
                     <dxg:GridSummaryItem FieldName="Balance" SummaryType="Sum" DisplayFormat="N2" />
                     <dxg:GridSummaryItem FieldName="Sales" SummaryType="Sum" DisplayFormat="N2" />
-                    <dxg:GridSummaryItem FieldName="BuyTotal" SummaryType="Sum" DisplayFormat="N2" />
+                    <dxg:GridSummaryItem FieldName="MaterialCost" SummaryType="Sum" DisplayFormat="N2" />
                     <dxg:GridSummaryItem FieldName="Transactions.Count" SummaryType="Sum" DisplayFormat="N0" />
                     <dxg:GridSummaryItem FieldName="SellQuantity" SummaryType="Sum" DisplayFormat="N0" />
                     <dxg:GridSummaryItem FieldName="BuyQuantity" SummaryType="Sum" DisplayFormat="N0" />
@@ -124,12 +124,12 @@
                             <dxe:TextEditSettings DisplayFormat="N2" />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="AvgProfitPerDay" Header="Daily Gross Profit">
+                    <dxg:GridColumn FieldName="AvgGrossProfitPerDay" Header="Daily Gross Profit">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="N2" />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="AvgProfitPerUnit">
+                    <dxg:GridColumn FieldName="AvgGrossProfitPerUnit">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="N2" />
                         </dxg:GridColumn.EditSettings>
@@ -144,7 +144,7 @@
                             <dxe:TextEditSettings DisplayFormat="N2" />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="BuyTotal">
+                    <dxg:GridColumn FieldName="MaterialCost">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="N2" />
                         </dxg:GridColumn.EditSettings>

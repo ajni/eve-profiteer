@@ -23,14 +23,14 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
         private readonly IEventAggregator _eventAggregator;
         private readonly OrderXmlService _orderXmlService;
         private readonly IWindowManager _windowManager;
-        private OrderGridRow _focusedOrder;
+        private OrderVm _focusedOrder;
         private ICollection<InvType> _invTypes;
 
 
-        private BindableCollection<OrderGridRow> _orders;
-        private OrderGridRow _selectedOrder;
+        private BindableCollection<OrderVm> _orders;
+        private OrderVm _selectedOrder;
 
-        private BindableCollection<OrderGridRow> _selectedOrders;
+        private BindableCollection<OrderVm> _selectedOrders;
 
         public OrderEditorViewModel(IWindowManager windowManager, IEventAggregator eventAggregator,
             OrderXmlService orderXmlService, EveProfiteerDataService dataService, EveMarketService eveMarketService) {
@@ -41,8 +41,8 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             _eveMarketService = eveMarketService;
             DisplayName = "Orders";
             _eventAggregator.Subscribe(this);
-            Orders = new BindableCollection<OrderGridRow>();
-            SelectedOrders = new BindableCollection<OrderGridRow>();
+            Orders = new BindableCollection<OrderVm>();
+            SelectedOrders = new BindableCollection<OrderVm>();
             DayLimit = 10;
             ViewTradeDetailsCommand =
                 new DelegateCommand(
@@ -65,7 +65,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             }
         }
 
-        public OrderGridRow FocusedOrder {
+        public OrderVm FocusedOrder {
             get { return _focusedOrder; }
             set {
                 if (Equals(value, _focusedOrder)) return;
@@ -74,7 +74,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             }
         }
 
-        public OrderGridRow SelectedOrder {
+        public OrderVm SelectedOrder {
             get { return _selectedOrder; }
             set {
                 if (Equals(value, _selectedOrder)) return;
@@ -93,7 +93,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
 
         public int DayLimit { get; set; }
 
-        public BindableCollection<OrderGridRow> Orders {
+        public BindableCollection<OrderVm> Orders {
             get { return _orders; }
             private set {
                 _orders = value;
@@ -101,7 +101,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             }
         }
 
-        public BindableCollection<OrderGridRow> SelectedOrders {
+        public BindableCollection<OrderVm> SelectedOrders {
             get { return _selectedOrders; }
             set {
                 _selectedOrders = value;
@@ -122,9 +122,9 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
                 orders.Add(order);
             }
             await _eveMarketService.LoadMarketDataAsync(orders, DayLimit);
-            Orders.AddRange(orders.Select(order => new OrderGridRow(order)));
+            Orders.AddRange(orders.Select(order => new OrderVm(order)));
             SelectedOrders.Clear();
-            SelectedOrders.AddRange(orders.Select(order => new OrderGridRow(order)));
+            SelectedOrders.AddRange(orders.Select(order => new OrderVm(order)));
             SelectedOrder = Orders.Last();
             FocusedOrder = SelectedOrder;
             _eventAggregator.PublishOnUIThread(new OrdersChangedEventArgs { Added = orders });
@@ -139,7 +139,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
         }
 
         public void Handle(ViewOrderEventArgs message) {
-            OrderGridRow order = Orders.Single(entry => entry.Order.InvType.TypeId == message.InvType.TypeId);
+            OrderVm order = Orders.Single(entry => entry.Order.InvType.TypeId == message.InvType.TypeId);
             FocusedOrder = order;
             SelectedOrder = order;
         }
@@ -148,7 +148,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             InvTypes = await _dataService.GetMarketTypes().AsNoTracking().OrderBy(t => t.TypeName).ToListAsync();
             List<Order> orders =
                 await _dataService.GetOrders().Include("InvType").Include("InvType.Assets").ToListAsync();
-            Orders.AddRange(orders.Select(order => new OrderGridRow(order)));
+            Orders.AddRange(orders.Select(order => new OrderVm(order)));
             SelectedOrder = Orders.FirstOrDefault();
             FocusedOrder = Orders.FirstOrDefault();
         }
@@ -169,15 +169,15 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
                     eventArgs.IsValid = false;
                     eventArgs.SetError("An order for this item already exists.");
                 } else {
-                    ((OrderGridRow)eventArgs.Row).Order.TypeId = item.TypeId;
-                    ((OrderGridRow)eventArgs.Row).Order.InvType = item;
+                    ((OrderVm)eventArgs.Row).Order.TypeId = item.TypeId;
+                    ((OrderVm)eventArgs.Row).Order.InvType = item;
                 }
             }
         }
 
         private void DeleteOrders() {
             _dataService.Db.Orders.RemoveRange(SelectedOrders.Select(entry => entry.Order));
-            foreach (OrderGridRow entry in SelectedOrders.ToList()) {
+            foreach (OrderVm entry in SelectedOrders.ToList()) {
                 Orders.Remove(entry);
             }
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Order(s) deleted"));
@@ -189,7 +189,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
 
         public void SaveChanges() {
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Saving orders..."));
-            List<OrderGridRow> newEntries = Orders.Where(order => order.Order.Id == 0).ToList();
+            List<OrderVm> newEntries = Orders.Where(order => order.Order.Id == 0).ToList();
             newEntries.Apply(order => order.Order.ApiKeyEntity_Id = ApplicationHelper.ActiveKeyEntity.Id);
             _dataService.Db.Orders.AddRange(newEntries.Select(entry => entry.Order));
             _dataService.Db.SaveChanges();
@@ -205,7 +205,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
                 ICollection<Order> orders = _orderXmlService.ImportOrders(dialog.SelectedPath);
                 await _eveMarketService.LoadMarketDataAsync(orders, DayLimit);
                 Orders.Clear();
-                Orders.AddRange(orders.Select(order => new OrderGridRow(order)));
+                Orders.AddRange(orders.Select(order => new OrderVm(order)));
                 ConfigManager.OrderXmlPath = dialog.SelectedPath;
             }
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Order(s) imported"));
@@ -235,15 +235,15 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             if (result == true) {
                 Orders.IsNotifying = false;
                 if (vm.UpdatePriceLimits) {
-                    foreach (OrderGridRow order in Orders) {
+                    foreach (OrderVm order in Orders) {
                         order.MaxBuyPrice = order.AvgPrice * (decimal)(1 + vm.AvgPriceBuyOffset / 100);
                         order.MinSellPrice = order.AvgPrice * (decimal)(1 + vm.AvgPriceSellOffset / 100);
-                        if (order.MinPriceMargin > vm.MaxProfitMargin / 100) {
+                        if (order.GrossMarginForLimitPrice > vm.MaxProfitMargin / 100) {
                             if (order.Asset != null)
                                 order.MinSellPrice = order.Asset.LatestAverageCost /
                                                      (decimal)(1 - vm.MaxProfitMargin / 100);
                         }
-                        if (order.MinPriceMargin < vm.MinProfitMargin / 100) {
+                        if (order.GrossMarginForLimitPrice < vm.MinProfitMargin / 100) {
                             if (order.Asset != null)
                                 order.MinSellPrice = order.Asset.LatestAverageCost /
                                                      (decimal)(1 - vm.MinProfitMargin / 100);
@@ -252,7 +252,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
                     }
                 }
                 if (vm.UpdateQuantities) {
-                    foreach (OrderGridRow order in Orders) {
+                    foreach (OrderVm order in Orders) {
                         if (vm.MaxBuyOrderTotal > 0 && order.MaxBuyPrice > 0) {
                             order.BuyQuantity = (int)(vm.MaxBuyOrderTotal / order.MaxBuyPrice);
                             if (order.MaxBuyPrice > vm.MaxBuyOrderTotal)

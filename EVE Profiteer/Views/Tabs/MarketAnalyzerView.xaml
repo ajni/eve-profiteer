@@ -181,7 +181,7 @@
                             <dxe:TextEditSettings DisplayFormat="N0" />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="AvgProfitPerUnit" Header="Profit pr Unit">
+                    <dxg:GridColumn FieldName="AvgGrossProfitPerUnit" Header="Profit pr Unit">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="N0" />
                         </dxg:GridColumn.EditSettings>

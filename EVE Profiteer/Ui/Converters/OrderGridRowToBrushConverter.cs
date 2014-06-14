@@ -14,7 +14,7 @@ namespace eZet.EveProfiteer.Ui.Converters {
         }
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
             if (value == null) return null;
-            var order = (OrderGridRow) value;
+            var order = (OrderVm) value;
             if (order.MinSellPrice > order.CurrentSellPrice)
                 return Brushes.LightCoral;
             if (order.MaxBuyPrice < order.CurrentBuyPrice)

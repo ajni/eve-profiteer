@@ -57,6 +57,15 @@
           <Property Name="Quantity" Type="int" Nullable="false" />
           <Property Name="TotalCost" Type="decimal" Precision="18" Scale="5" Nullable="false" />
         </EntityType>
+        <EntityType Name="FifoCost">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="BuyTransactionId" Type="int" Nullable="false" />
+          <Property Name="SellTransactionId" Type="int" Nullable="false" />
+          <Property Name="Quantity" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="invBlueprintTypes">
           <Key>
             <PropertyRef Name="blueprintTypeID" />
@@ -366,6 +375,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_FifoCost_BuyTranscation_ToTransactions">
+          <End Role="Transactions" Type="Self.Transactions" Multiplicity="1" />
+          <End Role="FifoCost" Type="Self.FifoCost" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Transactions">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FifoCost">
+              <PropertyRef Name="BuyTransactionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FifoCost_SellTranscation_ToTransactions">
+          <End Role="Transactions" Type="Self.Transactions" Multiplicity="1" />
+          <End Role="FifoCost" Type="Self.FifoCost" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Transactions">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FifoCost">
+              <PropertyRef Name="SellTransactionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Orders_ToApiKeyEntities">
           <End Role="ApiKeyEntities" Type="Self.ApiKeyEntities" Multiplicity="1" />
           <End Role="Orders" Type="Self.Orders" Multiplicity="*" />
@@ -456,6 +489,7 @@
           <EntitySet Name="ApiKeys" EntityType="Self.ApiKeys" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Assets" EntityType="Self.Assets" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BatchMaterials" EntityType="Self.BatchMaterials" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="FifoCost" EntityType="Self.FifoCost" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="invBlueprintTypes" EntityType="Self.invBlueprintTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="invGroups" EntityType="Self.invGroups" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="invMarketGroups" EntityType="Self.invMarketGroups" Schema="dbo" store:Type="Tables" />
@@ -499,6 +533,14 @@
           <AssociationSet Name="FK_dbo_Transactions_dbo_ApiKeyEntities_ApiKeyEntity_Id" Association="Self.FK_dbo_Transactions_dbo_ApiKeyEntities_ApiKeyEntity_Id">
             <End Role="ApiKeyEntities" EntitySet="ApiKeyEntities" />
             <End Role="Transactions" EntitySet="Transactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FifoCost_BuyTranscation_ToTransactions" Association="Self.FK_FifoCost_BuyTranscation_ToTransactions">
+            <End Role="Transactions" EntitySet="Transactions" />
+            <End Role="FifoCost" EntitySet="FifoCost" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FifoCost_SellTranscation_ToTransactions" Association="Self.FK_FifoCost_SellTranscation_ToTransactions">
+            <End Role="Transactions" EntitySet="Transactions" />
+            <End Role="FifoCost" EntitySet="FifoCost" />
           </AssociationSet>
           <AssociationSet Name="FK_Orders_ToApiKeyEntities" Association="Self.FK_Orders_ToApiKeyEntities">
             <End Role="ApiKeyEntities" EntitySet="ApiKeyEntities" />
@@ -653,6 +695,15 @@
           <AssociationSet Name="RefTypeJournalEntry" Association="EveProfiteerDbModel.RefTypeJournalEntry">
             <End Role="RefType" EntitySet="RefTypes" />
             <End Role="JournalEntry" EntitySet="JournalEntries" />
+          </AssociationSet>
+          <EntitySet Name="FifoCosts" EntityType="EveProfiteerDbModel.FifoCost" />
+          <AssociationSet Name="FK_FifoCost_BuyTranscation_ToTransactions" Association="EveProfiteerDbModel.FK_FifoCost_BuyTranscation_ToTransactions">
+            <End Role="Transaction" EntitySet="Transactions" />
+            <End Role="FifoCost" EntitySet="FifoCosts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FifoCost_SellTranscation_ToTransactions" Association="EveProfiteerDbModel.FK_FifoCost_SellTranscation_ToTransactions">
+            <End Role="Transaction" EntitySet="Transactions" />
+            <End Role="FifoCost" EntitySet="FifoCosts" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="ApiKeyEntity">
@@ -864,6 +915,8 @@
           <Property Name="PerpetualAverageCost" Type="Decimal" Nullable="false" Precision="18" Scale="5" />
           <Property Name="CogsBrokerFees" Type="Decimal" Precision="18" Scale="5" />
           <Property Name="CogsMaterialCost" Type="Decimal" Precision="18" Scale="5" />
+          <NavigationProperty Name="FifoBuy" Relationship="EveProfiteerDbModel.FK_FifoCost_BuyTranscation_ToTransactions" FromRole="Transaction" ToRole="FifoCost" />
+          <NavigationProperty Name="FifoSell" Relationship="EveProfiteerDbModel.FK_FifoCost_SellTranscation_ToTransactions" FromRole="Transaction" ToRole="FifoCost" />
           </EntityType>
         <Association Name="FK_dbo_Transactions_dbo_ApiKeyEntities_ApiKeyEntity_Id">
           <End Type="EveProfiteerDbModel.ApiKeyEntity" Role="ApiKeyEntity" Multiplicity="1" />
@@ -1264,6 +1317,41 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="FifoCost">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="BuyTransactionId" Type="Int32" Nullable="false" />
+          <Property Name="SellTransactionId" Type="Int32" Nullable="false" />
+          <Property Name="Quantity" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="BuyTransaction" Relationship="EveProfiteerDbModel.FK_FifoCost_BuyTranscation_ToTransactions" FromRole="FifoCost" ToRole="Transaction" />
+          <NavigationProperty Name="SellTransaction" Relationship="EveProfiteerDbModel.FK_FifoCost_SellTranscation_ToTransactions" FromRole="FifoCost" ToRole="Transaction" />
+        </EntityType>
+        <Association Name="FK_FifoCost_BuyTranscation_ToTransactions">
+          <End Type="EveProfiteerDbModel.Transaction" Role="Transaction" Multiplicity="1" />
+          <End Type="EveProfiteerDbModel.FifoCost" Role="FifoCost" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Transaction">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FifoCost">
+              <PropertyRef Name="BuyTransactionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FifoCost_SellTranscation_ToTransactions">
+          <End Type="EveProfiteerDbModel.Transaction" Role="Transaction" Multiplicity="1" />
+          <End Type="EveProfiteerDbModel.FifoCost" Role="FifoCost" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Transaction">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FifoCost">
+              <PropertyRef Name="SellTransactionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1542,6 +1630,16 @@
             <EntityTypeMapping TypeName="EveProfiteerDbModel.RefType">
               <MappingFragment StoreEntitySet="RefTypes">
                 <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FifoCosts">
+            <EntityTypeMapping TypeName="EveProfiteerDbModel.FifoCost">
+              <MappingFragment StoreEntitySet="FifoCost">
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="SellTransactionId" ColumnName="SellTransactionId" />
+                <ScalarProperty Name="BuyTransactionId" ColumnName="BuyTransactionId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

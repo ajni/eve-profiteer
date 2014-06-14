@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -48,11 +49,12 @@ namespace eZet.EveProfiteer.ViewModels {
             UpdateJournalCommand = new DelegateCommand(ExecuteUpdateJournal);
             UpdateApiCommand = new DelegateCommand(ExecuteUpdateApi);
             UpdateRefTypesCommand = new DelegateCommand(ExecuteUpdateRefTypes);
+            ProcessUnaccountedTransactionsCommand = new DelegateCommand(ExecuteProcessUnaccountedTransactions);
 
 
             TradeSummaryViewModel = IoC.Get<TradeSummaryViewModel>();
             TradeAnalyzer = IoC.Get<TradeAnalyzerViewModel>();
-            TradeDetailsViewModel = IoC.Get<TradeDetailsViewModel>();
+            TransactionDetailsViewModel = IoC.Get<TransactionDetailsViewModel>();
             MarketBrowserViewModel = IoC.Get<MarketBrowserViewModel>();
             MarketAnalyzerViewModel = IoC.Get<MarketAnalyzerViewModel>();
             OrderEditorViewModel = IoC.Get<OrderEditorViewModel>();
@@ -64,13 +66,17 @@ namespace eZet.EveProfiteer.ViewModels {
             Task.Run(() => InitAsync());
         }
 
+        private async void ExecuteProcessUnaccountedTransactions() {
+            await _shellService.ProcessUnaccountedTransactionsAsync().ConfigureAwait(false);
+        }
+
         public AssetsViewModel AssetsViewModel { get; set; }
 
         public TradeSummaryViewModel TradeSummaryViewModel { get; set; }
 
         public TradeAnalyzerViewModel TradeAnalyzer { get; set; }
 
-        public TradeDetailsViewModel TradeDetailsViewModel { get; set; }
+        public TransactionDetailsViewModel TransactionDetailsViewModel { get; set; }
 
         public MarketBrowserViewModel MarketBrowserViewModel { get; set; }
 
@@ -98,6 +104,7 @@ namespace eZet.EveProfiteer.ViewModels {
             get { return ApplicationHelper.ActiveKeyEntity.Name; }
         }
 
+        public ICommand ProcessUnaccountedTransactionsCommand { get; private set; }
         public ICommand ProcessAllTransactionsCommand { get; private set; }
 
         public ICommand UpdateAssetsCommand { get; private set; }
@@ -139,7 +146,7 @@ namespace eZet.EveProfiteer.ViewModels {
 
         public void Handle(ViewTradeDetailsEventArgs message) {
             _trace.TraceEvent(TraceEventType.Verbose, 0, "ViewTradeDetailsEventArgs");
-            ActivateItem(TradeDetailsViewModel);
+            ActivateItem(TransactionDetailsViewModel);
         }
 
         public async void SelectKey() {
@@ -156,7 +163,7 @@ namespace eZet.EveProfiteer.ViewModels {
 
             Items.Add(TradeSummaryViewModel);
             Items.Add(TradeAnalyzer);
-            Items.Add(TradeDetailsViewModel);
+            Items.Add(TransactionDetailsViewModel);
             Items.Add(MarketBrowserViewModel);
             Items.Add(MarketAnalyzerViewModel);
             Items.Add(OrderEditorViewModel);
@@ -166,7 +173,7 @@ namespace eZet.EveProfiteer.ViewModels {
             Items.Add(JournalViewModel);
 
 
-            //Items.Add(IoC.Get<TradeDetailsViewModel>());
+            //Items.Add(IoC.Get<TransactionDetailsViewModel>());
             //Items.Add(IoC.Get<ProfitViewModel>());
 
             if (ActiveKey != null) {
@@ -181,8 +188,8 @@ namespace eZet.EveProfiteer.ViewModels {
 
             _trace.TraceEvent(TraceEventType.Verbose, 0, "TradeSummaryViewModel.InitAsync");
             await TradeSummaryViewModel.InitAsync();
-            _trace.TraceEvent(TraceEventType.Verbose, 0, "TradeDetailsViewModel.InitAsync");
-            await TradeDetailsViewModel.InitAsync();
+            _trace.TraceEvent(TraceEventType.Verbose, 0, "TransactionDetailsViewModel.InitAsync");
+            await TransactionDetailsViewModel.InitAsync();
             _trace.TraceEvent(TraceEventType.Verbose, 0, "MarketBrowserViewModel.InitAsync");
             await MarketBrowserViewModel.InitAsync();
             _trace.TraceEvent(TraceEventType.Verbose, 0, "MarketAnalyzerViewModel.InitAsync");

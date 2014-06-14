@@ -117,7 +117,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             List<Transaction> transactions =
                 await
                     _dataService.Db.Transactions.AsNoTracking()
-                        .Where(t => t.TransactionDate > start.Date && t.TransactionDate <= end.Date)
+                        .Where(t => t.TransactionDate >= start.Date && t.TransactionDate <= end.Date)
                         .ToListAsync();
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Analyzing..."));
             Summary = new TransactionAggregate(transactions.GroupBy(t => t.TransactionDate.Date));

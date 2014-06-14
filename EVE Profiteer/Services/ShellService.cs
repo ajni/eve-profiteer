@@ -126,6 +126,38 @@ namespace eZet.EveProfiteer.Services {
             _trace.TraceEvent(TraceEventType.Stop, 0, "CompleteUpdateJournal");
         }
 
+        public async Task ProcessUnaccountedTransactionsAsync() {
+            _trace.TraceEvent(TraceEventType.Start, 0, "StartProcessUnaccountedTransactions");
+
+            _trace.TraceEvent(TraceEventType.Verbose, 0, "Fetching Unaccounted Sales");
+            using (var db = getDb()) {
+                var sell = await db.Transactions.Where(
+                    t =>
+                        t.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id &&
+                        t.TransactionType == TransactionType.Sell && t.PerpetualAverageCost == 0)
+                    .ToListAsync()
+                    .ConfigureAwait(false);
+                _trace.TraceEvent(TraceEventType.Verbose, 0, "Unaccounted sales: " + sell.Count);
+                var sellIds = sell.Select(t => t.TypeId);
+                _trace.TraceEvent(TraceEventType.Verbose, 0, "Fetching Related Buy Transactions");
+                var buy = await db.Transactions.AsNoTracking().Where(t =>
+                    t.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id && sellIds.Contains(t.TypeId)).GroupBy(t => t.TypeId).Select(g => g.FirstOrDefault())
+                    .ToListAsync()
+                    .ConfigureAwait(false);
+                _trace.TraceEvent(TraceEventType.Verbose, 0, "Processing Transactions");
+                var buyLookup = buy.ToLookup(t => t.TypeId);
+                foreach (var transaction in sell) {
+                    if (buyLookup.Contains(transaction.TypeId))
+                        transaction.PerpetualAverageCost = buyLookup[transaction.TypeId].Single().PerpetualAverageCost;
+                }
+                _trace.TraceEvent(TraceEventType.Verbose, 0, "SaveChangesAsync");
+
+                await db.SaveChangesAsync();
+            }
+            _trace.TraceEvent(TraceEventType.Stop, 0, "CompleteProcessUnaccountedTransactions");
+
+        }
+
         public async Task ProcessAllTransactionsAsync() {
             _trace.TraceEvent(TraceEventType.Start, 0, "StartProcessAllTransactions");
             using (var db = getDb()) {
@@ -133,12 +165,16 @@ namespace eZet.EveProfiteer.Services {
                 db.Configuration.ValidateOnSaveEnabled = false;
                 var assets = await db.Assets.Where(asset => asset.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id).ToListAsync().ConfigureAwait(false);
                 db.Assets.RemoveRange(assets);
-                _trace.TraceEvent(TraceEventType.Verbose, 0, "SaveAssets");
+                _trace.TraceEvent(TraceEventType.Verbose, 0, "Deleting Assets: " + assets.Count);
                 await db.SaveChangesAsync().ConfigureAwait(false);
                 IList<Transaction> transactions = await db.Transactions.Where(t => t.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id).ToListAsync().ConfigureAwait(false);
-                _trace.TraceEvent(TraceEventType.Verbose, 0, "ProcessTransactions");
+                _trace.TraceEvent(TraceEventType.Verbose, 0, "Processing Transactions");
+                transactions.Apply(t => {
+                    t.PerpetualAverageCost = 0;
+                    t.UnaccountedQuantity = 0;
+                });
                 await processTransactionsAsync(transactions);
-                _trace.TraceEvent(TraceEventType.Verbose, 0, "SaveTransactions: {0}", transactions.Count);
+                _trace.TraceEvent(TraceEventType.Verbose, 0, "Saving Transactions: {0}", transactions.Count);
                 db.ChangeTracker.DetectChanges();
                 await db.SaveChangesAsync().ConfigureAwait(false);
             }
@@ -215,40 +251,47 @@ namespace eZet.EveProfiteer.Services {
                         db.Assets.Add(asset);
                         assetLookup.Add(asset.InvTypes_TypeId, asset);
                     }
+                    // Moving average cost
                     var transactionTotal = transaction.Quantity * transaction.Price;
                     transaction.BrokerFee = transactionTotal * (decimal)ApplicationHelper.BrokerFeeRate / 100;
-                    transaction.PerpetualAverageCost = asset.LatestAverageCost;
                     if (transaction.TransactionType == TransactionType.Buy) {
                         asset.MaterialCost += transactionTotal;
                         asset.BrokerFees += transaction.BrokerFee;
                         asset.Quantity += transaction.Quantity;
                         asset.LatestAverageCost = (asset.MaterialCost + asset.BrokerFees) / asset.Quantity;
+                        transaction.PerpetualAverageCost = asset.LatestAverageCost;
                         transaction.PostTransactionStock = asset.Quantity;
                     } else if (transaction.TransactionType == TransactionType.Sell) {
                         transaction.TaxLiability = transactionTotal * (decimal)ApplicationHelper.TaxRate / 100;
+                        transaction.PerpetualAverageCost = asset.LatestAverageCost;
                         if (asset.Quantity > 0) {
                             // If we have item in stock, specify costs
                             transaction.CogsBrokerFees = transaction.Quantity * (asset.BrokerFees / asset.Quantity);
                             transaction.CogsMaterialCost = transaction.Quantity * (asset.MaterialCost / asset.Quantity);
                             asset.MaterialCost -= transaction.Quantity * (asset.MaterialCost / asset.Quantity);
                             asset.BrokerFees -= transaction.Quantity * (asset.BrokerFees / asset.Quantity);
-                            asset.Quantity -= transaction.Quantity;
-                            transaction.PostTransactionStock = asset.Quantity;
-                            if (asset.Quantity <= 0) {
-                                transaction.UnaccountedQuantity += Math.Abs(asset.Quantity);
-                                transaction.PostTransactionStock = 0;
-                                asset.UnaccountedQuantity += Math.Abs(asset.Quantity);
-                                asset.MaterialCost = 0;
-                                asset.BrokerFees = 0;
-                                asset.Quantity = 0;
-                            }
                         }
+                        asset.Quantity -= transaction.Quantity;
+                        if (asset.Quantity <= 0) {
+                            transaction.UnaccountedQuantity = Math.Abs(asset.Quantity);
+                            asset.UnaccountedQuantity += Math.Abs(asset.Quantity);
+                            asset.MaterialCost = 0;
+                            asset.BrokerFees = 0;
+                            asset.Quantity = 0;
+                        }
+                        transaction.PostTransactionStock = asset.Quantity;
                     }
+
+
                 }
                 db.ChangeTracker.DetectChanges();
                 await db.SaveChangesAsync().ConfigureAwait(false);
             }
             _trace.TraceEvent(TraceEventType.Stop, 0, "CompleteProcessTransactions");
+        }
+
+        public void processMovingAverageCost(Transaction transaction) {
+
         }
     }
 }

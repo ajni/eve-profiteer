@@ -231,32 +231,32 @@
 
                 <!--Estimated Profit-->
                 <dxg:GridControlBand Header="Estimated Profit">
-                    <dxg:GridColumn FieldName="CurrentPriceProfitPerUnit" Header="Curr Profit" AllowEditing="False">
+                    <dxg:GridColumn FieldName="GrossProfitPerUnitAtCurrentPrice" Header="Curr Profit" AllowEditing="False">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="N0" />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="CurrentPriceMargin" Header="Curr Margin" AllowEditing="False" Width="80">
+                    <dxg:GridColumn FieldName="GrossMarginForCurrentPrice" Header="Curr Margin" AllowEditing="False" Width="80">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="P2" />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="AvgPriceProfitPerUnit" Header="Avg Profit" AllowEditing="False">
+                    <dxg:GridColumn FieldName="GrossProfitPerUnitAtAvgPrice" Header="Avg Profit" AllowEditing="False">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="N0" />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="AvgPriceMargin" Header="Avg Margin" AllowEditing="False" Width="80">
+                    <dxg:GridColumn FieldName="GrossMarginForAvgPrice" Header="Avg Margin" AllowEditing="False" Width="80">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="P2" />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="MinPriceProfitPerUnit" Header="Min Profit" AllowEditing="False">
+                    <dxg:GridColumn FieldName="GrossProfitPerUnitAtLimitPrice" Header="Min Profit" AllowEditing="False">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="N0" />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="MinPriceMargin" Header="Min Margin" AllowEditing="False" Width="80">
+                    <dxg:GridColumn FieldName="GrossMarginForLimitPrice" Header="Min Margin" AllowEditing="False" Width="80">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="P2" />
                         </dxg:GridColumn.EditSettings>

@@ -6,15 +6,15 @@ using System.Runtime.CompilerServices;
 using eZet.EveProfiteer.Models.Annotations;
 
 namespace eZet.EveProfiteer.Models {
-    public class OrderGridRow : INotifyPropertyChanged {
+    public class OrderVm : INotifyPropertyChanged {
         private Order _order;
 
-        public OrderGridRow() {
+        public OrderVm() {
             Order = new Order();
             Order.InvType = new InvType();
         }
 
-        public OrderGridRow(Order order) {
+        public OrderVm(Order order) {
             Order = order;
         }
 
@@ -24,7 +24,6 @@ namespace eZet.EveProfiteer.Models {
                 return Order.InvType.Assets.SingleOrDefault(asset => asset.ApiKeyEntity_Id == Order.ApiKeyEntity_Id);
             }
         }
-
 
         public Order Order {
             get { return _order; }
@@ -159,28 +158,28 @@ namespace eZet.EveProfiteer.Models {
 
         #region Estimated Profit
 
-        public decimal CurrentPriceProfitPerUnit {
+        public decimal GrossProfitPerUnitAtCurrentPrice {
             get { return CurrentSellPrice - InventoryCostPerUnit; }
         }
 
-        public double CurrentPriceMargin {
-            get { return CurrentSellPrice != 0 ? (double) (CurrentPriceProfitPerUnit/CurrentSellPrice) : 0; }
+        public double GrossMarginForCurrentPrice {
+            get { return CurrentSellPrice != 0 ? (double) (GrossProfitPerUnitAtCurrentPrice/CurrentSellPrice) : 0; }
         }
 
-        public decimal AvgPriceProfitPerUnit {
+        public decimal GrossProfitPerUnitAtAvgPrice {
             get { return AvgPrice - InventoryCostPerUnit; }
         }
 
-        public double AvgPriceMargin {
-            get { return AvgPrice != 0 ? (double) (AvgPriceProfitPerUnit/AvgPrice): 0; }
+        public double GrossMarginForAvgPrice {
+            get { return AvgPrice != 0 ? (double) (GrossProfitPerUnitAtAvgPrice/AvgPrice): 0; }
         }
 
-        public decimal MinPriceProfitPerUnit {
+        public decimal GrossProfitPerUnitAtLimitPrice {
             get { return MinSellPrice - InventoryCostPerUnit; }
         }
 
-        public double MinPriceMargin {
-            get { return MinSellPrice != 0 ? (double) (MinPriceProfitPerUnit/MinSellPrice): 0; }
+        public double GrossMarginForLimitPrice {
+            get { return MinSellPrice != 0 ? (double) (GrossProfitPerUnitAtLimitPrice/MinSellPrice): 0; }
         }
 
         #endregion
