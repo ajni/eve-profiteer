@@ -22,14 +22,14 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             Period
         }
 
-        private readonly EveProfiteerDataService _dataService;
+        private readonly TradeSummaryService _tradeSummaryService;
         private readonly IEventAggregator _eventAggregator;
         private ViewPeriodEnum _selectedViewPeriod;
         private TransactionAggregate _summary;
 
 
-        public TradeSummaryViewModel(EveProfiteerDataService dataService, IEventAggregator eventAggregator) {
-            _dataService = dataService;
+        public TradeSummaryViewModel(TradeSummaryService tradeSummaryService, IEventAggregator eventAggregator) {
+            _tradeSummaryService = tradeSummaryService;
             _eventAggregator = eventAggregator;
             DisplayName = "Trade summary";
             PeriodSelectorStart = DateTime.UtcNow.AddMonths(-1);
@@ -49,7 +49,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
         public DateTime PeriodSelectorEnd { get; set; }
 
         public IEnumerable<ViewPeriodEnum> ViewPeriodValues {
-            get { return Enum.GetValues(typeof (ViewPeriodEnum)).Cast<ViewPeriodEnum>(); }
+            get { return Enum.GetValues(typeof(ViewPeriodEnum)).Cast<ViewPeriodEnum>(); }
         }
 
         public ViewPeriodEnum SelectedViewPeriod {
@@ -114,11 +114,8 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
 
         private async Task analyze(DateTime start, DateTime end) {
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Loading..."));
-            List<Transaction> transactions =
-                await
-                    _dataService.Db.Transactions.AsNoTracking()
-                        .Where(t => t.TransactionDate >= start.Date && t.TransactionDate <= end.Date)
-                        .ToListAsync();
+            List<Transaction> transactions = await
+                _tradeSummaryService.GetTransactions(start, end).ConfigureAwait(false);
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Analyzing..."));
             Summary = new TransactionAggregate(transactions.GroupBy(t => t.TransactionDate.Date));
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Analysis complete"));

@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Data.Entity;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Caliburn.Micro;
 using eZet.EveProfiteer.Models;
@@ -14,6 +15,10 @@ namespace eZet.EveProfiteer.Services {
         }
 
         public EveProfiteerDbEntities Db { get; private set; }
+
+        private EveProfiteerDbEntities getDb() {
+            return IoC.Get<EveProfiteerDbEntities>();
+        }
 
         public IQueryable<InvType> GetMarketTypes() {
             return Db.InvTypes.Where(t => t.Published == true && t.MarketGroupId != null);
@@ -31,8 +36,10 @@ namespace eZet.EveProfiteer.Services {
             return Db.InvBlueprintTypes.Include("BlueprintInvType").Include("ProductInvType").Where(bp => bp.BlueprintInvType.Published == true);
         }
 
-        public IQueryable<Transaction> GetTransactions() {
-            return Db.Transactions.Where(t => t.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id);
+        public async Task<List<Transaction>> GetTransactions() {
+            using (var db = getDb()) {
+                return await db.Transactions.Where(t => t.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id).ToListAsync().ConfigureAwait(false);
+            }
         }
 
         public async Task<BindableCollection<TreeNode>> BuildBetterMarketTree(PropertyChangedEventHandler itemPropertyChanged) {
