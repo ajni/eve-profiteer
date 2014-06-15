@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Data.Entity;
 using System.Linq;
@@ -16,24 +15,20 @@ using eZet.EveProfiteer.Util;
 namespace eZet.EveProfiteer.ViewModels.Tabs {
     public class MarketAnalyzerViewModel : Screen, IHandle<OrdersChangedEventArgs> {
         private readonly EveProfiteerDataService _dataService;
-        private readonly EveMarketService _eveMarketService;
         private readonly IEventAggregator _eventAggregator;
-        private readonly IWindowManager _windowManager;
-        private BindableCollection<TreeNode> _betterTreeRootNodes;
+        private readonly MarketAnalyzerService _marketAnalyzerService;
         private int _dayLimit = 10;
         private BindableCollection<MarketAnalyzerEntry> _marketAnalyzerResults;
+        private BindableCollection<TreeNode> _marketTreeNodes;
         private ICollection<MapRegion> _regions;
         private BindableCollection<TreeNode> _selectedItems;
         private MapRegion _selectedRegion;
         private StaStation _selectedStation;
         private ICollection<StaStation> _stations;
-        private BindableCollection<InvMarketGroup> _treeRootNodes;
 
-        public MarketAnalyzerViewModel(IWindowManager windowManager, IEventAggregator eventAggregator,
-            EveProfiteerDataService dataService,
-            EveMarketService eveMarketService) {
-            _eveMarketService = eveMarketService;
-            _windowManager = windowManager;
+        public MarketAnalyzerViewModel(MarketAnalyzerService marketAnalyzerService, IEventAggregator eventAggregator,
+            EveProfiteerDataService dataService) {
+            _marketAnalyzerService = marketAnalyzerService;
             _eventAggregator = eventAggregator;
             _dataService = dataService;
             _eventAggregator.Subscribe(this);
@@ -44,7 +39,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
 
             AnalyzeCommand = new DelegateCommand(ExecuteAnalyze, () => SelectedItems.Count != 0);
             AddToOrdersCommand = new DelegateCommand<ICollection<object>>(executeAddToOrders, canAddToOrders);
-            LoadOrdersCommand = new DelegateCommand(ExecuteLoadOrders);
+            AnalyzeOrdersCommand = new DelegateCommand(ExecuteAnalyzeOrders);
             ViewTradeDetailsCommand =
                 new DelegateCommand<MarketAnalyzerEntry>(
                     entry => _eventAggregator.PublishOnUIThread(new ViewTradeDetailsEventArgs(entry.InvType)),
@@ -68,25 +63,16 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
 
         public ICommand AnalyzeCommand { get; private set; }
 
-        public ICommand LoadOrdersCommand { get; private set; }
+        public ICommand AnalyzeOrdersCommand { get; private set; }
 
         public ICommand ViewTradeDetailsCommand { get; private set; }
 
-        public BindableCollection<InvMarketGroup> TreeRootNodes {
-            get { return _treeRootNodes; }
+        public BindableCollection<TreeNode> MarketTreeNodes {
+            get { return _marketTreeNodes; }
             private set {
-                if (Equals(value, _treeRootNodes)) return;
-                _treeRootNodes = value;
-                NotifyOfPropertyChange(() => TreeRootNodes);
-            }
-        }
-
-        public BindableCollection<TreeNode> BetterTreeRootNodes {
-            get { return _betterTreeRootNodes; }
-            private set {
-                if (Equals(value, _betterTreeRootNodes)) return;
-                _betterTreeRootNodes = value;
-                NotifyOfPropertyChange(() => BetterTreeRootNodes);
+                if (Equals(value, _marketTreeNodes)) return;
+                _marketTreeNodes = value;
+                NotifyOfPropertyChange(() => MarketTreeNodes);
             }
         }
 
@@ -159,7 +145,6 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             foreach (Order order in ordersChangedEventArgs.Added) {
                 if (lookup.Contains(order.TypeId)) {
                     lookup[order.TypeId].Single().Order = order;
-                    //MarketAnalyzerResults.NotifyOfPropertyChange(null);
                 }
             }
             MarketAnalyzerResults.Refresh();
@@ -180,18 +165,14 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
         }
 
         public async Task InitAsync() {
-            //TreeRootNodes = await _dataService.BuildMarketTree(treeViewCheckBox_PropertyChanged);
-            BetterTreeRootNodes = await _dataService.BuildBetterMarketTree(treeViewCheckBox_PropertyChanged);
-            BetterTreeRootNodes.CollectionChanged += BetterTreeRootNodesOnCollectionChanged;
-            Regions = await _dataService.Db.MapRegions.AsNoTracking().OrderBy(region => region.RegionName).ToListAsync();
-            SelectedRegion = Regions.Single(f => f.RegionId == ConfigManager.DefaultRegion);
-            Stations = SelectedRegion.StaStations.OrderByDescending(f => f.StationName).ToList();
-            SelectedStation = Stations.Single(station => station.StationId == ConfigManager.DefaultStation);
-        }
-
-        private void BetterTreeRootNodesOnCollectionChanged(object sender,
-            NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs) {
-            throw new NotImplementedException();
+            MarketTreeNodes =
+                await _marketAnalyzerService.GetMarketTree(treeViewCheckBox_PropertyChanged).ConfigureAwait(false);
+            Regions = await _marketAnalyzerService.GetRegions().ConfigureAwait(false);
+            SelectedRegion = Regions.SingleOrDefault(f => f.RegionId == ConfigManager.DefaultRegion);
+            if (SelectedRegion != null) {
+                Stations = SelectedRegion.StaStations.OrderByDescending(f => f.StationName).ToList();
+            }
+            SelectedStation = Stations.SingleOrDefault(station => station.StationId == ConfigManager.DefaultStation);
         }
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs) {
@@ -208,14 +189,12 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
 
 
         private async void ExecuteAnalyze() {
-            MarketAnalyzer res =
-                await GetMarketAnalyzer(SelectedItems.Select(t => t.InvType).ToList()).ConfigureAwait(false);
-            MarketAnalyzerResults = new BindableCollection<MarketAnalyzerEntry>(res.Result);
+            await analyze(SelectedItems.Select(item => item.InvType));
         }
 
         private async Task LoadOrderData(IEnumerable<MarketAnalyzerEntry> items) {
-            var orders = await _dataService.GetOrders().ToListAsync();
-            var lookup = orders.ToLookup(order => order.TypeId);
+            List<Order> orders = await _dataService.GetOrders().ToListAsync();
+            ILookup<int, Order> lookup = orders.ToLookup(order => order.TypeId);
             items.Apply(item => item.Order = lookup[item.InvType.TypeId].SingleOrDefault());
         }
 
@@ -232,30 +211,22 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             _eventAggregator.PublishOnUIThread(new AddToOrdersEventArgs(items));
         }
 
-        private async void ExecuteLoadOrders() {
-            List<InvType> items =
-                _dataService.Db.Orders.Where(order => order.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id)
-                    .Select(order => order.InvType).ToList();
-            MarketAnalyzer res = await GetMarketAnalyzer(items).ConfigureAwait(false);
-            MarketAnalyzerResults = new BindableCollection<MarketAnalyzerEntry>(res.Result);
+        private async void ExecuteAnalyzeOrders() {
+            List<InvType> items = await _marketAnalyzerService.GetInvTypesForOrders().ConfigureAwait(false);
+            await analyze(items).ConfigureAwait(false);
         }
 
-        private Task<MarketAnalyzer> GetMarketAnalyzer(ICollection<InvType> items) {
-            return analyze(items);
-            //return Task.Run(() => analyze(items));
-        }
-
-        private async Task<MarketAnalyzer> analyze(ICollection<InvType> items) {
+        private async Task analyze(IEnumerable<InvType> items) {
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Fetching market data..."));
-            MarketAnalyzer analyzer =
+
+            ICollection<MarketAnalyzerEntry> result =
                 await
-                    _eveMarketService.GetMarketAnalyzerData(SelectedRegion, SelectedStation, items, DayLimit)
+                    _marketAnalyzerService.Analyze(SelectedRegion, SelectedStation, items, DayLimit)
                         .ConfigureAwait(false);
+            MarketAnalyzerResults = new BindableCollection<MarketAnalyzerEntry>(result);
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Analyzing market data..."));
-            analyzer.Analyze();
-            await LoadOrderData(analyzer.Result).ConfigureAwait(false);
+            await LoadOrderData(result).ConfigureAwait(false);
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Market analysis complete"));
-            return analyzer;
         }
 
         private void treeViewCheckBox_PropertyChanged(object sender, PropertyChangedEventArgs e) {

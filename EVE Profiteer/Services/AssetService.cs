@@ -24,10 +24,10 @@ namespace eZet.EveProfiteer.Services {
 
         public async Task UpdateMarketData(IEnumerable<AssetEntry> list, int region, int station, int days) {
             var items = list.Select(asset => asset.TypeId).ToList();
-            var prices = await _marketService.GetPriceData(items, station).ConfigureAwait(false);
-            var history = await _marketService.GetHistoryData(items, region, days).ConfigureAwait(false);
-            var priceLookup = prices.ToLookup(i => i.TypeId);
-            var historyLookup = history.ToLookup(i => i.TypeId);
+            var priceResult = await _marketService.GetItemPricesAsync(station, items).ConfigureAwait(false);
+            var historyResult = await _marketService.GetItemHistoryAsync(region, items, days).ConfigureAwait(false);
+            var priceLookup = priceResult.Prices.ToLookup(i => i.TypeId);
+            var historyLookup = historyResult.History.ToLookup(i => i.TypeId);
             foreach (var asset in list) {
                 var buyPrice =
                     priceLookup[asset.TypeId].Single(price => price.OrderType == OrderType.Buy).Price;

@@ -22,6 +22,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
         private readonly EveMarketService _eveMarketService;
         private readonly IEventAggregator _eventAggregator;
         private readonly OrderXmlService _orderXmlService;
+        private readonly OrderEditorService _orderEditorService;
         private readonly IWindowManager _windowManager;
         private OrderVm _focusedOrder;
         private ICollection<InvType> _invTypes;
@@ -32,8 +33,9 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
 
         private BindableCollection<OrderVm> _selectedOrders;
 
-        public OrderEditorViewModel(IWindowManager windowManager, IEventAggregator eventAggregator,
+        public OrderEditorViewModel(OrderEditorService orderEditorService, IWindowManager windowManager, IEventAggregator eventAggregator,
             OrderXmlService orderXmlService, EveProfiteerDataService dataService, EveMarketService eveMarketService) {
+            _orderEditorService = orderEditorService;
             _windowManager = windowManager;
             _eventAggregator = eventAggregator;
             _orderXmlService = orderXmlService;
@@ -46,11 +48,11 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             DayLimit = 10;
             ViewTradeDetailsCommand =
                 new DelegateCommand(
-                    () => _eventAggregator.PublishOnUIThread(new ViewTradeDetailsEventArgs(FocusedOrder.Order.InvType)),
+                    () => _eventAggregator.PublishOnBackgroundThread(new ViewTradeDetailsEventArgs(FocusedOrder.Order.InvType)),
                     () => FocusedOrder != null);
             ViewMarketDetailsCommand =
                 new DelegateCommand(
-                    () => _eventAggregator.PublishOnUIThread(new ViewMarketDetailsEventArgs(FocusedOrder.Order.InvType)),
+                    () => _eventAggregator.PublishOnBackgroundThread(new ViewMarketDetailsEventArgs(FocusedOrder.Order.InvType)),
                     () => FocusedOrder != null);
             DeleteOrdersCommand = new DelegateCommand(DeleteOrders);
             ValidateOrderTypeCommand = new DelegateCommand<GridCellValidationEventArgs>(ExecuteValidateOrderType);
@@ -121,7 +123,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
                 item.Orders.Add(order);
                 orders.Add(order);
             }
-            await _eveMarketService.LoadMarketDataAsync(orders, DayLimit);
+            await _orderEditorService.LoadMarketDataAsync(orders, DayLimit);
             Orders.AddRange(orders.Select(order => new OrderVm(order)));
             SelectedOrders.Clear();
             SelectedOrders.AddRange(orders.Select(order => new OrderVm(order)));
@@ -145,9 +147,8 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
         }
 
         public async Task InitAsync() {
-            InvTypes = await _dataService.GetMarketTypes().AsNoTracking().OrderBy(t => t.TypeName).ToListAsync();
-            List<Order> orders =
-                await _dataService.GetOrders().Include("InvType").Include("InvType.Assets").ToListAsync();
+            InvTypes = await _orderEditorService.GetMarketTypes().ConfigureAwait(false);
+            List<Order> orders = await _orderEditorService.GetOrders().ConfigureAwait(false);
             Orders.AddRange(orders.Select(order => new OrderVm(order)));
             SelectedOrder = Orders.FirstOrDefault();
             FocusedOrder = Orders.FirstOrDefault();
@@ -160,7 +161,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
                 return;
             }
             string value = eventArgs.Value.ToString();
-            InvType item = _dataService.Db.InvTypes.SingleOrDefault(f => f.TypeName == value);
+            InvType item = InvTypes.SingleOrDefault(f => f.TypeName == value);
             if (item == null) {
                 eventArgs.IsValid = false;
                 eventArgs.SetError("Invalid item.");
@@ -183,10 +184,6 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Order(s) deleted"));
         }
 
-
-        protected override void OnInitialize() {
-        }
-
         public void SaveChanges() {
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Saving orders..."));
             List<OrderVm> newEntries = Orders.Where(order => order.Order.Id == 0).ToList();
@@ -203,7 +200,6 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             dialog.SelectedPath = ConfigManager.OrderXmlPath;
             if (dialog.ShowDialog() == DialogResult.OK) {
                 ICollection<Order> orders = _orderXmlService.ImportOrders(dialog.SelectedPath);
-                await _eveMarketService.LoadMarketDataAsync(orders, DayLimit);
                 Orders.Clear();
                 Orders.AddRange(orders.Select(order => new OrderVm(order)));
                 ConfigManager.OrderXmlPath = dialog.SelectedPath;
@@ -224,7 +220,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
 
         public async void UpdateMarketData() {
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Fetching market data..."));
-            await _eveMarketService.LoadMarketDataAsync(Orders.Select(entry => entry.Order), DayLimit);
+            await _orderEditorService.LoadMarketDataAsync(Orders.Select(entry => entry.Order), DayLimit);
             Orders.Refresh();
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Market data updated"));
         }

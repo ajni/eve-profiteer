@@ -181,7 +181,9 @@
     <Compile Include="Services\EveProfiteerDataService.cs" />
     <Compile Include="EventConfig.cs" />
     <Compile Include="Services\JournalService.cs" />
+    <Compile Include="Services\MarketAnalyzerService.cs" />
     <Compile Include="Services\MarketBrowserService.cs" />
+    <Compile Include="Services\OrderEditorService.cs" />
     <Compile Include="Services\ProductionService.cs" />
     <Compile Include="Services\ShellService.cs" />
     <Compile Include="Services\TradeAnalyzerService.cs" />

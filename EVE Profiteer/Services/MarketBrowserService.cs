@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using Caliburn.Micro;
-using eZet.EveLib.Modules;
 using eZet.EveLib.Modules.Models;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Util;
@@ -68,7 +66,7 @@ namespace eZet.EveProfiteer.Services {
         }
 
         public async Task<MarketBrowserItem> GetMarketDetails(MapRegion region, InvType invType) {
-            EveMarketDataResponse<ItemOrders> orderResponse = await _eveMarketService.GetItemOrdersAsync(region.RegionId, invType.TypeId).ConfigureAwait(false);
+            EveMarketDataResponse<ItemOrders> orderResponse = await _eveMarketService.GetItemOrderAsync(region.RegionId, invType.TypeId).ConfigureAwait(false);
             var buyOrders = new List<MarketOrder>();
             var sellOrders = new List<MarketOrder>();
             foreach (ItemOrders.ItemOrderEntry order in orderResponse.Result.Orders) {
@@ -85,7 +83,5 @@ namespace eZet.EveProfiteer.Services {
             var item = new MarketBrowserItem(invType, marketHistory, sellOrders, buyOrders, 7);
             return item;
         }
-
-
     }
 }

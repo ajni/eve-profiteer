@@ -25,15 +25,15 @@ namespace eZet.EveProfiteer.Models {
         //public string OrderType { get; set; }
 
         #region CURRENT
-        public decimal DailyProfit { get; set; }
+        public decimal DailyGrossProfit { get; set; }
 
-        public decimal ProfitPerUnit { get; set; }
+        public decimal GrossProfitPerUnit { get; set; }
 
         public decimal SellPrice { get; set; }
 
         public decimal BuyPrice { get; set; }
 
-        public decimal Margin { get; set; }
+        public decimal GrossMargin { get; set; }
 
         public double SellPriceIndex { get; set; }
 
@@ -42,9 +42,9 @@ namespace eZet.EveProfiteer.Models {
         #endregion
 
         #region AVERAGE
-        public decimal AvgDailyProfit { get; private set; }
+        public decimal AvgDailyGrossProfit { get; private set; }
 
-        public decimal AvgProfitPerUnit { get; private set; }
+        public decimal AvgGrossProfitPerUnit { get; private set; }
 
         public decimal AvgPrice { get; private set; }
 
@@ -52,7 +52,7 @@ namespace eZet.EveProfiteer.Models {
 
         public decimal AvgMaxPrice { get; private set; }
 
-        public double AvgMargin { get; private set; }
+        public double AvgGrossMargin { get; private set; }
 
 
         #endregion
@@ -76,8 +76,8 @@ namespace eZet.EveProfiteer.Models {
 
 
         public void Calculate() {
-            ProfitPerUnit = SellPrice - BuyPrice;
-            Margin = SellPrice != 0 ? ProfitPerUnit / SellPrice : 0;
+            GrossProfitPerUnit = SellPrice - BuyPrice;
+            GrossMargin = SellPrice != 0 ? GrossProfitPerUnit / SellPrice : 0;
             if (!History.Any()) return;
             List<ItemHistory.ItemHistoryEntry> historyByVolume = History.OrderBy(f => f.Volume).ToList();
             VolumeMedian = historyByVolume.Count == 1
@@ -92,7 +92,7 @@ namespace eZet.EveProfiteer.Models {
             VolumeVariance = variance.Average();
             VolumeStandardDeviation = Math.Sqrt(VolumeVariance);
             VolumeAdjustedAverage = History.Where(f => !isOutlier(f.Volume)).Average(f => f.Volume);
-            DailyProfit = ProfitPerUnit * (decimal)VolumeMedian;
+            DailyGrossProfit = GrossProfitPerUnit * (decimal)VolumeMedian;
             List<ItemHistory.ItemHistoryEntry> historyByDate = History.OrderBy(f => f.Date).ToList();
             foreach (ItemHistory.ItemHistoryEntry item in historyByDate) {
                 AvgPrice += item.AvgPrice;
@@ -102,10 +102,10 @@ namespace eZet.EveProfiteer.Models {
             AvgPrice /= History.Count();
             AvgMaxPrice /= History.Count();
             AvgMinPrice /= History.Count();
-            AvgProfitPerUnit = AvgMaxPrice - AvgMinPrice;
+            AvgGrossProfitPerUnit = AvgMaxPrice - AvgMinPrice;
             if (AvgMaxPrice > 0)
-                AvgMargin = (double)(AvgProfitPerUnit / AvgMaxPrice);
-            AvgDailyProfit = AvgProfitPerUnit * (decimal)VolumeMedian;
+                AvgGrossMargin = (double)(AvgGrossProfitPerUnit / AvgMaxPrice);
+            AvgDailyGrossProfit = AvgGrossProfitPerUnit * (decimal)VolumeMedian;
             SellPriceIndex = AvgMaxPrice != 0 ? (double)((SellPrice / AvgMaxPrice) - 1) * 100 : 0;
             BuyPriceIndex = BuyPrice != 0 ? (double)((AvgMinPrice / BuyPrice) - 1) * 100 : 0;
         }

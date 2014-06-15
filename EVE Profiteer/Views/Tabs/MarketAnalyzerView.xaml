@@ -32,7 +32,7 @@
             <dxb:BarManager.Items>
                 <dxb:BarButtonItem Name="Analyze" Content="Analyze" Command="{Binding AnalyzeCommand}"
                                    Hint="Analyze market." />
-                <dxb:BarButtonItem Name="LoadOrders" Content="Load orders" Command="{Binding LoadOrdersCommand}"
+                <dxb:BarButtonItem Name="AnalyzeOrders" Content="Analyze orders" Command="{Binding AnalyzeOrdersCommand}"
                                    Hint="Analyze your current orders." />
                 <dxb:BarEditItem Name="RegionSelector" EditValue="{Binding SelectedRegion}" EditWidth="150"
                                  Hint="Region">
@@ -92,7 +92,7 @@
                         <dxb:BarDockInfo ContainerType="Top" />
                     </dxb:Bar.DockInfo>
                     <dxb:Bar.ItemLinks>
-                        <dxb:BarButtonItemLink BarItemName="LoadOrders" />
+                        <dxb:BarButtonItemLink BarItemName="AnalyzeOrders" />
                         <dxb:BarButtonItemLink BarItemName="AddCustomColumnButton" />
                     </dxb:Bar.ItemLinks>
                 </dxb:Bar>
@@ -107,7 +107,7 @@
                   VirtualizingPanel.IsVirtualizing="True"
                   VerticalAlignment="Stretch"
                   VerticalContentAlignment="Stretch"
-                  ItemsSource="{Binding BetterTreeRootNodes}">
+                  ItemsSource="{Binding MarketTreeNodes}">
             <TreeView.Resources>
                 <HierarchicalDataTemplate DataType="{x:Type models:TreeNode}"
                                           ItemsSource="{Binding Children}">
@@ -137,12 +137,12 @@
 
                 <!--CURRENT--> 
                 <dxg:GridControlBand Header="Current">
-                    <dxg:GridColumn FieldName="DailyProfit">
+                    <dxg:GridColumn FieldName="DailyGrossProfit">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="N0" />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="ProfitPerUnit">
+                    <dxg:GridColumn FieldName="GrossProfitPerUnit">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="N0" />
                         </dxg:GridColumn.EditSettings>
@@ -167,7 +167,7 @@
                             <dxe:TextEditSettings DisplayFormat="N0" />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="Margin">
+                    <dxg:GridColumn FieldName="GrossMargin">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="P2" />
                         </dxg:GridColumn.EditSettings>
@@ -176,7 +176,7 @@
 
                 <!--AVERAGE-->
                 <dxg:GridControlBand Header="Average">
-                    <dxg:GridColumn FieldName="AvgDailyProfit" Header="Daily Profit">
+                    <dxg:GridColumn FieldName="AvgDailyGrossProfit" Header="Daily Profit">
                         <dxg:GridColumn.EditSettings>
                             <dxe:TextEditSettings DisplayFormat="N0" />
                         </dxg:GridColumn.EditSettings>

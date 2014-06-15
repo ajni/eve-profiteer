@@ -1,42 +1,49 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Caliburn.Micro;
-using DevExpress.XtraPrinting.Native;
 using eZet.EveLib.Modules;
 using eZet.EveLib.Modules.Models;
 using eZet.EveProfiteer.Models;
-using eZet.EveProfiteer.Util;
 using OrderType = eZet.EveLib.Modules.OrderType;
 
 namespace eZet.EveProfiteer.Services {
     public class EveMarketService {
-        public EveMarketService() {
-            eveMarketData = new EveMarketData();
-            eveCentral = new EveCentral();
-            EveCrest = new EveCrest();
-        }
+        private readonly EveCrest _eveCrest = new EveCrest();
+        private readonly EveMarketData _eveMarketData = new EveMarketData();
 
-        private EveMarketData eveMarketData { get; set; }
 
-        private EveCentral eveCentral { get; set; }
-
-        public EveCrest EveCrest { get; private set; }
-
-        public async Task<EveMarketDataResponse<ItemOrders>> GetItemOrdersAsync(int region, int invType) {
+        public async Task<EveMarketDataResponse<ItemOrders>> GetItemOrderAsync(int region, int invType) {
             var options = new EveMarketDataOptions();
             options.Items.Add(invType);
             options.Regions.Add(region);
-            return await eveMarketData.GetItemOrdersAsync(options, OrderType.Both).ConfigureAwait(false);
+            return await _eveMarketData.GetItemOrdersAsync(options, OrderType.Both).ConfigureAwait(false);
+        }
+
+        public async Task<ItemOrders> GetItemOrdersAsync(int region, IEnumerable<int> invTypes) {
+            var options = new EveMarketDataOptions();
+            var orders = new ItemOrders();
+            options.Regions.Add(region);
+            foreach (var item in invTypes) {
+                options.Items.Add(item);
+                if (options.Items.Count >= 1000) {
+                    var result = (await _eveMarketData.GetItemOrdersAsync(options, OrderType.Both).ConfigureAwait(false)).Result;
+                    result.Orders.Apply(order => orders.Orders.Add(order));
+                    options.Items.Clear();
+                }
+            }
+            var finalResult =  (await _eveMarketData.GetItemOrdersAsync(options, OrderType.Both).ConfigureAwait(false)).Result;
+            finalResult.Orders.Apply(order => orders.Orders.Add(order));
+            return orders;
         }
 
         public async Task<MarketHistoryResponse> GetMarketHistoryAsync(int region, int invType) {
-            return await EveCrest.GetMarketHistoryAsync(region, invType).ConfigureAwait(false);
+            return await _eveCrest.GetMarketHistoryAsync(region, invType).ConfigureAwait(false);
         }
 
 
-        public async Task<MarketAnalyzer> GetMarketAnalyzerData(MapRegion region, StaStation station, ICollection<InvType> items,
+        public async Task<MarketAnalyzer> GetMarketAnalyzerData(MapRegion region, StaStation station,
+            ICollection<InvType> items,
             int dayLimit) {
             var historyOptions = new EveMarketDataOptions();
             historyOptions.AgeSpan = TimeSpan.FromDays(dayLimit);
@@ -53,83 +60,68 @@ namespace eZet.EveProfiteer.Services {
                 historyOptions.Items.Add(item.TypeId);
                 priceOptions.Items.Add(item.TypeId);
                 if (historyOptions.Items.Count > 1000) {
-                    var response = await eveMarketData.GetItemHistoryAsync(historyOptions).ConfigureAwait(false);
+                    EveMarketDataResponse<ItemHistory> response =
+                        await _eveMarketData.GetItemHistoryAsync(historyOptions).ConfigureAwait(false);
                     history.AddRange(response.Result.History);
                     historyOptions.Items.Clear();
                 }
                 if (priceOptions.Items.Count > 1000) {
-                    var sellOrdersTask =
-                        await eveMarketData.GetItemPriceAsync(priceOptions, OrderType.Sell).ConfigureAwait(false);
+                    EveMarketDataResponse<ItemPrices> sellOrdersTask =
+                        await _eveMarketData.GetItemPriceAsync(priceOptions, OrderType.Sell).ConfigureAwait(false);
                     sellOrders.AddRange(sellOrdersTask.Result.Prices);
-                    var buyOrdersTask =
-                        await eveMarketData.GetItemPriceAsync(priceOptions, OrderType.Buy).ConfigureAwait(false);
+                    EveMarketDataResponse<ItemPrices> buyOrdersTask =
+                        await _eveMarketData.GetItemPriceAsync(priceOptions, OrderType.Buy).ConfigureAwait(false);
                     buyOrders.AddRange(buyOrdersTask.Result.Prices);
                     priceOptions.Items.Clear();
                 }
             }
-            sellOrders.AddRange(eveMarketData.GetItemPrice(priceOptions, OrderType.Sell).Result.Prices);
-            buyOrders.AddRange(eveMarketData.GetItemPrice(priceOptions, OrderType.Buy).Result.Prices);
-            history.AddRange(eveMarketData.GetItemHistory(historyOptions).Result.History);
+            sellOrders.AddRange(_eveMarketData.GetItemPrice(priceOptions, OrderType.Sell).Result.Prices);
+            buyOrders.AddRange(_eveMarketData.GetItemPrice(priceOptions, OrderType.Buy).Result.Prices);
+            history.AddRange(_eveMarketData.GetItemHistory(historyOptions).Result.History);
             var res = new MarketAnalyzer(items, sellOrders, buyOrders, history);
             return res;
         }
 
         public Uri GetScannerLink(ICollection<int> items) {
-            var options = new EveMarketDataOptions { Items = items };
-            return eveMarketData.GetScannerUri(options);
+            var options = new EveMarketDataOptions {Items = items};
+            return _eveMarketData.GetScannerUri(options);
         }
 
-        public Task LoadMarketDataAsync(IEnumerable<Order> enumerable, int dayLimit, int region = 10000002) {
-            return Task.Run(() => loadMarketData(enumerable, dayLimit, region));
-        }
-
-        private async Task loadMarketData(IEnumerable<Order> enumerable, int dayLimit, int region = 10000002) {
-            var orders = enumerable as IList<Order> ?? enumerable.ToList();
-            if (orders.Count == 0) return;
+        public async Task<ItemPrices> GetItemPricesAsync(int stationId, IEnumerable<int> types) {
+            var prices = new ItemPrices();
+            prices.Prices = new EveMarketDataRowCollection<ItemPrices.ItemPriceEntry>();
             var options = new EveMarketDataOptions();
-            foreach (Order order in orders) {
-                options.Items.Add(order.TypeId);
-            }
-            options.AgeSpan = TimeSpan.FromDays(dayLimit);
-            options.AgeSpan = TimeSpan.FromDays(10);
-            options.Stations.Add(Properties.Settings.Default.DefaultStationId);
-            var pricesTask = eveMarketData.GetItemPriceAsync(options, OrderType.Both);
-            options.Regions.Add(region);
-            var historyTask = eveMarketData.GetItemHistoryAsync(options);
-            var prices = await pricesTask;
-            var priceLookup = prices.Result.Prices.ToLookup(f => f.TypeId);
-            var history = await historyTask;
-            ILookup<int, ItemHistory.ItemHistoryEntry> historyLookup = history.Result.History.ToLookup(f => f.TypeId);
-            foreach (Order order in orders) {
-                var itemHistory = historyLookup[order.TypeId].ToList();
-                var price = priceLookup[order.TypeId];
-                if (!itemHistory.IsEmpty()) {
-                    order.AvgPrice = itemHistory.Average(f => f.AvgPrice);
-                    order.AvgVolume = itemHistory.Average(f => f.Volume);
-                    order.CurrentBuyPrice = price.Single(t => t.OrderType == OrderType.Buy).Price;
-                    order.CurrentSellPrice = price.Single(t => t.OrderType == OrderType.Sell).Price;
+            options.Stations.Add(stationId);
+            foreach (int typeId in types) {
+                options.Items.Add(typeId);
+                if (options.Items.Count >= 1000) {
+                    var result = (await _eveMarketData.GetItemPriceAsync(options, OrderType.Both).ConfigureAwait(false)).Result;
+                    result.Prices.Apply(item => prices.Prices.Add(item));
+                    options.Items.Clear();
                 }
             }
+            var finalResult = (await _eveMarketData.GetItemPriceAsync(options, OrderType.Both).ConfigureAwait(false)).Result;
+            finalResult.Prices.Apply(item => prices.Prices.Add(item));
+            return prices;
         }
 
-        public async Task<EveMarketDataRowCollection<ItemPrices.ItemPriceEntry>> GetPriceData(IEnumerable<int> types,
-            int station) {
+        public async Task<ItemHistory> GetItemHistoryAsync(int region, IEnumerable<int> types, int dayLimit) {
+            var history = new ItemHistory();
+            history.History = new EveMarketDataRowCollection<ItemHistory.ItemHistoryEntry>();
             var options = new EveMarketDataOptions();
-            types.Apply(type => options.Items.Add(type));
-            options.Stations.Add(station);
-            var res = await eveMarketData.GetItemPriceAsync(options, OrderType.Both).ConfigureAwait(false);
-            return res.Result.Prices;
-        }
-
-        public async Task<EveMarketDataRowCollection<ItemHistory.ItemHistoryEntry>> GetHistoryData(IEnumerable<int> types,
-    int region, int days) {
-            var options = new EveMarketDataOptions();
-            types.Apply(type => options.Items.Add(type));
+            options.AgeSpan = TimeSpan.FromDays(dayLimit);
             options.Regions.Add(region);
-            options.AgeSpan = TimeSpan.FromDays(days);
-            var res = await eveMarketData.GetItemHistoryAsync(options).ConfigureAwait(false);
-            return res.Result.History;
+            foreach (int typeId in types) {
+                options.Items.Add(typeId);
+                if (options.Items.Count >= 1000) {
+                    var result = (await _eveMarketData.GetItemHistoryAsync(options).ConfigureAwait(false)).Result;
+                    result.History.Apply(item => history.History.Add(item));
+                    options.Items.Clear();
+                }
+            }
+            var finalResult = (await _eveMarketData.GetItemHistoryAsync(options).ConfigureAwait(false)).Result;
+            finalResult.History.Apply(item => history.History.Add(item));
+            return history;
         }
-
     }
 }
