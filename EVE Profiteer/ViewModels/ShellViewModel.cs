@@ -1,4 +1,3 @@
-using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -50,7 +49,7 @@ namespace eZet.EveProfiteer.ViewModels {
             UpdateApiCommand = new DelegateCommand(ExecuteUpdateApi);
             UpdateRefTypesCommand = new DelegateCommand(ExecuteUpdateRefTypes);
             ProcessUnaccountedTransactionsCommand = new DelegateCommand(ExecuteProcessUnaccountedTransactions);
-
+            UpdateIndustryJobsCommand = new DelegateCommand(ExecuteUpdateIndystryJobs);
 
             TradeSummaryViewModel = IoC.Get<TradeSummaryViewModel>();
             TradeAnalyzer = IoC.Get<TradeAnalyzerViewModel>();
@@ -64,6 +63,13 @@ namespace eZet.EveProfiteer.ViewModels {
             JournalViewModel = IoC.Get<JournalViewModel>();
             SelectKey();
             Task.Run(() => InitAsync());
+        }
+
+        private async void ExecuteUpdateIndystryJobs() {
+            _eventAggregator.PublishOnUIThread("Updating Industry Jobs...");
+            await _shellService.UpdateIndustryJobs();
+            _eventAggregator.PublishOnUIThread("Industry Jobs Updated");
+
         }
 
         private async void ExecuteProcessUnaccountedTransactions() {
@@ -104,7 +110,10 @@ namespace eZet.EveProfiteer.ViewModels {
             get { return ApplicationHelper.ActiveKeyEntity.Name; }
         }
 
+        public ICommand UpdateIndustryJobsCommand { get; private set; }
+
         public ICommand ProcessUnaccountedTransactionsCommand { get; private set; }
+
         public ICommand ProcessAllTransactionsCommand { get; private set; }
 
         public ICommand UpdateAssetsCommand { get; private set; }
@@ -149,7 +158,7 @@ namespace eZet.EveProfiteer.ViewModels {
             ActivateItem(TransactionDetailsViewModel);
         }
 
-        public async void SelectKey() {
+        public void SelectKey() {
             Items.Clear();
             ApplicationHelper.ActiveKeyEntity = ActiveKeyEntity;
             ApplicationHelper.ActiveKey = ActiveKey;

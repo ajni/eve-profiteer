@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Caliburn.Micro;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Util;
-using MoreLinq;
 
 namespace eZet.EveProfiteer.Services {
     public class ShellService {
@@ -18,6 +17,11 @@ namespace eZet.EveProfiteer.Services {
 
         public ShellService(EveApiService eveApiService) {
             _eveApiService = eveApiService;
+        }
+
+
+        public async Task UpdateIndustryJobs() {
+            var result = await _eveApiService.GetIndustryJobs(ApplicationHelper.ActiveKey, ApplicationHelper.ActiveKeyEntity);
         }
 
         public async Task UpdateRefIdsAsync() {

@@ -54,7 +54,7 @@ namespace eZet.EveProfiteer.ViewModels.Dialogs {
         }
 
         [Required]
-        [System.ComponentModel.DataAnnotations.Range(0, int.MaxValue)]
+        [Range(0, int.MaxValue)]
         public int BlueprintMe {
             get { return _blueprintMe; }
             set {

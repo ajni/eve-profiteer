@@ -114,5 +114,10 @@ namespace eZet.EveProfiteer.Services {
             return transactions;
         }
 
+        public async Task<IndustryJobs> GetIndustryJobs(ApiKey key, ApiKeyEntity entity) {
+            var character = new Character(key.ApiKeyId, key.VCode, entity.EntityId);
+            var result = (await character.GetIndustryJobsAsync().ConfigureAwait(false)).Result;
+            return result;
+        }
     }
 }

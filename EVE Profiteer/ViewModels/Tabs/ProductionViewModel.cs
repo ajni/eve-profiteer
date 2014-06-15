@@ -28,6 +28,8 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             AddProductionBatchCommand = new DelegateCommand(ExecuteAddProductionBatch);
         }
 
+  
+
         public void ExecuteAddProductionBatch() {
             var model = IoC.Get<NewProductionBatchViewModel>();
             bool? result = _windowManager.ShowDialog(model);
