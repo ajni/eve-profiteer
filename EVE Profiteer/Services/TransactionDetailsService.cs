@@ -3,22 +3,16 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
-using Caliburn.Micro;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Util;
 
 namespace eZet.EveProfiteer.Services {
-    public class TransactionDetailsService {
-        private EveProfiteerDbEntities getDb() {
-            return IoC.Get<EveProfiteerDbEntities>();
-        }
-
-
+    public class TransactionDetailsService : CurrentEntityService {
         public async Task<List<InvType>> GetSelectableItems() {
-            using (EveProfiteerDbEntities db = getDb()) {
+            using (EveProfiteerDbEntities db = CreateDb()) {
                 IQueryable<IGrouping<InvType, Transaction>> groups =
-                    db.Transactions.AsNoTracking().Where(t => t.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id)
-                        .GroupBy(t => t.InvType);
+                    MyTransactions(db).Where(t => t.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id)
+                        .AsNoTracking().GroupBy(t => t.InvType);
                 return
                     await
                         groups.AsNoTracking()
@@ -30,18 +24,21 @@ namespace eZet.EveProfiteer.Services {
         }
 
         public async Task<List<Transaction>> GetTransactions(InvType type, DateTime start, DateTime end) {
-            using (EveProfiteerDbEntities db = getDb()) {
+            using (EveProfiteerDbEntities db = CreateDb()) {
                 return await
-                    db.Transactions.Include("InvType").Where(f => f.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id &&
-                                    f.TypeId == type.TypeId && f.TransactionDate >= start.Date &&
-                                    f.TransactionDate <= end.Date).ToListAsync().ConfigureAwait(false);
+                    MyTransactions(db).Where(f => f.TypeId == type.TypeId && f.TransactionDate >= start.Date &&
+                                                  f.TransactionDate <= end.Date)
+                        .Include("InvType")
+                        .AsNoTracking()
+                        .ToListAsync()
+                        .ConfigureAwait(false);
             }
         }
 
         public async Task<Order> GetOrder(InvType type) {
-            using (var db = getDb()) {
-                type = db.InvTypes.Attach(type);
-                var order = await db.Orders.Where(t => t.TypeId == type.TypeId && t.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id).ToListAsync().ConfigureAwait(false);
+            using (EveProfiteerDbEntities db = CreateDb()) {
+                List<Order> order =
+                    await MyOrders(db).Where(t => t.TypeId == type.TypeId).ToListAsync().ConfigureAwait(false);
                 return order.SingleOrDefault();
             }
         }

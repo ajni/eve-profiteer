@@ -18,7 +18,8 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             Month,
             All,
             Since,
-            Period}
+            Period
+        }
 
         private readonly TradeAnalyzerService _tradeAnalyzerService;
         private readonly IEventAggregator _eventAggregator;

@@ -6,7 +6,7 @@ using eZet.EveProfiteer.Util;
 namespace eZet.EveProfiteer.Services {
     public abstract class CurrentEntityService {
 
-         protected EveProfiteerDbEntities GetDb() {
+        protected EveProfiteerDbEntities CreateDb() {
             return IoC.Get<EveProfiteerDbEntities>();
         }
 
@@ -17,7 +17,6 @@ namespace eZet.EveProfiteer.Services {
         public IQueryable<Order> MyOrders(EveProfiteerDbEntities db) {
             return db.Orders.Where(t => t.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id);
         }
-
 
     }
 }
