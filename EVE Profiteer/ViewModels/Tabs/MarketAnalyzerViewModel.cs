@@ -166,8 +166,8 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
 
         public async Task InitAsync() {
             MarketTreeNodes =
-                await _marketAnalyzerService.GetMarketTree(treeViewCheckBox_PropertyChanged).ConfigureAwait(false);
-            Regions = await _marketAnalyzerService.GetRegions().ConfigureAwait(false);
+                await _marketAnalyzerService.GetMarketTreeAsync(treeViewCheckBox_PropertyChanged).ConfigureAwait(false);
+            Regions = await _marketAnalyzerService.GetRegionsAsync().ConfigureAwait(false);
             SelectedRegion = Regions.SingleOrDefault(f => f.RegionId == ConfigManager.DefaultRegion);
             if (SelectedRegion != null) {
                 Stations = SelectedRegion.StaStations.OrderByDescending(f => f.StationName).ToList();
@@ -212,7 +212,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
         }
 
         private async void ExecuteAnalyzeOrders() {
-            List<InvType> items = await _marketAnalyzerService.GetInvTypesForOrders().ConfigureAwait(false);
+            List<InvType> items = await _marketAnalyzerService.GetInvTypesForOrdersAsync().ConfigureAwait(false);
             await analyze(items).ConfigureAwait(false);
         }
 
@@ -221,7 +221,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
 
             ICollection<MarketAnalyzerEntry> result =
                 await
-                    _marketAnalyzerService.Analyze(SelectedRegion, SelectedStation, items, DayLimit)
+                    _marketAnalyzerService.AnalyzeAsync(SelectedRegion, SelectedStation, items, DayLimit)
                         .ConfigureAwait(false);
             MarketAnalyzerResults = new BindableCollection<MarketAnalyzerEntry>(result);
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Analyzing market data..."));

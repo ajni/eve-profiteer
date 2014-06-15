@@ -16,7 +16,7 @@ namespace eZet.EveProfiteer.Services {
             _eveMarketService = eveMarketService;
         }
 
-        public async Task<BindableCollection<TreeNode>> GetMarketTree(
+        public async Task<BindableCollection<TreeNode>> GetMarketTreeAsync(
             PropertyChangedEventHandler itemPropertyChanged) {
             using (var db = CreateDb()) {
                 var rootList = new BindableCollection<TreeNode>();
@@ -48,19 +48,19 @@ namespace eZet.EveProfiteer.Services {
             }
         }
 
-        public async Task<List<MapRegion>> GetRegions() {
+        public async Task<List<MapRegion>> GetRegionsAsync() {
             using (var db = CreateDb()) {
                 return await db.MapRegions.AsNoTracking().Include("StaStations").OrderBy(region => region.RegionName).ToListAsync().ConfigureAwait(false);
             }
         }
 
-        public async Task<List<InvType>> GetInvTypesForOrders() {
+        public async Task<List<InvType>> GetInvTypesForOrdersAsync() {
             using (var db = CreateDb()) {
                 return await MyOrders(db).Select(order => order.InvType).ToListAsync().ConfigureAwait(false);
             }
         }
 
-        public async Task<ICollection<MarketAnalyzerEntry>> Analyze(MapRegion region, StaStation station, IEnumerable<InvType> invTypes, int days) {
+        public async Task<IList<MarketAnalyzerEntry>> AnalyzeAsync(MapRegion region, StaStation station, IEnumerable<InvType> invTypes, int days) {
             var items = invTypes.Select(type => type.TypeId).ToList();
             var priceResult = await _eveMarketService.GetItemPricesAsync(station.StationId, items).ConfigureAwait(false);
             var historyResult = await _eveMarketService.GetItemHistoryAsync(region.RegionId, items, days).ConfigureAwait(false);

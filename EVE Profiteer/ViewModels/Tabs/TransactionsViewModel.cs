@@ -82,8 +82,8 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             }
         }
 
-        public async Task InitAsync() {
-
+        public Task InitAsync() {
+            return Task.FromResult(1);
         }
 
 

@@ -41,8 +41,8 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
 
         public ICommand AddProductionBatchCommand { get; private set; }
 
-        public async Task InitAsync() {
-
+        public Task InitAsync() {
+            return Task.FromResult(1);
 
         }
 

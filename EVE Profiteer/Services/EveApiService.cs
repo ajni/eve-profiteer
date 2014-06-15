@@ -49,12 +49,12 @@ namespace eZet.EveProfiteer.Services {
         }
 
         public Task<IList<JournalEntry>> GetNewJournalEntriesAsync(ApiKey key, ApiKeyEntity entity, long latestId) {
-            return getJournalEntries(key, entity, 5000, latestId);
+            return getJournalEntriesAsync(key, entity, 5000, latestId);
         }
 
         public Task<IList<JournalEntry>> GetAllJournalEntriesAsync(ApiKey key, ApiKeyEntity entity,
             Func<JournalEntry> transactionFactory) {
-            return getJournalEntries(key, entity, 5000);
+            return getJournalEntriesAsync(key, entity, 5000);
         }
 
         public async Task<AssetList> GetAssetsAsync(ApiKey key, ApiKeyEntity entity) {
@@ -65,7 +65,7 @@ namespace eZet.EveProfiteer.Services {
             return assets.Result;
         }
 
-        private static async Task<IList<JournalEntry>> getJournalEntries(ApiKey key, ApiKeyEntity apiKeyEntity,
+        private static async Task<IList<JournalEntry>> getJournalEntriesAsync(ApiKey key, ApiKeyEntity apiKeyEntity,
             int rowLimit,
             long limitId = 0) {
             var list = new List<JournalEntry>();
@@ -85,7 +85,7 @@ namespace eZet.EveProfiteer.Services {
                 try {
                     res =
                         await entity.GetWalletJournalAsync(rowLimit, sortedList.Last().RefId).ConfigureAwait(false);
-                } catch (Exception e) {
+                } catch (Exception) {
                     return list;
                 }
             }

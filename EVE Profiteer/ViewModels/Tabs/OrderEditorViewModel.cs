@@ -194,7 +194,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
         }
 
 
-        public async void ImportXml() {
+        public void ImportXml() {
             var dialog = new FolderBrowserDialog();
             dialog.ShowNewFolderButton = false;
             dialog.SelectedPath = ConfigManager.OrderXmlPath;

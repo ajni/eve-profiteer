@@ -76,10 +76,6 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             await UpdateMarketData().ConfigureAwait(false);
         }
 
-        protected override async void OnInitialize() {
-            //await UpdateMarketData().ConfigureAwait(false);
-        }
-
         private async Task UpdateMarketData() {
             Assets.IsNotifying = false;
             await _assetService.UpdateMarketData(Assets, Settings.Default.DefaultRegionId,

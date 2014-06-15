@@ -13,7 +13,7 @@ namespace eZet.EveProfiteer.Models {
             Result = new List<MarketAnalyzerEntry>();
         }
 
-        public ICollection<MarketAnalyzerEntry> Result { get; set; }
+        public IList<MarketAnalyzerEntry> Result { get; set; }
 
         private IDictionary<int, ItemPrices.ItemPriceEntry> sellOrders { get; set; }
 
