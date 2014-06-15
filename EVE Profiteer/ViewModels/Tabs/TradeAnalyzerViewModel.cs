@@ -18,8 +18,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             Month,
             All,
             Since,
-            Period
-        }
+            Period}
 
         private readonly TradeAnalyzerService _tradeAnalyzerService;
         private readonly IEventAggregator _eventAggregator;
@@ -144,10 +143,10 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
         private async Task analyze(DateTime start, DateTime end) {
             Items.IsNotifying = false;
             Items.Clear();
-            var transactionGroups = await _tradeAnalyzerService.GetTransactionGroupsByTypeId(start, end).ConfigureAwait(false);
+            var transactionGroups = (await _tradeAnalyzerService.GetTransactions(start, end).ConfigureAwait(false)).GroupBy(t => t.InvType);
             ILookup<int, Order> orders = (await _tradeAnalyzerService.GetOrders()).ToLookup(order => order.TypeId);
             foreach (var transactionCollection in transactionGroups) {
-                Items.Add(new TransactionAggregate(transactionCollection.First().InvType, transactionCollection.ToList(),
+                Items.Add(new TransactionAggregate(transactionCollection.Key, transactionCollection.ToList(),
                     orders[transactionCollection.First().TypeId].SingleOrDefault()));
             }
             Items.IsNotifying = true;

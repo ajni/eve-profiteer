@@ -8,11 +8,10 @@ using eZet.EveProfiteer.Models;
 namespace eZet.EveProfiteer.Services {
     public class TradeAnalyzerService : CurrentEntityService {
 
-        public async Task<List<IGrouping<int, Transaction>>> GetTransactionGroupsByTypeId(DateTime start, DateTime end) {
+        public async Task<List<Transaction>> GetTransactions(DateTime start, DateTime end) {
             using (var db = GetDb()) {
                 return
-                    await MyTransactions(db).Where(t => t.TransactionDate >= start.Date && t.TransactionDate <= end.Date)
-                        .GroupBy(t => t.TypeId).ToListAsync().ConfigureAwait(false);
+                    await MyTransactions(db).Include("InvType").Where(t => t.TransactionDate >= start.Date && t.TransactionDate <= end.Date).ToListAsync().ConfigureAwait(false);
             }
         }
 
