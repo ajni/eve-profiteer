@@ -14,5 +14,10 @@ namespace eZet.EveProfiteer.Services {
             return db.Transactions.Where(t => t.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id);
         }
 
+        public IQueryable<Order> MyOrders(EveProfiteerDbEntities db) {
+            return db.Orders.Where(t => t.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id);
+        }
+
+
     }
 }

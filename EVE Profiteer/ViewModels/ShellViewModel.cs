@@ -40,7 +40,8 @@ namespace eZet.EveProfiteer.ViewModels {
             _eventAggregator.Subscribe(this);
             if (ActiveKey != null)
                 ActiveKeyEntity = ActiveKey.ApiKeyEntities.Single(f => f.EntityId == 977615922);
-
+            ApplicationHelper.ActiveKeyEntity = ActiveKeyEntity;
+            ApplicationHelper.ActiveKey = ActiveKey;
             ManageKeysCommand = new DelegateCommand(ManageKeys);
             UpdateTransactionsCommand = new DelegateCommand(ExecuteUpdateTransactions);
             ProcessAllTransactionsCommand = new DelegateCommand(ExecuteProcessAllTransactions);
@@ -160,8 +161,7 @@ namespace eZet.EveProfiteer.ViewModels {
 
         public void SelectKey() {
             Items.Clear();
-            ApplicationHelper.ActiveKeyEntity = ActiveKeyEntity;
-            ApplicationHelper.ActiveKey = ActiveKey;
+    
             //ApplicationHelper.ActiveKey = ActiveKey;
 
 

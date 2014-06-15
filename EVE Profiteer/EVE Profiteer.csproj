@@ -138,6 +138,7 @@
     <Compile Include="Services\JournalService.cs" />
     <Compile Include="Services\ProductionService.cs" />
     <Compile Include="Services\ShellService.cs" />
+    <Compile Include="Services\TradeAnalyzerService.cs" />
     <Compile Include="Services\TradeSummaryService.cs" />
     <Compile Include="Services\TransactionDetailsService.cs" />
     <Compile Include="Services\TransactionService.cs" />

@@ -55,7 +55,7 @@ namespace eZet.EveProfiteer {
             _container.PerRequest<JournalService>();
             _container.PerRequest<TransactionDetailsService>();
             _container.PerRequest<TradeSummaryService>();
-            
+            _container.PerRequest<TradeAnalyzerService>();
             // View Models
             _container.PerRequest<IShell, ShellViewModel>();
             _container.PerRequest<ManageKeysViewModel>();

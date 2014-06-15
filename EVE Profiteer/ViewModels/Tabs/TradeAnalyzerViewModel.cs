@@ -8,7 +8,6 @@ using DevExpress.Xpf.Mvvm;
 using eZet.EveProfiteer.Events;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
-using eZet.EveProfiteer.Util;
 
 namespace eZet.EveProfiteer.ViewModels.Tabs {
     public class TradeAnalyzerViewModel : Screen {
@@ -22,16 +21,13 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             Period
         }
 
-        private readonly EveProfiteerDataService _dataService;
+        private readonly TradeAnalyzerService _tradeAnalyzerService;
         private readonly IEventAggregator _eventAggregator;
-        private readonly IWindowManager _windowMananger;
         private ViewPeriodEnum _selectedViewPeriod;
 
-        public TradeAnalyzerViewModel(IWindowManager windowMananger, IEventAggregator eventAggregator,
-            EveProfiteerDataService dataService) {
-            _windowMananger = windowMananger;
+        public TradeAnalyzerViewModel(IEventAggregator eventAggregator, TradeAnalyzerService tradeAnalyzerService) {
             _eventAggregator = eventAggregator;
-            _dataService = dataService;
+            _tradeAnalyzerService = tradeAnalyzerService;
             DisplayName = "Trade Analyzer";
             Items = new BindableCollection<TransactionAggregate>();
             ViewTradeDetailsCommand = new DelegateCommand<TransactionAggregate>(ExecuteViewTradeDetails,
@@ -68,7 +64,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
 
 
         public IEnumerable<ViewPeriodEnum> ViewPeriodValues {
-            get { return Enum.GetValues(typeof (ViewPeriodEnum)).Cast<ViewPeriodEnum>(); }
+            get { return Enum.GetValues(typeof(ViewPeriodEnum)).Cast<ViewPeriodEnum>(); }
         }
 
         public ViewPeriodEnum SelectedViewPeriod {
@@ -84,12 +80,12 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
         private bool CanAddToOrders(ICollection<object> arg) {
             if (arg == null || !arg.Any())
                 return false;
-            List<TransactionAggregate> items = arg.Select(item => (TransactionAggregate) item).ToList();
+            List<TransactionAggregate> items = arg.Select(item => (TransactionAggregate)item).ToList();
             return items.All(item => item.Order == null);
         }
 
         private void ExecuteAddToOrders(ICollection<object> obj) {
-            List<InvType> items = obj.Select(item => ((TransactionAggregate) item).InvType).ToList();
+            List<InvType> items = obj.Select(item => ((TransactionAggregate)item).InvType).ToList();
             _eventAggregator.PublishOnUIThread(new AddToOrdersEventArgs(items));
         }
 
@@ -107,6 +103,8 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
         }
 
         public async void ViewPeriod() {
+            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Analyzing..."));
+
             ActualViewEnd = DateTime.UtcNow;
             switch (SelectedViewPeriod) {
                 case ViewPeriodEnum.All:
@@ -138,30 +136,22 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
                     ActualViewEnd = PeriodSelectorEnd;
                     break;
             }
-            await Task.Run(() => analyze(ActualViewStart, ActualViewEnd)).ConfigureAwait(false);
+            await analyze(ActualViewStart, ActualViewEnd).ConfigureAwait(false);
+            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Analysis complete"));
+
         }
 
-        private void analyze(DateTime start, DateTime end) {
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Analyzing..."));
-
+        private async Task analyze(DateTime start, DateTime end) {
             Items.IsNotifying = false;
             Items.Clear();
-            IQueryable<IGrouping<int, Transaction>> transactionGroups = _dataService.Db.Transactions.AsNoTracking()
-                .Where(
-                    t =>
-                        t.TransactionDate > start.Date && t.TransactionDate <= end.Date &&
-                        t.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id)
-                .GroupBy(t => t.TypeId);
-            ILookup<int, Order> orders =
-                _dataService.Db.Orders.Where(order => order.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id)
-                    .ToLookup(order => order.TypeId);
+            var transactionGroups = await _tradeAnalyzerService.GetTransactionGroupsByTypeId(start, end).ConfigureAwait(false);
+            ILookup<int, Order> orders = (await _tradeAnalyzerService.GetOrders()).ToLookup(order => order.TypeId);
             foreach (var transactionCollection in transactionGroups) {
                 Items.Add(new TransactionAggregate(transactionCollection.First().InvType, transactionCollection.ToList(),
                     orders[transactionCollection.First().TypeId].SingleOrDefault()));
             }
             Items.IsNotifying = true;
             Items.Refresh();
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Analysis complete"));
         }
     }
 }
