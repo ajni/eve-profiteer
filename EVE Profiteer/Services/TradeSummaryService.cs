@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using eZet.EveProfiteer.Models;
 namespace eZet.EveProfiteer.Services {
-    public class TradeSummaryService : CurrentEntityService {
+    public class TradeSummaryService : DbContextService {
         public async Task<List<Transaction>> GetTransactions(DateTime start, DateTime end) {
             using (var db = CreateDb()) {
                 return await

@@ -4,18 +4,22 @@ using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Util;
 
 namespace eZet.EveProfiteer.Services {
-    public abstract class CurrentEntityService {
+    public abstract class DbContextService {
 
         protected EveProfiteerDbEntities CreateDb() {
             return IoC.Get<EveProfiteerDbEntities>();
         }
 
-        public IQueryable<Transaction> MyTransactions(EveProfiteerDbEntities db) {
+        protected IQueryable<Transaction> MyTransactions(EveProfiteerDbEntities db) {
             return db.Transactions.Where(t => t.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id);
         }
 
-        public IQueryable<Order> MyOrders(EveProfiteerDbEntities db) {
+        protected IQueryable<Order> MyOrders(EveProfiteerDbEntities db) {
             return db.Orders.Where(t => t.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id);
+        }
+
+        protected IQueryable<InvType> GetMarketTypes(EveProfiteerDbEntities db) {
+            return db.InvTypes.Where(t => t.Published == true && t.MarketGroupId != null);
         }
 
     }

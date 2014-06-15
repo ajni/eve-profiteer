@@ -177,10 +177,11 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="Services\AssetService.cs" />
-    <Compile Include="Services\CurrentEntityService.cs" />
+    <Compile Include="Services\DbContextService.cs" />
     <Compile Include="Services\EveProfiteerDataService.cs" />
     <Compile Include="EventConfig.cs" />
     <Compile Include="Services\JournalService.cs" />
+    <Compile Include="Services\MarketBrowserService.cs" />
     <Compile Include="Services\ProductionService.cs" />
     <Compile Include="Services\ShellService.cs" />
     <Compile Include="Services\TradeAnalyzerService.cs" />

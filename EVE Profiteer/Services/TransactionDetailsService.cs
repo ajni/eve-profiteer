@@ -7,7 +7,7 @@ using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Util;
 
 namespace eZet.EveProfiteer.Services {
-    public class TransactionDetailsService : CurrentEntityService {
+    public class TransactionDetailsService : DbContextService {
         public async Task<List<InvType>> GetSelectableItems() {
             using (EveProfiteerDbEntities db = CreateDb()) {
                 IQueryable<IGrouping<InvType, Transaction>> groups =

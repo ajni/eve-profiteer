@@ -24,32 +24,17 @@ namespace eZet.EveProfiteer.Services {
 
         public EveCrest EveCrest { get; private set; }
 
-
-        public MarketBrowserItem GetDetails(InvType invType, MapRegion region) {
+        public async Task<EveMarketDataResponse<ItemOrders>> GetItemOrdersAsync(int region, int invType) {
             var options = new EveMarketDataOptions();
-            options.Items.Add(invType.TypeId);
-            options.Regions.Add(region.RegionId);
-            EveMarketDataResponse<ItemOrders> orderResponse = eveMarketData.GetItemOrders(options, OrderType.Both);
-            var buyOrders = new List<MarketOrder>();
-            var sellOrders = new List<MarketOrder>();
-            foreach (ItemOrders.ItemOrderEntry order in orderResponse.Result.Orders) {
-                MarketOrder marketOrder = ApiEntityMapper.Map(order, new MarketOrder());
-                if (order.OrderType == OrderType.Buy) {
-                    buyOrders.Add(marketOrder);
-                } else {
-                    sellOrders.Add(marketOrder);
-                }
-            }
-            MarketHistoryResponse marketHistoryResponse = EveCrest.GetMarketHistory(region.RegionId, invType.TypeId);
-            var marketHistory = new List<MarketHistoryEntry>();
-            foreach (MarketHistoryResponse.MarketHistoryEntry entry in marketHistoryResponse.Entries) {
-                marketHistory.Add(ApiEntityMapper.Map(entry, new MarketHistoryEntry()));
-            }
-
-
-            var item = new MarketBrowserItem(invType, marketHistory, sellOrders, buyOrders, 7);
-            return item;
+            options.Items.Add(invType);
+            options.Regions.Add(region);
+            return await eveMarketData.GetItemOrdersAsync(options, OrderType.Both).ConfigureAwait(false);
         }
+
+        public async Task<MarketHistoryResponse> GetMarketHistoryAsync(int region, int invType) {
+            return await EveCrest.GetMarketHistoryAsync(region, invType).ConfigureAwait(false);
+        }
+
 
         public async Task<MarketAnalyzer> GetMarketAnalyzerData(MapRegion region, StaStation station, ICollection<InvType> items,
             int dayLimit) {

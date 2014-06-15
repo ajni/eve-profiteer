@@ -22,7 +22,6 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             Since,
             Period
         }
-        private readonly EveProfiteerDataService _dataService;
         private readonly TransactionDetailsService _transactionDetailsService;
         private readonly IEventAggregator _eventAggregator;
         private InvType _selectedItem;
@@ -33,9 +32,8 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
         private DateTime _actualViewStart;
         private DateTime _actualViewEnd;
 
-        public TransactionDetailsViewModel(IEventAggregator eventAggregator, EveProfiteerDataService dataService, TransactionDetailsService transactionDetailsService) {
+        public TransactionDetailsViewModel(IEventAggregator eventAggregator, TransactionDetailsService transactionDetailsService) {
             _eventAggregator = eventAggregator;
-            _dataService = dataService;
             _transactionDetailsService = transactionDetailsService;
             DisplayName = "Transaction Details";
             DateTimeFormat = Properties.Settings.Default.DateTimeFormat;

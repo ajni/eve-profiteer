@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.Data.Entity;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Caliburn.Micro;
 using eZet.EveProfiteer.Models;

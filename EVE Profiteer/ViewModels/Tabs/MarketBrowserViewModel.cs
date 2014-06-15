@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -15,10 +14,8 @@ using eZet.EveProfiteer.Util;
 
 namespace eZet.EveProfiteer.ViewModels.Tabs {
     public class MarketBrowserViewModel : Screen, IHandle<ViewMarketDetailsEventArgs> {
-        private readonly EveProfiteerDataService _dataService;
-        private readonly EveMarketService _eveMarketService;
+        private readonly MarketBrowserService _marketBrowserService;
         private readonly IEventAggregator _eventAggregator;
-        private readonly IWindowManager _windowManager;
         private int _dayLimit = 5;
         private MarketBrowserItem _marketBrowserData;
         private InvType _selectedItem;
@@ -29,17 +26,11 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
         private DateTime _viewStart;
         private DateTime _viewEnd;
 
-        public MarketBrowserViewModel(IWindowManager windowManager, IEventAggregator eventAggregator,
-            EveMarketService eveMarketService, EveProfiteerDataService dataService) {
-            _eveMarketService = eveMarketService;
-            _dataService = dataService;
-            _windowManager = windowManager;
+        public MarketBrowserViewModel(MarketBrowserService marketBrowserService, IEventAggregator eventAggregator) {
+            _marketBrowserService = marketBrowserService;
             _eventAggregator = eventAggregator;
             _eventAggregator.Subscribe(this);
             DisplayName = "Market Browser";
-
-            SelectedRegion = _dataService.Db.MapRegions.Single(region => region.RegionId == ConfigManager.DefaultRegion);
-
 
             SelectItemCommand = new DelegateCommand<TreeNode>(ExecuteSelectItem);
             AddToOrdersCommand = new DelegateCommand(ExecuteAddToOrders, CanAddToOrders);
@@ -47,8 +38,9 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             ViewEnd = DateTime.UtcNow.Date;
             ViewStart = ViewEnd.AddMonths(-6).Date;
             PropertyChanged += OnPropertyChanged;
-            DateTimeMeasurement = DateTimeMeasurementUnit.Week;
+            DateTimeMeasurement = DateTimeMeasurementUnit.Day;
         }
+
 
         public ICommand AddToOrdersCommand { get; private set; }
 
@@ -130,8 +122,6 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             }
         }
 
-       
-
         public int DayLimit {
             get { return _dayLimit; }
             set {
@@ -175,10 +165,10 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
         }
 
         public async Task InitAsync() {
-            TreeRootNodes = await _dataService.BuildBetterMarketTree(null);
-            Regions = await _dataService.Db.MapRegions.AsNoTracking().ToListAsync();
+            Regions = await _marketBrowserService.GetRegions();
             SelectedRegion = Regions.Single(region => region.RegionId == ConfigManager.DefaultRegion);
-            InvTypes = await _dataService.GetMarketTypes().AsNoTracking().ToListAsync();
+            InvTypes = await _marketBrowserService.GetMarketTypes();
+            TreeRootNodes = await _marketBrowserService.GetMarketTree();
         }
 
 
@@ -188,8 +178,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
         }
 
         private async Task<MarketBrowserItem> GetMarketDetails(MapRegion region, InvType invType) {
-            return await
-                Task.Run(() => _eveMarketService.GetDetails(invType, region));
+            return await _marketBrowserService.GetMarketDetails(region, invType);
         }
     }
 }
