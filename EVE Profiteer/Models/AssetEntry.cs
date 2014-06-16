@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using eZet.EveLib.Modules.Models;
 using eZet.EveProfiteer.Models.Annotations;
+using eZet.EveProfiteer.Util;
 
 namespace eZet.EveProfiteer.Models {
     public class AssetEntry : INotifyPropertyChanged {
@@ -37,10 +38,15 @@ namespace eZet.EveProfiteer.Models {
             get { return _asset.InvTypes_TypeId; }
         }
 
-        public int Quantity { get { return _asset.Quantity; } }
+        public int CalculatedQuantity { get { return _asset.Quantity; } }
 
-        public int ActualQuantity { get { return _asset.ActualQuantity; } }
-        public int UnaccountedQuantity { get { return _asset.UnaccountedQuantity; } }
+        public int InventoryQuantity { get { return _asset.ActualQuantity; } }
+
+        public int UnaccountedQuantity { get { return CalculatedQuantity - InventoryQuantity - MarketQuantity; } }
+
+        public int MarketQuantity { get { return _asset.invType.MarketOrders.Where(order => order.ApiKeyEntityId == ApplicationHelper.ActiveKeyEntity.Id && order.Bid == false && order.OrderState == OrderState.Open).Sum(order => order.VolumeRemaining); } }
+
+        public int UnaccountedTransactionQuantity { get { return _asset.UnaccountedQuantity; } }
 
         public decimal AvgCostPerUnit { get { return _asset.LatestAverageCost; } }
 

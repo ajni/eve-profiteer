@@ -75,11 +75,15 @@
             
                 <!--INVENTORY-->
                 <dxg:GridControlBand Header="Inventory">
-                    <dxg:GridColumn FieldName="Quantity" AllowEditing="False" Width="80"
+                    <dxg:GridColumn FieldName="CalculatedQuantity" Header="Calculated" AllowEditing="False" Width="80"
                                     FixedWidth="True" />
-                    <dxg:GridColumn FieldName="ActualQuantity" AllowEditing="False" Width="80"
+                    <dxg:GridColumn FieldName="InventoryQuantity" Header="Inventory" AllowEditing="False" Width="80"
                                     FixedWidth="True" />
-                    <dxg:GridColumn FieldName="UnaccountedQuantity" AllowEditing="False" Width="80"
+                    <dxg:GridColumn FieldName="MarketQuantity" Header="Market" AllowEditing="False" Width="80"
+                                    FixedWidth="True" />
+                    <dxg:GridColumn FieldName="UnaccountedQuantity" Header="Unaccounted" AllowEditing="False" Width="80"
+                                    FixedWidth="True" />
+                    <dxg:GridColumn FieldName="UnaccountedTransactionQuantity" Header="Unaccounted Sold" AllowEditing="False" Width="80"
                                     FixedWidth="True" />
                     <dxg:GridColumn FieldName="ValuePerUnit" Header="Value PU"
                                     AllowEditing="False">

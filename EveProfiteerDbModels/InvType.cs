@@ -23,6 +23,7 @@ namespace eZet.EveProfiteer.Models
             this.ProductionBatches1 = new HashSet<ProductionBatch>();
             this.InvTypeMaterials = new HashSet<InvTypeMaterials>();
             this.InvProductType = new HashSet<InvBlueprintType>();
+            this.MarketOrders = new HashSet<MarketOrder>();
         }
     
         public int TypeId { get; set; }
@@ -49,5 +50,6 @@ namespace eZet.EveProfiteer.Models
         public virtual InvBlueprintType InvBlueprintType { get; set; }
         public virtual ICollection<InvTypeMaterials> InvTypeMaterials { get; set; }
         public virtual ICollection<InvBlueprintType> InvProductType { get; set; }
+        public virtual ICollection<MarketOrder> MarketOrders { get; set; }
     }
 }

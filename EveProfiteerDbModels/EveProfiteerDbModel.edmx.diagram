@@ -50,6 +50,10 @@
         <EntityTypeShape EntityType="EveProfiteerDbModel.FifoCost" Width="1.5" PointX="12.75" PointY="19.375" />
         <AssociationConnector Association="EveProfiteerDbModel.FK_FifoCost_BuyTranscation_ToTransactions" />
         <AssociationConnector Association="EveProfiteerDbModel.FK_FifoCost_SellTranscation_ToTransactions" />
+        <EntityTypeShape EntityType="EveProfiteerDbModel.MarketOrder" Width="1.5" PointX="0.5" PointY="28" />
+        <AssociationConnector Association="EveProfiteerDbModel.StaStationMarketOrder" />
+        <AssociationConnector Association="EveProfiteerDbModel.InvTypeMarketOrder" />
+        <AssociationConnector Association="EveProfiteerDbModel.ApiKeyEntityMarketOrder" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

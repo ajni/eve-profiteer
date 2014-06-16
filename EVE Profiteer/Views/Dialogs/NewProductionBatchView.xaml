@@ -77,7 +77,7 @@
                         <dxg:GridControlBand Header="Production">
                             <dxg:GridColumn FieldName="TypeName" />
                             <dxg:GridColumn FieldName="BaseQuantity" />
-                            <dxg:GridColumn FieldName="ActualQuantity" />
+                            <dxg:GridColumn FieldName="InventoryQuantity" />
                         </dxg:GridControlBand>
                         <dxg:GridControlBand Header="Inventory">
                             <dxg:GridColumn FieldName="CostPerUnit" />

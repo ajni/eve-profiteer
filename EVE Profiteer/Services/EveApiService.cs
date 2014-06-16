@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using eZet.EveLib.Modules;
 using eZet.EveLib.Modules.Models;
@@ -16,13 +15,13 @@ namespace eZet.EveProfiteer.Services {
         public CharacterData GetCharacterData(ApiKey key, ApiKeyEntity entity) {
             var data = new CharacterData();
             var ckey = new CharacterKey(key.ApiKeyId, key.VCode);
-            Character character = ckey.Characters.Single(c => c.CharacterId == entity.EntityId);
+            Character character = ckey.Characters.Single(c => c.CharacterId == entity.Id);
             EveApiResponse<CharacterInfo> info = character.GetCharacterInfo();
             return data;
         }
 
         public string GetPortraint(ApiKeyEntity entity) {
-            return new Image().GetCharacterPortrait(entity.EntityId, Image.CharacterPortraitSize.X256, @"c:\Temp");
+            return new Image().GetCharacterPortrait(entity.Id, Image.CharacterPortraitSize.X256, @"c:\Temp");
         }
 
         public Task<EveApiResponse<ReferenceTypes>> GetRefTypesAsync() {
@@ -34,7 +33,7 @@ namespace eZet.EveProfiteer.Services {
             var ckey = new CharacterKey(key.ApiKeyId, key.VCode);
             var list = new List<ApiKeyEntity>();
             foreach (Character c in ckey.Characters) {
-                list.Add(new ApiKeyEntity { EntityId = c.CharacterId, Name = c.CharacterName, Type = "Character" });
+                list.Add(ApiEntityMapper.Map(c, new ApiKeyEntity()));
             }
             return list;
         }
@@ -60,7 +59,7 @@ namespace eZet.EveProfiteer.Services {
         public async Task<AssetList> GetAssetsAsync(ApiKey key, ApiKeyEntity entity) {
             var data = new CharacterData();
             var ckey = await new CharacterKey(key.ApiKeyId, key.VCode).InitAsync().ConfigureAwait(false);
-            Character character = ckey.Characters.Single(c => c.CharacterId == entity.EntityId);
+            Character character = ckey.Characters.Single(c => c.CharacterId == entity.Id);
             var assets = await character.GetAssetListAsync().ConfigureAwait(false);
             return assets.Result;
         }
@@ -70,7 +69,7 @@ namespace eZet.EveProfiteer.Services {
             long limitId = 0) {
             var list = new List<JournalEntry>();
             var ckey = await new CharacterKey(key.ApiKeyId, key.VCode).InitAsync().ConfigureAwait(false);
-            Character entity = ckey.Characters.Single(c => c.CharacterId == apiKeyEntity.EntityId);
+            Character entity = ckey.Characters.Single(c => c.CharacterId == apiKeyEntity.Id);
             var res = await entity.GetWalletJournalAsync(rowLimit).ConfigureAwait(false);
             while (res.Result.Journal.Count > 0) {
                 var sortedList = res.Result.Journal.OrderByDescending(f => f.RefId);
@@ -96,7 +95,7 @@ namespace eZet.EveProfiteer.Services {
             long limitId = 0) {
             var transactions = new List<Transaction>();
             var ckey = await new CharacterKey(key.ApiKeyId, key.VCode).InitAsync().ConfigureAwait(false);
-            Character entity = ckey.Characters.Single(c => c.CharacterId == apiKeyEntity.EntityId);
+            Character entity = ckey.Characters.Single(c => c.CharacterId == apiKeyEntity.Id);
             EveApiResponse<WalletTransactions> res = await entity.GetWalletTransactionsAsync(rowLimit).ConfigureAwait(false);
             while (res.Result.Transactions.Count > 0) {
                 IOrderedEnumerable<WalletTransactions.Transaction> sortedList =
@@ -115,9 +114,14 @@ namespace eZet.EveProfiteer.Services {
         }
 
         public async Task<IndustryJobs> GetIndustryJobs(ApiKey key, ApiKeyEntity entity) {
-            var character = new Character(key.ApiKeyId, key.VCode, entity.EntityId);
+            var character = new Character(key.ApiKeyId, key.VCode, entity.Id);
             var result = (await character.GetIndustryJobsAsync().ConfigureAwait(false)).Result;
             return result;
+        }
+
+        public async Task<MarketOrders> GetMarketOrdersAsync(ApiKey activeKey, ApiKeyEntity apiKeyEntity) {
+            var entity = new Character(activeKey.ApiKeyId, activeKey.VCode, apiKeyEntity.Id);
+            return (await entity.GetMarketOrdersAsync()).Result;
         }
     }
 }

@@ -1,10 +1,20 @@
-﻿using eZet.EveLib.Modules.Models;
+﻿using eZet.EveLib.Modules;
+using eZet.EveLib.Modules.Models;
 using eZet.EveLib.Modules.Models.Character;
 using eZet.EveLib.Modules.Models.Misc;
 using eZet.EveProfiteer.Models;
+using OrderType = eZet.EveLib.Modules.Models.OrderType;
 
 namespace eZet.EveProfiteer.Util {
     public static class ApiEntityMapper {
+
+        public static ApiKeyEntity Map(Character source, ApiKeyEntity target) {
+            target.Id = (int)source.CharacterId;
+            target.Name = source.CharacterName;
+            target.Type = "Character";
+            return target;
+        }
+
         public static Transaction Map(WalletTransactions.Transaction source, Transaction target) {
             target.TransactionId = source.TransactionId;
             target.TransactionDate = source.TransactionDate;
@@ -21,6 +31,25 @@ namespace eZet.EveProfiteer.Util {
             target.TransactionFor = source.TransactionFor;
             target.JournalTransactionId = source.JournalTransactionId;
             target.ClientTypeId = source.ClientTypeId;
+            return target;
+        }
+
+        public static MarketOrder Map(MarketOrders.MarketOrder source, MarketOrder target) {
+            target.OrderId = source.OrderId;
+            target.ApiKeyEntityId = (int)source.CharacterId;
+            target.StationId = source.StationId;
+            target.VolumeEntered = source.VolumeEntered;
+            target.VolumeRemaining = source.VolumeRemaining;
+            target.MinVolume = source.MinVolume;
+            target.OrderState = (OrderState)source.OrderState;
+            target.TypeId = source.TypeId;
+            target.Range = source.Range;
+            target.AccountKey = source.AccountKey;
+            target.Duration = source.Duration;
+            target.Escrow = source.Escrow;
+            target.Price = source.Price;
+            target.Bid = source.Bid != 0;
+            target.Issued = source.IssuedDate;
             return target;
         }
 
@@ -44,7 +73,7 @@ namespace eZet.EveProfiteer.Util {
             return target;
         }
 
-        public static MarketOrder Map(ItemOrders.ItemOrderEntry source, MarketOrder target) {
+        public static MarketBrowserOrder Map(ItemOrders.ItemOrderEntry source, MarketBrowserOrder target) {
             target.TypeId = source.TypeId;
             target.StationId = source.StationId;
             target.SolarSystemId = source.SolarSystemId;

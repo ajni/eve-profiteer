@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace eZet.EveProfiteer.Models {
-    public class MarketOrder {
+    public class MarketBrowserOrder {
         public int TypeId { get; set; }
 
         public int StationId { get; set; }

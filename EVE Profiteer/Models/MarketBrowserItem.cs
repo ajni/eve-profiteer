@@ -5,7 +5,7 @@ using MoreLinq;
 namespace eZet.EveProfiteer.Models {
     public class MarketBrowserItem {
         public MarketBrowserItem(InvType invType, IEnumerable<MarketHistoryEntry> marketHistory,
-            IEnumerable<MarketOrder> sellOrders, IEnumerable<MarketOrder> buyOrders, int donchianLength) {
+            IEnumerable<MarketBrowserOrder> sellOrders, IEnumerable<MarketBrowserOrder> buyOrders, int donchianLength) {
             InvType = invType;
             MarketHistory = marketHistory.OrderBy(entry => entry.Date).ToList();
             BuyOrders = buyOrders.OrderByDescending(t => t.Price).ToList();
@@ -21,9 +21,9 @@ namespace eZet.EveProfiteer.Models {
         public InvType InvType { get; set; }
         public ICollection<MarketHistoryEntry> MarketHistory { get; set; }
 
-        public ICollection<MarketOrder> SellOrders { get; private set; }
+        public ICollection<MarketBrowserOrder> SellOrders { get; private set; }
 
-        public ICollection<MarketOrder> BuyOrders { get; private set; }
+        public ICollection<MarketBrowserOrder> BuyOrders { get; private set; }
 
         public decimal CurrentBuyPrice { get; private set; }
 

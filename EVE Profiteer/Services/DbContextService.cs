@@ -18,6 +18,14 @@ namespace eZet.EveProfiteer.Services {
             return db.Orders.Where(t => t.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id);
         }
 
+        protected IQueryable<Asset> MyAssets(EveProfiteerDbEntities db) {
+            return db.Assets.Where(t => t.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id);
+        }
+
+        protected IQueryable<MarketOrder> MyMarketOrders(EveProfiteerDbEntities db) {
+            return db.MarketOrders.Where(t => t.ApiKeyEntityId == ApplicationHelper.ActiveKeyEntity.Id);
+        }
+
         protected IQueryable<InvType> GetMarketTypes(EveProfiteerDbEntities db) {
             return db.InvTypes.Where(t => t.Published == true && t.MarketGroupId != null);
         }

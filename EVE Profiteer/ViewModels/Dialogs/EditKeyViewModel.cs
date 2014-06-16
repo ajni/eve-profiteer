@@ -49,7 +49,7 @@ namespace eZet.EveProfiteer.ViewModels.Dialogs {
         public void SaveButton() {
             if (isRefreshed) {
                 foreach (ApiKeyEntity entity in Entities) {
-                    ApiKeyEntity a = Key.ApiKeyEntities.Single(e => e.EntityId == entity.EntityId);
+                    ApiKeyEntity a = Key.ApiKeyEntities.Single(e => e.Id == entity.Id);
                     if (a != null) {
                         a.IsActive = entity.IsActive;
                     }

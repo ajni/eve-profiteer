@@ -39,7 +39,7 @@ namespace eZet.EveProfiteer.ViewModels {
             ActiveKey = _keyManagementService.AllApiKeys().FirstOrDefault();
             _eventAggregator.Subscribe(this);
             if (ActiveKey != null)
-                ActiveKeyEntity = ActiveKey.ApiKeyEntities.Single(f => f.EntityId == 977615922);
+                ActiveKeyEntity = ActiveKey.ApiKeyEntities.Single(f => f.Id == 977615922);
             ApplicationHelper.ActiveKeyEntity = ActiveKeyEntity;
             ApplicationHelper.ActiveKey = ActiveKey;
             ManageKeysCommand = new DelegateCommand(ManageKeys);
@@ -51,6 +51,7 @@ namespace eZet.EveProfiteer.ViewModels {
             UpdateRefTypesCommand = new DelegateCommand(ExecuteUpdateRefTypes);
             ProcessUnaccountedTransactionsCommand = new DelegateCommand(ExecuteProcessUnaccountedTransactions);
             UpdateIndustryJobsCommand = new DelegateCommand(ExecuteUpdateIndystryJobs);
+            UpdateMarketOrdersCommand = new DelegateCommand(ExecuteUpdateMarketOrders);
 
             TradeSummaryViewModel = IoC.Get<TradeSummaryViewModel>();
             TradeAnalyzer = IoC.Get<TradeAnalyzerViewModel>();
@@ -66,16 +67,6 @@ namespace eZet.EveProfiteer.ViewModels {
             Task.Run(() => InitAsync());
         }
 
-        private async void ExecuteUpdateIndystryJobs() {
-            _eventAggregator.PublishOnUIThread("Updating Industry Jobs...");
-            await _shellService.UpdateIndustryJobs();
-            _eventAggregator.PublishOnUIThread("Industry Jobs Updated");
-
-        }
-
-        private async void ExecuteProcessUnaccountedTransactions() {
-            await _shellService.ProcessUnaccountedTransactionsAsync().ConfigureAwait(false);
-        }
 
         public AssetsViewModel AssetsViewModel { get; set; }
 
@@ -111,6 +102,7 @@ namespace eZet.EveProfiteer.ViewModels {
             get { return ApplicationHelper.ActiveKeyEntity.Name; }
         }
 
+        public ICommand UpdateMarketOrdersCommand { get; private set; }
         public ICommand UpdateIndustryJobsCommand { get; private set; }
 
         public ICommand ProcessUnaccountedTransactionsCommand { get; private set; }
@@ -161,7 +153,7 @@ namespace eZet.EveProfiteer.ViewModels {
 
         public void SelectKey() {
             Items.Clear();
-    
+
             //ApplicationHelper.ActiveKey = ActiveKey;
 
 
@@ -181,7 +173,6 @@ namespace eZet.EveProfiteer.ViewModels {
             Items.Add(TransactionsViewModel);
             Items.Add(JournalViewModel);
 
-
             //Items.Add(IoC.Get<TransactionDetailsViewModel>());
             //Items.Add(IoC.Get<ProfitViewModel>());
 
@@ -193,7 +184,6 @@ namespace eZet.EveProfiteer.ViewModels {
 
         public async void InitAsync() {
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Initializing..."));
-
 
             _trace.TraceEvent(TraceEventType.Verbose, 0, "TradeSummaryViewModel.InitAsync");
             await TradeSummaryViewModel.InitAsync();
@@ -227,6 +217,8 @@ namespace eZet.EveProfiteer.ViewModels {
             await _shellService.UpdateTransactionsAsync().ConfigureAwait(false);
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Updating Journal..."));
             await _shellService.UpdateJournalAsync().ConfigureAwait(false);
+            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Updating Market Orders..."));
+            await _shellService.UpdateMarketOrdersAsync().ConfigureAwait(false);
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("API Update Complete"));
         }
 
@@ -258,6 +250,23 @@ namespace eZet.EveProfiteer.ViewModels {
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Processing All Transactions..."));
             await _shellService.ProcessAllTransactionsAsync();
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("All Transactions Processed"));
+        }
+
+
+        private async void ExecuteUpdateIndystryJobs() {
+            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Updating Industry Jobs..."));
+            await _shellService.UpdateIndustryJobs();
+            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Industry Jobs Updated"));
+        }
+
+        private async void ExecuteProcessUnaccountedTransactions() {
+            await _shellService.ProcessUnaccountedTransactionsAsync().ConfigureAwait(false);
+        }
+
+        private async void ExecuteUpdateMarketOrders() {
+            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Updating Market Orders..."));
+            var result = await _shellService.UpdateMarketOrdersAsync().ConfigureAwait(false);
+            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Market Orders Updated ({0})", result));
         }
     }
 }

@@ -67,14 +67,14 @@ namespace eZet.EveProfiteer.Services {
 
         public async Task<MarketBrowserItem> GetMarketDetails(MapRegion region, InvType invType) {
             EveMarketDataResponse<ItemOrders> orderResponse = await _eveMarketService.GetItemOrderAsync(region.RegionId, invType.TypeId).ConfigureAwait(false);
-            var buyOrders = new List<MarketOrder>();
-            var sellOrders = new List<MarketOrder>();
+            var buyOrders = new List<MarketBrowserOrder>();
+            var sellOrders = new List<MarketBrowserOrder>();
             foreach (ItemOrders.ItemOrderEntry order in orderResponse.Result.Orders) {
-                MarketOrder marketOrder = ApiEntityMapper.Map(order, new MarketOrder());
+                MarketBrowserOrder marketBrowserOrder = ApiEntityMapper.Map(order, new MarketBrowserOrder());
                 if (order.OrderType == OrderType.Buy) {
-                    buyOrders.Add(marketOrder);
+                    buyOrders.Add(marketBrowserOrder);
                 } else {
-                    sellOrders.Add(marketOrder);
+                    sellOrders.Add(marketBrowserOrder);
                 }
             }
             MarketHistoryResponse history = await _eveMarketService.GetMarketHistoryAsync(region.RegionId, invType.TypeId).ConfigureAwait(false);

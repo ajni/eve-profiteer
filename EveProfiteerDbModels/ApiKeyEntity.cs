@@ -22,10 +22,10 @@ namespace eZet.EveProfiteer.Models
             this.Orders = new HashSet<Order>();
             this.Assets = new HashSet<Asset>();
             this.ProductionBatches = new HashSet<ProductionBatch>();
+            this.MarketOrders = new HashSet<MarketOrder>();
         }
     
         public int Id { get; set; }
-        public long EntityId { get; set; }
         public string Name { get; set; }
         public string Type { get; set; }
         public string ImagePath { get; set; }
@@ -37,5 +37,6 @@ namespace eZet.EveProfiteer.Models
         public virtual ICollection<Order> Orders { get; set; }
         public virtual ICollection<Asset> Assets { get; set; }
         public virtual ICollection<ProductionBatch> ProductionBatches { get; set; }
+        public virtual ICollection<MarketOrder> MarketOrders { get; set; }
     }
 }

@@ -17,8 +17,7 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="EntityId" Type="bigint" Nullable="false" />
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="nvarchar(max)" />
           <Property Name="Type" Type="nvarchar(max)" />
           <Property Name="ImagePath" Type="nvarchar(max)" />
@@ -179,6 +178,27 @@
           <Property Name="zMax" Type="float" />
           <Property Name="factionID" Type="int" />
           <Property Name="radius" Type="float" />
+        </EntityType>
+        <EntityType Name="MarketOrders">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="OrderId" Type="bigint" Nullable="false" />
+          <Property Name="CharacterId" Type="int" Nullable="false" />
+          <Property Name="StationId" Type="int" Nullable="false" />
+          <Property Name="VolumeEntered" Type="int" Nullable="false" />
+          <Property Name="VolumeRemaining" Type="int" Nullable="false" />
+          <Property Name="MinVolume" Type="int" Nullable="false" />
+          <Property Name="OrderState" Type="int" Nullable="false" />
+          <Property Name="TypeId" Type="int" Nullable="false" />
+          <Property Name="Range" Type="int" Nullable="false" />
+          <Property Name="AccountKey" Type="int" Nullable="false" />
+          <Property Name="Duration" Type="int" Nullable="false" />
+          <Property Name="Escrow" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="Price" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="Bid" Type="bit" Nullable="false" />
+          <Property Name="Issued" Type="datetime2" Precision="7" Nullable="false" />
         </EntityType>
         <EntityType Name="Orders">
           <Key>
@@ -497,6 +517,7 @@
           <EntitySet Name="invTypes" EntityType="Self.invTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="JournalEntries" EntityType="Self.JournalEntries" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="mapRegions" EntityType="Self.mapRegions" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MarketOrders" EntityType="Self.MarketOrders" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Orders" EntityType="Self.Orders" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductionBatches" EntityType="Self.ProductionBatches" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RefTypes" EntityType="Self.RefTypes" Schema="dbo" store:Type="Tables" />
@@ -705,13 +726,25 @@
             <End Role="Transaction" EntitySet="Transactions" />
             <End Role="FifoCost" EntitySet="FifoCosts" />
           </AssociationSet>
+          <EntitySet Name="MarketOrders" EntityType="EveProfiteerDbModel.MarketOrder" />
+          <AssociationSet Name="StaStationMarketOrder" Association="EveProfiteerDbModel.StaStationMarketOrder">
+            <End Role="StaStation" EntitySet="StaStations" />
+            <End Role="MarketOrder" EntitySet="MarketOrders" />
+          </AssociationSet>
+          <AssociationSet Name="InvTypeMarketOrder" Association="EveProfiteerDbModel.InvTypeMarketOrder">
+            <End Role="InvType" EntitySet="InvTypes" />
+            <End Role="MarketOrder" EntitySet="MarketOrders" />
+          </AssociationSet>
+          <AssociationSet Name="ApiKeyEntityMarketOrder" Association="EveProfiteerDbModel.ApiKeyEntityMarketOrder">
+            <End Role="ApiKeyEntity" EntitySet="ApiKeyEntities" />
+            <End Role="MarketOrder" EntitySet="MarketOrders" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="ApiKeyEntity">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="EntityId" Type="Int64" Nullable="false" />
           <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Type" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ImagePath" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
@@ -722,6 +755,7 @@
           <NavigationProperty Name="Orders" Relationship="EveProfiteerDbModel.FK_Orders_ToApiKeyEntities" FromRole="ApiKeyEntity" ToRole="Order" />
           <NavigationProperty Name="Assets" Relationship="EveProfiteerDbModel.FK_dbo_Assets_dbo_ToApiKeyEntities" FromRole="ApiKeyEntity" ToRole="Asset" />
           <NavigationProperty Name="ProductionBatches" Relationship="EveProfiteerDbModel.FK_ProductionBatches_ToApiKeyEntities" FromRole="ApiKeyEntity" ToRole="ProductionBatch" />
+          <NavigationProperty Name="MarketOrders" Relationship="EveProfiteerDbModel.ApiKeyEntityMarketOrder" FromRole="ApiKeyEntity" ToRole="MarketOrder" />
         </EntityType>
         <EntityType Name="ApiKey">
           <Key>
@@ -817,6 +851,7 @@
           <NavigationProperty Name="InvBlueprintType" Relationship="EveProfiteerDbModel.InvTypeInvBlueprintType" FromRole="InvType" ToRole="InvBlueprintType" />
           <NavigationProperty Name="InvTypeMaterials" Relationship="EveProfiteerDbModel.InvTypeinvTypeMaterial" FromRole="InvType" ToRole="invTypeMaterial" />
           <NavigationProperty Name="InvProductType" Relationship="EveProfiteerDbModel.InvTypeInvBlueprintType1" FromRole="InvType" ToRole="InvBlueprintType" />
+          <NavigationProperty Name="MarketOrders" Relationship="EveProfiteerDbModel.InvTypeMarketOrder" FromRole="InvType" ToRole="MarketOrder" />
         </EntityType>
         <EntityType Name="MapRegion">
           <Key>
@@ -990,6 +1025,7 @@
           <Property Name="ReprocessingHangarFlag" Type="Byte" />
           <NavigationProperty Name="MapRegion" Relationship="EveProfiteerDbModel.MapRegionStaStation" FromRole="StaStation" ToRole="MapRegion" />
           <NavigationProperty Name="Orders" Relationship="EveProfiteerDbModel.FK_Orders_ToStaStations" FromRole="StaStation" ToRole="Order" />
+          <NavigationProperty Name="MarketOrders" Relationship="EveProfiteerDbModel.StaStationMarketOrder" FromRole="StaStation" ToRole="MarketOrder" />
         </EntityType>
         <Association Name="MapRegionStaStation">
           <End Type="EveProfiteerDbModel.MapRegion" Role="MapRegion" Multiplicity="0..1" />
@@ -1352,6 +1388,74 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="MarketOrder">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="OrderId" Type="Int64" Nullable="false" />
+          <Property Name="ApiKeyEntityId" Type="Int32" Nullable="false" />
+          <Property Name="StationId" Type="Int32" Nullable="false" />
+          <Property Name="VolumeEntered" Type="Int32" Nullable="false" />
+          <Property Name="VolumeRemaining" Type="Int32" Nullable="false" />
+          <Property Name="MinVolume" Type="Int32" Nullable="false" />
+          <Property Name="OrderState" Type="EveProfiteerDbModel.OrderState" Nullable="false" />
+          <Property Name="TypeId" Type="Int32" Nullable="false" />
+          <Property Name="Range" Type="Int32" Nullable="false" />
+          <Property Name="AccountKey" Type="Int32" Nullable="false" />
+          <Property Name="Duration" Type="Int32" Nullable="false" />
+          <Property Name="Escrow" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="Price" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="Bid" Type="Boolean" Nullable="false" />
+          <Property Name="Issued" Type="DateTime" Nullable="false" Precision="7" />
+          <NavigationProperty Name="Station" Relationship="EveProfiteerDbModel.StaStationMarketOrder" FromRole="MarketOrder" ToRole="StaStation" />
+          <NavigationProperty Name="InvType" Relationship="EveProfiteerDbModel.InvTypeMarketOrder" FromRole="MarketOrder" ToRole="InvType" />
+          <NavigationProperty Name="ApiKeyEntity" Relationship="EveProfiteerDbModel.ApiKeyEntityMarketOrder" FromRole="MarketOrder" ToRole="ApiKeyEntity" />
+        </EntityType>
+        <Association Name="StaStationMarketOrder">
+          <End Type="EveProfiteerDbModel.StaStation" Role="StaStation" Multiplicity="1" />
+          <End Type="EveProfiteerDbModel.MarketOrder" Role="MarketOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="StaStation">
+              <PropertyRef Name="StationId" />
+            </Principal>
+            <Dependent Role="MarketOrder">
+              <PropertyRef Name="StationId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="InvTypeMarketOrder">
+          <End Type="EveProfiteerDbModel.InvType" Role="InvType" Multiplicity="1" />
+          <End Type="EveProfiteerDbModel.MarketOrder" Role="MarketOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="InvType">
+              <PropertyRef Name="TypeId" />
+            </Principal>
+            <Dependent Role="MarketOrder">
+              <PropertyRef Name="TypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ApiKeyEntityMarketOrder">
+          <End Type="EveProfiteerDbModel.ApiKeyEntity" Role="ApiKeyEntity" Multiplicity="1" />
+          <End Type="EveProfiteerDbModel.MarketOrder" Role="MarketOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ApiKeyEntity">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MarketOrder">
+              <PropertyRef Name="ApiKeyEntityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EnumType Name="OrderState">
+          <Member Name="Open" Value="0" />
+          <Member Name="Closed" Value="1" />
+          <Member Name="Expired" Value="2" />
+          <Member Name="Cancelled" Value="3" />
+          <Member Name="Pending" Value="4" />
+          <Member Name="CharacterDeleted" Value="5" />
+        </EnumType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1365,7 +1469,6 @@
                 <ScalarProperty Name="ImagePath" ColumnName="ImagePath" />
                 <ScalarProperty Name="Type" ColumnName="Type" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="EntityId" ColumnName="EntityId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -1640,6 +1743,28 @@
                 <ScalarProperty Name="Quantity" ColumnName="Quantity" />
                 <ScalarProperty Name="SellTransactionId" ColumnName="SellTransactionId" />
                 <ScalarProperty Name="BuyTransactionId" ColumnName="BuyTransactionId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MarketOrders">
+            <EntityTypeMapping TypeName="EveProfiteerDbModel.MarketOrder">
+              <MappingFragment StoreEntitySet="MarketOrders">
+                <ScalarProperty Name="Issued" ColumnName="Issued" />
+                <ScalarProperty Name="Bid" ColumnName="Bid" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="Escrow" ColumnName="Escrow" />
+                <ScalarProperty Name="Duration" ColumnName="Duration" />
+                <ScalarProperty Name="AccountKey" ColumnName="AccountKey" />
+                <ScalarProperty Name="Range" ColumnName="Range" />
+                <ScalarProperty Name="TypeId" ColumnName="TypeId" />
+                <ScalarProperty Name="OrderState" ColumnName="OrderState" />
+                <ScalarProperty Name="MinVolume" ColumnName="MinVolume" />
+                <ScalarProperty Name="VolumeRemaining" ColumnName="VolumeRemaining" />
+                <ScalarProperty Name="VolumeEntered" ColumnName="VolumeEntered" />
+                <ScalarProperty Name="StationId" ColumnName="StationId" />
+                <ScalarProperty Name="ApiKeyEntityId" ColumnName="CharacterId" />
+                <ScalarProperty Name="OrderId" ColumnName="OrderId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

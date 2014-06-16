@@ -75,6 +75,10 @@
                                    Command="{Binding UpdateIndustryJobsCommand}"
                                    Glyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_16x16.png"
                                    LargeGlyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_32x32.png" />
+                <dxb:BarButtonItem x:Name="UpdateMarketOrders" Content="Update Market Orders"
+                                   Command="{Binding UpdateMarketOrdersCommand}"
+                                   Glyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_16x16.png"
+                                   LargeGlyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_32x32.png" />
                 <dxb:BarSubItem x:Name="biFile" Content="File">
                     <dxb:BarButtonItemLink BarItemName="biFileOpen" />
                     <dxb:BarButtonItemLink BarItemName="biFileNew" />
@@ -119,6 +123,7 @@
                                 <dxb:BarItemLink BarItemName="UpdateAssets" RibbonStyle="SmallWithText" />
                                 <dxb:BarItemLink BarItemName="UpdateJournal" RibbonStyle="SmallWithText" />
                                 <dxb:BarItemLink BarItemName="UpdateIndustryJobs" RibbonStyle="SmallWithText" />
+                                <dxb:BarItemLink BarItemName="UpdateMarketOrders" RibbonStyle="SmallWithText" />
                             </dxr:RibbonPageGroup>
                             <dxr:RibbonPageGroup Caption="Internal" ShowCaptionButton="False"
                                                  IsCaptionButtonEnabled="True">

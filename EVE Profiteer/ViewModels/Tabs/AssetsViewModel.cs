@@ -89,7 +89,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
         }
 
         private async Task LoadOrders() {
-            List<Asset> assets = await _assetService.GetAssets().ToListAsync().ConfigureAwait(false);
+            List<Asset> assets = await _assetService.GetAssets().ConfigureAwait(false);
             Assets.AddRange(assets.Select(asset => new AssetEntry(asset)));
         }
     }
