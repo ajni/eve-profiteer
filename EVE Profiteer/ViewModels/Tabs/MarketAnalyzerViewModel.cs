@@ -150,20 +150,6 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             MarketAnalyzerResults.Refresh();
         }
 
-        public bool CanScannerLinkAction() {
-            return MarketAnalyzerResults != null;
-        }
-
-        public void ScannerLinkAction() {
-            //IEnumerable<long> list =
-            //    MarketAnalyzerResults.Cast<MarketAnalyzerResult>()
-            //        .Where(result => result.IsChecked)
-            //        .Select(f => f.TypeId);
-            //Uri uri = _eveMarketService.GetScannerLink(list.ToList());
-            //var scannerVm = new ScannerLinkViewModel(uri);
-            //_windowManager.ShowDialog(scannerVm);
-        }
-
         public override async Task InitAsync() {
             MarketTreeNodes =
                 await _marketAnalyzerService.GetMarketTreeAsync(treeViewCheckBox_PropertyChanged).ConfigureAwait(false);
