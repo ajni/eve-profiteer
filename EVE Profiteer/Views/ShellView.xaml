@@ -136,7 +136,7 @@
                         <dxr:RibbonPage Caption="Tools">
                             <dxr:RibbonPageGroup Caption="Manage" ShowCaptionButton="False"
                                                  IsCaptionButtonEnabled="True">
-         
+
                             </dxr:RibbonPageGroup>
 
                         </dxr:RibbonPage>
@@ -152,17 +152,17 @@
 
                         </dxr:RibbonPage>
                     </dxr:RibbonDefaultPageCategory>
-                    <dxr:RibbonPageCategory Caption="Modules">
-                        <dxr:RibbonPage Caption="Trading">
+                    <dxr:RibbonPageCategory Caption="Modules" Name="ModulePageCategory">
+                        <dxr:RibbonPage Caption="Modules" Name="TradingRibbonPage">
+                            <dxr:RibbonPageGroup Caption="Trade" Name="TradeRibbonGroup">
 
-                        </dxr:RibbonPage>
-                        <dxr:RibbonPage Caption="Manufacturing">
+                            </dxr:RibbonPageGroup>
+                            <dxr:RibbonPageGroup Caption="Industry">
 
-                        </dxr:RibbonPage>
-                        <dxr:RibbonPage Caption="PI">
+                            </dxr:RibbonPageGroup>
+                            <dxr:RibbonPageGroup Caption="Other">
 
-                        </dxr:RibbonPage>
-                        <dxr:RibbonPage Caption="Other">
+                            </dxr:RibbonPageGroup>
 
                         </dxr:RibbonPage>
                     </dxr:RibbonPageCategory>

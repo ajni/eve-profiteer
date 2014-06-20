@@ -190,6 +190,7 @@
     <Compile Include="Services\MarketAnalyzerService.cs" />
     <Compile Include="Services\MarketBrowserService.cs" />
     <Compile Include="Services\MarketOrderService.cs" />
+    <Compile Include="Services\ModuleService.cs" />
     <Compile Include="Services\OrderEditorService.cs" />
     <Compile Include="Services\ProductionService.cs" />
     <Compile Include="Services\ShellService.cs" />

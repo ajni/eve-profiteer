@@ -60,6 +60,7 @@ namespace eZet.EveProfiteer {
             _container.PerRequest<OrderEditorService>();
             _container.PerRequest<MarketAnalyzerService>();
             _container.PerRequest<MarketOrderService>();
+            _container.PerRequest<ModuleService>();
 
             // View Models
             _container.PerRequest<IShell, ShellViewModel>();

@@ -1,9 +1,12 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Caliburn.Micro;
+using DevExpress.Xpf.Bars;
 using DevExpress.Xpf.Mvvm;
 using eZet.EveProfiteer.Events;
 using eZet.EveProfiteer.Framework;
@@ -12,35 +15,40 @@ using eZet.EveProfiteer.Services;
 using eZet.EveProfiteer.Util;
 using eZet.EveProfiteer.ViewModels.Dialogs;
 using eZet.EveProfiteer.ViewModels.Tabs;
+using eZet.EveProfiteer.Views;
 
 namespace eZet.EveProfiteer.ViewModels {
     public class ShellViewModel : Conductor<IScreen>.Collection.OneActive, IShell, IHandle<StatusChangedEventArgs>, IHandle<IActivateTabEvent> {
         private readonly IEventAggregator _eventAggregator;
         private readonly KeyManagementService _keyManagementService;
         private readonly ShellService _shellService;
+        private readonly ModuleService _moduleService;
         private readonly TraceSource _trace = new TraceSource("EveProfiteer", SourceLevels.All);
         private readonly IWindowManager _windowManager;
         private string _statusMessage;
 
         public ShellViewModel(IWindowManager windowManager, IEventAggregator eventAggregator,
-            KeyManagementService keyManagementService, ShellService shellService) {
+            KeyManagementService keyManagementService, ShellService shellService, ModuleService moduleService) {
             _windowManager = windowManager;
             _eventAggregator = eventAggregator;
             _keyManagementService = keyManagementService;
-
             _shellService = shellService;
+            _moduleService = moduleService;
+
+
 
             DisplayName = "EVE Profiteer";
             AllowStatusChange = true;
-            StatusMessage = "Ready";
-
+            _eventAggregator.Subscribe(this);
+            StatusMessage = "Initializing...";
 
             ActiveKey = _keyManagementService.AllApiKeys().FirstOrDefault();
-            _eventAggregator.Subscribe(this);
+
             if (ActiveKey != null)
                 ActiveKeyEntity = ActiveKey.ApiKeyEntities.Single(f => f.Id == 977615922);
             ApplicationHelper.ActiveKeyEntity = ActiveKeyEntity;
             ApplicationHelper.ActiveKey = ActiveKey;
+
             ManageKeysCommand = new DelegateCommand(ManageKeys);
             UpdateTransactionsCommand = new DelegateCommand(ExecuteUpdateTransactions);
             ProcessAllTransactionsCommand = new DelegateCommand(ExecuteProcessAllTransactions);
@@ -51,12 +59,46 @@ namespace eZet.EveProfiteer.ViewModels {
             ProcessUnaccountedTransactionsCommand = new DelegateCommand(ExecuteProcessUnaccountedTransactions);
             UpdateIndustryJobsCommand = new DelegateCommand(ExecuteUpdateIndystryJobs);
             UpdateMarketOrdersCommand = new DelegateCommand(ExecuteUpdateMarketOrders);
-
-            SelectKey();
+            ActivateTabCommand = new DelegateCommand<Type>(ExecuteActivateTab);
+            
+            initDefaultModules();
         }
 
+        private void ExecuteActivateTab(Type type) {
+            var vm = _moduleService.GetModule(type);
+            addModule(vm);
+            ActivateItem(vm);
+        }
 
-   
+  
+        private void addModule(ViewModel vm) {
+            if (!Items.Contains(vm)) {
+                Task.Run(() => vm.InitAsync());
+                Items.Add(vm);
+            }
+        }
+
+        private void initDefaultModules() {
+            Items.Add(_moduleService.GetModule<TradeSummaryViewModel>());
+            Items.Add(_moduleService.GetModule<OrderEditorViewModel>());
+            Task.Run(() => InitAsync()).ConfigureAwait(false);
+        }
+
+        protected override void OnViewLoaded(object view) {
+            var shellView = (ShellView) view;
+            initializeRibbon(shellView);
+            base.OnViewLoaded(view);
+        }
+
+        private void initializeRibbon(ShellView view ) {
+            foreach (var vm in Modules) {
+                var button = new BarButtonItem();
+                button.Command = ActivateTabCommand;
+                button.Content = vm.DisplayName;
+                button.CommandParameter = vm.GetType();
+                view.TradeRibbonGroup.ItemLinks.Add(button);
+            }
+        }
 
         public string StatusMessage {
             get { return _statusMessage; }
@@ -72,6 +114,10 @@ namespace eZet.EveProfiteer.ViewModels {
         public string CurrentEntityName {
             get { return ApplicationHelper.ActiveKeyEntity.Name; }
         }
+
+        public ICommand ActivateTabCommand { get; private set; }
+
+        public IList<ViewModel> Modules { get; private set; }
 
         public ICommand UpdateMarketOrdersCommand { get; private set; }
         public ICommand UpdateIndustryJobsCommand { get; private set; }
@@ -103,39 +149,7 @@ namespace eZet.EveProfiteer.ViewModels {
             }
         }
 
-        public void SelectKey() {
-            Items.Clear();
-
-            //ApplicationHelper.ActiveKey = ActiveKey;
-
-
-            //var transactions = IoC.Get<TransactionsViewModel>();
-            //Items.Add(transactions);
-            //var journal = IoC.Get<JournalViewModel>();
-            //Items.Add(journal);
-            Items.Add(IoC.Get<TradeSummaryViewModel>());
-            Items.Add(IoC.Get<TradeAnalyzerViewModel>());
-            Items.Add(IoC.Get<TransactionDetailsViewModel>());
-            Items.Add(IoC.Get<MarketBrowserViewModel>());
-            Items.Add(IoC.Get<MarketAnalyzerViewModel>());
-            Items.Add(IoC.Get<OrderEditorViewModel>());
-            Items.Add(IoC.Get<MarketOrdersViewModel>());
-            Items.Add(IoC.Get<AssetsViewModel>());
-            Items.Add(IoC.Get<ProductionViewModel>());
-            Items.Add(IoC.Get<TransactionsViewModel>());
-            Items.Add(IoC.Get<JournalViewModel>());
-            Task.Run(() => InitAsync()).ConfigureAwait(false);
-
-            //Items.Add(IoC.Get<TransactionDetailsViewModel>());
-            //Items.Add(IoC.Get<ProfitViewModel>());
-
-            if (ActiveKey != null) {
-                //transactions.Initialize(ActiveKey, ActiveKeyEntity);
-                // journal.Initialize(ActiveKey, ActiveKeyEntity);
-            }
-        }
-
-        public async void InitAsync() {
+        public async Task InitAsync() {
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Initializing..."));
             AllowStatusChange = false;
             IList<Task> tasks = new List<Task>();
