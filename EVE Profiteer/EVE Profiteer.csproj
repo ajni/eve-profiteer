@@ -155,11 +155,17 @@
     </ApplicationDefinition>
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="EventManager.cs" />
+    <Compile Include="Events\IActivateTabEvent.cs" />
+    <Compile Include="Events\ApiUpdateEvent.cs" />
     <Compile Include="Events\AssetsUpdatedEvent.cs" />
     <Compile Include="Events\DeleteOrdersEventArgs.cs" />
+    <Compile Include="Events\IndustryJobsUpdatedEvent.cs" />
+    <Compile Include="Events\JournalUpdatedEvent.cs" />
+    <Compile Include="Events\MarketOrdersUpdatedEvent.cs" />
     <Compile Include="Events\StatusChangedEventArgs.cs" />
-    <Compile Include="Events\ViewOrderEventArgs.cs" />
-    <Compile Include="Events\ViewTradeDetailsEventArgs.cs" />
+    <Compile Include="Events\TransactionsUpdatedEvent.cs" />
+    <Compile Include="Events\ViewOrderEvent.cs" />
+    <Compile Include="Events\ViewTransactionDetailsEvent.cs" />
     <Compile Include="Models\AssetEntry.cs" />
     <Compile Include="Models\CharacterData.cs" />
     <Compile Include="Models\JournalAggregate.cs" />
@@ -183,6 +189,7 @@
     <Compile Include="Services\JournalService.cs" />
     <Compile Include="Services\MarketAnalyzerService.cs" />
     <Compile Include="Services\MarketBrowserService.cs" />
+    <Compile Include="Services\MarketOrderService.cs" />
     <Compile Include="Services\OrderEditorService.cs" />
     <Compile Include="Services\ProductionService.cs" />
     <Compile Include="Services\ShellService.cs" />
@@ -223,6 +230,7 @@
     <Compile Include="ViewModels\Dialogs\UpdatePriceLimitsViewModel.cs" />
     <Compile Include="ViewModels\Tabs\AssetsViewModel.cs" />
     <Compile Include="ViewModels\Tabs\JournalViewModel.cs" />
+    <Compile Include="ViewModels\Tabs\MarketOrdersViewModel.cs" />
     <Compile Include="ViewModels\Tabs\ProductionViewModel.cs" />
     <Compile Include="ViewModels\Tabs\TransactionDetailsViewModel.cs" />
     <Compile Include="ViewModels\Dialogs\ManageKeysViewModel.cs" />
@@ -230,8 +238,9 @@
     <Compile Include="ViewModels\Tabs\OrderEditorViewModel.cs" />
     <Compile Include="Events\OrdersChangedEventArgs.cs" />
     <Compile Include="ViewModels\Tabs\TradeAnalyzerViewModel.cs" />
-    <Compile Include="Events\ViewMarketDetailsEventArgs.cs" />
+    <Compile Include="Events\ViewMarketDetailsEvent.cs" />
     <Compile Include="ViewModels\Tabs\TransactionsViewModel.cs" />
+    <Compile Include="ViewModels\ViewModel.cs" />
     <Compile Include="Views\Dialogs\EditOrderDialogView.xaml.cs">
       <DependentUpon>EditOrderDialogView.xaml</DependentUpon>
     </Compile>
@@ -263,6 +272,9 @@
     </Compile>
     <Compile Include="Views\Tabs\JournalView.xaml.cs">
       <DependentUpon>JournalView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Tabs\MarketOrdersView.xaml.cs">
+      <DependentUpon>MarketOrdersView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Tabs\ProductionView.xaml.cs">
       <DependentUpon>ProductionView.xaml</DependentUpon>
@@ -326,6 +338,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Tabs\JournalView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Tabs\MarketOrdersView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -401,6 +417,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\EVE Library\EveLib.Core\EveLib.Core.csproj">
+      <Project>{AA85978C-2BF5-419F-9F8E-B70162E83F34}</Project>
+      <Name>EveLib.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\EVE Library\EveLib.EveCentral\EveLib.EveCentral.csproj">
       <Project>{FCD48E90-6605-4BC1-B761-0B37DF390990}</Project>
       <Name>EveLib.EveCentral</Name>

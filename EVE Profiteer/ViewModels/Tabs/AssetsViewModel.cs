@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -10,7 +9,7 @@ using eZet.EveProfiteer.Properties;
 using eZet.EveProfiteer.Services;
 
 namespace eZet.EveProfiteer.ViewModels.Tabs {
-    public class AssetsViewModel : Screen, IHandle<AssetsUpdatedEvent> {
+    public class AssetsViewModel : ViewModel, IHandle<AssetsUpdatedEvent> {
         private readonly AssetService _assetService;
         private readonly IEventAggregator _eventAggregator;
         private BindableCollection<AssetEntry> _assets;
@@ -30,6 +29,8 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
         public IEventAggregator EventAggregator { get; set; }
 
         public int AgeSpan { get; set; }
+
+        public bool NeedUpdate { get; set; }
 
         public BindableCollection<AssetEntry> Assets {
             get { return _assets; }
@@ -72,8 +73,27 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
         public ICommand ViewTradeDetailsCommand { get; private set; }
 
         public async void Handle(AssetsUpdatedEvent message) {
-            await LoadOrders().ConfigureAwait(false);
-            await UpdateMarketData().ConfigureAwait(false);
+            NeedUpdate = true;
+            if (IsActive) {
+                await Load();
+            }
+        }
+
+        public override async Task InitAsync() {
+            await Load().ConfigureAwait(false);
+        }
+
+        public async Task Load() {
+            if (NeedUpdate) {
+                await LoadAssets().ConfigureAwait(false);
+                await UpdateMarketData().ConfigureAwait(false);
+            }
+            NeedUpdate = false;
+        }
+
+
+        protected override async void OnActivate() {
+            await Load();
         }
 
         private async Task UpdateMarketData() {
@@ -84,11 +104,8 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             Assets.Refresh();
         }
 
-        public Task InitAsync() {
-            return LoadOrders();
-        }
 
-        private async Task LoadOrders() {
+        private async Task LoadAssets() {
             List<Asset> assets = await _assetService.GetAssets().ConfigureAwait(false);
             Assets.AddRange(assets.Select(asset => new AssetEntry(asset)));
         }

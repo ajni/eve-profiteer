@@ -13,7 +13,7 @@ using eZet.EveProfiteer.Services;
 using eZet.EveProfiteer.Util;
 
 namespace eZet.EveProfiteer.ViewModels.Tabs {
-    public class MarketAnalyzerViewModel : Screen, IHandle<OrdersChangedEventArgs> {
+    public class MarketAnalyzerViewModel : ViewModel, IHandle<OrdersChangedEventArgs> {
         private readonly EveProfiteerDataService _dataService;
         private readonly IEventAggregator _eventAggregator;
         private readonly MarketAnalyzerService _marketAnalyzerService;
@@ -42,15 +42,15 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             AnalyzeOrdersCommand = new DelegateCommand(ExecuteAnalyzeOrders);
             ViewTradeDetailsCommand =
                 new DelegateCommand<MarketAnalyzerEntry>(
-                    entry => _eventAggregator.PublishOnUIThread(new ViewTradeDetailsEventArgs(entry.InvType)),
+                    entry => _eventAggregator.PublishOnUIThread(new ViewTransactionDetailsEvent(entry.InvType)),
                     entry => entry != null);
             ViewMarketDetailsCommand =
                 new DelegateCommand<MarketAnalyzerEntry>(
-                    entry => _eventAggregator.PublishOnUIThread(new ViewMarketDetailsEventArgs(entry.InvType)),
+                    entry => _eventAggregator.PublishOnUIThread(new ViewMarketDetailsEvent(entry.InvType)),
                     entry => entry != null);
             ViewOrderCommand =
                 new DelegateCommand<MarketAnalyzerEntry>(
-                    entry => _eventAggregator.PublishOnUIThread(new ViewOrderEventArgs(entry.InvType)), hasValidOrder);
+                    entry => _eventAggregator.PublishOnUIThread(new ViewOrderEvent(entry.InvType)), hasValidOrder);
 
             PropertyChanged += OnPropertyChanged;
         }
@@ -164,7 +164,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             //_windowManager.ShowDialog(scannerVm);
         }
 
-        public async Task InitAsync() {
+        public override async Task InitAsync() {
             MarketTreeNodes =
                 await _marketAnalyzerService.GetMarketTreeAsync(treeViewCheckBox_PropertyChanged).ConfigureAwait(false);
             Regions = await _marketAnalyzerService.GetRegionsAsync().ConfigureAwait(false);

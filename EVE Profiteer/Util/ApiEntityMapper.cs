@@ -73,7 +73,7 @@ namespace eZet.EveProfiteer.Util {
             return target;
         }
 
-        public static MarketBrowserOrder Map(ItemOrders.ItemOrderEntry source, MarketBrowserOrder target) {
+        public static MarketBrowserOrder Map(EmdItemOrders.ItemOrderEntry source, MarketBrowserOrder target) {
             target.TypeId = source.TypeId;
             target.StationId = source.StationId;
             target.SolarSystemId = source.SolarSystemId;
@@ -90,12 +90,11 @@ namespace eZet.EveProfiteer.Util {
             return target;
         }
 
-        public static MarketHistoryEntry Map(MarketHistoryResponse.MarketHistoryEntry source, MarketHistoryEntry target) {
+        public static MarketHistoryEntry Map(EveCrestMarketHistory.MarketHistoryEntry source, MarketHistoryEntry target) {
             target.Volume = source.Volume;
             target.OrderCount = source.OrderCount;
             target.LowPrice = source.LowPrice;
-            target.HighPrice = source.HighPrice;
-            target.AvgPrice = source.AvgPrice;
+            target.HighPrice = source.HighPrice;target.AvgPrice = source.AvgPrice;
             target.Date = source.Date;
             return target;
         }

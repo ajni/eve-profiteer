@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using DevExpress.XtraPrinting.Native;
 using eZet.EveLib.Modules.Models;
 using eZet.EveProfiteer.Models;
-using eZet.EveProfiteer.Util;
 using OrderType = eZet.EveLib.Modules.OrderType;
 
 namespace eZet.EveProfiteer.Services {
@@ -37,7 +34,7 @@ namespace eZet.EveProfiteer.Services {
             var prices = await pricesTask;
             var priceLookup = prices.Prices.ToLookup(f => f.TypeId);
             var history = await historyTask;
-            ILookup<int, ItemHistory.ItemHistoryEntry> historyLookup = history.History.ToLookup(f => f.TypeId);
+            ILookup<int, EmdItemHistory.ItemHistoryEntry> historyLookup = history.History.ToLookup(f => f.TypeId);
             foreach (Order order in enumerable) {
                 var itemHistory = historyLookup[order.TypeId].ToList();
                 var price = priceLookup[order.TypeId];

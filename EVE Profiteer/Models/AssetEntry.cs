@@ -9,7 +9,7 @@ using eZet.EveProfiteer.Util;
 namespace eZet.EveProfiteer.Models {
     public class AssetEntry : INotifyPropertyChanged {
         private readonly Asset _asset;
-        private IEnumerable<ItemHistory.ItemHistoryEntry> _itemHistoryEntries;
+        private IEnumerable<EmdItemHistory.ItemHistoryEntry> _itemHistoryEntries;
         private decimal _currentSellPrice;
         private decimal _currentBuyPrice;
         private decimal _avgVolume;
@@ -20,7 +20,7 @@ namespace eZet.EveProfiteer.Models {
         }
 
 
-        public void Update(IEnumerable<ItemHistory.ItemHistoryEntry> itemHistoryEntries, decimal sellPrice,
+        public void Update(IEnumerable<EmdItemHistory.ItemHistoryEntry> itemHistoryEntries, decimal sellPrice,
             decimal buyPrice) {
             _itemHistoryEntries = itemHistoryEntries.ToList();
             CurrentSellPrice = sellPrice;
@@ -50,7 +50,9 @@ namespace eZet.EveProfiteer.Models {
 
         public decimal AvgCostPerUnit { get { return _asset.LatestAverageCost; } }
 
-        public decimal TotalCost { get { return _asset.MaterialCost; } }
+        public decimal MaterialCost { get { return _asset.MaterialCost; } }
+
+        public decimal TotalCost { get { return _asset.LatestAverageCost*_asset.Quantity; } }
 
         public decimal ValuePerUnit { get; set; }
 

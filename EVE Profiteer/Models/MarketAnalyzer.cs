@@ -4,8 +4,8 @@ using eZet.EveLib.Modules.Models;
 
 namespace eZet.EveProfiteer.Models {
     public class MarketAnalyzer {
-        public MarketAnalyzer(IEnumerable<InvType> itemData, IEnumerable<ItemPrices.ItemPriceEntry> sellOrders,
-            IEnumerable<ItemPrices.ItemPriceEntry> buyOrders, IEnumerable<ItemHistory.ItemHistoryEntry> history) {
+        public MarketAnalyzer(IEnumerable<InvType> itemData, IEnumerable<EmdItemPrices.ItemPriceEntry> sellOrders,
+            IEnumerable<EmdItemPrices.ItemPriceEntry> buyOrders, IEnumerable<EmdItemHistory.ItemHistoryEntry> history) {
             this.itemData = itemData;
             this.sellOrders = sellOrders.ToDictionary(f => f.TypeId);
             this.buyOrders = buyOrders.ToDictionary(f => f.TypeId);
@@ -15,20 +15,20 @@ namespace eZet.EveProfiteer.Models {
 
         public IList<MarketAnalyzerEntry> Result { get; set; }
 
-        private IDictionary<int, ItemPrices.ItemPriceEntry> sellOrders { get; set; }
+        private IDictionary<int, EmdItemPrices.ItemPriceEntry> sellOrders { get; set; }
 
-        private IDictionary<int, ItemPrices.ItemPriceEntry> buyOrders { get; set; }
+        private IDictionary<int, EmdItemPrices.ItemPriceEntry> buyOrders { get; set; }
 
-        private ILookup<int, ItemHistory.ItemHistoryEntry> history { get; set; }
+        private ILookup<int, EmdItemHistory.ItemHistoryEntry> history { get; set; }
 
         private IEnumerable<InvType> itemData { get; set; }
 
         public void Analyze() {
             foreach (InvType item in itemData) {
-                ItemPrices.ItemPriceEntry sellOrder, buyOrder;
+                EmdItemPrices.ItemPriceEntry sellOrder, buyOrder;
                 sellOrders.TryGetValue(item.TypeId, out sellOrder);
                 buyOrders.TryGetValue(item.TypeId, out buyOrder);
-                var itemHistory = new List<ItemHistory.ItemHistoryEntry>();
+                var itemHistory = new List<EmdItemHistory.ItemHistoryEntry>();
                 if (history.Contains(item.TypeId)) {
                     itemHistory = history[item.TypeId].ToList();
                 }

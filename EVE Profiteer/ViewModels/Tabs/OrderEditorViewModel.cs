@@ -16,8 +16,8 @@ using eZet.EveProfiteer.ViewModels.Dialogs;
 using Screen = Caliburn.Micro.Screen;
 
 namespace eZet.EveProfiteer.ViewModels.Tabs {
-    public class OrderEditorViewModel : Screen, IHandle<AddToOrdersEventArgs>, IHandle<DeleteOrdersEventArgs>,
-        IHandle<ViewOrderEventArgs> {
+    public class OrderEditorViewModel : ViewModel, IHandle<AddToOrdersEventArgs>, IHandle<DeleteOrdersEventArgs>,
+        IHandle<ViewOrderEvent> {
         private readonly EveProfiteerDataService _dataService;
         private readonly EveMarketService _eveMarketService;
         private readonly IEventAggregator _eventAggregator;
@@ -48,11 +48,11 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             DayLimit = 10;
             ViewTradeDetailsCommand =
                 new DelegateCommand(
-                    () => _eventAggregator.PublishOnBackgroundThread(new ViewTradeDetailsEventArgs(FocusedOrder.Order.InvType)),
+                    () => _eventAggregator.PublishOnBackgroundThread(new ViewTransactionDetailsEvent(FocusedOrder.Order.InvType)),
                     () => FocusedOrder != null);
             ViewMarketDetailsCommand =
                 new DelegateCommand(
-                    () => _eventAggregator.PublishOnBackgroundThread(new ViewMarketDetailsEventArgs(FocusedOrder.Order.InvType)),
+                    () => _eventAggregator.PublishOnBackgroundThread(new ViewMarketDetailsEvent(FocusedOrder.Order.InvType)),
                     () => FocusedOrder != null);
             DeleteOrdersCommand = new DelegateCommand(DeleteOrders);
             ValidateOrderTypeCommand = new DelegateCommand<GridCellValidationEventArgs>(ExecuteValidateOrderType);
@@ -140,13 +140,13 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             throw new NotImplementedException();
         }
 
-        public void Handle(ViewOrderEventArgs message) {
+        public void Handle(ViewOrderEvent message) {
             OrderVm order = Orders.Single(entry => entry.Order.InvType.TypeId == message.InvType.TypeId);
             FocusedOrder = order;
             SelectedOrder = order;
         }
 
-        public async Task InitAsync() {
+        public override async Task InitAsync() {
             InvTypes = await _orderEditorService.GetMarketTypes().ConfigureAwait(false);
             List<Order> orders = await _orderEditorService.GetOrders().ConfigureAwait(false);
             Orders.AddRange(orders.Select(order => new OrderVm(order)));

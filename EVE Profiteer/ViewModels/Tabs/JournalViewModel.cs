@@ -9,7 +9,7 @@ using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
 
 namespace eZet.EveProfiteer.ViewModels.Tabs {
-    public class JournalViewModel : Screen {
+    public class JournalViewModel : ViewModel {
         private readonly JournalService _journalService;
         private IQueryable<JournalEntry> _journal;
         private JournalAggregate<DateTime> _dailyAggregate;
@@ -69,7 +69,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             _journalService.Deactivate();
         }
 
-        public async Task InitAsync() {
+        public override async Task InitAsync() {
             List<JournalEntry> journal = await _journalService.GetJournal().AsNoTracking().ToListAsync().ConfigureAwait(false);
             IEnumerable<IGrouping<string, JournalEntry>> typeGroup = journal.GroupBy(t => t.RefType.Name);
             TypeAggregate = new JournalAggregate<string>(typeGroup);

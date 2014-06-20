@@ -6,10 +6,10 @@ using eZet.EveLib.Modules.Models;
 namespace eZet.EveProfiteer.Models {
     public class MarketAnalyzerEntry {
         private const int StandardDeviationFactor = 1;
-        public IEnumerable<ItemHistory.ItemHistoryEntry> History;
+        public IEnumerable<EmdItemHistory.ItemHistoryEntry> History;
 
-        public MarketAnalyzerEntry(InvType invType, ItemPrices.ItemPriceEntry sellOrder,
-            ItemPrices.ItemPriceEntry buyOrder, IEnumerable<ItemHistory.ItemHistoryEntry> history) {
+        public MarketAnalyzerEntry(InvType invType, EmdItemPrices.ItemPriceEntry sellOrder,
+            EmdItemPrices.ItemPriceEntry buyOrder, IEnumerable<EmdItemHistory.ItemHistoryEntry> history) {
             InvType = invType;
             History = history;
             Updated = sellOrder.Updated;
@@ -79,7 +79,7 @@ namespace eZet.EveProfiteer.Models {
             GrossProfitPerUnit = SellPrice - BuyPrice;
             GrossMargin = SellPrice != 0 ? GrossProfitPerUnit / SellPrice : 0;
             if (!History.Any()) return;
-            List<ItemHistory.ItemHistoryEntry> historyByVolume = History.OrderBy(f => f.Volume).ToList();
+            List<EmdItemHistory.ItemHistoryEntry> historyByVolume = History.OrderBy(f => f.Volume).ToList();
             VolumeMedian = historyByVolume.Count == 1
                 ? historyByVolume[0].Volume
                 : historyByVolume[historyByVolume.Count / 2].Volume;
@@ -93,8 +93,8 @@ namespace eZet.EveProfiteer.Models {
             VolumeStandardDeviation = Math.Sqrt(VolumeVariance);
             VolumeAdjustedAverage = History.Where(f => !isOutlier(f.Volume)).Average(f => f.Volume);
             DailyGrossProfit = GrossProfitPerUnit * (decimal)VolumeMedian;
-            List<ItemHistory.ItemHistoryEntry> historyByDate = History.OrderBy(f => f.Date).ToList();
-            foreach (ItemHistory.ItemHistoryEntry item in historyByDate) {
+            List<EmdItemHistory.ItemHistoryEntry> historyByDate = History.OrderBy(f => f.Date).ToList();
+            foreach (EmdItemHistory.ItemHistoryEntry item in historyByDate) {
                 AvgPrice += item.AvgPrice;
                 AvgMinPrice += item.MinPrice;
                 AvgMaxPrice += item.MaxPrice;

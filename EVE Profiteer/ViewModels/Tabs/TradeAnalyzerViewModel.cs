@@ -10,7 +10,7 @@ using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
 
 namespace eZet.EveProfiteer.ViewModels.Tabs {
-    public class TradeAnalyzerViewModel : Screen {
+    public class TradeAnalyzerViewModel : ViewModel {
         public enum ViewPeriodEnum {
             Today,
             Yesterday,
@@ -34,7 +34,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
                 entry => entry != null);
             ViewMarketDetailsCommand =
                 new DelegateCommand<TransactionAggregate>(
-                    item => _eventAggregator.PublishOnUIThread(new ViewMarketDetailsEventArgs(item.InvType)),
+                    item => _eventAggregator.PublishOnUIThread(new ViewMarketDetailsEvent(item.InvType)),
                     entry => entry != null);
             ViewPeriodCommand = new DelegateCommand(ViewPeriod);
             ViewOrderCommand = new DelegateCommand<TransactionAggregate>(ExecuteViewOrder, CanViewOrder);
@@ -95,11 +95,11 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
         }
 
         private void ExecuteViewOrder(TransactionAggregate entry) {
-            _eventAggregator.PublishOnUIThread(new ViewOrderEventArgs(entry.InvType));
+            _eventAggregator.PublishOnUIThread(new ViewOrderEvent(entry.InvType));
         }
 
         private void ExecuteViewTradeDetails(TransactionAggregate entry) {
-            _eventAggregator.PublishOnUIThread(new ViewTradeDetailsEventArgs(entry.InvType));
+            _eventAggregator.PublishOnUIThread(new ViewTransactionDetailsEvent(entry.InvType));
         }
 
         public async void ViewPeriod() {
@@ -152,6 +152,10 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             }
             Items.IsNotifying = true;
             Items.Refresh();
+        }
+
+        public override Task InitAsync() {
+            return Task.FromResult(false);
         }
     }
 }

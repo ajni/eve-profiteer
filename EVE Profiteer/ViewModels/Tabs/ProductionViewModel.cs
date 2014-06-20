@@ -9,7 +9,7 @@ using eZet.EveProfiteer.Services;
 using eZet.EveProfiteer.ViewModels.Dialogs;
 
 namespace eZet.EveProfiteer.ViewModels.Tabs {
-    public class ProductionViewModel : Screen {
+    public class ProductionViewModel : ViewModel {
         private readonly IWindowManager _windowManager;
         private readonly IEventAggregator _eventAggregator;
         private readonly ProductionService _productionService;
@@ -41,9 +41,8 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
 
         public ICommand AddProductionBatchCommand { get; private set; }
 
-        public Task InitAsync() {
-            return Task.FromResult(1);
-
+        public override Task InitAsync() {
+            return Task.FromResult(false);
         }
 
         protected override async void OnInitialize() {

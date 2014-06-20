@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -11,7 +10,7 @@ using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
 
 namespace eZet.EveProfiteer.ViewModels.Tabs {
-    public class TradeSummaryViewModel : Screen {
+    public class TradeSummaryViewModel : ViewModel, IHandle<TransactionsUpdatedEvent> {
         public enum ViewPeriodEnum {
             Today,
             Yesterday,
@@ -31,6 +30,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
         public TradeSummaryViewModel(TradeSummaryService tradeSummaryService, IEventAggregator eventAggregator) {
             _tradeSummaryService = tradeSummaryService;
             _eventAggregator = eventAggregator;
+            _eventAggregator.Subscribe(this);
             DisplayName = "Trade summary";
             PeriodSelectorStart = DateTime.UtcNow.AddMonths(-1);
             PeriodSelectorEnd = DateTime.UtcNow;
@@ -47,6 +47,8 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
         public DateTime PeriodSelectorStart { get; set; }
 
         public DateTime PeriodSelectorEnd { get; set; }
+
+        public bool NeedRefresh { get; set; }
 
         public IEnumerable<ViewPeriodEnum> ViewPeriodValues {
             get { return Enum.GetValues(typeof(ViewPeriodEnum)).Cast<ViewPeriodEnum>(); }
@@ -65,11 +67,11 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             private set {
                 if (Equals(value, _summary)) return;
                 _summary = value;
-                NotifyOfPropertyChange(() => Summary);
+                NotifyOfPropertyChange();
             }
         }
 
-        public async Task InitAsync() {
+        public override async Task InitAsync() {
             await ViewPeriod();
         }
 
@@ -78,7 +80,6 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
         }
 
         public async Task ViewPeriod() {
-            ActualViewEnd = DateTime.UtcNow;
             switch (SelectedViewPeriod) {
                 case ViewPeriodEnum.All:
                     ActualViewStart = DateTime.MinValue;
@@ -109,16 +110,33 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
                     ActualViewEnd = PeriodSelectorEnd;
                     break;
             }
-            await analyze(ActualViewStart, ActualViewEnd);
+            await load(ActualViewStart, ActualViewEnd);
         }
 
-        private async Task analyze(DateTime start, DateTime end) {
+        protected override async void OnActivate() {
+            await refresh().ConfigureAwait(false);
+        }
+
+        private async Task load(DateTime start, DateTime end) {
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Loading..."));
             List<Transaction> transactions = await
                 _tradeSummaryService.GetTransactions(start, end).ConfigureAwait(false);
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Analyzing..."));
             Summary = new TransactionAggregate(transactions.GroupBy(t => t.TransactionDate.Date));
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Analysis complete"));
+        }
+
+        private async Task refresh() {
+            if (NeedRefresh) {
+                NeedRefresh = false;
+                await ViewPeriod().ConfigureAwait(false);
+            }
+        }
+
+        public async void Handle(TransactionsUpdatedEvent message) {
+            NeedRefresh = true;
+            if (IsActive)
+                await refresh();
         }
     }
 }

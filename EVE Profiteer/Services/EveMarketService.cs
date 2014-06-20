@@ -12,16 +12,16 @@ namespace eZet.EveProfiteer.Services {
         private readonly EveMarketData _eveMarketData = new EveMarketData();
 
 
-        public async Task<EveMarketDataResponse<ItemOrders>> GetItemOrderAsync(int region, int invType) {
+        public async Task<EveMarketDataResponse<EmdItemOrders>> GetItemOrderAsync(int region, int invType) {
             var options = new EveMarketDataOptions();
             options.Items.Add(invType);
             options.Regions.Add(region);
             return await _eveMarketData.GetItemOrdersAsync(options, OrderType.Both).ConfigureAwait(false);
         }
 
-        public async Task<ItemOrders> GetItemOrdersAsync(int region, IEnumerable<int> invTypes) {
+        public async Task<EmdItemOrders> GetItemOrdersAsync(int region, IEnumerable<int> invTypes) {
             var options = new EveMarketDataOptions();
-            var orders = new ItemOrders();
+            var orders = new EmdItemOrders();
             options.Regions.Add(region);
             foreach (var item in invTypes) {
                 options.Items.Add(item);
@@ -36,7 +36,7 @@ namespace eZet.EveProfiteer.Services {
             return orders;
         }
 
-        public async Task<MarketHistoryResponse> GetMarketHistoryAsync(int region, int invType) {
+        public async Task<EveCrestMarketHistory> GetMarketHistoryAsync(int region, int invType) {
             return await _eveCrest.GetMarketHistoryAsync(region, invType).ConfigureAwait(false);
         }
 
@@ -45,9 +45,9 @@ namespace eZet.EveProfiteer.Services {
             return _eveMarketData.GetScannerUri(options);
         }
 
-        public async Task<ItemPrices> GetItemPricesAsync(int stationId, IEnumerable<int> types) {
-            var prices = new ItemPrices();
-            prices.Prices = new EveMarketDataRowCollection<ItemPrices.ItemPriceEntry>();
+        public async Task<EmdItemPrices> GetItemPricesAsync(int stationId, IEnumerable<int> types) {
+            var prices = new EmdItemPrices();
+            prices.Prices = new EveMarketDataRowCollection<EmdItemPrices.ItemPriceEntry>();
             var options = new EveMarketDataOptions();
             options.Stations.Add(stationId);
             foreach (int typeId in types) {
@@ -63,9 +63,9 @@ namespace eZet.EveProfiteer.Services {
             return prices;
         }
 
-        public async Task<ItemHistory> GetItemHistoryAsync(int region, IEnumerable<int> types, int dayLimit) {
-            var history = new ItemHistory();
-            history.History = new EveMarketDataRowCollection<ItemHistory.ItemHistoryEntry>();
+        public async Task<EmdItemHistory> GetItemHistoryAsync(int region, IEnumerable<int> types, int dayLimit) {
+            var history = new EmdItemHistory();
+            history.History = new EveMarketDataRowCollection<EmdItemHistory.ItemHistoryEntry>();
             var options = new EveMarketDataOptions();
             options.AgeSpan = TimeSpan.FromDays(dayLimit);
             options.Regions.Add(region);

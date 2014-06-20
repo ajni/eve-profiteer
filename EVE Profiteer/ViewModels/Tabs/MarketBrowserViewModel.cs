@@ -13,7 +13,7 @@ using eZet.EveProfiteer.Services;
 using eZet.EveProfiteer.Util;
 
 namespace eZet.EveProfiteer.ViewModels.Tabs {
-    public class MarketBrowserViewModel : Screen, IHandle<ViewMarketDetailsEventArgs> {
+    public class MarketBrowserViewModel : ViewModel, IHandle<ViewMarketDetailsEvent> {
         private readonly MarketBrowserService _marketBrowserService;
         private readonly IEventAggregator _eventAggregator;
         private int _dayLimit = 5;
@@ -131,7 +131,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             }
         }
 
-        public void Handle(ViewMarketDetailsEventArgs message) {
+        public void Handle(ViewMarketDetailsEvent message) {
             LoadMarketDetails(message.InvType);
         }
 
@@ -140,7 +140,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
         }
 
         private void ExecuteViewTradeDetails() {
-            _eventAggregator.PublishOnUIThread(new ViewTradeDetailsEventArgs(MarketBrowserData.InvType));
+            _eventAggregator.PublishOnUIThread(new ViewTransactionDetailsEvent(MarketBrowserData.InvType));
         }
 
         private void ExecuteAddToOrders() {
@@ -164,7 +164,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             SelectedItem = InvTypes.Single(t => t.TypeId == node.InvType.TypeId);
         }
 
-        public async Task InitAsync() {
+        public override async Task InitAsync() {
             Regions = await _marketBrowserService.GetRegions();
             SelectedRegion = Regions.Single(region => region.RegionId == ConfigManager.DefaultRegion);
             InvTypes = await _marketBrowserService.GetMarketTypes();

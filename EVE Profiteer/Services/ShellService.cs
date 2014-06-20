@@ -22,7 +22,7 @@ namespace eZet.EveProfiteer.Services {
 
 
         public async Task UpdateIndustryJobs() {
-            var result = await _eveApiService.GetIndustryJobs(ApplicationHelper.ActiveKey, ApplicationHelper.ActiveKeyEntity);
+            await _eveApiService.GetIndustryJobs(ApplicationHelper.ActiveKey, ApplicationHelper.ActiveKeyEntity);
         }
 
         public async Task UpdateRefIdsAsync() {
@@ -97,7 +97,7 @@ namespace eZet.EveProfiteer.Services {
             }
         }
 
-        public async Task UpdateTransactionsAsync() {
+        public async Task<int> UpdateTransactionsAsync() {
             _trace.TraceEvent(TraceEventType.Start, 0, "StartUpdateTransactions");
             long latest = await getLatestTransactionId().ConfigureAwait(false);
             _trace.TraceEvent(TraceEventType.Verbose, 0, "Latest transaction ID: " + latest);
@@ -109,11 +109,12 @@ namespace eZet.EveProfiteer.Services {
                                 ApplicationHelper.ActiveKeyEntity, latest));
             _trace.TraceEvent(TraceEventType.Verbose, 0, "Fetched transactions: " + transactions.Count);
             await processTransactionsAsync(transactions).ConfigureAwait(false);
-            await insertTransactions(transactions).ConfigureAwait(false);
+            var result = await insertTransactions(transactions).ConfigureAwait(false);
             _trace.TraceEvent(TraceEventType.Stop, 0, "CompleteUpdateTransactions");
+            return result;
         }
 
-        public async Task UpdateJournalAsync() {
+        public async Task<int> UpdateJournalAsync() {
             _trace.TraceEvent(TraceEventType.Start, 0, "StartUpdateJournal");
             long latest = await getLatestJournalId();
             _trace.TraceEvent(TraceEventType.Verbose, 0, "Latest journal ID: " + latest);
@@ -122,8 +123,9 @@ namespace eZet.EveProfiteer.Services {
                     _eveApiService.GetNewJournalEntriesAsync(ApplicationHelper.ActiveKey,
                         ApplicationHelper.ActiveKeyEntity, latest);
             _trace.TraceEvent(TraceEventType.Verbose, 0, "Fetched journal entries: " + list.Count);
-            await insertJournalEntries(list).ConfigureAwait(false);
+            var result = await insertJournalEntries(list).ConfigureAwait(false);
             _trace.TraceEvent(TraceEventType.Stop, 0, "CompleteUpdateJournal");
+            return result;
         }
 
         public async Task ProcessUnaccountedTransactionsAsync() {
@@ -180,9 +182,10 @@ namespace eZet.EveProfiteer.Services {
             _trace.TraceEvent(TraceEventType.Stop, 0, "CompleteProcessAllTransactions");
         }
 
-        private async Task insertJournalEntries(IEnumerable<JournalEntry> entries) {
+        private async Task<int> insertJournalEntries(IEnumerable<JournalEntry> entries) {
             _trace.TraceEvent(TraceEventType.Start, 0, "StartInsertJournalEntries");
             EveProfiteerDbEntities db;
+            int result;
             using (db = CreateDb()) {
                 db.Configuration.AutoDetectChangesEnabled = false;
                 IList<JournalEntry> list = entries.OrderBy(entry => entry.RefId).ToList();
@@ -199,15 +202,17 @@ namespace eZet.EveProfiteer.Services {
                     db.Configuration.AutoDetectChangesEnabled = false;
                 }
                 db.ChangeTracker.DetectChanges();
-                await db.SaveChangesAsync().ConfigureAwait(false);
+                result = await db.SaveChangesAsync().ConfigureAwait(false);
             }
             _trace.TraceEvent(TraceEventType.Stop, 0, "CompleteInsertJournalEntries");
+            return result;
         }
 
 
-        private async Task insertTransactions(IEnumerable<Transaction> transactions) {
+        private async Task<int> insertTransactions(IEnumerable<Transaction> transactions) {
             _trace.TraceEvent(TraceEventType.Start, 0, "StartInsertTransactions");
             EveProfiteerDbEntities db;
+            int result;
             using (db = CreateDb()) {
                 db.Configuration.AutoDetectChangesEnabled = false;
                 IList<Transaction> list = transactions.OrderBy(t => t.TransactionId).ToList();
@@ -224,9 +229,10 @@ namespace eZet.EveProfiteer.Services {
                     db.Configuration.AutoDetectChangesEnabled = false;
                 }
                 db.ChangeTracker.DetectChanges();
-                await db.SaveChangesAsync().ConfigureAwait(false);
+                result = await db.SaveChangesAsync().ConfigureAwait(false);
             }
             _trace.TraceEvent(TraceEventType.Stop, 0, "CompleteInsertTransactions");
+            return result;
         }
 
         public async Task processTransactionsAsync(IEnumerable<Transaction> transactions) {

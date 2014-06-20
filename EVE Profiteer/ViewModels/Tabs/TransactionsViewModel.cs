@@ -8,7 +8,7 @@ using eZet.EveProfiteer.Services;
 using Screen = Caliburn.Micro.Screen;
 
 namespace eZet.EveProfiteer.ViewModels.Tabs {
-    public class TransactionsViewModel : Screen {
+    public class TransactionsViewModel : ViewModel {
         private readonly TransactionService _transactionService;
         private ViewPeriodEnum _selectedViewPeriod;
         private IQueryable<Transaction> _transactions;
@@ -82,8 +82,8 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             }
         }
 
-        public Task InitAsync() {
-            return Task.FromResult(1);
+        public override Task InitAsync() {
+            return Task.FromResult(false);
         }
 
 

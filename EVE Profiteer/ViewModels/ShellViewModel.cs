@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,9 +14,7 @@ using eZet.EveProfiteer.ViewModels.Dialogs;
 using eZet.EveProfiteer.ViewModels.Tabs;
 
 namespace eZet.EveProfiteer.ViewModels {
-    public class ShellViewModel : Conductor<IScreen>.Collection.OneActive, IShell, IHandle<ViewTradeDetailsEventArgs>,
-        IHandle<ViewMarketDetailsEventArgs>, IHandle<ViewOrderEventArgs>, IHandle<AddToOrdersEventArgs>,
-        IHandle<StatusChangedEventArgs> {
+    public class ShellViewModel : Conductor<IScreen>.Collection.OneActive, IShell, IHandle<StatusChangedEventArgs>, IHandle<IActivateTabEvent> {
         private readonly IEventAggregator _eventAggregator;
         private readonly KeyManagementService _keyManagementService;
         private readonly ShellService _shellService;
@@ -53,39 +52,11 @@ namespace eZet.EveProfiteer.ViewModels {
             UpdateIndustryJobsCommand = new DelegateCommand(ExecuteUpdateIndystryJobs);
             UpdateMarketOrdersCommand = new DelegateCommand(ExecuteUpdateMarketOrders);
 
-            TradeSummaryViewModel = IoC.Get<TradeSummaryViewModel>();
-            TradeAnalyzer = IoC.Get<TradeAnalyzerViewModel>();
-            TransactionDetailsViewModel = IoC.Get<TransactionDetailsViewModel>();
-            MarketBrowserViewModel = IoC.Get<MarketBrowserViewModel>();
-            MarketAnalyzerViewModel = IoC.Get<MarketAnalyzerViewModel>();
-            OrderEditorViewModel = IoC.Get<OrderEditorViewModel>();
-            AssetsViewModel = IoC.Get<AssetsViewModel>();
-            ProductionViewModel = IoC.Get<ProductionViewModel>();
-            TransactionsViewModel = IoC.Get<TransactionsViewModel>();
-            JournalViewModel = IoC.Get<JournalViewModel>();
             SelectKey();
-            Task.Run(() => InitAsync());
         }
 
 
-        public AssetsViewModel AssetsViewModel { get; set; }
-
-        public TradeSummaryViewModel TradeSummaryViewModel { get; set; }
-
-        public TradeAnalyzerViewModel TradeAnalyzer { get; set; }
-
-        public TransactionDetailsViewModel TransactionDetailsViewModel { get; set; }
-
-        public MarketBrowserViewModel MarketBrowserViewModel { get; set; }
-
-        public MarketAnalyzerViewModel MarketAnalyzerViewModel { get; set; }
-
-        public OrderEditorViewModel OrderEditorViewModel { get; set; }
-        public ProductionViewModel ProductionViewModel { get; set; }
-
-        public TransactionsViewModel TransactionsViewModel { get; set; }
-
-        public JournalViewModel JournalViewModel { get; set; }
+   
 
         public string StatusMessage {
             get { return _statusMessage; }
@@ -125,30 +96,11 @@ namespace eZet.EveProfiteer.ViewModels {
 
         public ICommand UpdateRefTypesCommand { get; private set; }
 
-        public void Handle(AddToOrdersEventArgs message) {
-            //ActivateItem(Items.Single(item => item.GetType() == typeof (OrderEditorViewModel)));
-        }
-
         public void Handle(StatusChangedEventArgs message) {
             _trace.TraceEvent(TraceEventType.Information, 0, "StatusChangedEventArgs: {0}", message.Status);
             if (AllowStatusChange) {
                 StatusMessage = message.Status;
             }
-        }
-
-        public void Handle(ViewMarketDetailsEventArgs message) {
-            _trace.TraceEvent(TraceEventType.Verbose, 0, "ViewMarketDetailsEventArgs");
-            ActivateItem(MarketBrowserViewModel);
-        }
-
-        public void Handle(ViewOrderEventArgs message) {
-            _trace.TraceEvent(TraceEventType.Verbose, 0, "ViewOrdersEventArgs");
-            ActivateItem(OrderEditorViewModel);
-        }
-
-        public void Handle(ViewTradeDetailsEventArgs message) {
-            _trace.TraceEvent(TraceEventType.Verbose, 0, "ViewTradeDetailsEventArgs");
-            ActivateItem(TransactionDetailsViewModel);
         }
 
         public void SelectKey() {
@@ -161,17 +113,18 @@ namespace eZet.EveProfiteer.ViewModels {
             //Items.Add(transactions);
             //var journal = IoC.Get<JournalViewModel>();
             //Items.Add(journal);
-
-            Items.Add(TradeSummaryViewModel);
-            Items.Add(TradeAnalyzer);
-            Items.Add(TransactionDetailsViewModel);
-            Items.Add(MarketBrowserViewModel);
-            Items.Add(MarketAnalyzerViewModel);
-            Items.Add(OrderEditorViewModel);
-            Items.Add(AssetsViewModel);
-            Items.Add(ProductionViewModel);
-            Items.Add(TransactionsViewModel);
-            Items.Add(JournalViewModel);
+            Items.Add(IoC.Get<TradeSummaryViewModel>());
+            Items.Add(IoC.Get<TradeAnalyzerViewModel>());
+            Items.Add(IoC.Get<TransactionDetailsViewModel>());
+            Items.Add(IoC.Get<MarketBrowserViewModel>());
+            Items.Add(IoC.Get<MarketAnalyzerViewModel>());
+            Items.Add(IoC.Get<OrderEditorViewModel>());
+            Items.Add(IoC.Get<MarketOrdersViewModel>());
+            Items.Add(IoC.Get<AssetsViewModel>());
+            Items.Add(IoC.Get<ProductionViewModel>());
+            Items.Add(IoC.Get<TransactionsViewModel>());
+            Items.Add(IoC.Get<JournalViewModel>());
+            Task.Run(() => InitAsync()).ConfigureAwait(false);
 
             //Items.Add(IoC.Get<TransactionDetailsViewModel>());
             //Items.Add(IoC.Get<ProfitViewModel>());
@@ -184,25 +137,11 @@ namespace eZet.EveProfiteer.ViewModels {
 
         public async void InitAsync() {
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Initializing..."));
-
-            _trace.TraceEvent(TraceEventType.Verbose, 0, "TradeSummaryViewModel.InitAsync");
-            await TradeSummaryViewModel.InitAsync();
-            _trace.TraceEvent(TraceEventType.Verbose, 0, "TransactionDetailsViewModel.InitAsync");
-            await TransactionDetailsViewModel.InitAsync();
-            _trace.TraceEvent(TraceEventType.Verbose, 0, "MarketBrowserViewModel.InitAsync");
-            await MarketBrowserViewModel.InitAsync();
-            _trace.TraceEvent(TraceEventType.Verbose, 0, "MarketAnalyzerViewModel.InitAsync");
-            await MarketAnalyzerViewModel.InitAsync();
-            _trace.TraceEvent(TraceEventType.Verbose, 0, "OrderEditorViewModel.InitAsync");
-            await OrderEditorViewModel.InitAsync();
-            _trace.TraceEvent(TraceEventType.Verbose, 0, "AssetsViewModel.InitAsync");
-            await AssetsViewModel.InitAsync();
-            _trace.TraceEvent(TraceEventType.Verbose, 0, "ProductionViewModel.InitAsync");
-            await ProductionViewModel.InitAsync();
-            _trace.TraceEvent(TraceEventType.Verbose, 0, "TransactionsViewModel.InitAsync");
-            await TransactionsViewModel.InitAsync();
-            _trace.TraceEvent(TraceEventType.Verbose, 0, "JournalViewModel.InitAsync");
-            await JournalViewModel.InitAsync();
+            AllowStatusChange = false;
+            IList<Task> tasks = new List<Task>();
+            Items.Apply(f => tasks.Add(((ViewModel)f).InitAsync()));
+            await Task.WhenAll(tasks);
+            AllowStatusChange = true;
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Ready"));
         }
 
@@ -211,33 +150,39 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         public async void ExecuteUpdateApi() {
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Updating Assets..."));
-            await _shellService.UpdateAssetsAsync().ConfigureAwait(false);
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Updating Transactions..."));
-            await _shellService.UpdateTransactionsAsync().ConfigureAwait(false);
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Updating Journal..."));
-            await _shellService.UpdateJournalAsync().ConfigureAwait(false);
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Updating Market Orders..."));
-            await _shellService.UpdateMarketOrdersAsync().ConfigureAwait(false);
+            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Updating API..."));
+            var assets = Task.Run(() => updateAssets());
+            var transactions = Task.Run(() => updateTransactions());
+            var journal = Task.Run(() => updateJournal());
+            var marketOrders = Task.Run(() => updateMarketOrders());
+            await Task.WhenAll(assets, transactions, journal, marketOrders).ConfigureAwait(false);
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("API Update Complete"));
         }
 
         public async void ExecuteUpdateAssets() {
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Updating Assets..."));
-            await _shellService.UpdateAssetsAsync().ConfigureAwait(false);
+            await updateAssets();
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Assets Updated"));
         }
 
+
         public async void ExecuteUpdateTransactions() {
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Updating Transactions..."));
-            await _shellService.UpdateTransactionsAsync().ConfigureAwait(false);
+            await updateTransactions();
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Transactions Updated"));
         }
 
+
         public async void ExecuteUpdateJournal() {
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Updating Journal..."));
-            await _shellService.UpdateJournalAsync().ConfigureAwait(false);
+            await updateJournal();
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Journal Updated"));
+        }
+
+        public async void ExecuteUpdateMarketOrders() {
+            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Updating Market Orders..."));
+            var result = await updateMarketOrders();
+            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Market Orders Updated ({0})", result));
         }
 
         public async void ExecuteUpdateRefTypes() {
@@ -257,16 +202,45 @@ namespace eZet.EveProfiteer.ViewModels {
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Updating Industry Jobs..."));
             await _shellService.UpdateIndustryJobs();
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Industry Jobs Updated"));
+            _eventAggregator.PublishOnBackgroundThread(new IndustryJobsUpdatedEvent());
+
         }
 
         private async void ExecuteProcessUnaccountedTransactions() {
             await _shellService.ProcessUnaccountedTransactionsAsync().ConfigureAwait(false);
         }
 
-        private async void ExecuteUpdateMarketOrders() {
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Updating Market Orders..."));
+        private async Task updateAssets() {
+            var result = await _shellService.UpdateAssetsAsync().ConfigureAwait(false);
+            if (result > 0) {
+                _eventAggregator.PublishOnBackgroundThread(new AssetsUpdatedEvent());
+            }
+        }
+
+        private async Task updateTransactions() {
+            var result = await _shellService.UpdateTransactionsAsync().ConfigureAwait(false);
+            if (result > 0) {
+                _eventAggregator.PublishOnBackgroundThread(new TransactionsUpdatedEvent());
+            }
+        }
+
+        private async Task updateJournal() {
+            var result = await _shellService.UpdateJournalAsync().ConfigureAwait(false);
+            if (result > 0) {
+                _eventAggregator.PublishOnBackgroundThread(new JournalUpdatedEvent());
+            }
+        }
+
+        private async Task<int> updateMarketOrders() {
             var result = await _shellService.UpdateMarketOrdersAsync().ConfigureAwait(false);
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Market Orders Updated ({0})", result));
+            if (result > 0) {
+                _eventAggregator.PublishOnBackgroundThread(new MarketOrdersUpdatedEvent());
+            }
+            return result;
+        }
+
+        public void Handle(IActivateTabEvent message) {
+            ActivateItem(Items.SingleOrDefault(f => f.GetType() == message.GetTabType()));
         }
     }
 }
