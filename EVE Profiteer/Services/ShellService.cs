@@ -20,6 +20,11 @@ namespace eZet.EveProfiteer.Services {
             _eveApiService = eveApiService;
         }
 
+        public async Task<List<ApiKey>> GetApiKeys() {
+            using (var db = CreateDb()) {
+                return await db.ApiKeys.AsNoTracking().Include("ApiKeyEntities").ToListAsync().ConfigureAwait(false);
+            }
+        }
 
         public async Task UpdateIndustryJobs() {
             await _eveApiService.GetIndustryJobs(ApplicationHelper.ActiveKey, ApplicationHelper.ActiveKeyEntity);

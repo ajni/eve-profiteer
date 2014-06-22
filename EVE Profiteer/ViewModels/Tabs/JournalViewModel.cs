@@ -9,7 +9,7 @@ using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
 
 namespace eZet.EveProfiteer.ViewModels.Tabs {
-    public class JournalViewModel : ViewModel {
+    public class JournalViewModel : ModuleViewModel {
         private readonly JournalService _journalService;
         private IQueryable<JournalEntry> _journal;
         private JournalAggregate<DateTime> _dailyAggregate;

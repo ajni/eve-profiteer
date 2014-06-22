@@ -11,7 +11,7 @@ using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
 
 namespace eZet.EveProfiteer.ViewModels.Tabs {
-    public class TransactionDetailsViewModel : ViewModel, IHandle<ViewTransactionDetailsEvent> {
+    public class TransactionDetailsViewModel : ModuleViewModel, IHandle<ViewTransactionDetailsEvent> {
 
         public enum ViewPeriodEnum {
             Today,
@@ -22,6 +22,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             Since,
             Period
         }
+
         private readonly TransactionDetailsService _transactionDetailsService;
         private readonly IEventAggregator _eventAggregator;
         private InvType _selectedItem;
@@ -41,7 +42,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             PropertyChanged += OnPropertyChanged;
             SelectedViewPeriod = ViewPeriodEnum.Month;
             ViewMarketDetailsCommand =
-                new DelegateCommand(() => _eventAggregator.PublishOnUIThread(new ViewMarketDetailsEvent(SelectedItem)),
+                new DelegateCommand(() => _eventAggregator.PublishOnUIThread(new ViewMarketBrowserEvent(SelectedItem)),
                     () => SelectedItem != null);
         }
 
@@ -160,7 +161,10 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             }
         }
 
-        public void Handle(ViewTransactionDetailsEvent message) {
+        public async void Handle(ViewTransactionDetailsEvent message) {
+            if (!IsInitialized) {
+                await InitAsync().ConfigureAwait(false);
+            }
             SelectedItem = InvTypes.SingleOrDefault(t => t.TypeId == message.InvType.TypeId);
         }
 

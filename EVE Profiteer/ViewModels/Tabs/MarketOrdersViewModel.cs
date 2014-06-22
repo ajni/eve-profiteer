@@ -6,7 +6,7 @@ using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
 
 namespace eZet.EveProfiteer.ViewModels.Tabs {
-    public class MarketOrdersViewModel : ViewModel, IHandle<MarketOrdersUpdatedEvent> {
+    public class MarketOrdersViewModel : ModuleViewModel, IHandle<MarketOrdersUpdatedEvent> {
         private readonly MarketOrderService _marketOrderService;
         private readonly IEventAggregator _eventAggregator;
         private IList<MarketOrder> _marketOrders;

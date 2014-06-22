@@ -6,10 +6,17 @@
                     xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
                     xmlns:viewModels="clr-namespace:eZet.EveProfiteer.ViewModels"
                     xmlns:dxr="http://schemas.devexpress.com/winfx/2008/xaml/ribbon"
+                    xmlns:dxdo="http://schemas.devexpress.com/winfx/2008/xaml/docking"
+                    xmlns:cal="http://www.caliburnproject.org"
                     d:DesignHeight="300" d:DesignWidth="500"
                     mc:Ignorable="d"
                     d:DataContext="{d:DesignInstance Type=viewModels:ShellViewModel, IsDesignTimeCreatable=False}"
                     Loaded="Window_Loaded">
+    <dxr:DXRibbonWindow.Resources>
+    <Style TargetType="dxdo:DocumentPanel">
+        <Setter Property="Caption" Value="{Binding DisplayName}" />
+    </Style>
+    </dxr:DXRibbonWindow.Resources>
     <Grid UseLayoutRounding="True">
         <dxb:BarManager>
             <dxb:BarManager.Items>
@@ -153,8 +160,20 @@
                         </dxr:RibbonPage>
                     </dxr:RibbonDefaultPageCategory>
                     <dxr:RibbonPageCategory Caption="Modules" Name="ModulePageCategory">
-                        <dxr:RibbonPage Caption="Modules" Name="TradingRibbonPage">
+                        <dxr:RibbonPage Caption="Core" Name="CoreModules">
                             <dxr:RibbonPageGroup Caption="Trade" Name="TradeRibbonGroup">
+
+                            </dxr:RibbonPageGroup>
+                            <dxr:RibbonPageGroup Caption="Industry">
+
+                            </dxr:RibbonPageGroup>
+                            <dxr:RibbonPageGroup Caption="Other">
+
+                            </dxr:RibbonPageGroup>
+
+                        </dxr:RibbonPage>
+                        <dxr:RibbonPage Caption="External" Name="ExternalModules">
+                            <dxr:RibbonPageGroup Caption="Trade">
 
                             </dxr:RibbonPageGroup>
                             <dxr:RibbonPageGroup Caption="Industry">
@@ -190,30 +209,20 @@
                     </dxr:RibbonStatusBarControl.RightItemLinks>
                 </dxr:RibbonStatusBarControl>
                 <Grid Background="Transparent">
-                    <TabControl Name="Items" />
+                    <!--<TabControl Name="Items" />-->
 
-                    <!--<dxdo:DockLayoutManager>
-                        <dxdo:LayoutGroup Caption="LayoutRoot">
-                            <dxdo:LayoutPanel Caption="Navigation" ItemWidth="0.5*" MaxWidth="300">
-                                <dxn:NavBarControl AllowSelectItem="False">
-                                    <dxn:NavBarControl.View>
-                                        <dxn:NavigationPaneView IsExpandButtonVisible="False" />
-                                    </dxn:NavBarControl.View>
-                                    <dxn:NavBarControl.Groups>
-                                        <dxn:NavBarGroup Header="Modules">
-                                            <dxn:NavBarItem Content="Orders" Command="{Binding ShowDocumentCommand}"
-                                                            CommandParameter="OrderCollectionView;Orders" />
-                                        </dxn:NavBarGroup>
-                                    </dxn:NavBarControl.Groups>
-                                </dxn:NavBarControl>
-                            </dxdo:LayoutPanel>
-                            <dxdo:DocumentGroup x:Name="ModuleGroup">
-                                <dxmvvm:Interaction.Behaviors>
-                                    <dxdo:TabbedDocumentUIService/>
-                                </dxmvvm:Interaction.Behaviors>
-                            </dxdo:DocumentGroup>
+                    <!--This won't show the items in the DocumentGroup-->
+                    <dxdo:DockLayoutManager ItemsSource="{Binding Items}">
+                        <dxdo:LayoutGroup>
+                            <dxdo:LayoutGroup.Resources>
+                                <DataTemplate x:Key="Templator">
+                                    <ContentControl cal:View.Model="{Binding}"/>
+                                </DataTemplate>
+                            </dxdo:LayoutGroup.Resources>
+                            <dxdo:LayoutGroup x:Name="PanelHost" DestroyOnClosingChildren="False"/>
+                            <dxdo:DocumentGroup   ItemContentTemplate="{StaticResource ResourceKey=Templator}"  x:Name="ModuleHost" DestroyOnClosingChildren="False" />
                         </dxdo:LayoutGroup>
-                    </dxdo:DockLayoutManager>-->
+                    </dxdo:DockLayoutManager>
                 </Grid>
             </DockPanel>
         </dxb:BarManager>

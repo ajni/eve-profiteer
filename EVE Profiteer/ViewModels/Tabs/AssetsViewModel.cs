@@ -9,7 +9,7 @@ using eZet.EveProfiteer.Properties;
 using eZet.EveProfiteer.Services;
 
 namespace eZet.EveProfiteer.ViewModels.Tabs {
-    public class AssetsViewModel : ViewModel, IHandle<AssetsUpdatedEvent> {
+    public class AssetsViewModel : ModuleViewModel, IHandle<AssetsUpdatedEvent> {
         private readonly AssetService _assetService;
         private readonly IEventAggregator _eventAggregator;
         private BindableCollection<AssetEntry> _assets;

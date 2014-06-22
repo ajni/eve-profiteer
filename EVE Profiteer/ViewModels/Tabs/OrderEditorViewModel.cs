@@ -16,7 +16,7 @@ using eZet.EveProfiteer.ViewModels.Dialogs;
 using Screen = Caliburn.Micro.Screen;
 
 namespace eZet.EveProfiteer.ViewModels.Tabs {
-    public class OrderEditorViewModel : ViewModel, IHandle<AddToOrdersEventArgs>, IHandle<DeleteOrdersEventArgs>,
+    public class OrderEditorViewModel : ModuleViewModel, IHandle<AddToOrdersEventArgs>, IHandle<DeleteOrdersEventArgs>,
         IHandle<ViewOrderEvent> {
         private readonly EveProfiteerDataService _dataService;
         private readonly EveMarketService _eveMarketService;
@@ -52,7 +52,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
                     () => FocusedOrder != null);
             ViewMarketDetailsCommand =
                 new DelegateCommand(
-                    () => _eventAggregator.PublishOnBackgroundThread(new ViewMarketDetailsEvent(FocusedOrder.Order.InvType)),
+                    () => _eventAggregator.PublishOnBackgroundThread(new ViewMarketBrowserEvent(FocusedOrder.Order.InvType)),
                     () => FocusedOrder != null);
             DeleteOrdersCommand = new DelegateCommand(DeleteOrders);
             ValidateOrderTypeCommand = new DelegateCommand<GridCellValidationEventArgs>(ExecuteValidateOrderType);

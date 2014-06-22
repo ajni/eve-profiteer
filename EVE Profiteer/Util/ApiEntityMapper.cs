@@ -90,7 +90,7 @@ namespace eZet.EveProfiteer.Util {
             return target;
         }
 
-        public static MarketHistoryEntry Map(EveCrestMarketHistory.MarketHistoryEntry source, MarketHistoryEntry target) {
+        public static MarketHistoryEntry Map(CrestMarketHistory.MarketHistoryEntry source, MarketHistoryEntry target) {
             target.Volume = source.Volume;
             target.OrderCount = source.OrderCount;
             target.LowPrice = source.LowPrice;

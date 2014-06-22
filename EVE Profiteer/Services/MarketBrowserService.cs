@@ -77,7 +77,7 @@ namespace eZet.EveProfiteer.Services {
                     sellOrders.Add(marketBrowserOrder);
                 }
             }
-            EveCrestMarketHistory history = await _eveMarketService.GetMarketHistoryAsync(region.RegionId, invType.TypeId).ConfigureAwait(false);
+            CrestMarketHistory history = await _eveMarketService.GetMarketHistoryAsync(region.RegionId, invType.TypeId).ConfigureAwait(false);
             var marketHistory = history.Entries.Select(entry => ApiEntityMapper.Map(entry, new MarketHistoryEntry())).ToList();
 
             var item = new MarketBrowserItem(invType, marketHistory, sellOrders, buyOrders, 7);

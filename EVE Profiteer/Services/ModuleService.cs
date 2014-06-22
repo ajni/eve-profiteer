@@ -15,7 +15,7 @@ namespace eZet.EveProfiteer.Services {
         }
 
         private void loadModules() {
-            Modules = new List<ViewModel>();
+            Modules = new List<ModuleViewModel>();
             Modules.Add(IoC.Get<TradeSummaryViewModel>());
             Modules.Add(IoC.Get<TradeAnalyzerViewModel>());
             Modules.Add(IoC.Get<TransactionDetailsViewModel>());
@@ -29,15 +29,15 @@ namespace eZet.EveProfiteer.Services {
             Modules.Add(IoC.Get<JournalViewModel>());
         }
 
-        public ViewModel GetModule(Type type) {
+        public ModuleViewModel GetModule(Type type) {
             return Modules.Single(module => module.GetType() == type);
         }
 
-        public ViewModel GetModule<T>() {
+        public ModuleViewModel GetModule<T>() {
             return Modules.Single(module => module.GetType() == typeof(T));
         }
 
-        public List<ViewModel> Modules { get; private set; }
+        public List<ModuleViewModel> Modules { get; private set; }
 
 
     }

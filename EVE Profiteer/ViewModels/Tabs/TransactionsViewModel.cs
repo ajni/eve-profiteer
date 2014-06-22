@@ -8,7 +8,7 @@ using eZet.EveProfiteer.Services;
 using Screen = Caliburn.Micro.Screen;
 
 namespace eZet.EveProfiteer.ViewModels.Tabs {
-    public class TransactionsViewModel : ViewModel {
+    public class TransactionsViewModel : ModuleViewModel {
         private readonly TransactionService _transactionService;
         private ViewPeriodEnum _selectedViewPeriod;
         private IQueryable<Transaction> _transactions;

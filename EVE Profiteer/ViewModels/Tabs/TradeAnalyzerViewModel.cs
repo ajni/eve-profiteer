@@ -10,7 +10,7 @@ using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
 
 namespace eZet.EveProfiteer.ViewModels.Tabs {
-    public class TradeAnalyzerViewModel : ViewModel {
+    public class TradeAnalyzerViewModel : ModuleViewModel {
         public enum ViewPeriodEnum {
             Today,
             Yesterday,
@@ -34,7 +34,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
                 entry => entry != null);
             ViewMarketDetailsCommand =
                 new DelegateCommand<TransactionAggregate>(
-                    item => _eventAggregator.PublishOnUIThread(new ViewMarketDetailsEvent(item.InvType)),
+                    item => _eventAggregator.PublishOnUIThread(new ViewMarketBrowserEvent(item.InvType)),
                     entry => entry != null);
             ViewPeriodCommand = new DelegateCommand(ViewPeriod);
             ViewOrderCommand = new DelegateCommand<TransactionAggregate>(ExecuteViewOrder, CanViewOrder);

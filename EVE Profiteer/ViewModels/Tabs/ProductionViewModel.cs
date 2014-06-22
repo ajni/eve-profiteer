@@ -9,7 +9,7 @@ using eZet.EveProfiteer.Services;
 using eZet.EveProfiteer.ViewModels.Dialogs;
 
 namespace eZet.EveProfiteer.ViewModels.Tabs {
-    public class ProductionViewModel : ViewModel {
+    public class ProductionViewModel : ModuleViewModel {
         private readonly IWindowManager _windowManager;
         private readonly IEventAggregator _eventAggregator;
         private readonly ProductionService _productionService;

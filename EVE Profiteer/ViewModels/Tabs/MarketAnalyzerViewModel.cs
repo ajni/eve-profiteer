@@ -13,7 +13,7 @@ using eZet.EveProfiteer.Services;
 using eZet.EveProfiteer.Util;
 
 namespace eZet.EveProfiteer.ViewModels.Tabs {
-    public class MarketAnalyzerViewModel : ViewModel, IHandle<OrdersChangedEventArgs> {
+    public class MarketAnalyzerViewModel : ModuleViewModel, IHandle<OrdersChangedEventArgs> {
         private readonly EveProfiteerDataService _dataService;
         private readonly IEventAggregator _eventAggregator;
         private readonly MarketAnalyzerService _marketAnalyzerService;
@@ -46,7 +46,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
                     entry => entry != null);
             ViewMarketDetailsCommand =
                 new DelegateCommand<MarketAnalyzerEntry>(
-                    entry => _eventAggregator.PublishOnUIThread(new ViewMarketDetailsEvent(entry.InvType)),
+                    entry => _eventAggregator.PublishOnUIThread(new ViewMarketBrowserEvent(entry.InvType)),
                     entry => entry != null);
             ViewOrderCommand =
                 new DelegateCommand<MarketAnalyzerEntry>(

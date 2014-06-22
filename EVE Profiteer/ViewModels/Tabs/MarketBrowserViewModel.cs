@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Caliburn.Micro;
-using DevExpress.Xpf.Charts;
 using DevExpress.Xpf.Mvvm;
 using eZet.EveProfiteer.Events;
 using eZet.EveProfiteer.Models;
@@ -13,7 +12,7 @@ using eZet.EveProfiteer.Services;
 using eZet.EveProfiteer.Util;
 
 namespace eZet.EveProfiteer.ViewModels.Tabs {
-    public class MarketBrowserViewModel : ViewModel, IHandle<ViewMarketDetailsEvent> {
+    public class MarketBrowserViewModel : ModuleViewModel, IHandle<ViewMarketBrowserEvent> {
         private readonly MarketBrowserService _marketBrowserService;
         private readonly IEventAggregator _eventAggregator;
         private int _dayLimit = 5;
@@ -38,7 +37,6 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             ViewEnd = DateTime.UtcNow.Date;
             ViewStart = ViewEnd.AddMonths(-6).Date;
             PropertyChanged += OnPropertyChanged;
-            DateTimeMeasurement = DateTimeMeasurementUnit.Day;
         }
 
 
@@ -65,8 +63,6 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
                 NotifyOfPropertyChange(() => ViewEnd);
             }
         }
-
-        public DateTimeMeasurementUnit DateTimeMeasurement { get; set; }
 
         public ICollection<InvType> InvTypes {
             get { return _invTypes; }
@@ -131,12 +127,14 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             }
         }
 
-        public void Handle(ViewMarketDetailsEvent message) {
-            LoadMarketDetails(message.InvType);
-        }
+        public async void Handle(ViewMarketBrowserEvent message) {
+            if (!IsInitialized) {
+                await InitAsync().ConfigureAwait(false);
+            }
+            SelectedItem = InvTypes.Single(t => t.TypeId == message.InvType.TypeId);
+            await LoadMarketDetails(SelectedRegion, SelectedItem).ConfigureAwait(false);}
 
-        private bool CanViewTradeDetails() {
-            return MarketBrowserData != null && MarketBrowserData.InvType != null;
+        private bool CanViewTradeDetails() {return MarketBrowserData != null && MarketBrowserData.InvType != null;
         }
 
         private void ExecuteViewTradeDetails() {
@@ -148,14 +146,14 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             _eventAggregator.PublishOnUIThread(e);
         }
 
-        private void OnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs) {
+        private async void OnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs) {
             if (propertyChangedEventArgs.PropertyName == "SelectedItem")
-                LoadMarketDetails(SelectedItem);
+                await LoadMarketDetails(SelectedRegion, SelectedItem).ConfigureAwait(false);
         }
 
-        private async void LoadMarketDetails(InvType invType) {
+        private async Task LoadMarketDetails(MapRegion region, InvType invType) {
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Loading market details..."));
-            MarketBrowserData = await GetMarketDetails(SelectedRegion, invType);
+            MarketBrowserData = await GetMarketDetails(region, invType).ConfigureAwait(false);
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Market details loaded"));
         }
 
@@ -165,10 +163,10 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
         }
 
         public override async Task InitAsync() {
-            Regions = await _marketBrowserService.GetRegions();
+            Regions = await _marketBrowserService.GetRegions().ConfigureAwait(false);
             SelectedRegion = Regions.Single(region => region.RegionId == ConfigManager.DefaultRegion);
-            InvTypes = await _marketBrowserService.GetMarketTypes();
-            TreeRootNodes = await _marketBrowserService.GetMarketTree();
+            InvTypes = await _marketBrowserService.GetMarketTypes().ConfigureAwait(false);
+            TreeRootNodes = await _marketBrowserService.GetMarketTree().ConfigureAwait(false);
         }
 
 
@@ -178,7 +176,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
         }
 
         private async Task<MarketBrowserItem> GetMarketDetails(MapRegion region, InvType invType) {
-            return await _marketBrowserService.GetMarketDetails(region, invType);
+            return await _marketBrowserService.GetMarketDetails(region, invType).ConfigureAwait(false);
         }
     }
 }

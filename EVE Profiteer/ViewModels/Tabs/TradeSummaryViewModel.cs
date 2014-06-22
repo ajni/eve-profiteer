@@ -10,7 +10,7 @@ using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
 
 namespace eZet.EveProfiteer.ViewModels.Tabs {
-    public class TradeSummaryViewModel : ViewModel, IHandle<TransactionsUpdatedEvent> {
+    public class TradeSummaryViewModel : ModuleViewModel, IHandle<TransactionsUpdatedEvent> {
         public enum ViewPeriodEnum {
             Today,
             Yesterday,
@@ -34,7 +34,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             DisplayName = "Trade summary";
             PeriodSelectorStart = DateTime.UtcNow.AddMonths(-1);
             PeriodSelectorEnd = DateTime.UtcNow;
-            _selectedViewPeriod = ViewPeriodEnum.Month;
+            _selectedViewPeriod = ViewPeriodEnum.Week;
             ViewPeriodCommand = new DelegateCommand(ExecuteViewPeriod);
         }
 
@@ -138,5 +138,6 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             if (IsActive)
                 await refresh();
         }
+
     }
 }

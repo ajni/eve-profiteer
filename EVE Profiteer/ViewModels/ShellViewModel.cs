@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Caliburn.Micro;
@@ -18,23 +17,20 @@ using eZet.EveProfiteer.ViewModels.Tabs;
 using eZet.EveProfiteer.Views;
 
 namespace eZet.EveProfiteer.ViewModels {
-    public class ShellViewModel : Conductor<IScreen>.Collection.OneActive, IShell, IHandle<StatusChangedEventArgs>, IHandle<IActivateTabEvent> {
+    public class ShellViewModel : Conductor<IScreen>.Collection.OneActive, IShell, IHandle<StatusChangedEventArgs>,
+        IHandle<IActivateTabEvent> {
         private readonly IEventAggregator _eventAggregator;
-        private readonly KeyManagementService _keyManagementService;
         private readonly ShellService _shellService;
         private readonly ModuleService _moduleService;
         private readonly TraceSource _trace = new TraceSource("EveProfiteer", SourceLevels.All);
         private readonly IWindowManager _windowManager;
         private string _statusMessage;
 
-        public ShellViewModel(IWindowManager windowManager, IEventAggregator eventAggregator,
-            KeyManagementService keyManagementService, ShellService shellService, ModuleService moduleService) {
+        public ShellViewModel(IWindowManager windowManager, IEventAggregator eventAggregator, ShellService shellService, ModuleService moduleService) {
             _windowManager = windowManager;
             _eventAggregator = eventAggregator;
-            _keyManagementService = keyManagementService;
             _shellService = shellService;
             _moduleService = moduleService;
-
 
 
             DisplayName = "EVE Profiteer";
@@ -42,7 +38,7 @@ namespace eZet.EveProfiteer.ViewModels {
             _eventAggregator.Subscribe(this);
             StatusMessage = "Initializing...";
 
-            ActiveKey = _keyManagementService.AllApiKeys().FirstOrDefault();
+            ActiveKey = _shellService.GetApiKeys().Result.First();
 
             if (ActiveKey != null)
                 ActiveKeyEntity = ActiveKey.ApiKeyEntities.Single(f => f.Id == 977615922);
@@ -60,7 +56,7 @@ namespace eZet.EveProfiteer.ViewModels {
             UpdateIndustryJobsCommand = new DelegateCommand(ExecuteUpdateIndystryJobs);
             UpdateMarketOrdersCommand = new DelegateCommand(ExecuteUpdateMarketOrders);
             ActivateTabCommand = new DelegateCommand<Type>(ExecuteActivateTab);
-            
+
             initDefaultModules();
         }
 
@@ -70,11 +66,12 @@ namespace eZet.EveProfiteer.ViewModels {
             ActivateItem(vm);
         }
 
-  
-        private void addModule(ViewModel vm) {
+
+        private void addModule(ModuleViewModel vm) {
             if (!Items.Contains(vm)) {
                 Task.Run(() => vm.InitAsync());
                 Items.Add(vm);
+                Items.Refresh();
             }
         }
 
@@ -85,13 +82,13 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         protected override void OnViewLoaded(object view) {
-            var shellView = (ShellView) view;
+            var shellView = (ShellView)view;
             initializeRibbon(shellView);
             base.OnViewLoaded(view);
         }
 
-        private void initializeRibbon(ShellView view ) {
-            foreach (var vm in Modules) {
+        private void initializeRibbon(ShellView view) {
+            foreach (var vm in _moduleService.Modules) {
                 var button = new BarButtonItem();
                 button.Command = ActivateTabCommand;
                 button.Content = vm.DisplayName;
@@ -115,11 +112,12 @@ namespace eZet.EveProfiteer.ViewModels {
             get { return ApplicationHelper.ActiveKeyEntity.Name; }
         }
 
+        #region COMMANDS
+
         public ICommand ActivateTabCommand { get; private set; }
 
-        public IList<ViewModel> Modules { get; private set; }
-
         public ICommand UpdateMarketOrdersCommand { get; private set; }
+
         public ICommand UpdateIndustryJobsCommand { get; private set; }
 
         public ICommand ProcessUnaccountedTransactionsCommand { get; private set; }
@@ -136,11 +134,14 @@ namespace eZet.EveProfiteer.ViewModels {
 
         public ICommand UpdateApiCommand { get; private set; }
 
+        public ICommand UpdateRefTypesCommand { get; private set; }
+
+        #endregion
+
         public static ApiKey ActiveKey { get; private set; }
 
         public static ApiKeyEntity ActiveKeyEntity { get; private set; }
 
-        public ICommand UpdateRefTypesCommand { get; private set; }
 
         public void Handle(StatusChangedEventArgs message) {
             _trace.TraceEvent(TraceEventType.Information, 0, "StatusChangedEventArgs: {0}", message.Status);
@@ -153,7 +154,7 @@ namespace eZet.EveProfiteer.ViewModels {
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Initializing..."));
             AllowStatusChange = false;
             IList<Task> tasks = new List<Task>();
-            Items.Apply(f => tasks.Add(((ViewModel)f).InitAsync()));
+            Items.Apply(f => tasks.Add(((ModuleViewModel)f).InitAsync()));
             await Task.WhenAll(tasks);
             AllowStatusChange = true;
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Ready"));
@@ -217,7 +218,6 @@ namespace eZet.EveProfiteer.ViewModels {
             await _shellService.UpdateIndustryJobs();
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Industry Jobs Updated"));
             _eventAggregator.PublishOnBackgroundThread(new IndustryJobsUpdatedEvent());
-
         }
 
         private async void ExecuteProcessUnaccountedTransactions() {
@@ -254,7 +254,7 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         public void Handle(IActivateTabEvent message) {
-            ActivateItem(Items.SingleOrDefault(f => f.GetType() == message.GetTabType()));
+            ExecuteActivateTab(message.GetTabType());
         }
     }
 }

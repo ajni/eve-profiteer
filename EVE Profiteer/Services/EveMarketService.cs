@@ -36,7 +36,7 @@ namespace eZet.EveProfiteer.Services {
             return orders;
         }
 
-        public async Task<EveCrestMarketHistory> GetMarketHistoryAsync(int region, int invType) {
+        public async Task<CrestMarketHistory> GetMarketHistoryAsync(int region, int invType) {
             return await _eveCrest.GetMarketHistoryAsync(region, invType).ConfigureAwait(false);
         }
 
