@@ -43,7 +43,7 @@
                 </dxb:BarManager.Items>
 
                 <dxb:BarManager.Bars>
-                    <dxb:Bar>
+                    <dxb:Bar IsMainMenu="True">
                         <dxb:BarButtonItemLink BarItemName="ViewButton" />
                         <dxb:BarEditItemLink BarItemName="ViewPeriodSelector" />
                         <dxb:BarEditItemLink BarItemName="StartDate" />

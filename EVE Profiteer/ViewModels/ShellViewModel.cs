@@ -17,7 +17,7 @@ using eZet.EveProfiteer.ViewModels.Tabs;
 using eZet.EveProfiteer.Views;
 
 namespace eZet.EveProfiteer.ViewModels {
-    public class ShellViewModel : Conductor<IScreen>.Collection.OneActive, IShell, IHandle<StatusChangedEventArgs>,
+    public class ShellViewModel : Conductor<IScreen>.Collection.AllActive, IShell, IHandle<StatusChangedEventArgs>,
         IHandle<IActivateTabEvent> {
         private readonly IEventAggregator _eventAggregator;
         private readonly ShellService _shellService;
@@ -25,6 +25,7 @@ namespace eZet.EveProfiteer.ViewModels {
         private readonly TraceSource _trace = new TraceSource("EveProfiteer", SourceLevels.All);
         private readonly IWindowManager _windowManager;
         private string _statusMessage;
+        private int _selectedTabIndex;
 
         public ShellViewModel(IWindowManager windowManager, IEventAggregator eventAggregator, ShellService shellService, ModuleService moduleService) {
             _windowManager = windowManager;
@@ -55,34 +56,35 @@ namespace eZet.EveProfiteer.ViewModels {
             ProcessUnaccountedTransactionsCommand = new DelegateCommand(ExecuteProcessUnaccountedTransactions);
             UpdateIndustryJobsCommand = new DelegateCommand(ExecuteUpdateIndystryJobs);
             UpdateMarketOrdersCommand = new DelegateCommand(ExecuteUpdateMarketOrders);
-            ActivateTabCommand = new DelegateCommand<Type>(ExecuteActivateTab);
+            ActivateTabCommand = new DelegateCommand<Type>(ExecuteViewTab);
 
-            initDefaultModules();
         }
 
-        private void ExecuteActivateTab(Type type) {
+        private void ExecuteViewTab(Type type) {
             var vm = _moduleService.GetModule(type);
-            addModule(vm);
-            ActivateItem(vm);
+            activateTab(vm);
         }
 
-
-        private void addModule(ModuleViewModel vm) {
-            if (!Items.Contains(vm)) {
-                Task.Run(() => vm.InitAsync());
-                Items.Add(vm);
-                Items.Refresh();
+        private void activateTab(ModuleViewModel viewModel) {
+            ActivateItem(viewModel);
+            var view = (ShellView) GetView();
+            var tab = view.ModuleHost.VisiblePages.SingleOrDefault(page => page.DataContext == viewModel);
+            if (tab == null) {
+                tab = view.DockLayoutManager.ClosedPanels.Single(page => page.DataContext == viewModel);
+                tab.Closed = false;
+                //view.ModuleHost.Add(tab);
             }
+            view.DockLayoutManager.DockController.Activate(tab);
         }
+
 
         private void initDefaultModules() {
-            Items.Add(_moduleService.GetModule<TradeSummaryViewModel>());
-            Items.Add(_moduleService.GetModule<OrderEditorViewModel>());
-            Task.Run(() => InitAsync()).ConfigureAwait(false);
+            activateTab(_moduleService.GetModule<TradeSummaryViewModel>());
         }
 
         protected override void OnViewLoaded(object view) {
             var shellView = (ShellView)view;
+            initDefaultModules();
             initializeRibbon(shellView);
             base.OnViewLoaded(view);
         }
@@ -142,6 +144,14 @@ namespace eZet.EveProfiteer.ViewModels {
 
         public static ApiKeyEntity ActiveKeyEntity { get; private set; }
 
+        public int SelectedTabIndex {
+            get { return _selectedTabIndex; }
+            set {
+                if (value == _selectedTabIndex) return;
+                _selectedTabIndex = value;
+                NotifyOfPropertyChange();
+            }
+        }
 
         public void Handle(StatusChangedEventArgs message) {
             _trace.TraceEvent(TraceEventType.Information, 0, "StatusChangedEventArgs: {0}", message.Status);
@@ -254,7 +264,7 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         public void Handle(IActivateTabEvent message) {
-            ExecuteActivateTab(message.GetTabType());
+            ExecuteViewTab(message.GetTabType());
         }
     }
 }

@@ -100,6 +100,9 @@
                 <dxb:BarStaticItem Name="Status" Content="{Binding StatusMessage}" />
                 <dxb:BarStaticItem Name="CurrentEntity" Content="{Binding CurrentEntityName}" />
             </dxb:BarManager.Items>
+            <dxb:BarManager.Bars>
+                <!--<dxb:Bar IsMainMenu="True"></dxb:Bar>-->
+            </dxb:BarManager.Bars>
             <DockPanel>
                 <dxr:RibbonControl RibbonStyle="Office2010" DockPanel.Dock="Top" IsMinimized="True">
                     <dxr:RibbonControl.ApplicationMenu>
@@ -211,16 +214,14 @@
                 <Grid Background="Transparent">
                     <!--<TabControl Name="Items" />-->
 
-                    <!--This won't show the items in the DocumentGroup-->
-                    <dxdo:DockLayoutManager ItemsSource="{Binding Items}">
-                        <dxdo:LayoutGroup>
+                    <dxdo:DockLayoutManager Name="DockLayoutManager" ItemsSource="{Binding Items}" MDIMergeStyle="Never">
+                        <dxdo:LayoutGroup >
                             <dxdo:LayoutGroup.Resources>
                                 <DataTemplate x:Key="Templator">
                                     <ContentControl cal:View.Model="{Binding}"/>
                                 </DataTemplate>
                             </dxdo:LayoutGroup.Resources>
-                            <dxdo:LayoutGroup x:Name="PanelHost" DestroyOnClosingChildren="False"/>
-                            <dxdo:DocumentGroup   ItemContentTemplate="{StaticResource ResourceKey=Templator}"  x:Name="ModuleHost" DestroyOnClosingChildren="False" />
+                            <dxdo:DocumentGroup ItemContentTemplate="{StaticResource ResourceKey=Templator}" x:Name="ModuleHost" DestroyOnClosingChildren="False" ClosePageButtonShowMode="InAllTabPagesAndTabControlHeader"/>
                         </dxdo:LayoutGroup>
                     </dxdo:DockLayoutManager>
                 </Grid>

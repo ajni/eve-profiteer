@@ -127,12 +127,18 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             }
         }
 
+
         public async void Handle(ViewMarketBrowserEvent message) {
             if (!IsInitialized) {
                 await InitAsync().ConfigureAwait(false);
             }
             SelectedItem = InvTypes.Single(t => t.TypeId == message.InvType.TypeId);
-            await LoadMarketDetails(SelectedRegion, SelectedItem).ConfigureAwait(false);}
+            await LoadMarketDetails(SelectedRegion, SelectedItem).ConfigureAwait(false);
+        }
+
+        protected override void OnInitialize() {
+            Task.Run(() => InitAsync());
+        }
 
         private bool CanViewTradeDetails() {return MarketBrowserData != null && MarketBrowserData.InvType != null;
         }

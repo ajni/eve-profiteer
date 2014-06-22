@@ -12,8 +12,8 @@ using eZet.EveProfiteer.Services;
 namespace eZet.EveProfiteer.ViewModels.Tabs {
     public class TradeSummaryViewModel : ModuleViewModel, IHandle<TransactionsUpdatedEvent> {
         public enum ViewPeriodEnum {
-            Today,
-            Yesterday,
+            //Today,
+            //Yesterday,
             Week,
             Month,
             All,
@@ -71,12 +71,16 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             }
         }
 
+        protected override async void OnInitialize() {
+            await InitAsync().ConfigureAwait(false);
+        }
+
         public override async Task InitAsync() {
-            await ViewPeriod();
+            await ViewPeriod().ConfigureAwait(false);
         }
 
         public async void ExecuteViewPeriod() {
-            await ViewPeriod();
+            await ViewPeriod().ConfigureAwait(false);
         }
 
         public async Task ViewPeriod() {
@@ -85,14 +89,14 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
                     ActualViewStart = DateTime.MinValue;
                     ActualViewEnd = DateTime.MaxValue;
                     break;
-                case ViewPeriodEnum.Today:
-                    ActualViewStart = DateTime.UtcNow.Date;
-                    ActualViewEnd = DateTime.MaxValue;
-                    break;
-                case ViewPeriodEnum.Yesterday:
-                    ActualViewStart = DateTime.UtcNow.AddDays(-1).Date;
-                    ActualViewEnd = DateTime.UtcNow.Date;
-                    break;
+                //case ViewPeriodEnum.Today:
+                //    ActualViewStart = DateTime.UtcNow.Date;
+                //    ActualViewEnd = DateTime.MaxValue;
+                //    break;
+                //case ViewPeriodEnum.Yesterday:
+                //    ActualViewStart = DateTime.UtcNow.AddDays(-1).Date;
+                //    ActualViewEnd = DateTime.UtcNow.Date;
+                //    break;
                 case ViewPeriodEnum.Week:
                     ActualViewStart = DateTime.UtcNow.AddDays(-7);
                     ActualViewEnd = DateTime.MaxValue;
