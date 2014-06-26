@@ -42,6 +42,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             _dataService = dataService;
             _eveMarketService = eveMarketService;
             DisplayName = "Order Editor";
+            Category = ModuleCategory.Trade;
             _eventAggregator.Subscribe(this);
             Orders = new BindableCollection<OrderVm>();
             SelectedOrders = new BindableCollection<OrderVm>();

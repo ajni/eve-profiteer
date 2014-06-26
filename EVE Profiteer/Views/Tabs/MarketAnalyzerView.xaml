@@ -109,7 +109,7 @@
                   VerticalContentAlignment="Stretch"
                   ItemsSource="{Binding MarketTreeNodes}">
             <TreeView.Resources>
-                <HierarchicalDataTemplate DataType="{x:Type models:TreeNode}"
+                <HierarchicalDataTemplate DataType="{x:Type models:MarketTreeNode}"
                                           ItemsSource="{Binding Children}">
                     <StackPanel Orientation="Horizontal">
                         <CheckBox IsChecked="{Binding IsChecked}"
@@ -117,12 +117,6 @@
                         <ContentPresenter Content="{Binding Name}" />
                     </StackPanel>
                 </HierarchicalDataTemplate>
-                <!--<DataTemplate DataType="{x:Type models:InvType}">
-                    <StackPanel Orientation="Horizontal">
-                        <CheckBox IsChecked="{Binding IsChecked}" Focusable="False" />
-                        <TextBlock Text="{Binding TypeName}" />
-                    </StackPanel>
-                </DataTemplate>-->
             </TreeView.Resources>
         </TreeView>
 
@@ -236,7 +230,7 @@
                     </dxg:GridColumn>
                 </dxg:GridControlBand>
 
-                <dxg:GridControlBand Header="Misc" Visible="False">
+                <dxg:GridControlBand Header="Basic" Visible="False">
                     <dxg:GridColumn FieldName="Updated"/>
                     <!--<dxg:GridColumn FieldName="InvType.InvGroup.AllowManufacture" 
                                     Header="Manufacturable" />-->

@@ -61,8 +61,22 @@ namespace eZet.EveProfiteer.ViewModels {
             UpdateIndustryJobsCommand = new DelegateCommand(ExecuteUpdateIndystryJobs);
             UpdateMarketOrdersCommand = new DelegateCommand(ExecuteUpdateMarketOrders);
             ActivateTabCommand = new DelegateCommand<Type>(ExecuteViewTab);
+            OpenSettingsCommand = new DelegateCommand(ExecuteOpenSettings);
 
         }
+
+        private void ExecuteOpenSettings() {
+            var result = _windowManager.ShowDialog(IoC.Get<SettingsViewModel>());
+            if (result.GetValueOrDefault()) {
+                Properties.Settings.Default.Save();
+                _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Settings Saved"));
+            } else {
+                Properties.Settings.Default.Reload();
+                _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Settings Discarded"));
+            }
+        }
+
+        public ICommand OpenSettingsCommand { get; set; }
 
         private void ExecuteViewTab(Type type) {
             var vm = _moduleService.GetModule(type);
@@ -71,7 +85,7 @@ namespace eZet.EveProfiteer.ViewModels {
 
         private void activateTab(ModuleViewModel viewModel) {
             ActivateItem(viewModel);
-            var view = (ShellView) GetView();
+            var view = (ShellView)GetView();
             var tab = view.ModuleHost.VisiblePages.SingleOrDefault(page => page.DataContext == viewModel);
             if (tab == null) {
                 tab = view.DockLayoutManager.ClosedPanels.Single(page => page.DataContext == viewModel);
@@ -99,7 +113,17 @@ namespace eZet.EveProfiteer.ViewModels {
                 button.CommandParameter = vm.GetType();
                 button.LargeGlyph = GetImageStream(vm.LargeGlyph);
                 button.Glyph = GetImageStream(vm.Glyph);
-                view.TradeRibbonGroup.ItemLinks.Add(button);
+                switch (vm.Category) {
+                    case ModuleViewModel.ModuleCategory.Trade:
+                        view.TradeModules.ItemLinks.Add(button);
+                        break;
+                    case ModuleViewModel.ModuleCategory.Industry:
+                        view.IndustryModules.ItemLinks.Add(button);
+                        break;
+                    case ModuleViewModel.ModuleCategory.Basic:
+                        view.MiscModules.ItemLinks.Add(button);
+                        break;
+                }
             }
         }
 

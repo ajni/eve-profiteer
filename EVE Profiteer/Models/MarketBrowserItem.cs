@@ -30,10 +30,17 @@ namespace eZet.EveProfiteer.Models {
         public decimal CurrentSellPrice { get; private set; }
 
         private void initialize() {
-            CurrentBuyPrice = BuyOrders.MaxBy(order => order.Price).Price;
-            CurrentSellPrice = SellOrders.MinBy(order => order.Price).Price;
+            if (BuyOrders.Any()) {
+                CurrentBuyPrice = BuyOrders.MaxBy(order => order.Price).Price;
+            }
+            if (SellOrders.Any()) {
+                CurrentSellPrice = SellOrders.MinBy(order => order.Price).Price;
+            }
             var high = new List<decimal>();
             var low = new List<decimal>();
+            if (!MarketHistory.Any()) {
+                return;
+            }
             foreach (MarketHistoryEntry entry in MarketHistory) {
                 high.Add(entry.HighPrice);
                 low.Add(entry.LowPrice);

@@ -36,6 +36,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             PeriodSelectorEnd = DateTime.UtcNow;
             _selectedViewPeriod = ViewPeriodEnum.Week;
             ViewPeriodCommand = new DelegateCommand(ExecuteViewPeriod);
+            Category = ModuleCategory.Trade;
         }
 
         public ICommand ViewPeriodCommand { get; private set; }

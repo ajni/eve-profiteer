@@ -21,7 +21,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
         private ICollection<MapRegion> _regions;
         private ICollection<InvType> _invTypes;
         private MapRegion _selectedRegion;
-        private BindableCollection<TreeNode> _treeRootNodes;
+        private BindableCollection<MarketTreeNode> _treeRootNodes;
         private DateTime _viewStart;
         private DateTime _viewEnd;
 
@@ -30,8 +30,9 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             _eventAggregator = eventAggregator;
             _eventAggregator.Subscribe(this);
             DisplayName = "Market Browser";
+            Category = ModuleCategory.Trade;
 
-            SelectItemCommand = new DelegateCommand<TreeNode>(ExecuteSelectItem);
+            SelectItemCommand = new DelegateCommand<MarketTreeNode>(ExecuteSelectItem);
             AddToOrdersCommand = new DelegateCommand(ExecuteAddToOrders, CanAddToOrders);
             ViewTradeDetailsCommand = new DelegateCommand(ExecuteViewTradeDetails, CanViewTradeDetails);
             ViewEnd = DateTime.UtcNow.Date;
@@ -100,7 +101,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             }
         }
 
-        public BindableCollection<TreeNode> TreeRootNodes {
+        public BindableCollection<MarketTreeNode> TreeRootNodes {
             get { return _treeRootNodes; }
             private set {
                 if (Equals(value, _treeRootNodes)) return;
@@ -162,7 +163,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Market details loaded"));
         }
 
-        private void ExecuteSelectItem(TreeNode node) {
+        private void ExecuteSelectItem(MarketTreeNode node) {
             if (node == null || node.InvType == null) return;
             SelectedItem = InvTypes.Single(t => t.TypeId == node.InvType.TypeId);
         }

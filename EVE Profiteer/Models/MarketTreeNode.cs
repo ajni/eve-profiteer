@@ -1,17 +1,17 @@
 ﻿using System.ComponentModel;
 
 namespace eZet.EveProfiteer.Models {
-    public class TreeNode : CheckableTreeNode {
+    public class MarketTreeNode : CheckableTreeNode {
         public InvType InvType { get; set; }
 
-        public TreeNode(InvType invType) {
+        public MarketTreeNode(InvType invType) {
             InvType = invType;
             Name = invType.TypeName;
             Id = InvType.TypeId;
             IsFocusable = true;
         }
 
-        public TreeNode(InvMarketGroup group) {
+        public MarketTreeNode(InvMarketGroup group) {
             Name = group.MarketGroupName;
             Id = group.MarketGroupId;
             IsFocusable = false;

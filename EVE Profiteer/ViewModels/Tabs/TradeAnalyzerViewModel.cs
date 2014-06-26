@@ -29,6 +29,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             _eventAggregator = eventAggregator;
             _tradeAnalyzerService = tradeAnalyzerService;
             DisplayName = "Trade Analyzer";
+            Category = ModuleCategory.Trade;
             Items = new BindableCollection<TransactionAggregate>();
             ViewTradeDetailsCommand = new DelegateCommand<TransactionAggregate>(ExecuteViewTradeDetails,
                 entry => entry != null);

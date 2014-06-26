@@ -24,6 +24,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             _productionService = productionService;
             _dialogService = dialogService;
             DisplayName = "Production";
+            Category = ModuleCategory.Industry;
             GridRows = new BindableCollection<ProductionBatchEntry>();
             AddProductionBatchCommand = new DelegateCommand(ExecuteAddProductionBatch);
         }

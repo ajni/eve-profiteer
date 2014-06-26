@@ -19,9 +19,9 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
         private readonly MarketAnalyzerService _marketAnalyzerService;
         private int _dayLimit = 10;
         private BindableCollection<MarketAnalyzerEntry> _marketAnalyzerResults;
-        private BindableCollection<TreeNode> _marketTreeNodes;
+        private BindableCollection<MarketTreeNode> _marketTreeNodes;
         private ICollection<MapRegion> _regions;
-        private BindableCollection<TreeNode> _selectedItems;
+        private BindableCollection<MarketTreeNode> _selectedItems;
         private MapRegion _selectedRegion;
         private StaStation _selectedStation;
         private ICollection<StaStation> _stations;
@@ -33,9 +33,10 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             _dataService = dataService;
             _eventAggregator.Subscribe(this);
             DisplayName = "Market Analyzer";
+            Category = ModuleCategory.Trade;
 
 
-            SelectedItems = new BindableCollection<TreeNode>();
+            SelectedItems = new BindableCollection<MarketTreeNode>();
 
             AnalyzeCommand = new DelegateCommand(ExecuteAnalyze, () => SelectedItems.Count != 0);
             AddToOrdersCommand = new DelegateCommand<ICollection<object>>(executeAddToOrders, canAddToOrders);
@@ -67,7 +68,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
 
         public ICommand ViewTradeDetailsCommand { get; private set; }
 
-        public BindableCollection<TreeNode> MarketTreeNodes {
+        public BindableCollection<MarketTreeNode> MarketTreeNodes {
             get { return _marketTreeNodes; }
             private set {
                 if (Equals(value, _marketTreeNodes)) return;
@@ -112,7 +113,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             }
         }
 
-        public BindableCollection<TreeNode> SelectedItems {
+        public BindableCollection<MarketTreeNode> SelectedItems {
             get { return _selectedItems; }
             private set {
                 if (Equals(_selectedItems, value)) return;
@@ -216,7 +217,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
         }
 
         private void treeViewCheckBox_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            var item = sender as TreeNode;
+            var item = sender as MarketTreeNode;
             if (e.PropertyName == "IsChecked") {
                 if (item.IsChecked == true) {
                     SelectedItems.Add(item);

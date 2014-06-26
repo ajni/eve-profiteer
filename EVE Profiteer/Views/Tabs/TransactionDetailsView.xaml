@@ -241,7 +241,7 @@
                                     Text="{Binding TransactionAggregate.UnaccountedStock, StringFormat='Unaccounted acquisitions: {0}'}" />
                             </dxn:NavBarItem>
                         </dxn:NavBarGroup>
-                        <dxn:NavBarGroup Header="Misc" IsExpanded="False">
+                        <dxn:NavBarGroup Header="Basic" IsExpanded="False">
                             <dxn:NavBarItem>
                                 <TextBlock
                                     Text="{Binding TransactionAggregate.Order.IsBuyOrder, StringFormat='Active Buy Order: {0}'}" />

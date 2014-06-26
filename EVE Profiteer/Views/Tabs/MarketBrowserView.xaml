@@ -67,19 +67,13 @@
         <TreeView dxlc:DockLayoutControl.Dock="Left" dxlc:DockLayoutControl.AllowHorizontalSizing="True"
 			VirtualizingPanel.IsVirtualizing="True"
 			VerticalAlignment="Stretch" VerticalContentAlignment="Stretch"
-			ItemsSource="{Binding TreeRootNodes}">
+			ItemsSource="{Binding TreeRootNodes}" ItemTemplate="{StaticResource TreeNodeTemplate}">
             <TreeView.ItemContainerStyle>
                 <Style TargetType="{x:Type TreeViewItem}">
                     <Setter Property="Focusable" Value="{Binding IsFocusable}"/>
                 </Style>
             </TreeView.ItemContainerStyle>
-            <TreeView.ItemTemplate>
-                <HierarchicalDataTemplate DataType="{x:Type models:TreeNode}"
-					ItemsSource="{Binding Children}">
-                    <ContentPresenter Content="{Binding Name}"/>
-                </HierarchicalDataTemplate>
-            </TreeView.ItemTemplate>
-            <dxmvvm:Interaction.Triggers>
+                <dxmvvm:Interaction.Triggers>
                 <dxmvvm:EventToCommand Command="{Binding SelectItemCommand}" EventName="SelectedItemChanged"
 					PassEventArgsToCommand="True">
                     <dxmvvm:EventToCommand.EventArgsConverter>

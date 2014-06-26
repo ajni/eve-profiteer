@@ -9,6 +9,7 @@ using eZet.EveProfiteer.Repository;
 using eZet.EveProfiteer.Services;
 using eZet.EveProfiteer.ViewModels;
 using eZet.EveProfiteer.ViewModels.Dialogs;
+using eZet.EveProfiteer.ViewModels.SettingsPanels;
 using eZet.EveProfiteer.ViewModels.Tabs;
 
 namespace eZet.EveProfiteer {
@@ -61,6 +62,7 @@ namespace eZet.EveProfiteer {
             _container.PerRequest<MarketAnalyzerService>();
             _container.PerRequest<MarketOrderService>();
             _container.PerRequest<ModuleService>();
+            _container.PerRequest<SettingsService>();
 
             // View Models
             _container.PerRequest<IShell, ShellViewModel>();
@@ -80,6 +82,10 @@ namespace eZet.EveProfiteer {
             _container.PerRequest<TransactionsViewModel>();
             _container.PerRequest<JournalViewModel>();
             _container.PerRequest<MarketOrdersViewModel>();
+            _container.PerRequest<SettingsViewModel>();
+            
+            // Settings panel view models
+            _container.PerRequest<GeneralSettingsViewModel>();
         }
 
         protected override object GetInstance(Type service, string key) {

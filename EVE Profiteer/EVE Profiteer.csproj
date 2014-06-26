@@ -219,7 +219,8 @@
     <Compile Include="Models\TransactionAggregate.cs" />
     <Compile Include="Models\MarketBrowserItem.cs" />
     <Compile Include="Models\MarketBrowserOrder.cs" />
-    <Compile Include="Models\TreeNode.cs" />
+    <Compile Include="Models\MarketTreeNode.cs" />
+    <Compile Include="Models\SettingsTreeNode.cs" />
     <Compile Include="Properties\Settings1.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
@@ -236,6 +237,7 @@
     <Compile Include="Services\ModuleService.cs" />
     <Compile Include="Services\OrderEditorService.cs" />
     <Compile Include="Services\ProductionService.cs" />
+    <Compile Include="Services\SettingsService.cs" />
     <Compile Include="Services\ShellService.cs" />
     <Compile Include="Services\TradeAnalyzerService.cs" />
     <Compile Include="Services\TradeSummaryService.cs" />
@@ -271,7 +273,10 @@
     <Compile Include="ViewModels\Dialogs\AddKeyViewModel.cs" />
     <Compile Include="ViewModels\Dialogs\EditOrderDialogViewModel.cs" />
     <Compile Include="Models\TransactionAggregateSummary.cs" />
+    <Compile Include="ViewModels\Dialogs\SettingsViewModel.cs" />
     <Compile Include="ViewModels\Dialogs\UpdatePriceLimitsViewModel.cs" />
+    <Compile Include="ViewModels\SettingsPanels\GeneralSettingsViewModel.cs" />
+    <Compile Include="ViewModels\SettingsPanels\SettingsPanelBase.cs" />
     <Compile Include="ViewModels\Tabs\AssetsViewModel.cs" />
     <Compile Include="ViewModels\Tabs\JournalViewModel.cs" />
     <Compile Include="ViewModels\Tabs\MarketOrdersViewModel.cs" />
@@ -308,8 +313,14 @@
     <Compile Include="Views\Dialogs\NewProductionBatchView.xaml.cs">
       <DependentUpon>NewProductionBatchView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Dialogs\SettingsView.xaml.cs">
+      <DependentUpon>SettingsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Dialogs\UpdatePriceLimitsView.xaml.cs">
       <DependentUpon>UpdatePriceLimitsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SettingsPanels\GeneralSettingsView.xaml.cs">
+      <DependentUpon>GeneralSettingsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Tabs\AssetsView.xaml.cs">
       <DependentUpon>AssetsView.xaml</DependentUpon>
@@ -373,7 +384,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Dialogs\SettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Dialogs\UpdatePriceLimitsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SettingsPanels\GeneralSettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -6,7 +6,7 @@ using eZet.EveProfiteer.Models.Annotations;
 
 namespace eZet.EveProfiteer.Models {
 
-    public abstract class CheckableTreeNode : INotifyPropertyChanged {
+    public class CheckableTreeNode : INotifyPropertyChanged {
 
         protected bool? _isChecked = false;
 
@@ -14,7 +14,7 @@ namespace eZet.EveProfiteer.Models {
 
         public  ICollection<CheckableTreeNode> Children { get; set; }
 
-        protected CheckableTreeNode() {
+        public CheckableTreeNode() {
             Children = new List<CheckableTreeNode>();
         }
 

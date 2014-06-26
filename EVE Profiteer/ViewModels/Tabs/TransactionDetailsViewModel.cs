@@ -37,6 +37,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             _eventAggregator = eventAggregator;
             _transactionDetailsService = transactionDetailsService;
             DisplayName = "Transaction Details";
+            Category = ModuleCategory.Trade;
             DateTimeFormat = Properties.Settings.Default.DateTimeFormat;
             eventAggregator.Subscribe(this);
             PropertyChanged += OnPropertyChanged;

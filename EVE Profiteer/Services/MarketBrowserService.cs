@@ -36,14 +36,14 @@ namespace eZet.EveProfiteer.Services {
             }
         }
 
-        public async Task<BindableCollection<TreeNode>> GetMarketTree() {
+        public async Task<BindableCollection<MarketTreeNode>> GetMarketTree() {
             using (var db = CreateDb()) {
-                var rootList = new BindableCollection<TreeNode>();
+                var rootList = new BindableCollection<MarketTreeNode>();
                 List<InvType> items = await GetMarketTypes();
                 List<InvMarketGroup> groupList = await db.InvMarketGroups.AsNoTracking().ToListAsync();
-                ILookup<int, TreeNode> groups = groupList.Select(t => new TreeNode(t)).ToLookup(t => t.Id);
+                ILookup<int, MarketTreeNode> groups = groupList.Select(t => new MarketTreeNode(t)).ToLookup(t => t.Id);
                 foreach (InvType item in items) {
-                    var node = new TreeNode(item);
+                    var node = new MarketTreeNode(item);
                     int id = item.MarketGroupId.GetValueOrDefault();
                     var group = groups[id].Single();
                     if (group != null) {

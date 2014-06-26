@@ -3,6 +3,7 @@
              xmlns:local="clr-namespace:eZet.EveProfiteer"
              xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
              xmlns:p="clr-namespace:eZet.EveProfiteer.Properties"
+             xmlns:models="clr-namespace:eZet.EveProfiteer.Models"
              x:Class="eZet.EveProfiteer.App"
              >
     <Application.Resources>
@@ -39,7 +40,10 @@
             <dxe:DateEditSettings x:Key="DateTimeEdit" DisplayFormat="{Binding Source={x:Static p:Settings.Default}, Path=DateTimeFormat, Mode=TwoWay}"></dxe:DateEditSettings>
 
             <dxe:DateEditSettings x:Key="DateEdit" DisplayFormat="{Binding Source={x:Static p:Settings.Default}, Path=DateFormat, Mode=TwoWay}"></dxe:DateEditSettings>
-
+            <HierarchicalDataTemplate x:Key="TreeNodeTemplate" DataType="{x:Type models:MarketTreeNode}"
+					ItemsSource="{Binding Children}">
+                <ContentPresenter Content="{Binding Name}"/>
+            </HierarchicalDataTemplate>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

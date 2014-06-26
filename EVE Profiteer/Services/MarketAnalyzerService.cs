@@ -16,16 +16,16 @@ namespace eZet.EveProfiteer.Services {
             _eveMarketService = eveMarketService;
         }
 
-        public async Task<BindableCollection<TreeNode>> GetMarketTreeAsync(
+        public async Task<BindableCollection<MarketTreeNode>> GetMarketTreeAsync(
             PropertyChangedEventHandler itemPropertyChanged) {
             using (var db = CreateDb()) {
-                var rootList = new BindableCollection<TreeNode>();
+                var rootList = new BindableCollection<MarketTreeNode>();
                 List<InvType> items = await GetMarketTypes(db).ToListAsync();
                 List<InvMarketGroup> groupList = await db.InvMarketGroups.ToListAsync();
-                ILookup<int, TreeNode> groups = groupList.Select(t => new TreeNode(t)).ToLookup(t => t.Id);
+                ILookup<int, MarketTreeNode> groups = groupList.Select(t => new MarketTreeNode(t)).ToLookup(t => t.Id);
 
                 foreach (InvType item in items) {
-                    var node = new TreeNode(item);
+                    var node = new MarketTreeNode(item);
                     int id = item.MarketGroupId.GetValueOrDefault();
                     var group = groups[id].Single();
                     if (group != null) {
