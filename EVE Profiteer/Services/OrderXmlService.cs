@@ -62,7 +62,7 @@ namespace eZet.EveProfiteer.Services {
         private static BuyOrderCollection ToBuyOrderCollection(IEnumerable<Order> orders) {
             var buyOrders = new BuyOrderCollection();
             foreach (Order order in orders.Where(order => order.IsBuyOrder)) {
-                if (!order.InvType.TypeName.StartsWith("Eifyr"))buyOrders.Add(ToBuyOrder(order));
+                buyOrders.Add(ToBuyOrder(order));
             }
             return buyOrders;
         }
@@ -70,8 +70,7 @@ namespace eZet.EveProfiteer.Services {
         private static SellOrderCollection ToSellOrderCollection(IEnumerable<Order> orders) {
             var sellOrders = new SellOrderCollection();
             foreach (Order order in orders.Where(order => order.IsSellOrder)) {
-                if (!order.InvType.TypeName.StartsWith("Eifyr"))
-                    sellOrders.Add(ToSellOrder(order));
+                sellOrders.Add(ToSellOrder(order));
             }
             return sellOrders;
         }
