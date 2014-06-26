@@ -1,10 +1,25 @@
-﻿using System.Threading.Tasks;
+﻿using System.Drawing;
+using System.Threading.Tasks;
 using Caliburn.Micro;
 using DevExpress.Xpf.Docking;
 
 namespace eZet.EveProfiteer.ViewModels {
     public abstract class ModuleViewModel : Screen, IMVVMDockingProperties {
+
         private string _targetName = "ModuleHost";
+
+        protected ModuleViewModel() {
+            Hint = DisplayName;
+            Glyph = DevExpress.Images.ImageResourceCache.Default.GetImage("images/grid/grid_16x16.png");
+            LargeGlyph = DevExpress.Images.ImageResourceCache.Default.GetImage("images/grid/grid_32x32.png");
+        }
+
+        public Image Glyph { get; protected set; }
+
+        public Image LargeGlyph { get; protected set; }
+
+
+        public string Hint { get; private set; }
 
         public abstract Task InitAsync();
 

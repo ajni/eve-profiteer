@@ -46,13 +46,22 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             Orders = new BindableCollection<OrderVm>();
             SelectedOrders = new BindableCollection<OrderVm>();
             DayLimit = 10;
+            ImportXmlCommand = new DelegateCommand(ExecuteImportXml);
+            ExportXmlCommand = new DelegateCommand(ExecuteExportXml);
+            EditCommand = new DelegateCommand(ExecuteEdit);
+            SaveCommand = new DelegateCommand(ExecuteSave);
+
+            UpdateMarketDataCommand = new DelegateCommand(ExecuteUpdateMarketData);
+
+
+
             ViewTradeDetailsCommand =
                 new DelegateCommand(
-                    () => _eventAggregator.PublishOnBackgroundThread(new ViewTransactionDetailsEvent(FocusedOrder.Order.InvType)),
+                    () => _eventAggregator.PublishOnUIThread(new ViewTransactionDetailsEvent(FocusedOrder.Order.InvType)),
                     () => FocusedOrder != null);
             ViewMarketDetailsCommand =
                 new DelegateCommand(
-                    () => _eventAggregator.PublishOnBackgroundThread(new ViewMarketBrowserEvent(FocusedOrder.Order.InvType)),
+                    () => _eventAggregator.PublishOnUIThread(new ViewMarketBrowserEvent(FocusedOrder.Order.InvType)),
                     () => FocusedOrder != null);
             DeleteOrdersCommand = new DelegateCommand(DeleteOrders);
             ValidateOrderTypeCommand = new DelegateCommand<GridCellValidationEventArgs>(ExecuteValidateOrderType);
@@ -111,6 +120,17 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             }
         }
 
+        public ICommand ImportXmlCommand { get; private set; }
+
+        public ICommand ExportXmlCommand { get; private set; }
+
+        public ICommand SaveCommand { get; private set; }
+
+        public ICommand EditCommand { get; private set; }
+
+        public ICommand UpdateMarketDataCommand { get; private set; }
+
+
 
         public async void Handle(AddToOrdersEventArgs e) {
             var orders = new List<Order>();
@@ -147,11 +167,15 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
         }
 
         public override async Task InitAsync() {
-            InvTypes = await _orderEditorService.GetMarketTypes().ConfigureAwait(false);
-            List<Order> orders = await _orderEditorService.GetOrders().ConfigureAwait(false);
+            InvTypes = await _orderEditorService.GetMarketTypesAsync().ConfigureAwait(false);
+            List<Order> orders = await _orderEditorService.GetOrdersAsync().ConfigureAwait(false);
             Orders.AddRange(orders.Select(order => new OrderVm(order)));
             SelectedOrder = Orders.FirstOrDefault();
             FocusedOrder = Orders.FirstOrDefault();
+        }
+
+        protected override void OnInitialize() {
+            Task.Run(() => InitAsync().ConfigureAwait(false));
         }
 
         private void ExecuteValidateOrderType(GridCellValidationEventArgs eventArgs) {
@@ -184,17 +208,14 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Order(s) deleted"));
         }
 
-        public void SaveChanges() {
+        public async void ExecuteSave() {
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Saving orders..."));
-            List<OrderVm> newEntries = Orders.Where(order => order.Order.Id == 0).ToList();
-            newEntries.Apply(order => order.Order.ApiKeyEntity_Id = ApplicationHelper.ActiveKeyEntity.Id);
-            _dataService.Db.Orders.AddRange(newEntries.Select(entry => entry.Order));
-            _dataService.Db.SaveChanges();
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Order(s) saved"));
+            var result = await _orderEditorService.SaveOrdersAsync(Orders.Select(f => f.Order)).ConfigureAwait(false);
+            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Order(s) saved (" + result + ")"));
         }
 
 
-        public void ImportXml() {
+        public void ExecuteImportXml() {
             var dialog = new FolderBrowserDialog();
             dialog.ShowNewFolderButton = false;
             dialog.SelectedPath = ConfigManager.OrderXmlPath;
@@ -207,7 +228,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Order(s) imported"));
         }
 
-        public void ExportXml() {
+        public void ExecuteExportXml() {
             var dialog = new FolderBrowserDialog();
             dialog.ShowNewFolderButton = false;
             dialog.SelectedPath = ConfigManager.OrderXmlPath;
@@ -218,14 +239,14 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Order(s) exported"));
         }
 
-        public async void UpdateMarketData() {
+        public async void ExecuteUpdateMarketData() {
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Fetching market data..."));
             await _orderEditorService.LoadMarketDataAsync(Orders.Select(entry => entry.Order), DayLimit);
             Orders.Refresh();
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Market data updated"));
         }
 
-        public void ExecuteEditAll() {
+        public void ExecuteEdit() {
             var vm = IoC.Get<UpdatePriceLimitsViewModel>();
             var result = _windowManager.ShowDialog(vm);
             if (result == true) {

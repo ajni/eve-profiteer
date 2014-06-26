@@ -8,6 +8,7 @@
                     xmlns:dxr="http://schemas.devexpress.com/winfx/2008/xaml/ribbon"
                     xmlns:dxdo="http://schemas.devexpress.com/winfx/2008/xaml/docking"
                     xmlns:cal="http://www.caliburnproject.org"
+                    xmlns:tabs="clr-namespace:eZet.EveProfiteer.ViewModels.Tabs"
                     d:DesignHeight="300" d:DesignWidth="500"
                     mc:Ignorable="d"
                     d:DataContext="{d:DesignInstance Type=viewModels:ShellViewModel, IsDesignTimeCreatable=False}"

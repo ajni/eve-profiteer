@@ -127,7 +127,6 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             }
         }
 
-
         public async void Handle(ViewMarketBrowserEvent message) {
             if (!IsInitialized) {
                 await InitAsync().ConfigureAwait(false);

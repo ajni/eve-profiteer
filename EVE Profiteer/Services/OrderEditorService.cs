@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using DevExpress.XtraPrinting.Native;
 using eZet.EveLib.Modules.Models;
 using eZet.EveProfiteer.Models;
+using eZet.EveProfiteer.Util;
 using OrderType = eZet.EveLib.Modules.OrderType;
 
 namespace eZet.EveProfiteer.Services {
@@ -15,15 +16,30 @@ namespace eZet.EveProfiteer.Services {
             _eveMarketService = eveMarketService;
         }
 
-        public async Task<List<InvType>> GetMarketTypes() {
+        public async Task<List<InvType>> GetMarketTypesAsync() {
             using (var db = CreateDb()) {
                 return await GetMarketTypes(db).AsNoTracking().OrderBy(t => t.TypeName).ToListAsync().ConfigureAwait(false);
             }
         }
 
-        public async Task<List<Order>> GetOrders() {
+        public async Task<List<Order>> GetOrdersAsync() {
             using (var db = CreateDb()) {
                 return await MyOrders(db).Include("InvType").Include("InvType.Assets").ToListAsync().ConfigureAwait(false);
+            }
+        }
+
+        public async Task<int> SaveOrdersAsync(IEnumerable<Order> orders) {
+            using (var db = CreateDb()) {
+                foreach (var order in orders) {
+                    if (order.Id == 0) {
+                        order.ApiKeyEntity_Id = ApplicationHelper.ActiveKeyEntity.Id;
+                        db.Orders.Add(order);
+                    } else {
+                        db.Orders.Attach(order);
+                        db.Entry(order).State = EntityState.Modified;
+                    }
+                }
+                return await db.SaveChangesAsync().ConfigureAwait(false);
             }
         }
 

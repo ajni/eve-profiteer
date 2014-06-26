@@ -32,13 +32,26 @@
     </dxmvvm:Interaction.Triggers>
     <DockPanel>
 
-        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Left">
-            <Button Margin="5" Name="ImportXml">Import</Button>
-            <Button Margin="5" Name="ExportXml">Export</Button>
-            <Button Margin="5" Name="SaveChanges">Save</Button>
-            <Button Margin="5" Name="ExecuteEditAll">Edit All</Button>
-            <Button Margin="5" Name="UpdateMarketData">Update Market Data</Button>
-        </StackPanel>
+        <dxb:BarManager DockPanel.Dock="Top">
+            <dxb:BarManager.Items>
+                <dxb:BarButtonItem Name="ImportXml" Content="Import XML" Command="{Binding ImportXmlCommand}" Hint="Import from XML files"/>
+                <dxb:BarButtonItem Name="ExportXml" Content="Export XML" Command="{Binding ExportXmlCommand}" Hint="Export to XML files"/>
+                <dxb:BarButtonItem Name="Edit" Content="Edit" Command="{Binding EditCommand}" Hint="Perform mass edits"/>
+                <dxb:BarButtonItem Name="UpdateMarketData" Content="Update prices" Command="{Binding UpdateMarketDataCommand}" Hint="Update market and price data for all orders"/>
+                <dxb:BarButtonItem Name="Save" Content="Save" Command="{Binding SaveCommand}" Hint="Save all changes"/>
+            </dxb:BarManager.Items>
+            <dxb:BarManager.Bars>
+                <dxb:Bar Caption="Order Editor">
+                    <dxb:BarButtonItemLink BarItemName="Save"/>
+                    <dxb:BarButtonItemLink BarItemName="Edit"/>
+                    <dxb:BarButtonItemLink BarItemName="UpdateMarketData"/>
+                </dxb:Bar>
+                <dxb:Bar Caption="XML">
+                    <dxb:BarButtonItemLink BarItemName="ImportXml"/>
+                    <dxb:BarButtonItemLink BarItemName="ExportXml"/>
+                </dxb:Bar>
+            </dxb:BarManager.Bars>
+        </dxb:BarManager>
 
         <dxg:GridControl Name="OrderEditorGrid" AutoGenerateColumns="None" ItemsSource="{Binding Orders}"
                          SelectedItems="{Binding SelectedOrders}" SelectionMode="Row"

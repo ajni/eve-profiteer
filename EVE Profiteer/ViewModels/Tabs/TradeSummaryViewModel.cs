@@ -31,7 +31,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             _tradeSummaryService = tradeSummaryService;
             _eventAggregator = eventAggregator;
             _eventAggregator.Subscribe(this);
-            DisplayName = "Trade summary";
+            DisplayName = "Trade Summary";
             PeriodSelectorStart = DateTime.UtcNow.AddMonths(-1);
             PeriodSelectorEnd = DateTime.UtcNow;
             _selectedViewPeriod = ViewPeriodEnum.Week;

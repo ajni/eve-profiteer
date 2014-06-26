@@ -1,9 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 using Caliburn.Micro;
 using DevExpress.Xpf.Bars;
 using DevExpress.Xpf.Mvvm;
@@ -72,11 +76,9 @@ namespace eZet.EveProfiteer.ViewModels {
             if (tab == null) {
                 tab = view.DockLayoutManager.ClosedPanels.Single(page => page.DataContext == viewModel);
                 tab.Closed = false;
-                //view.ModuleHost.Add(tab);
             }
             view.DockLayoutManager.DockController.Activate(tab);
         }
-
 
         private void initDefaultModules() {
             activateTab(_moduleService.GetModule<TradeSummaryViewModel>());
@@ -95,9 +97,32 @@ namespace eZet.EveProfiteer.ViewModels {
                 button.Command = ActivateTabCommand;
                 button.Content = vm.DisplayName;
                 button.CommandParameter = vm.GetType();
+                button.LargeGlyph = GetImageStream(vm.LargeGlyph);
+                button.Glyph = GetImageStream(vm.Glyph);
                 view.TradeRibbonGroup.ItemLinks.Add(button);
             }
         }
+
+        public static BitmapSource GetImageStream(Image myImage) {
+            var bitmap = new Bitmap(myImage);
+            IntPtr bmpPt = bitmap.GetHbitmap();
+            BitmapSource bitmapSource =
+             System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
+                   bmpPt,
+                   IntPtr.Zero,
+                   Int32Rect.Empty,
+                   BitmapSizeOptions.FromEmptyOptions());
+
+            //freeze bitmapSource and clear memory to avoid memory leaks
+            bitmapSource.Freeze();
+            DeleteObject(bmpPt);
+
+            return bitmapSource;
+        }
+
+        [DllImport("gdi32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal static extern bool DeleteObject(IntPtr value);
 
         public string StatusMessage {
             get { return _statusMessage; }
