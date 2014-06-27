@@ -139,7 +139,7 @@ namespace eZet.EveProfiteer.Models {
         }
 
         public decimal InventoryCostPerUnit {
-            get { return Asset != null ? Asset.LatestAverageCost : 0; }
+            get { return Asset != null && Asset.Quantity != 0 ? Asset.LatestAverageCost : 0; }
         }
 
         public decimal InventoryTotalBalance {

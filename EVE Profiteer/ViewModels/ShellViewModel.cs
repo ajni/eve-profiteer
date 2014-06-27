@@ -36,8 +36,6 @@ namespace eZet.EveProfiteer.ViewModels {
             _eventAggregator = eventAggregator;
             _shellService = shellService;
             _moduleService = moduleService;
-
-
             DisplayName = "EVE Profiteer";
             AllowStatusChange = true;
             _eventAggregator.Subscribe(this);
@@ -62,7 +60,6 @@ namespace eZet.EveProfiteer.ViewModels {
             UpdateMarketOrdersCommand = new DelegateCommand(ExecuteUpdateMarketOrders);
             ActivateTabCommand = new DelegateCommand<Type>(ExecuteViewTab);
             OpenSettingsCommand = new DelegateCommand(ExecuteOpenSettings);
-
         }
 
         private void ExecuteOpenSettings() {

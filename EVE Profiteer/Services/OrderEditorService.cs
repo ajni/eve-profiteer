@@ -28,6 +28,20 @@ namespace eZet.EveProfiteer.Services {
             }
         }
 
+        public async Task<int> RemoveOrdersAsync(IEnumerable<OrderVm> orders) {
+            var list = orders.Select(order => order.Order);
+            using (var db = CreateDb()) {
+                foreach (var order in list) {
+                    if (order.Id == 0) {
+                       continue;
+                    }
+                    db.Orders.Attach(order);
+                    db.Orders.Remove(order);
+                }
+                return await db.SaveChangesAsync().ConfigureAwait(false);
+            }
+        }
+
         public async Task<int> SaveOrdersAsync(IEnumerable<Order> orders) {
             using (var db = CreateDb()) {
                 foreach (var order in orders) {

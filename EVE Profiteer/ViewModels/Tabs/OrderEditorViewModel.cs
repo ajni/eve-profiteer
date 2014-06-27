@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -13,13 +12,10 @@ using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
 using eZet.EveProfiteer.Util;
 using eZet.EveProfiteer.ViewModels.Dialogs;
-using Screen = Caliburn.Micro.Screen;
 
 namespace eZet.EveProfiteer.ViewModels.Tabs {
     public class OrderEditorViewModel : ModuleViewModel, IHandle<AddToOrdersEventArgs>, IHandle<DeleteOrdersEventArgs>,
         IHandle<ViewOrderEvent> {
-        private readonly EveProfiteerDataService _dataService;
-        private readonly EveMarketService _eveMarketService;
         private readonly IEventAggregator _eventAggregator;
         private readonly OrderXmlService _orderXmlService;
         private readonly OrderEditorService _orderEditorService;
@@ -34,13 +30,11 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
         private BindableCollection<OrderVm> _selectedOrders;
 
         public OrderEditorViewModel(OrderEditorService orderEditorService, IWindowManager windowManager, IEventAggregator eventAggregator,
-            OrderXmlService orderXmlService, EveProfiteerDataService dataService, EveMarketService eveMarketService) {
+            OrderXmlService orderXmlService) {
             _orderEditorService = orderEditorService;
             _windowManager = windowManager;
             _eventAggregator = eventAggregator;
             _orderXmlService = orderXmlService;
-            _dataService = dataService;
-            _eveMarketService = eveMarketService;
             DisplayName = "Order Editor";
             Category = ModuleCategory.Trade;
             _eventAggregator.Subscribe(this);
@@ -54,8 +48,6 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
 
             UpdateMarketDataCommand = new DelegateCommand(ExecuteUpdateMarketData);
 
-
-
             ViewTradeDetailsCommand =
                 new DelegateCommand(
                     () => _eventAggregator.PublishOnUIThread(new ViewTransactionDetailsEvent(FocusedOrder.Order.InvType)),
@@ -64,7 +56,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
                 new DelegateCommand(
                     () => _eventAggregator.PublishOnUIThread(new ViewMarketBrowserEvent(FocusedOrder.Order.InvType)),
                     () => FocusedOrder != null);
-            DeleteOrdersCommand = new DelegateCommand(DeleteOrders);
+            DeleteOrdersCommand = new DelegateCommand(ExecuteDeleteOrders);
             ValidateOrderTypeCommand = new DelegateCommand<GridCellValidationEventArgs>(ExecuteValidateOrderType);
         }
 
@@ -130,8 +122,6 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
         public ICommand EditCommand { get; private set; }
 
         public ICommand UpdateMarketDataCommand { get; private set; }
-
-
 
         public async void Handle(AddToOrdersEventArgs e) {
             var orders = new List<Order>();
@@ -201,12 +191,12 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             }
         }
 
-        private void DeleteOrders() {
-            _dataService.Db.Orders.RemoveRange(SelectedOrders.Select(entry => entry.Order));
-            foreach (OrderVm entry in SelectedOrders.ToList()) {
-                Orders.Remove(entry);
+        private async void ExecuteDeleteOrders() {
+            foreach (OrderVm order in SelectedOrders) {
+                Orders.Remove(order);
             }
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Order(s) deleted"));
+            var result = await _orderEditorService.RemoveOrdersAsync(SelectedOrders).ConfigureAwait(false);
+            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Order(s) deleted (" + result + ")"));
         }
 
         public async void ExecuteSave() {

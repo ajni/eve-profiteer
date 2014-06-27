@@ -73,7 +73,7 @@
                                    AllowCascadeUpdate="False"
                                    AllowGroupSummaryCascadeUpdate="True"
                                    RowOpacityAnimationDuration="0.00:00:1"
-                                   AllowScrollToFocusedRow="False"
+                                   AllowScrollToFocusedRow="True"
                                    RowStyle="{StaticResource RowBackgroundStyle}">
                     <dxg:TableView.RowCellMenuCustomizations>
                         <dxb:BarButtonItem Content="View market details"
