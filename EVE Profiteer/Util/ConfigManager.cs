@@ -15,9 +15,9 @@ namespace eZet.EveProfiteer.Util {
         public static Brush DonchianChannelBrush = Brushes.Blue;
 
 
-        public static int DefaultRegion = 10000002;
+        public static int DefaultRegion = Properties.Settings.Default.DefaultRegionId;
 
-        public static int DefaultStation = 60003760;
+        public static int DefaultStation = Properties.Settings.Default.DefaultStationId;
 
         public static string OrderXmlPath = @"C:\Users\Lars Kristian\AppData\Local\MacroLab\Eve Pilot\Client_1\EVETrader";
     }

@@ -106,8 +106,15 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             }
         }
 
-        public override async Task InitAsync() {
-            await LoadSelectableItems();
+        protected override void OnInitialize() {
+            Task.Run(() => InitAsync());
+        }
+
+        public async Task InitAsync() {
+            if (!IsReady) {
+                await LoadSelectableItems();
+                IsReady = true;
+            }
         }
 
         public ICollection<InvType> InvTypes {
@@ -163,9 +170,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
         }
 
         public async void Handle(ViewTransactionDetailsEvent message) {
-            if (!IsInitialized) {
-                await InitAsync().ConfigureAwait(false);
-            }
+            await InitAsync().ConfigureAwait(false);
             SelectedItem = InvTypes.SingleOrDefault(t => t.TypeId == message.InvType.TypeId);
         }
 
@@ -176,7 +181,6 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
         }
 
         private async Task LoadItem(InvType type) {
-            // TODO Fix loading NULL type
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Processing trade details..."));
             if (type == null) {
                 return;

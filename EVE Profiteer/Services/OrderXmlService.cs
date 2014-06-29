@@ -8,15 +8,15 @@ using eZet.EveProfiteer.Models;
 
 namespace eZet.EveProfiteer.Services {
     public class OrderXmlService {
-        private readonly EveProfiteerDataService _dataService;
+        private readonly Repository _repository;
 
         public string BuyOrdersFileName = "BuyOrders.xml";
 
         public string SellOrdersFileName = "SellOrders.xml";
 
 
-        public OrderXmlService(EveProfiteerDataService dataService) {
-            _dataService = dataService;
+        public OrderXmlService(Repository repository) {
+            _repository = repository;
         }
 
         public ICollection<Order> ImportOrders(string path) {
@@ -52,7 +52,7 @@ namespace eZet.EveProfiteer.Services {
         private void loadType(IEnumerable<Order> orders) {
             IList<Order> enumerable = orders as IList<Order> ?? orders.ToList();
             IEnumerable<int> orderIds = enumerable.Select(f => f.TypeId);
-            IQueryable<InvType> types = _dataService.Db.InvTypes.Where(f => orderIds.Contains(f.TypeId));
+            IQueryable<InvType> types = _repository.Db.InvTypes.Where(f => orderIds.Contains(f.TypeId));
             ILookup<int, InvType> lookup = types.ToLookup(f => f.TypeId);
             foreach (Order order in enumerable) {
                 order.InvType = lookup[order.TypeId].Single();

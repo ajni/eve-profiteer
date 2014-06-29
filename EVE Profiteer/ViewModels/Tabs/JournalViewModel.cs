@@ -4,7 +4,6 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Caliburn.Micro;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
 
@@ -69,13 +68,17 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             _journalService.Deactivate();
         }
 
-        public override async Task InitAsync() {
-            List<JournalEntry> journal = await _journalService.GetJournal().AsNoTracking().ToListAsync().ConfigureAwait(false);
-            IEnumerable<IGrouping<string, JournalEntry>> typeGroup = journal.GroupBy(t => t.RefType.Name);
-            TypeAggregate = new JournalAggregate<string>(typeGroup);
-            IEnumerable<IGrouping<DateTime, JournalEntry>> dateGroup =
-                journal.GroupBy(t => t.Date.Date).OrderBy(t => t.Key);
-            DailyAggregate = new JournalAggregate<DateTime>(dateGroup);
+        public async Task InitAsync() {
+            if (!IsReady) {
+                List<JournalEntry> journal =
+                    await _journalService.GetJournal().AsNoTracking().ToListAsync().ConfigureAwait(false);
+                IEnumerable<IGrouping<string, JournalEntry>> typeGroup = journal.GroupBy(t => t.RefType.Name);
+                TypeAggregate = new JournalAggregate<string>(typeGroup);
+                IEnumerable<IGrouping<DateTime, JournalEntry>> dateGroup =
+                    journal.GroupBy(t => t.Date.Date).OrderBy(t => t.Key);
+                DailyAggregate = new JournalAggregate<DateTime>(dateGroup);
+                IsReady = true;
+            }
         }
     }
 }

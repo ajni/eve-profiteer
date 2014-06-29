@@ -11,58 +11,51 @@ using OrderType = eZet.EveLib.Modules.OrderType;
 namespace eZet.EveProfiteer.Services {
     public class MarketBrowserService : DbContextService {
         private readonly EveMarketService _eveMarketService;
+        private readonly Repository _repository;
 
 
-
-        public MarketBrowserService(EveMarketService eveMarketService) {
+        public MarketBrowserService(EveMarketService eveMarketService, Repository repository) {
             _eveMarketService = eveMarketService;
+            _repository = repository;
         }
 
-        public async Task<MapRegion> GetDefaultRegion() {
-            using (var db = CreateDb()) {
-                return (await db.MapRegions.Where(region => region.RegionId == ConfigManager.DefaultRegion).ToListAsync().ConfigureAwait(false)).Single();
-            }
+        public Task<MapRegion> GetDefaultRegion() {
+            return _repository.GetRegionsOrdered().Include("StaStation").SingleOrDefaultAsync(region => region.RegionId == ConfigManager.DefaultRegion);
         }
 
-        public async Task<List<MapRegion>> GetRegions() {
-            using (var db = CreateDb()) {
-                return await db.MapRegions.AsNoTracking().ToListAsync().ConfigureAwait(false);
-            }
+        public Task<List<MapRegion>> GetRegions() {
+            return _repository.GetRegionsOrdered().Include("StaStation").ToListAsync();
         }
 
-        public async Task<List<InvType>> GetMarketTypes() {
-            using (var db = CreateDb()) {
-                return await GetMarketTypes(db).AsNoTracking().ToListAsync().ConfigureAwait(false);
-            }
+        public Task<List<InvType>> GetMarketTypes() {
+            return _repository.GetMarketTypes().ToListAsync();
         }
 
         public async Task<BindableCollection<MarketTreeNode>> GetMarketTree() {
-            using (var db = CreateDb()) {
-                var rootList = new BindableCollection<MarketTreeNode>();
-                List<InvType> items = await GetMarketTypes();
-                List<InvMarketGroup> groupList = await db.InvMarketGroups.AsNoTracking().ToListAsync();
-                ILookup<int, MarketTreeNode> groups = groupList.Select(t => new MarketTreeNode(t)).ToLookup(t => t.Id);
-                foreach (InvType item in items) {
-                    var node = new MarketTreeNode(item);
-                    int id = item.MarketGroupId.GetValueOrDefault();
-                    var group = groups[id].Single();
-                    if (group != null) {
-                        group.Children.Add(node);
-                        node.Parent = group;
-                    }
+            var rootList = new BindableCollection<MarketTreeNode>();
+            List<InvType> items = await _repository.GetMarketTypes().ToListAsync().ConfigureAwait(false);
+            List<InvMarketGroup> groupList = await _repository.GetMarketGroups().ToListAsync().ConfigureAwait(false);
+            ILookup<int, MarketTreeNode> groups = groupList.Select(t => new MarketTreeNode(t)).ToLookup(t => t.Id);
+            foreach (InvType item in items) {
+                var node = new MarketTreeNode(item);
+                int id = item.MarketGroupId.GetValueOrDefault();
+                var group = groups[id].Single();
+                if (group != null) {
+                    group.Children.Add(node);
+                    node.Parent = group;
                 }
-                foreach (var key in groupList) {
-                    var node = groups[key.MarketGroupId].Single();
-                    if (key.ParentGroupId.HasValue) {
-                        var parent = groups[key.ParentGroupId.GetValueOrDefault()].Single();
-                        parent.Children.Add(node);
-                        node.Parent = parent;
-                    } else {
-                        rootList.Add(node);
-                    }
-                }
-                return rootList;
             }
+            foreach (var key in groupList) {
+                var node = groups[key.MarketGroupId].Single();
+                if (key.ParentGroupId.HasValue) {
+                    var parent = groups[key.ParentGroupId.GetValueOrDefault()].Single();
+                    parent.Children.Add(node);
+                    node.Parent = parent;
+                } else {
+                    rootList.Add(node);
+                }
+            }
+            return rootList;
         }
 
         public async Task<MarketBrowserItem> GetMarketDetails(MapRegion region, InvType invType) {

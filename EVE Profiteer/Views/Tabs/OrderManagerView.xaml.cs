@@ -5,14 +5,14 @@ using GridControl = DevExpress.XtraGrid.GridControl;
 
 namespace eZet.EveProfiteer.Views.Tabs {
     /// <summary>
-    ///     Interaction logic for OrderEditorView.xaml
+    ///     Interaction logic for OrderManagerView.xaml
     /// </summary>
-    public partial class OrderEditorView {
+    public partial class OrderManagerView {
 
         private int _buyOrders;
         private int _sellOrders;
 
-        public OrderEditorView() {
+        public OrderManagerView() {
             InitializeComponent();
         }
 

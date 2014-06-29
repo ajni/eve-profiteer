@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using Caliburn.Micro;
+using DevExpress.Xpf.Mvvm;
 using eZet.EveProfiteer.Events;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
@@ -16,7 +18,12 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             _eventAggregator = eventAggregator;
             _eventAggregator.Subscribe(this);
             DisplayName = "Orders";
+
+            ViewMarketDetailsCommand = new DelegateCommand<MarketOrder>(executeViewMarketDetails);
+            ViewTransactionDetailsCommand = new DelegateCommand<MarketOrder>(executeViewTransactionDetails);
+            ViewOrderCommand = new DelegateCommand<MarketOrder>(executeViewOrder, canExecuteViewOrder);
         }
+
 
         public IList<MarketOrder> MarketOrders {
             get { return _marketOrders; }
@@ -29,25 +36,48 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
 
         public bool NeedRefresh { get; set; }
 
+        public ICommand ViewMarketDetailsCommand { get; private set; }
+
+        public ICommand ViewTransactionDetailsCommand { get; private set; }
+
+        public ICommand ViewOrderCommand { get; private set; }
+
         public async void Handle(MarketOrdersUpdatedEvent message) {
             NeedRefresh = true;
             if (IsActive)
                 await refresh();
         }
 
+        protected override void OnInitialize() {
+            Task.Run(() => loadAsync());
+        }
+
         private async Task refresh() {
             if (NeedRefresh) {
                 NeedRefresh = false;
-                await load();
+                await loadAsync();
             }
         }
 
-        private async Task load() {
+        private async Task loadAsync() {
             MarketOrders = await _marketOrderService.GetMarketOrdersAsync().ConfigureAwait(false);
         }
 
-        public override async Task InitAsync() {
-            await load();
+
+        private bool canExecuteViewOrder(MarketOrder arg) {
+            return arg != null && arg.InvType != null && arg.InvType.Orders != null && arg.InvType.Orders.Count == 1;
+        }
+
+        private void executeViewOrder(MarketOrder order) {
+            _eventAggregator.PublishOnUIThread(new ViewOrderEvent(order.InvType));
+        }
+
+        private void executeViewTransactionDetails(MarketOrder order) {
+            _eventAggregator.PublishOnUIThread(new ViewTransactionDetailsEvent(order.InvType));
+        }
+
+        private void executeViewMarketDetails(MarketOrder order) {
+            _eventAggregator.PublishOnUIThread(new ViewMarketBrowserEvent(order.InvType));
         }
     }
 

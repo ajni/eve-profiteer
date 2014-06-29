@@ -6,9 +6,21 @@
              xmlns:tabs="clr-namespace:eZet.EveProfiteer.ViewModels.Tabs"
              xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
              xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+             xmlns:themes="http://schemas.devexpress.com/winfx/2008/xaml/grid/themekeys"
+             xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
+             xmlns:converters="clr-namespace:eZet.EveProfiteer.Ui.Converters"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance d:Type=tabs:MarketOrdersViewModel, IsDesignTimeCreatable=False}"
              d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+
+        <Style x:Key="RowBackgroundStyle"
+                   BasedOn="{StaticResource {themes:GridRowThemeKey ResourceKey=RowStyle, ThemeName={x:Static dx:ThemeManager.ApplicationThemeName}}}"
+                   TargetType="dxg:GridRowContent">
+            <Setter Property="Background"
+                        Value="{Binding Path=Row, Converter={converters:MarketOrderToBrushConverter}}" />
+        </Style>
+    </UserControl.Resources>
     <Grid>
         <DockPanel>
             <dxb:BarManager DockPanel.Dock="Top">
@@ -58,13 +70,15 @@
                                    AutoScrollOnSorting="False"
                                    NavigationStyle="Cell"
                                    AllowEditing="False"
-                                   ShowFilterPanelMode="ShowAlways">
+                                   ShowFilterPanelMode="ShowAlways"
+                                   RowStyle="{StaticResource RowBackgroundStyle}"
+                                   >
                         <dxg:TableView.RowCellMenuCustomizations>
                             <dxb:BarButtonItem Content="View market details"
                                                Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.ViewMarketDetailsCommand, RelativeSource={RelativeSource Self}}"
                                                CommandParameter="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataControl.CurrentItem, RelativeSource={RelativeSource Self}}" />
                             <dxb:BarButtonItem Content="View trade details"
-                                               Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.ViewTradeDetailsCommand, RelativeSource={RelativeSource Self}}"
+                                               Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.ViewTransactionDetailsCommand, RelativeSource={RelativeSource Self}}"
                                                CommandParameter="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataControl.CurrentItem, RelativeSource={RelativeSource Self}}" />
                             <dxb:BarItemSeparator />
                             <dxb:BarButtonItem Content="View order"
@@ -84,6 +98,7 @@
                 <dxg:GridControl.Columns>
                     <dxg:GridColumn FieldName="InvType.TypeName" Header="Item" Width="300"/>
                     <dxg:GridColumn FieldName="Station.StationName" Header="Station" Width="200"/>
+                    <dxg:GridColumn FieldName="InvType.Orders.Count" Header="Has Order"/>
                     <dxg:GridColumn FieldName="OrderState" Header="Type" Width="100"/>
                     <dxg:GridColumn FieldName="VolumeEntered" Width="50"/>
                     <dxg:GridColumn FieldName="VolumeRemaining" Header="Qty"  Width="50"/>

@@ -29,9 +29,9 @@ namespace eZet.EveProfiteer {
             _container.Singleton<IWindowManager, WindowManager>();
             _container.Singleton<IEventAggregator, EventAggregator>();
 
-            // DbContexts
+            // Data Services
             _container.PerRequest<EveProfiteerDbEntities>();
-            _container.Singleton<EveProfiteerDataService>();
+            _container.Singleton<Services.Repository>();
             //_container.PerRequest<EveProfiteerDbEntities>();
 
             // Repositories
@@ -43,6 +43,7 @@ namespace eZet.EveProfiteer {
 
 
             // Services
+
             _container.PerRequest<EveApiService>();
             _container.PerRequest<EveMarketService>();
             _container.PerRequest<OrderXmlService>();
@@ -58,7 +59,7 @@ namespace eZet.EveProfiteer {
             _container.PerRequest<TradeSummaryService>();
             _container.PerRequest<TradeAnalyzerService>();
             _container.PerRequest<MarketBrowserService>();
-            _container.PerRequest<OrderEditorService>();
+            _container.PerRequest<OrderManagerService>();
             _container.PerRequest<MarketAnalyzerService>();
             _container.PerRequest<MarketOrderService>();
             _container.PerRequest<ModuleService>();
@@ -72,7 +73,7 @@ namespace eZet.EveProfiteer {
             _container.PerRequest<EditKeyViewModel>();
             _container.PerRequest<TradeSummaryViewModel>();
             _container.PerRequest<MarketAnalyzerViewModel>();
-            _container.PerRequest<OrderEditorViewModel>();
+            _container.PerRequest<OrderManagerViewModel>();
             _container.PerRequest<TradeAnalyzerViewModel>();
             _container.PerRequest<TransactionDetailsViewModel>();
             _container.PerRequest<MarketBrowserViewModel>();

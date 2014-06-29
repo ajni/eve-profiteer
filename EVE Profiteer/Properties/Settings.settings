@@ -71,5 +71,11 @@
     <Setting Name="DateTimeFormat" Type="System.String" Scope="User">
       <Value Profile="(Default)">dd/MM/yy HH:mm:ss</Value>
     </Setting>
+    <Setting Name="UpdatePriceLimits" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="UpdateQuantities" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

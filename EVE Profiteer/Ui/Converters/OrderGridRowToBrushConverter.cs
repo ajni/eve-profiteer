@@ -4,7 +4,6 @@ using System.Windows.Data;
 using System.Windows.Markup;
 using System.Windows.Media;
 using eZet.EveProfiteer.Models;
-using eZet.EveProfiteer.Util;
 
 namespace eZet.EveProfiteer.Ui.Converters {
     public class OrderGridRowToBrushConverter : MarkupExtension, IValueConverter {

@@ -27,7 +27,9 @@
                                AllowCascadeUpdate="False"
                                AllowGroupSummaryCascadeUpdate="True"
                                RowOpacityAnimationDuration="0.00:00:1"
-                               AllowScrollToFocusedRow="False">
+                               AllowScrollToFocusedRow="True"
+                               AutoScrollOnSorting="False"
+                               >
                     <dxg:TableView.RowCellMenuCustomizations>
                         <dxb:BarButtonItem Content="View market details"
                                            Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.ViewMarketDetailsCommand, RelativeSource={RelativeSource Self}}" />

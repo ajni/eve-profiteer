@@ -206,16 +206,6 @@ namespace eZet.EveProfiteer.ViewModels {
             }
         }
 
-        public async Task InitAsync() {
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Initializing..."));
-            AllowStatusChange = false;
-            IList<Task> tasks = new List<Task>();
-            Items.Apply(f => tasks.Add(((ModuleViewModel)f).InitAsync()));
-            await Task.WhenAll(tasks);
-            AllowStatusChange = true;
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Ready"));
-        }
-
         public void ManageKeys() {
             _windowManager.ShowDialog(IoC.Get<ManageKeysViewModel>());
         }

@@ -295,5 +295,29 @@ namespace eZet.EveProfiteer.Properties {
                 this["DateTimeFormat"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool UpdatePriceLimits {
+            get {
+                return ((bool)(this["UpdatePriceLimits"]));
+            }
+            set {
+                this["UpdatePriceLimits"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool UpdateQuantities {
+            get {
+                return ((bool)(this["UpdateQuantities"]));
+            }
+            set {
+                this["UpdateQuantities"] = value;
+            }
+        }
     }
 }

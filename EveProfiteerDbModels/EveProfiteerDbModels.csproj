@@ -148,6 +148,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>EveProfiteerDbModel.edmx</DependentUpon>
     </Compile>
+    <Compile Include="EveProfiteerDbModel.Views.cs" />
     <Compile Include="FifoCost.cs">
       <DependentUpon>EveProfiteerDbModel.tt</DependentUpon>
     </Compile>

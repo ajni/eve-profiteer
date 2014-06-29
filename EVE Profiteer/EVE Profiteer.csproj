@@ -207,6 +207,8 @@
     <Compile Include="Events\MarketOrdersUpdatedEvent.cs" />
     <Compile Include="Events\StatusChangedEventArgs.cs" />
     <Compile Include="Events\TransactionsUpdatedEvent.cs" />
+    <Compile Include="Events\ViewAssetEvent.cs" />
+    <Compile Include="Events\ViewMarketOrderEvent.cs" />
     <Compile Include="Events\ViewOrderEvent.cs" />
     <Compile Include="Events\ViewTransactionDetailsEvent.cs" />
     <Compile Include="Models\AssetEntry.cs" />
@@ -228,15 +230,15 @@
     </Compile>
     <Compile Include="Services\AssetService.cs" />
     <Compile Include="Services\DbContextService.cs" />
-    <Compile Include="Services\EveProfiteerDataService.cs" />
     <Compile Include="EventConfig.cs" />
     <Compile Include="Services\JournalService.cs" />
     <Compile Include="Services\MarketAnalyzerService.cs" />
     <Compile Include="Services\MarketBrowserService.cs" />
     <Compile Include="Services\MarketOrderService.cs" />
     <Compile Include="Services\ModuleService.cs" />
-    <Compile Include="Services\OrderEditorService.cs" />
+    <Compile Include="Services\OrderManagerService.cs" />
     <Compile Include="Services\ProductionService.cs" />
+    <Compile Include="Services\Repository.cs" />
     <Compile Include="Services\SettingsService.cs" />
     <Compile Include="Services\ShellService.cs" />
     <Compile Include="Services\TradeAnalyzerService.cs" />
@@ -246,9 +248,10 @@
     <Compile Include="Settings.cs" />
     <Compile Include="Ui\Converters\DrawingColorToSolidColorBrushConverter.cs" />
     <Compile Include="Ui\Converters\DoubleToIntConverter.cs" />
+    <Compile Include="Ui\Converters\MarketOrderToBrushConverter.cs" />
     <Compile Include="Ui\Converters\OrderGridRowToBrushConverter.cs" />
     <Compile Include="Ui\Converters\OrderToBrushConverter.cs" />
-    <Compile Include="Events\AddToOrdersEventArgs.cs" />
+    <Compile Include="Events\AddOrdersEvent.cs" />
     <Compile Include="Framework\IShell.cs" />
     <Compile Include="Models\MarketAnalyzer.cs" />
     <Compile Include="Models\MarketAnalyzerEntry.cs" />
@@ -284,7 +287,7 @@
     <Compile Include="ViewModels\Tabs\TransactionDetailsViewModel.cs" />
     <Compile Include="ViewModels\Dialogs\ManageKeysViewModel.cs" />
     <Compile Include="ViewModels\Tabs\MarketBrowserViewModel.cs" />
-    <Compile Include="ViewModels\Tabs\OrderEditorViewModel.cs" />
+    <Compile Include="ViewModels\Tabs\OrderManagerViewModel.cs" />
     <Compile Include="Events\OrdersChangedEventArgs.cs" />
     <Compile Include="ViewModels\Tabs\TradeAnalyzerViewModel.cs" />
     <Compile Include="Events\ViewMarketBrowserEvent.cs" />
@@ -343,8 +346,8 @@
     <Compile Include="Views\Tabs\MarketBrowserView.xaml.cs">
       <DependentUpon>MarketBrowserView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Tabs\OrderEditorView.xaml.cs">
-      <DependentUpon>OrderEditorView.xaml</DependentUpon>
+    <Compile Include="Views\Tabs\OrderManagerView.xaml.cs">
+      <DependentUpon>OrderManagerView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Tabs\MarketAnalyzerView.xaml.cs">
       <DependentUpon>MarketAnalyzerView.xaml</DependentUpon>
@@ -424,7 +427,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Tabs\OrderEditorView.xaml">
+    <Page Include="Views\Tabs\OrderManagerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

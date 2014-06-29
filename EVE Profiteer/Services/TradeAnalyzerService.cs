@@ -6,19 +6,19 @@ using System.Threading.Tasks;
 using eZet.EveProfiteer.Models;
 
 namespace eZet.EveProfiteer.Services {
-    public class TradeAnalyzerService : DbContextService {
+    public class TradeAnalyzerService {
+        private readonly Repository _repository;
 
-        public async Task<List<Transaction>> GetTransactions(DateTime start, DateTime end) {
-            using (var db = CreateDb()) {
-                return
-                    await MyTransactions(db).Include("InvType").Where(t => t.TransactionDate >= start.Date && t.TransactionDate <= end.Date).ToListAsync().ConfigureAwait(false);
-            }
+        public TradeAnalyzerService(Repository repository) {
+            _repository = repository;
         }
 
-        public async Task<List<Order>> GetOrders() {
-            using (var db = CreateDb()) {
-                return await MyOrders(db).ToListAsync().ConfigureAwait(false);
-            }
+        public Task<List<Transaction>> GetTransactions(DateTime start, DateTime end) {
+            return _repository.MyTransactions().Include("InvType").Where(t => t.TransactionDate >= start.Date && t.TransactionDate <= end.Date).ToListAsync();
+        }
+
+        public Task<List<Order>> GetOrders() {
+            return _repository.MyOrders().ToListAsync();
         }
     }
 }

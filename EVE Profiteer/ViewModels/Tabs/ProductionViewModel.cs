@@ -42,7 +42,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
 
         public ICommand AddProductionBatchCommand { get; private set; }
 
-        public override Task InitAsync() {
+        public Task InitAsync() {
             return Task.FromResult(false);
         }
 

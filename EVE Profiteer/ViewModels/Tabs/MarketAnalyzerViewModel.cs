@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -14,7 +13,6 @@ using eZet.EveProfiteer.Util;
 
 namespace eZet.EveProfiteer.ViewModels.Tabs {
     public class MarketAnalyzerViewModel : ModuleViewModel, IHandle<OrdersChangedEventArgs> {
-        private readonly EveProfiteerDataService _dataService;
         private readonly IEventAggregator _eventAggregator;
         private readonly MarketAnalyzerService _marketAnalyzerService;
         private int _dayLimit = 10;
@@ -26,21 +24,18 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
         private StaStation _selectedStation;
         private ICollection<StaStation> _stations;
 
-        public MarketAnalyzerViewModel(MarketAnalyzerService marketAnalyzerService, IEventAggregator eventAggregator,
-            EveProfiteerDataService dataService) {
+        public MarketAnalyzerViewModel(MarketAnalyzerService marketAnalyzerService, IEventAggregator eventAggregator) {
             _marketAnalyzerService = marketAnalyzerService;
             _eventAggregator = eventAggregator;
-            _dataService = dataService;
             _eventAggregator.Subscribe(this);
             DisplayName = "Market Analyzer";
             Category = ModuleCategory.Trade;
 
-
             SelectedItems = new BindableCollection<MarketTreeNode>();
 
-            AnalyzeCommand = new DelegateCommand(ExecuteAnalyze, () => SelectedItems.Count != 0);
+            AnalyzeCommand = new DelegateCommand(executeAnalyze, () => SelectedItems.Count != 0);
             AddToOrdersCommand = new DelegateCommand<ICollection<object>>(executeAddToOrders, canAddToOrders);
-            AnalyzeOrdersCommand = new DelegateCommand(ExecuteAnalyzeOrders);
+            AnalyzeOrdersCommand = new DelegateCommand(executeAnalyzeOrders);
             ViewTradeDetailsCommand =
                 new DelegateCommand<MarketAnalyzerEntry>(
                     entry => _eventAggregator.PublishOnUIThread(new ViewTransactionDetailsEvent(entry.InvType)),
@@ -51,9 +46,9 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
                     entry => entry != null);
             ViewOrderCommand =
                 new DelegateCommand<MarketAnalyzerEntry>(
-                    entry => _eventAggregator.PublishOnUIThread(new ViewOrderEvent(entry.InvType)), hasValidOrder);
+                    entry => _eventAggregator.PublishOnUIThread(new ViewOrderEvent(entry.InvType)), entry => entry != null && entry.Order != null);
 
-            PropertyChanged += OnPropertyChanged;
+            PropertyChanged += onPropertyChanged;
         }
 
         public ICommand ViewMarketDetailsCommand { get; private set; }
@@ -151,40 +146,36 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             MarketAnalyzerResults.Refresh();
         }
 
-        public override async Task InitAsync() {
-            MarketTreeNodes =
-                await _marketAnalyzerService.GetMarketTreeAsync(treeViewCheckBox_PropertyChanged).ConfigureAwait(false);
-            Regions = await _marketAnalyzerService.GetRegionsAsync().ConfigureAwait(false);
-            SelectedRegion = Regions.SingleOrDefault(f => f.RegionId == ConfigManager.DefaultRegion);
-            if (SelectedRegion != null) {
-                Stations = SelectedRegion.StaStations.OrderByDescending(f => f.StationName).ToList();
-            }
-            SelectedStation = Stations.SingleOrDefault(station => station.StationId == ConfigManager.DefaultStation);
+        protected override void OnInitialize() {
+            Task.Run(() => initAsync());
         }
 
-        private void OnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs) {
+        private async Task initAsync() {
+            if (!IsReady) {
+                MarketTreeNodes =
+                    await
+                        _marketAnalyzerService.GetMarketTreeAsync(treeViewCheckBox_PropertyChanged)
+                            .ConfigureAwait(false);
+                Regions = await _marketAnalyzerService.GetRegionsAsync().ConfigureAwait(false);
+                SelectedRegion = Regions.SingleOrDefault(f => f.RegionId == ConfigManager.DefaultRegion);
+                if (SelectedRegion != null) {
+                    Stations = SelectedRegion.StaStations.OrderByDescending(f => f.StationName).ToList();
+                }
+                SelectedStation = Stations.SingleOrDefault(station => station.StationId == ConfigManager.DefaultStation);
+                IsReady = true;
+            }
+        }
+
+        private void onPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs) {
             if (propertyChangedEventArgs.PropertyName == "SelectedRegion") {
                 Stations = SelectedRegion.StaStations.OrderByDescending(f => f.StationName).ToList();
                 SelectedStation = null;
             }
         }
 
-        private bool hasValidOrder(MarketAnalyzerEntry entry) {
-            return entry != null &&
-                   entry.InvType.Orders.Any(order => order.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id);
-        }
-
-
-        private async void ExecuteAnalyze() {
+        private async void executeAnalyze() {
             await analyze(SelectedItems.Select(item => item.InvType));
         }
-
-        private async Task LoadOrderData(IEnumerable<MarketAnalyzerEntry> items) {
-            List<Order> orders = await _dataService.GetOrders().ToListAsync();
-            ILookup<int, Order> lookup = orders.ToLookup(order => order.TypeId);
-            items.Apply(item => item.Order = lookup[item.InvType.TypeId].SingleOrDefault());
-        }
-
 
         private bool canAddToOrders(ICollection<object> objects) {
             if (objects == null || !objects.Any())
@@ -195,24 +186,21 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
 
         private void executeAddToOrders(ICollection<object> objects) {
             List<InvType> items = objects.Select(item => ((MarketAnalyzerEntry)item).InvType).ToList();
-            _eventAggregator.PublishOnUIThread(new AddToOrdersEventArgs(items));
+            _eventAggregator.PublishOnUIThread(new AddOrdersEvent(items));
         }
 
-        private async void ExecuteAnalyzeOrders() {
+        private async void executeAnalyzeOrders() {
             List<InvType> items = await _marketAnalyzerService.GetInvTypesForOrdersAsync().ConfigureAwait(false);
             await analyze(items).ConfigureAwait(false);
         }
 
         private async Task analyze(IEnumerable<InvType> items) {
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Fetching market data..."));
-
             ICollection<MarketAnalyzerEntry> result =
                 await
                     _marketAnalyzerService.AnalyzeAsync(SelectedRegion, SelectedStation, items, DayLimit)
                         .ConfigureAwait(false);
             MarketAnalyzerResults = new BindableCollection<MarketAnalyzerEntry>(result);
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Analyzing market data..."));
-            await LoadOrderData(result).ConfigureAwait(false);
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Market analysis complete"));
         }
 

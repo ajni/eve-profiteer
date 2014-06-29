@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Data.Entity;
 using System.Linq;
 using Caliburn.Micro;
 using eZet.EveProfiteer.Models;
@@ -11,7 +12,7 @@ using Microsoft.Practices.EnterpriseLibrary.Validation;
 
 namespace eZet.EveProfiteer.ViewModels.Dialogs {
     public class NewProductionBatchViewModel : Screen, IDataErrorInfo {
-        private readonly EveProfiteerDataService _dataService;
+        private readonly Services.Repository _repository;
         private InvBlueprintType _blueprint;
         private ICollection<BatchMaterialEntry> _materials;
         private int _units;
@@ -19,11 +20,11 @@ namespace eZet.EveProfiteer.ViewModels.Dialogs {
         private int _blueprintMe;
         private readonly DataErrorInfoHelper _dataErrorInfoHelper;
 
-        public NewProductionBatchViewModel(EveProfiteerDataService dataService) {
-            _dataService = dataService;
+        public NewProductionBatchViewModel(Services.Repository repository) {
+            _repository = repository;
             DisplayName = "New production batch";
             ProductionDate = DateTime.UtcNow;
-            Blueprints = _dataService.GetBlueprints().ToList();
+            Blueprints = _repository.GetBlueprints().AsNoTracking().ToList();
             PropertyChanged += OnPropertyChanged;
             Blueprint = Blueprints.First();
             _dataErrorInfoHelper = new DataErrorInfoHelper(this);
@@ -38,7 +39,6 @@ namespace eZet.EveProfiteer.ViewModels.Dialogs {
             if (args.PropertyName == "Runs") {
                 Units = (int)(Runs * Blueprint.ProductInvType.PortionSize);
             }
-
         }
 
         public ICollection<InvBlueprintType> Blueprints { get; private set; }

@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
-using Screen = Caliburn.Micro.Screen;
 
 namespace eZet.EveProfiteer.ViewModels.Tabs {
     public class TransactionsViewModel : ModuleViewModel {
@@ -47,7 +46,6 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
 
         protected override void OnDeactivate(bool close) {
             Transactions = null;
-            _transactionService.Deactivate();
         }
 
         public string DateTimeFormat { get; private set; }
@@ -82,10 +80,11 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             }
         }
 
-        public override Task InitAsync() {
+        public Task InitAsync() {
+            if (!IsReady) {
+                IsReady = true;
+            }
             return Task.FromResult(false);
         }
-
-
     }
 }

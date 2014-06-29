@@ -1,5 +1,4 @@
 ﻿using System.Drawing;
-using System.Threading.Tasks;
 using Caliburn.Micro;
 using DevExpress.Xpf.Docking;
 
@@ -16,9 +15,12 @@ namespace eZet.EveProfiteer.ViewModels {
 
         protected ModuleViewModel() {
             Hint = DisplayName;
+            RibbonName = DisplayName;
             Glyph = DevExpress.Images.ImageResourceCache.Default.GetImage("images/grid/grid_16x16.png");
             LargeGlyph = DevExpress.Images.ImageResourceCache.Default.GetImage("images/grid/grid_32x32.png");
         }
+
+        public string RibbonName { get; protected set; }
 
         public ModuleCategory Category { get; protected set; }
 
@@ -26,10 +28,9 @@ namespace eZet.EveProfiteer.ViewModels {
 
         public Image LargeGlyph { get; protected set; }
 
+        protected bool IsReady { get; set; }
 
         public string Hint { get; private set; }
-
-        public abstract Task InitAsync();
 
         public string TargetName {
             get { return _targetName; }

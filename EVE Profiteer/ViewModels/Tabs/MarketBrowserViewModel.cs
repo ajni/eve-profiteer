@@ -148,7 +148,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
         }
 
         private void ExecuteAddToOrders() {
-            var e = new AddToOrdersEventArgs(MarketBrowserData.InvType);
+            var e = new AddOrdersEvent(MarketBrowserData.InvType);
             _eventAggregator.PublishOnUIThread(e);
         }
 
@@ -168,11 +168,14 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             SelectedItem = InvTypes.Single(t => t.TypeId == node.InvType.TypeId);
         }
 
-        public override async Task InitAsync() {
-            Regions = await _marketBrowserService.GetRegions().ConfigureAwait(false);
-            SelectedRegion = Regions.Single(region => region.RegionId == ConfigManager.DefaultRegion);
-            InvTypes = await _marketBrowserService.GetMarketTypes().ConfigureAwait(false);
-            TreeRootNodes = await _marketBrowserService.GetMarketTree().ConfigureAwait(false);
+        public async Task InitAsync() {
+            if (!IsReady) {
+                Regions = await _marketBrowserService.GetRegions().ConfigureAwait(false);
+                SelectedRegion = Regions.Single(region => region.RegionId == ConfigManager.DefaultRegion);
+                InvTypes = await _marketBrowserService.GetMarketTypes().ConfigureAwait(false);
+                TreeRootNodes = await _marketBrowserService.GetMarketTree().ConfigureAwait(false);
+                IsReady = true;
+            }
         }
 
 

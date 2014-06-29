@@ -29,6 +29,5 @@ namespace eZet.EveProfiteer.Services {
         protected IQueryable<InvType> GetMarketTypes(EveProfiteerDbEntities db) {
             return db.InvTypes.Where(t => t.Published == true && t.MarketGroupId != null);
         }
-
     }
 }

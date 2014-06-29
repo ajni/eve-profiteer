@@ -9,13 +9,15 @@ using eZet.EveProfiteer.Properties;
 using eZet.EveProfiteer.Services;
 
 namespace eZet.EveProfiteer.ViewModels.Tabs {
-    public class AssetsViewModel : ModuleViewModel, IHandle<AssetsUpdatedEvent> {
+    public class AssetsViewModel : ModuleViewModel, IHandle<AssetsUpdatedEvent>, IHandle<ViewAssetEvent> {
         private readonly AssetService _assetService;
         private readonly IEventAggregator _eventAggregator;
         private BindableCollection<AssetEntry> _assets;
         private AssetEntry _focusedRow;
         private AssetEntry _selectedRow;
         private BindableCollection<AssetEntry> _selectedRows;
+        private ViewAssetEvent _viewAssetEvent;
+        private AssetsUpdatedEvent _assetsUpdatedEvent;
 
         public AssetsViewModel(IEventAggregator eventAggregator, AssetService assetService) {
             _eventAggregator = eventAggregator;
@@ -29,8 +31,6 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
         public IEventAggregator EventAggregator { get; set; }
 
         public int AgeSpan { get; set; }
-
-        public bool NeedUpdate { get; set; }
 
         public BindableCollection<AssetEntry> Assets {
             get { return _assets; }
@@ -73,27 +73,31 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
         public ICommand ViewTradeDetailsCommand { get; private set; }
 
         public async void Handle(AssetsUpdatedEvent message) {
-            NeedUpdate = true;
             if (IsActive) {
-                await Load();
+                await InitAsync();
+            } else {
+                _assetsUpdatedEvent = message;
             }
         }
 
-        public override async Task InitAsync() {
-            await Load().ConfigureAwait(false);
+        public async Task InitAsync() {
+            await LoadAssets().ConfigureAwait(false);
+            await UpdateMarketData().ConfigureAwait(false);
         }
 
-        public async Task Load() {
-            if (NeedUpdate) {
-                await LoadAssets().ConfigureAwait(false);
-                await UpdateMarketData().ConfigureAwait(false);
-            }
-            NeedUpdate = false;
+        protected override async void OnInitialize() {
+            await InitAsync();
         }
-
 
         protected override async void OnActivate() {
-            await Load();
+            if (_assetsUpdatedEvent != null) {
+                await InitAsync();
+                _assetsUpdatedEvent = null;
+            }
+            if (_viewAssetEvent != null) {
+                setFocus(_viewAssetEvent.InvType);
+                _viewAssetEvent = null;
+            }
         }
 
         private async Task UpdateMarketData() {
@@ -104,10 +108,23 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             Assets.Refresh();
         }
 
-
         private async Task LoadAssets() {
             List<Asset> assets = await _assetService.GetAssets().ConfigureAwait(false);
             Assets.AddRange(assets.Select(asset => new AssetEntry(asset)));
+        }
+
+        public void Handle(ViewAssetEvent message) {
+            if (IsActive)
+                setFocus(message.InvType);
+            else
+                _viewAssetEvent = message;
+        }
+
+        private void setFocus(InvType invType) {
+            FocusedRow = Assets.SingleOrDefault(f => f.TypeId == invType.TypeId);
+            SelectedRow = _focusedRow;
+            SelectedRows.Clear();
+            SelectedRows.Add(SelectedRow);
         }
     }
 }

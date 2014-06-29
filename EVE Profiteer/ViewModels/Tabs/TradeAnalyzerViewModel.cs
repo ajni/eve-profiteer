@@ -87,7 +87,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
 
         private void ExecuteAddToOrders(ICollection<object> obj) {
             List<InvType> items = obj.Select(item => ((TransactionAggregate)item).InvType).ToList();
-            _eventAggregator.PublishOnUIThread(new AddToOrdersEventArgs(items));
+            _eventAggregator.PublishOnUIThread(new AddOrdersEvent(items));
         }
 
 
@@ -155,7 +155,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             Items.Refresh();
         }
 
-        public override Task InitAsync() {
+        public Task InitAsync() {
             return Task.FromResult(false);
         }
     }

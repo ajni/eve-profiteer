@@ -11,47 +11,45 @@ using eZet.EveProfiteer.Util;
 namespace eZet.EveProfiteer.Services {
     public class MarketAnalyzerService : DbContextService {
         private readonly EveMarketService _eveMarketService;
+        private readonly Repository _repository;
 
-        public MarketAnalyzerService(EveMarketService eveMarketService) {
+        public MarketAnalyzerService(EveMarketService eveMarketService, Repository repository) {
             _eveMarketService = eveMarketService;
+            _repository = repository;
         }
 
         public async Task<BindableCollection<MarketTreeNode>> GetMarketTreeAsync(
             PropertyChangedEventHandler itemPropertyChanged) {
-            using (var db = CreateDb()) {
-                var rootList = new BindableCollection<MarketTreeNode>();
-                List<InvType> items = await GetMarketTypes(db).ToListAsync();
-                List<InvMarketGroup> groupList = await db.InvMarketGroups.ToListAsync();
-                ILookup<int, MarketTreeNode> groups = groupList.Select(t => new MarketTreeNode(t)).ToLookup(t => t.Id);
+            var rootList = new BindableCollection<MarketTreeNode>();
+            List<InvType> items = await _repository.GetMarketTypes().Include("Orders").ToListAsync().ConfigureAwait(false);
+            List<InvMarketGroup> groupList = await _repository.GetMarketGroups().ToListAsync().ConfigureAwait(false);
+            ILookup<int, MarketTreeNode> groups = groupList.Select(t => new MarketTreeNode(t)).ToLookup(t => t.Id);
 
-                foreach (InvType item in items) {
-                    var node = new MarketTreeNode(item);
-                    int id = item.MarketGroupId.GetValueOrDefault();
-                    var group = groups[id].Single();
-                    if (group != null) {
-                        group.Children.Add(node);
-                        node.Parent = group;
-                    }
-                    node.PropertyChanged += itemPropertyChanged;
+            foreach (InvType item in items) {
+                var node = new MarketTreeNode(item);
+                int id = item.MarketGroupId.GetValueOrDefault();
+                var group = groups[id].Single();
+                if (group != null) {
+                    group.Children.Add(node);
+                    node.Parent = group;
                 }
-                foreach (var key in groupList) {
-                    var node = groups[key.MarketGroupId].Single();
-                    if (key.ParentGroupId.HasValue) {
-                        var parent = groups[key.ParentGroupId.GetValueOrDefault()].Single();
-                        parent.Children.Add(node);
-                        node.Parent = parent;
-                    } else {
-                        rootList.Add(node);
-                    }
-                }
-                return rootList;
+                node.PropertyChanged += itemPropertyChanged;
             }
+            foreach (var key in groupList) {
+                var node = groups[key.MarketGroupId].Single();
+                if (key.ParentGroupId.HasValue) {
+                    var parent = groups[key.ParentGroupId.GetValueOrDefault()].Single();
+                    parent.Children.Add(node);
+                    node.Parent = parent;
+                } else {
+                    rootList.Add(node);
+                }
+            }
+            return rootList;
         }
 
-        public async Task<List<MapRegion>> GetRegionsAsync() {
-            using (var db = CreateDb()) {
-                return await db.MapRegions.AsNoTracking().Include("StaStations").OrderBy(region => region.RegionName).ToListAsync().ConfigureAwait(false);
-            }
+        public Task<List<MapRegion>> GetRegionsAsync() {
+            return _repository.GetRegionsOrdered().Include("StaStations").ToListAsync();
         }
 
         public async Task<List<InvType>> GetInvTypesForOrdersAsync() {
@@ -67,8 +65,10 @@ namespace eZet.EveProfiteer.Services {
             var analyzer = new MarketAnalyzer(invTypes, priceResult.Prices.Where(o => o.OrderType == OrderType.Sell),
                 priceResult.Prices.Where(o => o.OrderType == OrderType.Buy), historyResult.History);
             analyzer.Analyze();
+            foreach (var entry in analyzer.Result) {
+                entry.Order = entry.InvType.Orders.SingleOrDefault(order => order.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id);
+            }
             return analyzer.Result;
         }
-
     }
 }

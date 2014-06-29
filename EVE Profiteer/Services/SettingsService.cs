@@ -5,17 +5,14 @@ using eZet.EveProfiteer.Models;
 
 namespace eZet.EveProfiteer.Services {
     public class SettingsService : DbContextService {
+        private readonly Repository _repository;
 
-        private EveProfiteerDbEntities _db;
-
-        public SettingsService() {
+        public SettingsService(Repository repository) {
+            _repository = repository;
         }
 
-
-        public async Task<List<MapRegion>> GetRegions() {
-            using (var db = CreateDb()) {
-                return await db.MapRegions.AsNoTracking().Include("StaStations").ToListAsync().ConfigureAwait(false);
-            }
+        public Task<List<MapRegion>> GetRegions() {
+            return _repository.GetRegionsOrdered().Include("StaStations").ToListAsync();
         }
     }
 }

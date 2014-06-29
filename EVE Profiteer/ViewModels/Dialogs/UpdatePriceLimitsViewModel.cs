@@ -16,6 +16,8 @@ namespace eZet.EveProfiteer.ViewModels.Dialogs {
             MaxBuyOrderTotal = Properties.Settings.Default.MaxBuyOrderTotal;
             MinSellOrderTotal = Properties.Settings.Default.MinSellOrderTotal;
             MaxSellOrderTotal = Properties.Settings.Default.MaxSellOrderTotal;
+            UpdateQuantities = Properties.Settings.Default.UpdateQuantities;
+            UpdatePriceLimits = Properties.Settings.Default.UpdatePriceLimits;
             RememberSettings = true;
 
         }
@@ -60,9 +62,10 @@ namespace eZet.EveProfiteer.ViewModels.Dialogs {
                 Properties.Settings.Default.MaxBuyOrderTotal = MaxBuyOrderTotal;
                 Properties.Settings.Default.MinSellOrderTotal = MinSellOrderTotal;
                 Properties.Settings.Default.MaxSellOrderTotal = MaxSellOrderTotal;
+                Properties.Settings.Default.UpdatePriceLimits = UpdatePriceLimits;
+                Properties.Settings.Default.UpdateQuantities = UpdateQuantities;
                 Properties.Settings.Default.Save();
             }
-            base.OnDeactivate(close);
         }
 
         public bool UpdateQuantities {

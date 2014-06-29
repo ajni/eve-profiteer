@@ -76,7 +76,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             await InitAsync().ConfigureAwait(false);
         }
 
-        public override async Task InitAsync() {
+        public async Task InitAsync() {
             await ViewPeriod().ConfigureAwait(false);
         }
 
