@@ -13,5 +13,5 @@
     [ApiKeyEntityId] INT NOT NULL, 
     CONSTRAINT [FK_ProductionBatches_ToApiKeyEntities] FOREIGN KEY ([ApiKeyEntityId]) REFERENCES [ApiKeyEntities]([Id]), 
     CONSTRAINT [FK_ProductionBatches_ToInvTypes] FOREIGN KEY ([ProductTypeId]) REFERENCES [invTypes]([typeID]), 
-    CONSTRAINT [FK_ProductionBatches_ToInvBlueprintTypes] FOREIGN KEY ([BlueprintTypeId]) REFERENCES [invBlueprintTypes]([blueprintTypeID]), 
+    --CONSTRAINT [FK_ProductionBatches_ToInvBlueprintTypes] FOREIGN KEY ([BlueprintTypeId]) REFERENCES [invBlueprintTypes]([blueprintTypeID]), 
 )

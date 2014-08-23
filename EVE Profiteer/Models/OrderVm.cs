@@ -4,8 +4,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using eZet.EveProfiteer.Models.Annotations;
-using eZet.EveProfiteer.Util;
-using MoreLinq;
 
 namespace eZet.EveProfiteer.Models {
     public class OrderVm : INotifyPropertyChanged {
@@ -24,7 +22,6 @@ namespace eZet.EveProfiteer.Models {
             LastTransaction = lastTransaction;
         }
 
-
         public DateTime LastTransaction { get; set; }
 
         public DateTime LastSellDate { get; set; }
@@ -34,8 +31,6 @@ namespace eZet.EveProfiteer.Models {
         public bool HasActiveSellOrder { get; set; }
 
         public bool HasActiveBuyOrder { get; set; }
-
-
 
         public Asset Asset {
             get {
@@ -224,15 +219,12 @@ namespace eZet.EveProfiteer.Models {
             set { _order.CurrentSellPrice = value; }
         }
 
-
-
         public double AvgVolume {
             get { return _order.AvgVolume; }
             set { _order.AvgVolume = value; }
         }
 
         #endregion
-
 
         public event PropertyChangedEventHandler PropertyChanged;
 

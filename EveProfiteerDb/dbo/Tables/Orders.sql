@@ -16,6 +16,7 @@
     [IsBuyOrder] BIT NOT NULL, 
     [Notes] TEXT NULL, 
     StationId INT NULL, 
+    [AutoProcess] BIT NOT NULL DEFAULT 1, 
     CONSTRAINT [PK_dbo.Orders] PRIMARY KEY CLUSTERED ([Id] ASC), 
     CONSTRAINT [FK_Orders_ToApiKeyEntities] FOREIGN KEY ([ApiKeyEntity_Id]) REFERENCES [ApiKeyEntities]([Id]), 
     CONSTRAINT [FK_Orders_ToInvTypes] FOREIGN KEY ([TypeId]) REFERENCES [invTypes]([typeID]), 

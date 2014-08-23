@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="EveProfiteerDbModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="EveProfiteerDbModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="ApiKeyApiKeyEntities">
           <Key>
             <PropertyRef Name="ApiKey_Id" />
@@ -221,6 +221,7 @@
           <Property Name="IsBuyOrder" Type="bit" Nullable="false" />
           <Property Name="Notes" Type="text" />
           <Property Name="StationId" Type="int" />
+          <Property Name="AutoProcess" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="ProductionBatches">
           <Key>
@@ -467,18 +468,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_ProductionBatches_ToInvBlueprintTypes">
-          <End Role="invBlueprintTypes" Type="Self.invBlueprintTypes" Multiplicity="1" />
-          <End Role="ProductionBatches" Type="Self.ProductionBatches" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="invBlueprintTypes">
-              <PropertyRef Name="blueprintTypeID" />
-            </Principal>
-            <Dependent Role="ProductionBatches">
-              <PropertyRef Name="BlueprintTypeId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_ProductionBatches_ToInvTypes">
           <End Role="invTypes" Type="Self.invTypes" Multiplicity="1" />
           <End Role="ProductionBatches" Type="Self.ProductionBatches" Multiplicity="*" />
@@ -577,10 +566,6 @@
           </AssociationSet>
           <AssociationSet Name="FK_ProductionBatches_ToApiKeyEntities" Association="Self.FK_ProductionBatches_ToApiKeyEntities">
             <End Role="ApiKeyEntities" EntitySet="ApiKeyEntities" />
-            <End Role="ProductionBatches" EntitySet="ProductionBatches" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ProductionBatches_ToInvBlueprintTypes" Association="Self.FK_ProductionBatches_ToInvBlueprintTypes">
-            <End Role="invBlueprintTypes" EntitySet="invBlueprintTypes" />
             <End Role="ProductionBatches" EntitySet="ProductionBatches" />
           </AssociationSet>
           <AssociationSet Name="FK_ProductionBatches_ToInvTypes" Association="Self.FK_ProductionBatches_ToInvTypes">
@@ -920,6 +905,7 @@
           <NavigationProperty Name="InvType" Relationship="EveProfiteerDbModel.FK_Orders_ToInvTypes" FromRole="Order" ToRole="invType" />
           <Property Name="StationId" Type="Int32" />
           <NavigationProperty Name="staStation" Relationship="EveProfiteerDbModel.FK_Orders_ToStaStations" FromRole="Order" ToRole="StaStation" />
+          <Property Name="AutoProcess" Type="Boolean" Nullable="false" />
         </EntityType>
         <EntityType Name="Transaction">
           <Key>
@@ -1546,28 +1532,10 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="MapRegions">
-            <EntityTypeMapping TypeName="EveProfiteerDbModel.MapRegion">
-              <MappingFragment StoreEntitySet="mapRegions">
-                <ScalarProperty Name="Radius" ColumnName="radius" />
-                <ScalarProperty Name="FactionId" ColumnName="factionID" />
-                <ScalarProperty Name="ZMax" ColumnName="zMax" />
-                <ScalarProperty Name="ZMin" ColumnName="zMin" />
-                <ScalarProperty Name="YMax" ColumnName="yMax" />
-                <ScalarProperty Name="YMin" ColumnName="yMin" />
-                <ScalarProperty Name="XMax" ColumnName="xMax" />
-                <ScalarProperty Name="XMin" ColumnName="xMin" />
-                <ScalarProperty Name="Z" ColumnName="z" />
-                <ScalarProperty Name="Y" ColumnName="y" />
-                <ScalarProperty Name="X" ColumnName="x" />
-                <ScalarProperty Name="RegionName" ColumnName="regionName" />
-                <ScalarProperty Name="RegionId" ColumnName="regionID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Orders">
             <EntityTypeMapping TypeName="EveProfiteerDbModel.Order">
               <MappingFragment StoreEntitySet="Orders">
+                <ScalarProperty Name="AutoProcess" ColumnName="AutoProcess" />
                 <ScalarProperty Name="StationId" ColumnName="StationId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Notes" ColumnName="Notes" />
@@ -1766,6 +1734,25 @@
                 <ScalarProperty Name="ApiKeyEntityId" ColumnName="CharacterId" />
                 <ScalarProperty Name="OrderId" ColumnName="OrderId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MapRegions">
+            <EntityTypeMapping TypeName="IsTypeOf(EveProfiteerDbModel.MapRegion)">
+              <MappingFragment StoreEntitySet="mapRegions" >
+                <ScalarProperty Name="Radius" ColumnName="radius" />
+                <ScalarProperty Name="FactionId" ColumnName="factionID" />
+                <ScalarProperty Name="ZMin" ColumnName="zMin" />
+                <ScalarProperty Name="ZMax" ColumnName="zMax" />
+                <ScalarProperty Name="YMax" ColumnName="yMax" />
+                <ScalarProperty Name="YMin" ColumnName="yMin" />
+                <ScalarProperty Name="XMax" ColumnName="xMax" />
+                <ScalarProperty Name="XMin" ColumnName="xMin" />
+                <ScalarProperty Name="Z" ColumnName="z" />
+                <ScalarProperty Name="Y" ColumnName="y" />
+                <ScalarProperty Name="X" ColumnName="x" />
+                <ScalarProperty Name="RegionName" ColumnName="regionName" />
+                <ScalarProperty Name="RegionId" ColumnName="regionID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -350,4 +350,11 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="BuyTransactionId" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="0657abd2-94ed-4a73-97aa-aa15c168d063" ChangeDateTime="08/23/2014 11:10:59">
+    <Property Name="ElementName" Value="[dbo].[Orders].[ManualFlag]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Orders]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="AutoProcess" />
+  </Operation>
 </Operations>

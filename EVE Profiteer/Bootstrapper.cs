@@ -79,7 +79,7 @@ namespace eZet.EveProfiteer {
             _container.PerRequest<MarketBrowserViewModel>();
             _container.PerRequest<AssetsViewModel>();
             _container.PerRequest<ProductionViewModel>();
-            _container.PerRequest<UpdatePriceLimitsViewModel>();
+            _container.PerRequest<OrderOptimizerViewModel>();
             _container.PerRequest<TransactionsViewModel>();
             _container.PerRequest<JournalViewModel>();
             _container.PerRequest<MarketOrdersViewModel>();

@@ -86,8 +86,8 @@
     <None Include="EveProfiteerDb_1.publish.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ArtifactReference Include="EveDb.dacpac">
-      <HintPath>EveDb.dacpac</HintPath>
+    <ArtifactReference Include="..\..\..\..\SQL Server Management Studio\DAC Packages\Crius_1.9_100804_db.dacpac">
+      <HintPath>..\..\..\..\SQL Server Management Studio\DAC Packages\Crius_1.9_100804_db.dacpac</HintPath>
       <SuppressMissingDependenciesErrors>False</SuppressMissingDependenciesErrors>
     </ArtifactReference>
   </ItemGroup>

@@ -15,10 +15,10 @@ using System.Windows.Shapes;
 
 namespace eZet.EveProfiteer.Views.Dialogs {
     /// <summary>
-    /// Interaction logic for UpdatePriceLimitsView.xaml
+    /// Interaction logic for OrderOptimizerView.xaml
     /// </summary>
-    public partial class UpdatePriceLimitsView {
-        public UpdatePriceLimitsView() {
+    public partial class OrderOptimizerView {
+        public OrderOptimizerView() {
             InitializeComponent();
         }
     }

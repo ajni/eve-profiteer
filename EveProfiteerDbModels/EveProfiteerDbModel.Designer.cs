@@ -1,4 +1,4 @@
-﻿// T4 code generation is enabled for model 'C:\Users\Lars Kristian\Documents\Dev\Projects\EVE Profiteer\EveProfiteerDbModels\EveProfiteerDbModel.edmx'. 
+﻿// T4 code generation is enabled for model 'C:\Users\Lars Kristian\Documents\Dev\Projects\Eve Profiteer\EveProfiteerDbModels\EveProfiteerDbModel.edmx'. 
 // To enable legacy code generation, change the value of the 'Code Generation Strategy' designer
 // property to 'Legacy ObjectContext'. This property is available in the Properties Window when the model
 // is open in the designer.

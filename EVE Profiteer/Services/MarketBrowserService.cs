@@ -20,11 +20,11 @@ namespace eZet.EveProfiteer.Services {
         }
 
         public Task<MapRegion> GetDefaultRegion() {
-            return _repository.GetRegionsOrdered().Include("StaStation").SingleOrDefaultAsync(region => region.RegionId == ConfigManager.DefaultRegion);
+            return _repository.GetRegionsOrdered().Include("StaStations").SingleOrDefaultAsync(region => region.RegionId == ConfigManager.DefaultRegion);
         }
 
         public Task<List<MapRegion>> GetRegions() {
-            return _repository.GetRegionsOrdered().Include("StaStation").ToListAsync();
+            return _repository.GetRegionsOrdered().Include("StaStations").ToListAsync();
         }
 
         public Task<List<InvType>> GetMarketTypes() {

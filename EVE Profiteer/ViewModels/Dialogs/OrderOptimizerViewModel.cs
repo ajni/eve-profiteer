@@ -2,12 +2,12 @@
 using Caliburn.Micro;
 
 namespace eZet.EveProfiteer.ViewModels.Dialogs {
-    public class UpdatePriceLimitsViewModel : Screen {
-        private bool _updatePriceLimits;
-        private bool _updateQuantities;
+    public class OrderOptimizerViewModel : Screen {
+        private bool _editPriceLimits;
+        private bool _editInventoryLimit;
+        private bool _editOrderQuantities;
 
-
-        public UpdatePriceLimitsViewModel() {
+        public OrderOptimizerViewModel() {
             DisplayName = "Update price limits on orders";
             AvgPriceBuyOffset = Properties.Settings.Default.BuyPriceOffset;
             AvgPriceSellOffset = Properties.Settings.Default.SellPriceOffset;
@@ -16,10 +16,10 @@ namespace eZet.EveProfiteer.ViewModels.Dialogs {
             MaxBuyOrderTotal = Properties.Settings.Default.MaxBuyOrderTotal;
             MinSellOrderTotal = Properties.Settings.Default.MinSellOrderTotal;
             MaxSellOrderTotal = Properties.Settings.Default.MaxSellOrderTotal;
-            UpdateQuantities = Properties.Settings.Default.UpdateQuantities;
-            UpdatePriceLimits = Properties.Settings.Default.UpdatePriceLimits;
-            RememberSettings = true;
-
+            EditOrderQuantities = Properties.Settings.Default.UpdateQuantities;
+            EditPriceLimits = Properties.Settings.Default.UpdatePriceLimits;
+            InventoryLimitValue = Properties.Settings.Default.InventoryLimitValue;
+            RememberSettings = Properties.Settings.Default.OrderManagerRememberSettings;
         }
 
         public double AvgPriceBuyOffset { get; set; }
@@ -30,7 +30,6 @@ namespace eZet.EveProfiteer.ViewModels.Dialogs {
         public double MinProfitMargin { get; set; }
 
         [Range(0, double.MaxValue)]
-
         public double MaxProfitMargin { get; set; }
 
         [Range(0, double.MaxValue)]
@@ -42,16 +41,37 @@ namespace eZet.EveProfiteer.ViewModels.Dialogs {
         [Range(0, double.MaxValue)]
         public decimal MaxSellOrderTotal { get; set; }
 
-        public bool RememberSettings { get; set; }
+        [Range(0, double.MaxValue)]
+        public decimal InventoryLimitValue { get; set; }
 
-        public bool UpdatePriceLimits {
-            get { return _updatePriceLimits; }
+        public bool EditPriceLimits {
+            get { return _editPriceLimits; }
             set {
-                if (value.Equals(_updatePriceLimits)) return;
-                _updatePriceLimits = value;
+                if (value.Equals(_editPriceLimits)) return;
+                _editPriceLimits = value;
                 NotifyOfPropertyChange();
             }
         }
+
+        public bool EditInventoryLimit {
+            get { return _editInventoryLimit; }
+            set {
+                if (value.Equals(_editInventoryLimit)) return;
+                _editInventoryLimit = value;
+                NotifyOfPropertyChange();
+            }
+        }
+
+        public bool EditOrderQuantities {
+            get { return _editOrderQuantities; }
+            set {
+                if (value.Equals(_editOrderQuantities)) return;
+                _editOrderQuantities = value;
+                NotifyOfPropertyChange();
+            }
+        }
+
+        public bool RememberSettings { get; set; }
 
         protected override void OnDeactivate(bool close) {
             if (close && RememberSettings) {
@@ -62,19 +82,13 @@ namespace eZet.EveProfiteer.ViewModels.Dialogs {
                 Properties.Settings.Default.MaxBuyOrderTotal = MaxBuyOrderTotal;
                 Properties.Settings.Default.MinSellOrderTotal = MinSellOrderTotal;
                 Properties.Settings.Default.MaxSellOrderTotal = MaxSellOrderTotal;
-                Properties.Settings.Default.UpdatePriceLimits = UpdatePriceLimits;
-                Properties.Settings.Default.UpdateQuantities = UpdateQuantities;
-                Properties.Settings.Default.Save();
-            }
-        }
-
-        public bool UpdateQuantities {
-            get { return _updateQuantities; }
-            set {
-                if (value.Equals(_updateQuantities)) return;
-                _updateQuantities = value;
-                NotifyOfPropertyChange();
-            }
+                Properties.Settings.Default.UpdatePriceLimits = EditPriceLimits;
+                Properties.Settings.Default.UpdateQuantities = EditOrderQuantities;
+                Properties.Settings.Default.InventoryLimitValue = InventoryLimitValue;
+            } else
+                Properties.Settings.Default.Reload();
+            Properties.Settings.Default.UpdateQuantities = RememberSettings;
+            Properties.Settings.Default.Save();
         }
     }
 }

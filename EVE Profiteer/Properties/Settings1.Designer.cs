@@ -319,5 +319,41 @@ namespace eZet.EveProfiteer.Properties {
                 this["UpdateQuantities"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool EditInventoryLimit {
+            get {
+                return ((bool)(this["EditInventoryLimit"]));
+            }
+            set {
+                this["EditInventoryLimit"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public decimal InventoryLimitValue {
+            get {
+                return ((decimal)(this["InventoryLimitValue"]));
+            }
+            set {
+                this["InventoryLimitValue"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool OrderManagerRememberSettings {
+            get {
+                return ((bool)(this["OrderManagerRememberSettings"]));
+            }
+            set {
+                this["OrderManagerRememberSettings"] = value;
+            }
+        }
     }
 }

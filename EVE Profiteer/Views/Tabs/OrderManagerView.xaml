@@ -35,20 +35,21 @@
 
         <dxb:BarManager DockPanel.Dock="Top">
             <dxb:BarManager.Items>
-                <dxb:BarButtonItem Name="ImportXml" Content="Import XML" Command="{Binding ImportXmlCommand}"
-                                   Hint="Import from XML files" />
-                <dxb:BarButtonItem Name="ExportXml" Content="Export XML" Command="{Binding ExportXmlCommand}"
-                                   Hint="Export to XML files" />
-                <dxb:BarButtonItem Name="Edit" Content="Edit" Command="{Binding EditCommand}" Hint="Perform mass edits" />
+            
+                <dxb:BarButtonItem Name="Process" Content="Process" Command="{Binding EditCommand}" Hint="Process and optimize all orders" />
                 <dxb:BarButtonItem Name="UpdateMarketData" Content="Update prices"
                                    Command="{Binding UpdateMarketDataCommand}"
                                    Hint="Update market and price data for all orders" />
                 <dxb:BarButtonItem Name="Save" Content="Save" Command="{Binding SaveCommand}" Hint="Save all changes" />
+                <dxb:BarButtonItem Name="ImportXml" Content="Import XML" Command="{Binding ImportXmlCommand}"
+                                   Hint="Import from XML files" />
+                <dxb:BarButtonItem Name="ExportXml" Content="Export XML" Command="{Binding ExportXmlCommand}"
+                                   Hint="Export to XML files" />
             </dxb:BarManager.Items>
             <dxb:BarManager.Bars>
                 <dxb:Bar Caption="Order Editor">
                     <dxb:BarButtonItemLink BarItemName="Save" />
-                    <dxb:BarButtonItemLink BarItemName="Edit" />
+                    <dxb:BarButtonItemLink BarItemName="Process" />
                     <dxb:BarButtonItemLink BarItemName="UpdateMarketData" />
                 </dxb:Bar>
                 <dxb:Bar Caption="XML">
@@ -78,6 +79,7 @@
                                    AllowCascadeUpdate="False"
                                    AllowGroupSummaryCascadeUpdate="True"
                                    RowOpacityAnimationDuration="0.00:00:1"
+                                   AutoScrollOnSorting="False"
                                    AllowScrollToFocusedRow="True"
                                    RowStyle="{StaticResource RowBackgroundStyle}">
                     <dxg:TableView.RowCellMenuCustomizations>
@@ -129,7 +131,7 @@
 
                     <dxg:SelectAllColumn Focusable="False" FixedWidth="True" />
 
-                    <dxg:GridColumn Name="TypeNameEditor" FieldName="TypeName" Header="Type" Width="200">
+                    <dxg:GridColumn Name="TypeNameEditor" FieldName="TypeName" Header="Type" Width="250">
                         <dxg:GridColumn.CellTemplate>
                             <DataTemplate>
                                 <dxe:ComboBoxEdit Name="PART_Editor"
@@ -148,6 +150,7 @@
 
                 <!--EDIT ORDER-->
                 <dxg:GridControlBand Header="Edit Order">
+                    <!--Buy Order--> 
                     <dxg:GridColumn FieldName="IsBuyOrder" Header="Buy" Width="30" FixedWidth="True">
                         <dxg:GridColumn.DisplayTemplate>
                             <ControlTemplate>
@@ -164,10 +167,14 @@
                             </ControlTemplate>
                         </dxg:GridColumn.EditTemplate>
                     </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="BuyQuantity" Header="Qty" Width="50" FixedWidth="True" />
-                    <dxg:GridColumn FieldName="MaxBuyPrice" EditSettings="{DynamicResource N0Edit}" />
+                    <dxg:GridColumn FieldName="HasActiveBuyOrder" Header="Active" AllowEditing="False" Width="40" />
+
+                    <dxg:GridColumn FieldName="BuyQuantity" Header="Quantity" FixedWidth="True" Width="50"/>
+                    <dxg:GridColumn FieldName="MaxBuyPrice" EditSettings="{DynamicResource N0Edit}" Width="100" />
                     <dxg:GridColumn FieldName="TotalMaxBuyPrice" Header="Buy Total"
-                                    EditSettings="{DynamicResource N0Edit}" />
+                                    EditSettings="{DynamicResource N0Edit}" Visible="False" Width="100"/>
+                    
+                    <!--Sell Order-->
                     <dxg:GridColumn FieldName="IsSellOrder" Header="Sell" Width="30" FixedWidth="True">
                         <dxg:GridColumn.DisplayTemplate>
                             <ControlTemplate>
@@ -183,21 +190,26 @@
                             </ControlTemplate>
                         </dxg:GridColumn.EditTemplate>
                     </dxg:GridColumn>
+                    <dxg:GridColumn FieldName="HasActiveSellOrder" Header="Active" AllowEditing="False" Width="40"/>
                     <dxg:GridColumn Visible="False" FieldName="MinSellQuantity" Header="Min Qty" Width="50"
                                     FixedWidth="True" />
                     <dxg:GridColumn FieldName="MinSellPrice" EditSettings="{DynamicResource N0Edit}" />
                     <dxg:GridColumn Visible="False" FieldName="TotalMinSellPrice" Header="Min Sell Total"
-                                    EditSettings="{DynamicResource N0Edit}" />
-                    <dxg:GridColumn Visible="False" FieldName="MaxSellQuantity" Header="Max Qty" Width="50"
+                                    EditSettings="{DynamicResource N0Edit}" Width="100"/>
+                    <dxg:GridColumn Visible="False" FieldName="MaxSellQuantity" Header="Max Qty" Width="100"
                                     FixedWidth="True" />
                     <dxg:GridColumn Visible="False" FieldName="TotalMaxSellPrice" Header="Max Sell Total"
-                                    EditSettings="{DynamicResource N0Edit}" />
+                                    EditSettings="{DynamicResource N0Edit}" Width="100"/>
+                    <dxg:GridColumn FieldName="LastTransaction" Header="Last Transaction" AllowEditing="False" Width="80"
+                                    EditSettings="{DynamicResource DateEdit}" />
+                    <!--<dxg:GridColumn FieldName="LastBuyDate" Header="Last Buy" AllowEditing="False" EditSettings="{DynamicResource DateEdit}"/>
+                    <dxg:GridColumn FieldName="LastSellDate" Header="Last Sell" AllowEditing="False" EditSettings="{DynamicResource DateEdit}"/>-->
                 </dxg:GridControlBand>
 
 
                 <!--INVENTORY-->
                 <dxg:GridControlBand Header="Inventory">
-                    <dxg:GridColumn FieldName="InventoryQuantity" Header="Qty" AllowEditing="False" Width="50"
+                    <dxg:GridColumn FieldName="InventoryQuantity" Header="Quantity" AllowEditing="False" Width="50"
                                     FixedWidth="True" />
                     <dxg:GridColumn Visible="False" FieldName="InventoryBalancePerUnit" Header="Balance PU"
                                     AllowEditing="False" EditSettings="{DynamicResource N0Edit}" />
@@ -207,16 +219,10 @@
                                     EditSettings="{DynamicResource N0Edit}" />
                     <dxg:GridColumn Visible="False" FieldName="InventoryTotalBalance" Header="Total Balance"
                                     AllowEditing="False" EditSettings="{DynamicResource N0Edit}" />
-                    <dxg:GridColumn Visible="False" FieldName="InventoryTotalValue" Header="Total Value"
+                    <dxg:GridColumn FieldName="InventoryTotalValue" Header="Total Value"
                                     AllowEditing="False" EditSettings="{DynamicResource N0Edit}" />
                     <dxg:GridColumn FieldName="InventoryTotalCost" Header="Inventory Cost" AllowEditing="False"
                                     EditSettings="{DynamicResource N0Edit}" />
-                    <dxg:GridColumn FieldName="LastTransaction" Header="Last Transaction" AllowEditing="False"
-                                    EditSettings="{DynamicResource DateEdit}" />
-                    <dxg:GridColumn FieldName="HasActiveBuyOrder" AllowEditing="False" />
-                    <dxg:GridColumn FieldName="HasActiveSellOrder" AllowEditing="False" />
-                    <!--<dxg:GridColumn FieldName="LastBuyDate" Header="Last Buy" AllowEditing="False" EditSettings="{DynamicResource DateEdit}"/>
-                    <dxg:GridColumn FieldName="LastSellDate" Header="Last Sell" AllowEditing="False" EditSettings="{DynamicResource DateEdit}"/>-->
                 </dxg:GridControlBand>
 
                 <!--Estimated Profit-->

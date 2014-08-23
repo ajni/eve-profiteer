@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
@@ -37,8 +36,7 @@ namespace eZet.EveProfiteer.ViewModels {
             _shellService = shellService;
             _moduleService = moduleService;
             DisplayName = "EVE Profiteer";
-            AllowStatusChange = true;
-            _eventAggregator.Subscribe(this);
+            AllowStatusChange = true;_eventAggregator.Subscribe(this);
             StatusMessage = "Initializing...";
 
             ActiveKey = _shellService.GetApiKeys().Result.First();
