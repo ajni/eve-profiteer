@@ -25,8 +25,8 @@ namespace eZet.EveProfiteer.Services {
             return _repository.GetMarketTypes().ToListAsync();
         }
 
-        public async Task<List<OrderVm>> GetOrdersAsync() {
-            var list = new List<OrderVm>();
+        public async Task<List<OrderViewModel>> GetOrdersAsync() {
+            var list = new List<OrderViewModel>();
             var orders = await _repository.MyOrders().Include(o => o.InvType.Assets).ToListAsync().ConfigureAwait(false);
             //var selldates = new Dictionary<int, DateTime>();
             //MyTransactions(db).Where(t => t.TransactionType == TransactionType.Sell)
@@ -44,7 +44,7 @@ namespace eZet.EveProfiteer.Services {
             var marketOrders = await _repository.MyMarketOrders().Where(t => t.OrderState == OrderState.Open).ToListAsync().ConfigureAwait(false);
             var marketLookup = marketOrders.ToLookup(t => t.TypeId);
             foreach (var order in orders) {
-                var ordervm = new OrderVm(order);
+                var ordervm = new OrderViewModel(order);
 
                 //if (order.InvType.Transactions.Any()) {
                 //    var date = order.InvType.Transactions.Max(t => t.TransactionDate);
@@ -69,7 +69,7 @@ namespace eZet.EveProfiteer.Services {
             return list;
         }
 
-        public async Task<int> RemoveOrdersAsync(IEnumerable<OrderVm> orders) {
+        public async Task<int> RemoveOrdersAsync(IEnumerable<OrderViewModel> orders) {
             var list = orders.Select(order => order.Order);
             var db = _repository.Db;
             foreach (var order in list) {
@@ -82,7 +82,7 @@ namespace eZet.EveProfiteer.Services {
             return await db.SaveChangesAsync().ConfigureAwait(false);
         }
 
-        public async Task<int> SaveOrdersAsync(IEnumerable<OrderVm> orders) {
+        public async Task<int> SaveOrdersAsync(IEnumerable<OrderViewModel> orders) {
             var db = _repository.Db;
             db.Configuration.AutoDetectChangesEnabled = false;
             db.Configuration.ValidateOnSaveEnabled = false;

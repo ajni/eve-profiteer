@@ -302,6 +302,19 @@ namespace eZet.EveProfiteer.Services {
                 .ConfigureAwait(false);
             var minOrderId = result.Orders.MinBy(order => order.OrderId).OrderId;
             using (var db = CreateDb()) {
+                var openOrders =
+                    await
+                        MyMarketOrders(db)
+                            .Where(order => order.OrderState == OrderState.Open)
+                            .ToListAsync()
+                            .ConfigureAwait(false);
+                foreach (var order in openOrders) {
+                    if (order.Duration < DateTime.UtcNow.Subtract(order.Issued).Days) {
+                        order.OrderState = OrderState.Expired;
+                    } else {
+                        order.OrderState = OrderState.Closed;
+                    }
+                }
                 var orders = await
                     MyMarketOrders(db).Where(order => order.OrderId >= minOrderId).ToListAsync().ConfigureAwait(false);
                 var orderLookup = orders.ToLookup(f => f.OrderId);

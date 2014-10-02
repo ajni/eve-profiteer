@@ -7,7 +7,7 @@ using eZet.EveProfiteer.Models.Annotations;
 using eZet.EveProfiteer.Util;
 
 namespace eZet.EveProfiteer.Models {
-    public class AssetEntry : INotifyPropertyChanged {
+    public class AssetViewModel : INotifyPropertyChanged {
         private readonly Asset _asset;
         private IEnumerable<EmdItemHistory.ItemHistoryEntry> _itemHistoryEntries;
         private decimal _currentSellPrice;
@@ -15,7 +15,7 @@ namespace eZet.EveProfiteer.Models {
         private decimal _avgVolume;
         private decimal _avgPrice;
 
-        public AssetEntry(Asset asset) {
+        public AssetViewModel(Asset asset) {
             _asset = asset;
         }
 

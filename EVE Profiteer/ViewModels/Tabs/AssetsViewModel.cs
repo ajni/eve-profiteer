@@ -12,10 +12,10 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
     public class AssetsViewModel : ModuleViewModel, IHandle<AssetsUpdatedEvent>, IHandle<ViewAssetEvent> {
         private readonly AssetService _assetService;
         private readonly IEventAggregator _eventAggregator;
-        private BindableCollection<AssetEntry> _assets;
-        private AssetEntry _focusedRow;
-        private AssetEntry _selectedRow;
-        private BindableCollection<AssetEntry> _selectedRows;
+        private BindableCollection<AssetViewModel> _assets;
+        private AssetViewModel _focusedRow;
+        private AssetViewModel _selectedRow;
+        private BindableCollection<AssetViewModel> _selectedRows;
         private ViewAssetEvent _viewAssetEvent;
         private AssetsUpdatedEvent _assetsUpdatedEvent;
 
@@ -24,7 +24,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             _assetService = assetService;
             DisplayName = "Assets";
             AgeSpan = 10;
-            Assets = new BindableCollection<AssetEntry>();
+            Assets = new BindableCollection<AssetViewModel>();
             _eventAggregator.Subscribe(this);
         }
 
@@ -32,7 +32,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
 
         public int AgeSpan { get; set; }
 
-        public BindableCollection<AssetEntry> Assets {
+        public BindableCollection<AssetViewModel> Assets {
             get { return _assets; }
             private set {
                 if (Equals(value, _assets)) return;
@@ -41,7 +41,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             }
         }
 
-        public AssetEntry SelectedRow {
+        public AssetViewModel SelectedRow {
             get { return _selectedRow; }
             set {
                 if (Equals(value, _selectedRow)) return;
@@ -50,7 +50,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             }
         }
 
-        public AssetEntry FocusedRow {
+        public AssetViewModel FocusedRow {
             get { return _focusedRow; }
             set {
                 if (Equals(value, _focusedRow)) return;
@@ -59,7 +59,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
             }
         }
 
-        public BindableCollection<AssetEntry> SelectedRows {
+        public BindableCollection<AssetViewModel> SelectedRows {
             get { return _selectedRows; }
             set {
                 if (Equals(value, _selectedRows)) return;
@@ -110,7 +110,7 @@ namespace eZet.EveProfiteer.ViewModels.Tabs {
 
         private async Task LoadAssets() {
             List<Asset> assets = await _assetService.GetAssets().ConfigureAwait(false);
-            Assets.AddRange(assets.Select(asset => new AssetEntry(asset)));
+            Assets.AddRange(assets.Select(asset => new AssetViewModel(asset)));
         }
 
         public void Handle(ViewAssetEvent message) {

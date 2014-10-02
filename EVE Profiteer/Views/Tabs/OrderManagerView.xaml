@@ -169,7 +169,7 @@
                     </dxg:GridColumn>
                     <dxg:GridColumn FieldName="HasActiveBuyOrder" Header="Active" AllowEditing="False" Width="40" />
 
-                    <dxg:GridColumn FieldName="BuyQuantity" Header="Quantity" FixedWidth="True" Width="50"/>
+                    <dxg:GridColumn FieldName="BuyQuantity" Header="Qty" FixedWidth="True" Width="50"/>
                     <dxg:GridColumn FieldName="MaxBuyPrice" EditSettings="{DynamicResource N0Edit}" Width="100" />
                     <dxg:GridColumn FieldName="TotalMaxBuyPrice" Header="Buy Total"
                                     EditSettings="{DynamicResource N0Edit}" Visible="False" Width="100"/>
@@ -209,7 +209,13 @@
 
                 <!--INVENTORY-->
                 <dxg:GridControlBand Header="Inventory">
-                    <dxg:GridColumn FieldName="InventoryQuantity" Header="Quantity" AllowEditing="False" Width="50"
+                    <dxg:GridColumn FieldName="CalculatedQuantity" Header="Calculated" AllowEditing="False" Width="50"
+                                    FixedWidth="True" />
+                    <dxg:GridColumn FieldName="TotalQuantity" Header="Total" AllowEditing="False" Width="50"
+                                    FixedWidth="True" />
+                    <dxg:GridColumn FieldName="InventoryQuantity" Header="Inventory" AllowEditing="False" Width="50"
+                                    FixedWidth="True" />
+                    <dxg:GridColumn FieldName="MarketQuantity" Header="Market" AllowEditing="False" Width="50"
                                     FixedWidth="True" />
                     <dxg:GridColumn Visible="False" FieldName="InventoryBalancePerUnit" Header="Balance PU"
                                     AllowEditing="False" EditSettings="{DynamicResource N0Edit}" />

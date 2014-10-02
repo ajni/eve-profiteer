@@ -4,20 +4,21 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using eZet.EveProfiteer.Models.Annotations;
+using eZet.EveProfiteer.Util;
 
 namespace eZet.EveProfiteer.Models {
-    public class OrderVm : INotifyPropertyChanged {
+    public class OrderViewModel : INotifyPropertyChanged {
         private Order _order;
 
-        public OrderVm() {
+        public OrderViewModel() {
             Order = new Order();
         }
 
-        public OrderVm(Order order) {
+        public OrderViewModel(Order order) {
             Order = order;
         }
 
-        public OrderVm(Order order, DateTime lastTransaction) {
+        public OrderViewModel(Order order, DateTime lastTransaction) {
             Order = order;
             LastTransaction = lastTransaction;
         }
@@ -141,7 +142,19 @@ namespace eZet.EveProfiteer.Models {
         #region Inventory
 
         public int InventoryQuantity {
-            get { return Asset != null ? Asset.Quantity : 0; }
+            get { return Asset != null ? Asset.ActualQuantity : 0; }
+        }
+
+        public int MarketQuantity {
+            get { return Order.InvType.MarketOrders.Where(order => order.ApiKeyEntityId == ApplicationHelper.ActiveKeyEntity.Id && order.Bid == false && order.OrderState == OrderState.Open).Sum(order => order.VolumeRemaining); }
+        }
+
+        public int CalculatedQuantity {
+            get { return Asset.Quantity; }
+        }
+
+        public int TotalQuantity {
+            get { return InventoryQuantity + MarketQuantity; }
         }
 
         public decimal InventoryBalancePerUnit {

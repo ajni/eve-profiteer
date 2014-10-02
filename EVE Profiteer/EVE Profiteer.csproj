@@ -213,11 +213,11 @@
     <Compile Include="Events\ViewMarketOrderEvent.cs" />
     <Compile Include="Events\ViewOrderEvent.cs" />
     <Compile Include="Events\ViewTransactionDetailsEvent.cs" />
-    <Compile Include="Models\AssetEntry.cs" />
+    <Compile Include="Models\AssetViewModel.cs" />
     <Compile Include="Models\CharacterData.cs" />
     <Compile Include="Models\JournalAggregate.cs" />
     <Compile Include="Models\MarketHistoryEntry.cs" />
-    <Compile Include="Models\OrderVm.cs" />
+    <Compile Include="Models\OrderViewModel.cs" />
     <Compile Include="Models\OverviewData.cs" />
     <Compile Include="Models\ProductionBatchEntry.cs" />
     <Compile Include="Models\TransactionAggregate.cs" />
