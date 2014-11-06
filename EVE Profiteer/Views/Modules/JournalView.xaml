@@ -1,0 +1,251 @@
+﻿<UserControl x:Class="eZet.EveProfiteer.Views.Modules.JournalView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
+             xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+             xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
+             xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/charts"
+             xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
+             xmlns:dxn="http://schemas.devexpress.com/winfx/2008/xaml/navbar"
+             xmlns:modules="clr-namespace:eZet.EveProfiteer.ViewModels.Modules"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance d:Type=modules:JournalViewModel, IsDesignTimeCreatable=False}"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <dx:EntityInstantFeedbackDataSource Name="DataSource" KeyExpression="Id" QueryableSource="{Binding Journal}" />
+
+        <dxlc:DockLayoutControl>
+            <dxb:BarManager dxlc:DockLayoutControl.Dock="Top">
+                <!--<dxb:BarManager.Items>
+                    <dxb:BarEditItem Name="ViewPeriodSelector" EditValue="{Binding SelectedViewPeriod}" EditWidth="100"
+                                     Hint="Station to analyze."
+                                     EditValueChanged="ViewPeriodSelector_OnEditValueChanged">
+                        <dxb:BarEditItem.EditSettings>
+                            <dxe:ComboBoxEditSettings ItemsSource="{Binding ViewPeriodValues}" />
+                        </dxb:BarEditItem.EditSettings>
+                    </dxb:BarEditItem>
+                    <dxb:BarEditItem Name="StartDate" Content="From" EditValue="{Binding PeriodSelectorStart}">
+                        <dxb:BarEditItem.EditSettings>
+                            <dxe:DateEditSettings />
+                        </dxb:BarEditItem.EditSettings>
+
+                    </dxb:BarEditItem>
+                    <dxb:BarEditItem Name="EndDate" Content="To" EditValue="{Binding PeriodSelectorEnd}">
+                        <dxb:BarEditItem.EditSettings>
+                            <dxe:DateEditSettings />
+                        </dxb:BarEditItem.EditSettings>
+                    </dxb:BarEditItem>
+
+                    <dxb:BarButtonItem Name="ViewButton" Content="View" Command="{Binding ViewPeriodCommand}" />
+
+                </dxb:BarManager.Items>
+
+                <dxb:BarManager.Bars>
+                    <dxb:Bar>
+                        <dxb:BarButtonItemLink BarItemName="ViewButton" />
+                        <dxb:BarEditItemLink BarItemName="ViewPeriodSelector" />
+                        <dxb:BarEditItemLink BarItemName="StartDate" />
+                        <dxb:BarEditItemLink BarItemName="EndDate" />
+                    </dxb:Bar>
+                </dxb:BarManager.Bars>-->
+
+            </dxb:BarManager>
+
+            <dxn:NavBarControl dxlc:DockLayoutControl.Dock="Left" dxlc:DockLayoutControl.AllowHorizontalSizing="True" AllowSelectItem="False" MaxWidth="500" Width="300">
+                <dxn:NavBarControl.View>
+                    <dxn:ExplorerBarView AnimateGroupExpansion="False"/>
+                </dxn:NavBarControl.View>
+
+                <dxn:NavBarGroup Header="Cash Flow">
+                    <dxn:NavBarItem>
+                        <TextBlock Text="{Binding DailyAggregate.Income, StringFormat='Income: {0:N2}'}" />
+                    </dxn:NavBarItem>
+                    <dxn:NavBarItem>
+                        <TextBlock Text="{Binding DailyAggregate.Outgo, StringFormat='Outgo: {0:N2}'}" />
+                    </dxn:NavBarItem>
+                    <dxn:NavBarItem>
+                        <TextBlock Text="{Binding DailyAggregate.CashFlow, StringFormat='Change: {0:N2}'}" />
+                    </dxn:NavBarItem>
+                    <dxn:NavBarItem>
+                        <TextBlock Text="{Binding DailyAggregate.BalanceAfter, StringFormat='Balance: {0:N2}'}" />
+                    </dxn:NavBarItem>
+                </dxn:NavBarGroup>
+            </dxn:NavBarControl>
+
+            <dx:DXTabControl dxlc:DockLayoutControl.Dock="Client">
+
+                <dx:DXTabItem Header="Balance">
+                    <dxc:ChartControl x:Name="MarginChart" DataSource="{Binding DailyAggregate.JournalAggregates}">
+                        <dxc:ChartControl.CrosshairOptions>
+                            <dxc:CrosshairOptions />
+                        </dxc:ChartControl.CrosshairOptions>
+                        <dxc:ChartControl.Legend>
+                            <dxc:Legend BorderThickness="0" HorizontalPosition="Center" Orientation="Horizontal"
+                                        VerticalPosition="BottomOutside" UseCheckBoxes="True" />
+                        </dxc:ChartControl.Legend>
+                        <dxc:XYDiagram2D EnableAxisXNavigation="True">
+                            <dxc:XYDiagram2D.AxisY>
+                                <dxc:AxisY2D TickmarksMinorVisible="True">
+                                    <dxc:AxisY2D.NumericOptions>
+                                        <dxc:NumericOptions Format="Number" Precision="0" />
+                                    </dxc:AxisY2D.NumericOptions>
+                                    <dxc:AxisY2D.Range>
+                                        <dxc:AxisRange dxc:AxisY.AlwaysShowZeroLevel="False"
+                                                       SideMarginsEnabled="True" />
+                                    </dxc:AxisY2D.Range>
+                                </dxc:AxisY2D>
+                            </dxc:XYDiagram2D.AxisY>
+                            <dxc:LineSeries2D DisplayName="Balance"
+                                              ArgumentDataMember="Key"
+                                              ValueDataMember="BalanceAfter"
+                                              ArgumentScaleType="DateTime"
+                                              CrosshairLabelPattern="{}{S} : {V:N2}" ValueScaleType="Numerical">
+                            </dxc:LineSeries2D>
+                        </dxc:XYDiagram2D>
+                    </dxc:ChartControl>
+                </dx:DXTabItem>
+
+
+                <dx:DXTabItem Header="Cash Flow">
+                    <dxc:ChartControl DataSource="{Binding DailyAggregate.JournalAggregates}">
+                        <dxc:ChartControl.CrosshairOptions>
+                            <dxc:CrosshairOptions />
+                        </dxc:ChartControl.CrosshairOptions>
+                        <dxc:ChartControl.Legend>
+                            <dxc:Legend BorderThickness="0" HorizontalPosition="Center" Orientation="Horizontal"
+                                        VerticalPosition="BottomOutside" UseCheckBoxes="True" />
+                        </dxc:ChartControl.Legend>
+                        <dxc:XYDiagram2D EnableAxisXNavigation="True">
+                            <dxc:XYDiagram2D.AxisY>
+                                <dxc:AxisY2D TickmarksMinorVisible="True">
+                                    <dxc:AxisY2D.NumericOptions>
+                                        <dxc:NumericOptions Format="Number" Precision="0" />
+                                    </dxc:AxisY2D.NumericOptions>
+                                    <dxc:AxisY2D.Range>
+                                        <dxc:AxisRange dxc:AxisY.AlwaysShowZeroLevel="False"
+                                                       SideMarginsEnabled="True" />
+                                    </dxc:AxisY2D.Range>
+                                </dxc:AxisY2D>
+                            </dxc:XYDiagram2D.AxisY>
+                            <dxc:LineSeries2D DisplayName="Cash Flow"
+                                              ArgumentDataMember="Key"
+                                              ValueDataMember="CashFlow"
+                                              ArgumentScaleType="DateTime"
+                                              CrosshairLabelPattern="{}{S} : {V:N2}" ValueScaleType="Numerical">
+                            </dxc:LineSeries2D>
+                        </dxc:XYDiagram2D>
+                    </dxc:ChartControl>
+                </dx:DXTabItem>
+
+                <dx:DXTabItem Header="Cash Flow (By Category)">
+                    <dxc:ChartControl DataSource="{Binding TypeAggregate.JournalAggregates}">
+                        <dxc:ChartControl.CrosshairOptions>
+                            <dxc:CrosshairOptions />
+                        </dxc:ChartControl.CrosshairOptions>
+                        <dxc:ChartControl.Legend>
+                            <dxc:Legend BorderThickness="0" HorizontalPosition="Center" Orientation="Horizontal"
+                                        VerticalPosition="BottomOutside" UseCheckBoxes="True" />
+                        </dxc:ChartControl.Legend>
+                        <dxc:XYDiagram2D EnableAxisXNavigation="True" Rotated="True" EnableAxisYNavigation="False">
+                            <dxc:XYDiagram2D.AxisX>
+                                <dxc:AxisX2D GridLinesVisible="False" Reverse="False"/>
+                            </dxc:XYDiagram2D.AxisX>
+                            <dxc:XYDiagram2D.AxisY>
+                                <dxc:AxisY2D TickmarksMinorVisible="True">
+                                    <dxc:AxisY2D.NumericOptions>
+                                        <dxc:NumericOptions Format="Number" Precision="0" />
+                                    </dxc:AxisY2D.NumericOptions>
+                                    <dxc:AxisY2D.Range>
+                                        <dxc:AxisRange dxc:AxisY.AlwaysShowZeroLevel="False"
+                                                       SideMarginsEnabled="True" />
+                                    </dxc:AxisY2D.Range>
+                                </dxc:AxisY2D>
+                            </dxc:XYDiagram2D.AxisY>
+                            <dxc:BarSideBySideSeries2D DisplayName="Income"
+                                              ValueScaleType="Numerical"
+                                              ValueDataMember="Income"
+                                              ArgumentScaleType="Qualitative"
+                                              ArgumentDataMember="Key"
+                                              CrosshairLabelPattern="{}{S} : {V:N2}"
+                                              />
+                            <dxc:BarSideBySideSeries2D DisplayName="Outgo"
+                                              ValueScaleType="Numerical"
+                                              ValueDataMember="Outgo"
+                                              ArgumentScaleType="Qualitative"
+                                              ArgumentDataMember="Key"
+                                              CrosshairLabelPattern="{}{S} : {V:N2}"
+                                              />
+                        </dxc:XYDiagram2D>
+                    </dxc:ChartControl>
+                </dx:DXTabItem>
+
+                <dx:DXTabItem Header="Table">
+                    <dxg:GridControl ItemsSource="{Binding ElementName=DataSource, Path=Data}">
+                        <dxg:GridControl.View>
+                            <dxg:TableView ShowTotalSummary="False"
+                                           ShowFixedTotalSummary="True"
+                                           NewItemRowPosition="None"
+                                           ShowAutoFilterRow="True"
+                                           IsRowCellMenuEnabled="True"
+                                           ShowSearchPanelMode="Default"
+                                           SearchColumns="InvType.TypeName"
+                                           SearchPanelCriteriaOperatorType="And"
+                                           AutoScrollOnSorting="False"
+                                           NavigationStyle="Row"
+                                           AllowEditing="False"
+                                           AllowCascadeUpdate="False"
+                                           RowOpacityAnimationDuration="0.00:00:1"
+                                           AllowGroupSummaryCascadeUpdate="True"
+                                           ShowFilterPanelMode="ShowAlways">
+                                <dxg:TableView.RowCellMenuCustomizations>
+                                    <dxb:BarButtonItem Content="View market details"
+                                                       Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.ViewMarketDetailsCommand, RelativeSource={RelativeSource Self}}"
+                                                       CommandParameter="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataControl.CurrentItem, RelativeSource={RelativeSource Self}}" />
+                                    <dxb:BarButtonItem Content="View trade details"
+                                                       Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.ViewTradeDetailsCommand, RelativeSource={RelativeSource Self}}"
+                                                       CommandParameter="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataControl.CurrentItem, RelativeSource={RelativeSource Self}}" />
+                                    <dxb:BarItemSeparator />
+                                    <dxb:BarButtonItem Content="View order"
+                                                       Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.ViewOrderCommand, RelativeSource={RelativeSource Self}}"
+                                                       CommandParameter="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataControl.CurrentItem, RelativeSource={RelativeSource Self}}" />
+                                    <dxb:BarButtonItem Content="Add to orders"
+                                                       Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.AddToOrdersCommand, RelativeSource={RelativeSource Self}}"
+                                                       CommandParameter="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataControl.SelectedItems, RelativeSource={RelativeSource Self}}" />
+                                </dxg:TableView.RowCellMenuCustomizations>
+                            </dxg:TableView>
+                        </dxg:GridControl.View>
+                        <dxg:GridControl.TotalSummary>
+                            <dxg:GridSummaryItem SummaryType="Count" Alignment="Right"
+                                                 DisplayFormat="Journal entries: {0}" />
+                        </dxg:GridControl.TotalSummary>
+                        <dxg:GridControl.Columns>
+                            <dxg:GridColumn FieldName="RefId" Visible="False" />
+                            <dxg:GridColumn FieldName="Date" EditSettings="{StaticResource DateTimeEdit}" />
+                            <dxg:GridColumn FieldName="RefTypeId" Visible="False" />
+                            <dxg:GridColumn FieldName="RefType.Name" Header="Type" />
+                            <dxg:GridColumn FieldName="OwnerId" Visible="False" />
+                            <dxg:GridColumn FieldName="OwnerName" Header="Owner" />
+                            <dxg:GridColumn FieldName="ParticipantId" Visible="False" />
+                            <dxg:GridColumn FieldName="ParticipantName" Header="Participant" />
+                            <dxg:GridColumn FieldName="ArgumentId" Visible="False" />
+                            <dxg:GridColumn FieldName="ArgumentName" Header="Argument" />
+                            <dxg:GridColumn FieldName="Amount" EditSettings="{StaticResource N2Edit}" />
+                            <dxg:GridColumn FieldName="BalanceAfter" EditSettings="{StaticResource N2Edit}" />
+                            <dxg:GridColumn FieldName="Reason" />
+                            <dxg:GridColumn FieldName="TaxAmount" EditSettings="{StaticResource N2Edit}" />
+                            <dxg:GridColumn FieldName="TaxReceiverId" />
+                            <dxg:GridColumn FieldName="OwnerTypeId" Visible="False" />
+                            <dxg:GridColumn FieldName="ParticipantTypeId" Visible="False" />
+                        </dxg:GridControl.Columns>
+                    </dxg:GridControl>
+
+                </dx:DXTabItem>
+
+
+            </dx:DXTabControl>
+
+        </dxlc:DockLayoutControl>
+    </Grid>
+</UserControl>

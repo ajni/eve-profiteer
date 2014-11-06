@@ -1,0 +1,110 @@
+﻿<UserControl x:Class="eZet.EveProfiteer.Views.Modules.TransactionsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
+             xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+             xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
+             xmlns:modules="clr-namespace:eZet.EveProfiteer.ViewModels.Modules"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance d:Type=modules:TransactionsViewModel, IsDesignTimeCreatable=False}"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <dx:EntityInstantFeedbackDataSource Name="DataSource" KeyExpression="Id" QueryableSource="{Binding Transactions}"></dx:EntityInstantFeedbackDataSource>
+
+        <DockPanel>
+            <dxb:BarManager DockPanel.Dock="Top">
+                <!--<dxb:BarManager.Items>
+                    <dxb:BarEditItem Name="ViewPeriodSelector" EditValue="{Binding SelectedViewPeriod}" EditWidth="100"
+                                     Hint="Station to analyze."
+                                     EditValueChanged="ViewPeriodSelector_OnEditValueChanged">
+                        <dxb:BarEditItem.EditSettings>
+                            <dxe:ComboBoxEditSettings ItemsSource="{Binding ViewPeriodValues}" />
+                        </dxb:BarEditItem.EditSettings>
+                    </dxb:BarEditItem>
+                    <dxb:BarEditItem Name="StartDate" Content="From" EditValue="{Binding PeriodSelectorStart}">
+                        <dxb:BarEditItem.EditSettings>
+                            <dxe:DateEditSettings />
+                        </dxb:BarEditItem.EditSettings>
+
+                    </dxb:BarEditItem>
+                    <dxb:BarEditItem Name="EndDate" Content="To" EditValue="{Binding PeriodSelectorEnd}">
+                        <dxb:BarEditItem.EditSettings>
+                            <dxe:DateEditSettings />
+                        </dxb:BarEditItem.EditSettings>
+                    </dxb:BarEditItem>
+
+                    <dxb:BarButtonItem Name="ViewButton" Content="View" Command="{Binding ViewPeriodCommand}" />
+
+                </dxb:BarManager.Items>
+
+                <dxb:BarManager.Bars>
+                    <dxb:Bar>
+                        <dxb:BarButtonItemLink BarItemName="ViewButton" />
+                        <dxb:BarEditItemLink BarItemName="ViewPeriodSelector" />
+                        <dxb:BarEditItemLink BarItemName="StartDate" />
+                        <dxb:BarEditItemLink BarItemName="EndDate" />
+                    </dxb:Bar>
+                </dxb:BarManager.Bars>-->
+
+            </dxb:BarManager>
+
+            <dxg:GridControl ItemsSource="{Binding ElementName=DataSource, Path=Data}">
+                <dxg:GridControl.View>
+                    <dxg:TableView ShowTotalSummary="False"
+                                   NewItemRowPosition="None"
+                                   ShowAutoFilterRow="True"
+                                   ShowFixedTotalSummary="True"
+                                   SearchColumns="InvType.TypeName"
+                                   SearchPanelCriteriaOperatorType="And"
+                                   AutoScrollOnSorting="False"
+                                   NavigationStyle="Cell"
+                                   AllowEditing="False"
+                                   AllowCascadeUpdate="True"
+                                   RowOpacityAnimationDuration="0.00:00:1"
+                                   AllowGroupSummaryCascadeUpdate="True"
+                                   ShowFilterPanelMode="ShowAlways">
+                        <dxg:TableView.RowCellMenuCustomizations>
+                            <dxb:BarButtonItem Content="View market details"
+                                               Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.ViewMarketDetailsCommand, RelativeSource={RelativeSource Self}}"
+                                               CommandParameter="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataControl.CurrentItem, RelativeSource={RelativeSource Self}}" />
+                            <dxb:BarButtonItem Content="View trade details"
+                                               Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.ViewTradeDetailsCommand, RelativeSource={RelativeSource Self}}"
+                                               CommandParameter="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataControl.CurrentItem, RelativeSource={RelativeSource Self}}" />
+                            <dxb:BarItemSeparator />
+                            <dxb:BarButtonItem Content="View order"
+                                               Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.ViewOrderCommand, RelativeSource={RelativeSource Self}}"
+                                               CommandParameter="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataControl.CurrentItem, RelativeSource={RelativeSource Self}}" />
+                            <dxb:BarButtonItem Content="Add to orders"
+                                               Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.AddToOrdersCommand, RelativeSource={RelativeSource Self}}"
+                                               CommandParameter="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataControl.SelectedItems, RelativeSource={RelativeSource Self}}" />
+                        </dxg:TableView.RowCellMenuCustomizations>
+                    </dxg:TableView>
+                </dxg:GridControl.View>
+
+                <dxg:GridControl.TotalSummary>
+                    <dxg:GridSummaryItem SummaryType="Count" Alignment="Right" DisplayFormat="Transactions: {0}" />
+                </dxg:GridControl.TotalSummary>
+
+                <dxg:GridControl.Columns>
+                    <dxg:GridColumn FieldName="InvType.TypeName" Header="Item" Width="300"/>
+                    <dxg:GridColumn FieldName="TransactionDate" Header="Date" EditSettings="{StaticResource DateTimeEdit}" Width="110"/>
+                    <dxg:GridColumn FieldName="TransactionType" Header="Type" Width="50" FixedWidth="True"/>
+                    <dxg:GridColumn FieldName="Price" EditSettings="{StaticResource N2Edit}" Width="80"/>
+                    <dxg:GridColumn FieldName="Quantity" Header="Qty" EditSettings="{StaticResource N0Edit}" Width="50"/>
+                    <dxg:GridColumn FieldName="Total" UnboundExpression="[Price] * [Quantity]" UnboundType="Decimal" EditSettings="{StaticResource N2Edit}" Width="80"/>
+                    <dxg:GridColumn FieldName="TaxLiability" EditSettings="{StaticResource N2Edit}" Width="80"/>
+                    <dxg:GridColumn FieldName="BrokerFee" EditSettings="{StaticResource N2Edit}" Width="80"/>
+                    <dxg:GridColumn AllowEditing="True" FieldName="PerpetualAverageCost" EditSettings="{StaticResource N2Edit}" />
+                    <dxg:GridColumn FieldName="PostTransactionStock" EditSettings="{StaticResource N0Edit}" Width="50"/>
+                    <dxg:GridColumn FieldName="UnaccountedQuantity" EditSettings="{StaticResource N0Edit}" Width="50"/>
+                    <dxg:GridColumn FieldName="ClientName" Header="Client"/>
+                    <dxg:GridColumn FieldName="TransactionFor" Width="100"/>
+                    <dxg:GridColumn FieldName="StationName" Header="Station" Width="200"/>
+                </dxg:GridControl.Columns>
+            </dxg:GridControl>
+
+        </DockPanel>
+    </Grid>
+</UserControl>

@@ -8,6 +8,8 @@
                     xmlns:cal="http://www.caliburnproject.org"
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                    xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+                    xmlns:util="clr-namespace:eZet.EveProfiteer.Util"
                     d:DesignHeight="300" d:DesignWidth="500"
                     mc:Ignorable="d"
                     d:DataContext="{d:DesignInstance Type=viewModels:ShellViewModel, IsDesignTimeCreatable=False}"
@@ -21,76 +23,57 @@
         <dxb:BarManager>
             <dxb:BarManager.Items>
                 <dxb:BarButtonItem x:Name="biFileOpen" Content="Open"
-                                   Glyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Open_16x16.png"
-                                   LargeGlyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Open_32x32.png" />
+                                   Glyph="pack://application:,,,/DevExpress.Images.v14.1;component/Images/Actions/Open_16x16.png" LargeGlyph="pack://application:,,,/DevExpress.Images.v14.1;component/Images/Actions/Open_32x32.png" />
                 <dxb:BarButtonItem x:Name="biFileNew" Content="New"
-                                   Glyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/New_16x16.png"
-                                   LargeGlyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/New_32x32.png" />
+                                   Glyph="pack://application:,,,/DevExpress.Images.v14.1;component/Images/Actions/New_16x16.png" LargeGlyph="pack://application:,,,/DevExpress.Images.v14.1;component/Images/Actions/New_32x32.png" />
                 <dxb:BarButtonItem x:Name="biCut" Content="Cut"
-                                   Glyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Edit/Cut_16x16.png"
-                                   LargeGlyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Edit/Cut_32x32.png" />
+                                   Glyph="pack://application:,,,/DevExpress.Images.v14.1;component/Images/Edit/Cut_16x16.png" LargeGlyph="pack://application:,,,/DevExpress.Images.v14.1;component/Images/Edit/Cut_32x32.png" />
                 <dxb:BarButtonItem x:Name="biCopy" Content="Copy"
-                                   Glyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Edit/Copy_16x16.png"
-                                   LargeGlyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Edit/Copy_32x32.png" />
+                                   Glyph="pack://application:,,,/DevExpress.Images.v14.1;component/Images/Edit/Copy_16x16.png" LargeGlyph="pack://application:,,,/DevExpress.Images.v14.1;component/Images/Edit/Copy_32x32.png" />
                 <dxb:BarButtonItem x:Name="biPaste" Content="Paste"
-                                   Glyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Edit/Paste_16x16.png"
-                                   LargeGlyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Edit/Paste_32x32.png" />
+                                   Glyph="pack://application:,,,/DevExpress.Images.v14.1;component/Images/Edit/Paste_16x16.png" LargeGlyph="pack://application:,,,/DevExpress.Images.v14.1;component/Images/Edit/Paste_32x32.png" />
                 <dxb:BarCheckItem x:Name="biCenter" Content="Paste"
-                                  Glyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Format/AlignCenter_16x16.png"
-                                  GroupIndex="1" />
+                                  Glyph="pack://application:,,,/DevExpress.Images.v14.1;component/Images/Format/AlignCenter_16x16.png" GroupIndex="1" />
                 <dxb:BarCheckItem x:Name="biLeft" Content="Paste"
-                                  Glyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Format/AlignLeft_16x16.png"
-                                  GroupIndex="1" IsChecked="True" />
+                                  Glyph="pack://application:,,,/DevExpress.Images.v14.1;component/Images/Format/AlignLeft_16x16.png" GroupIndex="1" IsChecked="True" />
                 <dxb:BarCheckItem x:Name="biRight" Content="Paste"
-                                  Glyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Format/AlignRight_16x16.png"
-                                  GroupIndex="1" />
-                <dxb:BarButtonItem x:Name="ManageKeys" Content="Manage keys" Command="{Binding ManageKeysCommand}"
-                                   LargeGlyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/setup/properties_32x32.png"
-                                   Glyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Setup/Properties_16x16.png" />
+                                  Glyph="pack://application:,,,/DevExpress.Images.v14.1;component/Images/Format/AlignRight_16x16.png" GroupIndex="1" />
+                <dxb:BarButtonItem x:Name="KeyManager" Content="Manage keys" Command="{Binding OpenKeyManagerCommand}"
+                                   LargeGlyph="pack://application:,,,/DevExpress.Images.v14.1;component/Images/setup/properties_32x32.png" Glyph="pack://application:,,,/DevExpress.Images.v14.1;component/Images/Setup/Properties_16x16.png" />
                 <dxb:BarButtonItem x:Name="UpdateTransactions" Content="Update Transactions"
                                    Command="{Binding UpdateTransactionsCommand}"
-                                   Glyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_16x16.png"
-                                   LargeGlyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_32x32.png" />
+                                   Glyph="pack://application:,,,/DevExpress.Images.v14.1;component/Images/Actions/Refresh_16x16.png" LargeGlyph="pack://application:,,,/DevExpress.Images.v14.1;component/Images/Actions/Refresh_32x32.png" />
                 <dxb:BarButtonItem x:Name="UpdateAssets" Content="Update Assets"
                                    Command="{Binding UpdateAssetsCommand}"
-                                   Glyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_16x16.png"
-                                   LargeGlyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_32x32.png" />
+                                   Glyph="pack://application:,,,/DevExpress.Images.v14.1;component/Images/Actions/Refresh_16x16.png" LargeGlyph="pack://application:,,,/DevExpress.Images.v14.1;component/Images/Actions/Refresh_32x32.png" />
                 <dxb:BarButtonItem x:Name="UpdateJournal" Content="Update Journal"
                                    Command="{Binding UpdateJournalCommand}"
-                                   Glyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_16x16.png"
-                                   LargeGlyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_32x32.png" />
+                                   Glyph="pack://application:,,,/DevExpress.Images.v14.1;component/Images/Actions/Refresh_16x16.png" LargeGlyph="pack://application:,,,/DevExpress.Images.v14.1;component/Images/Actions/Refresh_32x32.png" />
                 <dxb:BarButtonItem x:Name="ReprocessAllTransactions" Content="Reprocess All Transactions"
                                    Command="{Binding ProcessAllTransactionsCommand}"
-                                   Glyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_16x16.png"
-                                   LargeGlyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_32x32.png" />
+                                   Glyph="pack://application:,,,/DevExpress.Images.v14.1;component/Images/Actions/Refresh_16x16.png" LargeGlyph="pack://application:,,,/DevExpress.Images.v14.1;component/Images/Actions/Refresh_32x32.png" />
                 <dxb:BarButtonItem x:Name="ProcessUnaccountedTransactions" Content="Process Unaccounted Transactions"
                                    Command="{Binding ProcessUnaccountedTransactionsCommand}"
-                                   Glyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_16x16.png"
-                                   LargeGlyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_32x32.png" />
+                                   Glyph="pack://application:,,,/DevExpress.Images.v14.1;component/Images/Actions/Refresh_16x16.png" LargeGlyph="pack://application:,,,/DevExpress.Images.v14.1;component/Images/Actions/Refresh_32x32.png" />
                 <dxb:BarButtonItem x:Name="Settings" Content="Settings"
                                    Command="{Binding OpenSettingsCommand}" Hint="Open settings dialog"
-                                   LargeGlyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/setup/properties_32x32.png"
-                                   Glyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Setup/Properties_16x16.png" />
+                                   LargeGlyph="pack://application:,,,/DevExpress.Images.v14.1;component/Images/setup/properties_32x32.png" Glyph="pack://application:,,,/DevExpress.Images.v14.1;component/Images/Setup/Properties_16x16.png" />
                 <dxb:BarButtonItem x:Name="UpdateApi" Content="Update API"
                                    Command="{Binding UpdateApiCommand}"
-                                   Glyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_16x16.png"
-                                   LargeGlyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_32x32.png" />
+                                   Glyph="pack://application:,,,/DevExpress.Images.v14.1;component/Images/Actions/Refresh_16x16.png" LargeGlyph="pack://application:,,,/DevExpress.Images.v14.1;component/Images/Actions/Refresh_32x32.png" />
                 <dxb:BarButtonItem x:Name="UpdateRefTypes" Content="Update Reference Types"
                                    Command="{Binding UpdateRefTypesCommand}"
-                                   Glyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_16x16.png"
-                                   LargeGlyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_32x32.png" />
+                                   Glyph="pack://application:,,,/DevExpress.Images.v14.1;component/Images/Actions/Refresh_16x16.png" LargeGlyph="pack://application:,,,/DevExpress.Images.v14.1;component/Images/Actions/Refresh_32x32.png" />
                 <dxb:BarButtonItem x:Name="UpdateIndustryJobs" Content="Update Industry Jobs"
                                    Command="{Binding UpdateIndustryJobsCommand}"
-                                   Glyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_16x16.png"
-                                   LargeGlyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_32x32.png" />
+                                   Glyph="pack://application:,,,/DevExpress.Images.v14.1;component/Images/Actions/Refresh_16x16.png" LargeGlyph="pack://application:,,,/DevExpress.Images.v14.1;component/Images/Actions/Refresh_32x32.png" />
                 <dxb:BarButtonItem x:Name="UpdateMarketOrders" Content="Update Market Orders"
                                    Command="{Binding UpdateMarketOrdersCommand}"
-                                   Glyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_16x16.png"
-                                   LargeGlyph="pack://application:,,,/DevExpress.Images.v13.2;component/Images/Actions/Refresh_32x32.png" />
+                                   Glyph="pack://application:,,,/DevExpress.Images.v14.1;component/Images/Actions/Refresh_16x16.png" LargeGlyph="pack://application:,,,/DevExpress.Images.v14.1;component/Images/Actions/Refresh_32x32.png" />
                 <dxb:BarSubItem x:Name="biFile" Content="File">
                     <dxb:BarButtonItemLink BarItemName="biFileOpen" />
                     <dxb:BarButtonItemLink BarItemName="biFileNew" />
-                    <dxb:BarButtonItemLink BarItemName="ManageKeys" />
+                    <dxb:BarButtonItemLink BarItemName="KeyManager" />
                     <dxb:BarButtonItemLink BarItemName="UpdateTransactions" />
                 </dxb:BarSubItem>
                 <dxb:BarSubItem x:Name="biEdit" Content="Edit">
@@ -99,11 +82,22 @@
                     <dxb:BarButtonItemLink BarItemName="biPaste" />
                 </dxb:BarSubItem>
                 <dxb:BarStaticItem Name="Status" Content="{Binding StatusMessage}" />
-                <dxb:BarStaticItem Name="CurrentEntity" Content="{Binding CurrentEntityName}" />
+                <dxb:BarStaticItem Name="CurrentEntity" Content="{Binding ActiveEntity.Name, Source={x:Static util:ApplicationHelper.Instance}}" />
+                <dxb:BarEditItem Name="EntitySelector"
+                                 EditValue="{Binding ActiveEntity, Source={x:Static util:ApplicationHelper.Instance}}"
+                                 EditWidth="200"
+                                 >
+                    <dxb:BarEditItem.EditSettings>
+                        <dxe:ComboBoxEditSettings ItemsSource="{Binding Entities}"
+                                                  IsTextEditable="False"
+                                                  DisplayMember="Name"/>
+                    </dxb:BarEditItem.EditSettings>
+                </dxb:BarEditItem>
+                <dxb:BarSplitButtonItem />
+                <dxb:BarSubItem ></dxb:BarSubItem>
+                
             </dxb:BarManager.Items>
-            <dxb:BarManager.Bars>
-                <!--<dxb:Bar IsMainMenu="True"></dxb:Bar>-->
-            </dxb:BarManager.Bars>
+     
             <DockPanel>
                 <dxr:RibbonControl RibbonStyle="Office2010" DockPanel.Dock="Top" IsMinimized="True">
                     <dxr:RibbonControl.ApplicationMenu>
@@ -111,17 +105,21 @@
                             <dxr:ApplicationMenu.ItemLinks>
                                 <dxb:BarItemLink BarItemName="biFile" />
                                 <dxb:BarItemLink BarItemName="biEdit" />
-                                <dxb:BarItemLink BarItemName="ManageKeys" />
+                                <dxb:BarItemLink BarItemName="KeyManager" />
                                 <dxb:BarItemLink BarItemName="UpdateTransactions" />
                             </dxr:ApplicationMenu.ItemLinks>
 
                         </dxr:ApplicationMenu>
                     </dxr:RibbonControl.ApplicationMenu>
+                    <dxr:RibbonControl.PageHeaderItemLinks>
+                        <dxb:BarItemLink BarItemName="EntitySelector"/>
+                    </dxr:RibbonControl.PageHeaderItemLinks>
+                    
                     <dxr:RibbonDefaultPageCategory Caption="Default">
                         <dxr:RibbonPage Caption="Home">
                             <dxr:RibbonPageGroup Caption="Manage" ShowCaptionButton="False"
                                                  IsCaptionButtonEnabled="True">
-                                <dxb:BarItemLink BarItemName="ManageKeys" RibbonStyle="All" />
+                                <dxb:BarItemLink BarItemName="KeyManager" RibbonStyle="All" />
                                 <dxb:BarItemLink BarItemName="Settings" RibbonStyle="All" />
 
                             </dxr:RibbonPageGroup>
@@ -203,12 +201,14 @@
 
                         </dxr:RibbonPage>
                     </dxr:RibbonPageCategory>
+
                 </dxr:RibbonControl>
                 <dxr:RibbonStatusBarControl DockPanel.Dock="Bottom">
                     <dxr:RibbonStatusBarControl.LeftItemLinks>
                         <dxb:BarStaticItemLink BarItemName="Status" />
                     </dxr:RibbonStatusBarControl.LeftItemLinks>
                     <dxr:RibbonStatusBarControl.RightItemLinks>
+                        <!--<dxb:BarItemLink BarItemName="EntitySelector" ></dxb:BarItemLink>-->
                         <dxb:BarStaticItemLink BarItemName="CurrentEntity" />
                     </dxr:RibbonStatusBarControl.RightItemLinks>
                 </dxr:RibbonStatusBarControl>
@@ -216,13 +216,13 @@
                     <!--<TabControl Name="Items" />-->
 
                     <dxdo:DockLayoutManager Name="DockLayoutManager" ItemsSource="{Binding Items}" MDIMergeStyle="Never">
-                        <dxdo:LayoutGroup >
+                        <dxdo:LayoutGroup>
                             <dxdo:LayoutGroup.Resources>
                                 <DataTemplate x:Key="Templator">
-                                    <ContentControl cal:View.Model="{Binding}"/>
+                                    <ContentControl cal:View.Model="{Binding}" />
                                 </DataTemplate>
                             </dxdo:LayoutGroup.Resources>
-                            <dxdo:DocumentGroup ItemContentTemplate="{StaticResource ResourceKey=Templator}" x:Name="ModuleHost" DestroyOnClosingChildren="False" ClosePageButtonShowMode="InAllTabPagesAndTabControlHeader"/>
+                            <dxdo:DocumentGroup ItemContentTemplate="{StaticResource ResourceKey=Templator}" x:Name="ModuleHost" DestroyOnClosingChildren="False" ClosePageButtonShowMode="InAllTabPagesAndTabControlHeader" />
                         </dxdo:LayoutGroup>
                     </dxdo:DockLayoutManager>
                 </Grid>

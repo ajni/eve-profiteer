@@ -12,7 +12,7 @@ namespace eZet.EveProfiteer.Services {
             if (_db == null)
                 _db = IoC.Get<EveProfiteerDbEntities>();
             return
-                _db.JournalEntries.Where(t => t.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id)
+                _db.JournalEntries.Where(t => t.ApiKeyEntity_Id == ApplicationHelper.ActiveEntity.Id)
                     .Include("RefType");
         }
 

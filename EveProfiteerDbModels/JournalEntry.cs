@@ -17,7 +17,6 @@ namespace eZet.EveProfiteer.Models
         public int Id { get; set; }
         public System.DateTime Date { get; set; }
         public long RefId { get; set; }
-        public int RefTypeId { get; set; }
         public string OwnerName { get; set; }
         public long OwnerId { get; set; }
         public string ParticipantName { get; set; }
@@ -32,6 +31,7 @@ namespace eZet.EveProfiteer.Models
         public Nullable<int> ApiKeyEntity_Id { get; set; }
         public int OwnerTypeId { get; set; }
         public int ParticipantTypeId { get; set; }
+        public int RefTypeId { get; set; }
     
         public virtual ApiKeyEntity ApiKeyEntity { get; set; }
         public virtual InvType OwnerType { get; set; }

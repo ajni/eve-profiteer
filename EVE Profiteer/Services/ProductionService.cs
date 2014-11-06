@@ -17,7 +17,7 @@ namespace eZet.EveProfiteer.Services {
         }
 
         public async Task<IEnumerable<ProductionBatchEntry>> GetProductionBatches() {
-            var list = await _db.ProductionBatches.Where(batch => batch.ApiKeyEntityId == ApplicationHelper.ActiveKeyEntity.Id)
+            var list = await _db.ProductionBatches.Where(batch => batch.ApiKeyEntityId == ApplicationHelper.ActiveEntity.Id)
                     .ToListAsync().ConfigureAwait(false);
             return list.Select(batch => new ProductionBatchEntry(batch));
         }

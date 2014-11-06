@@ -1,9 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Caliburn.Micro;
+using eZet.EveData.MarketData;
 using eZet.EveLib.Modules;
 using eZet.EveLib.Modules.Models;
+using MarketHistoryEntry = eZet.EveProfiteer.Models.MarketHistoryEntry;
 using OrderType = eZet.EveLib.Modules.OrderType;
 
 namespace eZet.EveProfiteer.Services {
@@ -40,11 +45,6 @@ namespace eZet.EveProfiteer.Services {
             return await _eveCrest.GetMarketHistoryAsync(region, invType).ConfigureAwait(false);
         }
 
-        public Uri GetScannerLink(ICollection<int> items) {
-            var options = new EveMarketDataOptions {Items = items};
-            return _eveMarketData.GetScannerUri(options);
-        }
-
         public async Task<EmdItemPrices> GetItemPricesAsync(int stationId, IEnumerable<int> types) {
             var prices = new EmdItemPrices();
             prices.Prices = new EveMarketDataRowCollection<EmdItemPrices.ItemPriceEntry>();
@@ -63,23 +63,43 @@ namespace eZet.EveProfiteer.Services {
             return prices;
         }
 
-        public async Task<EmdItemHistory> GetItemHistoryAsync(int region, IEnumerable<int> types, int dayLimit) {
-            var history = new EmdItemHistory();
-            history.History = new EveMarketDataRowCollection<EmdItemHistory.ItemHistoryEntry>();
+        public async Task<IEnumerable<MarketHistoryEntry>> GetItemHistoryAsync(int region, IEnumerable<int> types,
+            int dayLimit) {
+            var source = Properties.Settings.Default.MarketHistorySource;
+            if (source == "Crest") return await getCrestItemHistoryAsync(region, types, dayLimit);
+            else return await getEmdItemHistoryAsync(region, types, dayLimit);
+        }
+
+        private async Task<IEnumerable<MarketHistoryEntry>> getCrestItemHistoryAsync(int region, IEnumerable<int> types, int dayLimit) {
+            var updater = new MarketHistoryUpdater();
+            await updater.update(types, new[] {region});
+            List<EveData.MarketData.MarketHistoryEntry> list;
+            using (var marketDataContext = new EveMarketDataContext()) {
+                var limit = DateTime.UtcNow.AddDays(-dayLimit);
+                 list = await marketDataContext.MarketHistoryEntries.AsNoTracking()
+                    .Where(e => types.Contains(e.TypeId) && e.Date > limit)
+                    .ToListAsync()
+                    .ConfigureAwait(false);
+            }
+           return list.Select(MarketHistoryEntry.Create);
+        }
+
+        private async Task<IEnumerable<MarketHistoryEntry>> getEmdItemHistoryAsync(int region, IEnumerable<int> types, int dayLimit) {
+            var history = new List<EmdItemHistory.ItemHistoryEntry>();
             var options = new EveMarketDataOptions();
             options.AgeSpan = TimeSpan.FromDays(dayLimit);
             options.Regions.Add(region);
             foreach (int typeId in types) {
                 options.Items.Add(typeId);
-                if (options.Items.Count >= 1000) {
+                if (options.Items.Count * dayLimit >= 9900) {
                     var result = (await _eveMarketData.GetItemHistoryAsync(options).ConfigureAwait(false)).Result;
-                    result.History.Apply(item => history.History.Add(item));
+                    history.AddRange(result.History);
                     options.Items.Clear();
                 }
             }
             var finalResult = (await _eveMarketData.GetItemHistoryAsync(options).ConfigureAwait(false)).Result;
-            finalResult.History.Apply(item => history.History.Add(item));
-            return history;
+            history.AddRange(finalResult.History);
+            return history.Select(MarketHistoryEntry.Create);
         }
     }
 }

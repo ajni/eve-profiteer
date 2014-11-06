@@ -1,36 +1,29 @@
-﻿using System.Drawing;
+﻿using System.Threading.Tasks;
 using Caliburn.Micro;
 using DevExpress.Xpf.Docking;
+using eZet.EveProfiteer.Ui.Events;
 
 namespace eZet.EveProfiteer.ViewModels {
     public abstract class ModuleViewModel : Screen, IMVVMDockingProperties {
 
-        public enum ModuleCategory {
-            Basic,
-            Trade,
-            Industry,
+
+        protected override async void OnInitialize() {
+            await Initialize.ConfigureAwait(false);
+        }
+        protected override async void OnActivate() {
+            await Initialize.ConfigureAwait(false);
+        }
+
+        public Task Initialize { get; protected set; }
+
+        protected virtual Task InitializeAsync() {
+            return Task.FromResult(0);
         }
 
         private string _targetName = "ModuleHost";
 
-        protected ModuleViewModel() {
-            Hint = DisplayName;
-            RibbonName = DisplayName;
-            Glyph = DevExpress.Images.ImageResourceCache.Default.GetImage("images/grid/grid_16x16.png");
-            LargeGlyph = DevExpress.Images.ImageResourceCache.Default.GetImage("images/grid/grid_32x32.png");
-        }
+        public bool IsReady { get; set; }
 
-        public string RibbonName { get; protected set; }
-
-        public ModuleCategory Category { get; protected set; }
-
-        public Image Glyph { get; protected set; }
-
-        public Image LargeGlyph { get; protected set; }
-
-        protected bool IsReady { get; set; }
-
-        public string Hint { get; private set; }
 
         public string TargetName {
             get { return _targetName; }

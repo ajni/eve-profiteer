@@ -11,30 +11,30 @@ using OrderType = eZet.EveLib.Modules.OrderType;
 namespace eZet.EveProfiteer.Services {
     public class MarketBrowserService : DbContextService {
         private readonly EveMarketService _eveMarketService;
-        private readonly Repository _repository;
+        private readonly EveProfiteerRepository _eveProfiteerRepository;
 
 
-        public MarketBrowserService(EveMarketService eveMarketService, Repository repository) {
+        public MarketBrowserService(EveMarketService eveMarketService, EveProfiteerRepository eveProfiteerRepository) {
             _eveMarketService = eveMarketService;
-            _repository = repository;
+            _eveProfiteerRepository = eveProfiteerRepository;
         }
 
         public Task<MapRegion> GetDefaultRegion() {
-            return _repository.GetRegionsOrdered().Include("StaStations").SingleOrDefaultAsync(region => region.RegionId == ConfigManager.DefaultRegion);
+            return _eveProfiteerRepository.GetRegionsOrdered().Include("StaStations").SingleOrDefaultAsync(region => region.RegionId == ConfigManager.DefaultRegion);
         }
 
         public Task<List<MapRegion>> GetRegions() {
-            return _repository.GetRegionsOrdered().Include("StaStations").ToListAsync();
+            return _eveProfiteerRepository.GetRegionsOrdered().Include("StaStations").ToListAsync();
         }
 
         public Task<List<InvType>> GetMarketTypes() {
-            return _repository.GetMarketTypes().ToListAsync();
+            return _eveProfiteerRepository.GetMarketTypes().ToListAsync();
         }
 
         public async Task<BindableCollection<MarketTreeNode>> GetMarketTree() {
             var rootList = new BindableCollection<MarketTreeNode>();
-            List<InvType> items = await _repository.GetMarketTypes().ToListAsync().ConfigureAwait(false);
-            List<InvMarketGroup> groupList = await _repository.GetMarketGroups().ToListAsync().ConfigureAwait(false);
+            List<InvType> items = await _eveProfiteerRepository.GetMarketTypes().ToListAsync().ConfigureAwait(false);
+            List<InvMarketGroup> groupList = await _eveProfiteerRepository.GetMarketGroups().ToListAsync().ConfigureAwait(false);
             ILookup<int, MarketTreeNode> groups = groupList.Select(t => new MarketTreeNode(t)).ToLookup(t => t.Id);
             foreach (InvType item in items) {
                 var node = new MarketTreeNode(item);
@@ -71,7 +71,7 @@ namespace eZet.EveProfiteer.Services {
                 }
             }
             CrestMarketHistory history = await _eveMarketService.GetMarketHistoryAsync(region.RegionId, invType.TypeId).ConfigureAwait(false);
-            var marketHistory = history.Entries.Select(entry => ApiEntityMapper.Map(entry, new MarketHistoryEntry())).ToList();
+            var marketHistory = history.Entries.Select(entry => ApiEntityMapper.Map(entry, new MarketHistoryAggregateEntry())).ToList();
 
             var item = new MarketBrowserItem(invType, marketHistory, sellOrders, buyOrders, 7);
             return item;

@@ -1,25 +1,26 @@
-﻿<Window x:Class="eZet.EveProfiteer.Views.Dialogs.EditKeyView"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        mc:Ignorable="d"
-        d:DesignHeight="300" d:DesignWidth="300">
+﻿<dx:DXDialog x:Class="eZet.EveProfiteer.Views.Dialogs.EditKeyView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
+             xmlns:dialogs="clr-namespace:eZet.EveProfiteer.ViewModels.Dialogs"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=dialogs:EditKeyViewModel, IsDesignTimeCreatable=False}"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <DockPanel>
+            <StackPanel DockPanel.Dock="Top" Margin="10">
+                <TextBlock Text="Key ID" />
+                <TextBox Name="ApiKeyId" IsEnabled="False" Text="{Binding Key.ApiKeyId}" />
+                <TextBlock Text="Verification code" Margin="0 20 0 0" />
+                <TextBox Name="VCode" IsEnabled="False" Text="{Binding Key.VCode}" />
+                <Button Style="{StaticResource ButtonStyle}" HorizontalAlignment="Left" Content="Refresh" MaxWidth="60" Name="RefreshButton" />
+            </StackPanel>
 
-    <DockPanel>
-        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="10">
-            <Button Content="Cancel" IsCancel="True" />
-            <Button Name="SaveButton" Content="Done" IsDefault="True" />
-        </StackPanel>
-        <StackPanel DockPanel.Dock="Top" Margin="10">
-            <TextBlock Text="Key ID" />
-            <TextBox Name="ApiKeyId" IsEnabled="False" Text="{Binding Key.ApiKeyId}" />
-            <TextBlock Text="Verification code" Margin="0 20 0 0" />
-            <TextBox Name="VCode" IsEnabled="False" Text="{Binding Key.VCode}" />
-            <Button HorizontalAlignment="Left" Margin="10" Content="Refresh" MaxWidth="60" Name="RefreshButton" />
-        </StackPanel>
-        <ListBox Margin="10" Name="Entities" SelectionMode="Multiple"
-                 ItemTemplate="{DynamicResource ApiKeyEntityListbox}"
-                 ItemContainerStyle="{DynamicResource ApiKeyEntityListBoxItemStyle}" />
-    </DockPanel>
-</Window>
+            <ListBox Margin="10" Name="Entities" SelectionMode="Multiple"
+                     ItemTemplate="{StaticResource ApiKeyEntityListbox}"
+                     ItemContainerStyle="{StaticResource ApiKeyEntityListBoxItemStyle}" />
+        </DockPanel>
+    </Grid>
+</dx:DXDialog>

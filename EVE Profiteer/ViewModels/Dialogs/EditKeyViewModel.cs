@@ -4,31 +4,29 @@ using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
 
 namespace eZet.EveProfiteer.ViewModels.Dialogs {
-    public class EditKeyViewModel : Screen {
-        private readonly EveApiService eveApi;
-        private readonly KeyManagementService keyManagementService;
+    public sealed class EditKeyViewModel : Screen {
+        private readonly EveApiService _eveApi;
 
-        private BindableCollection<ApiKeyEntity> entities;
-        private bool isRefreshed;
-        private ApiKey key;
+        private BindableCollection<ApiKeyEntity> _entities;
+        private ApiKey _key;
 
-        public EditKeyViewModel(KeyManagementService keyManagementService, EveApiService eveApi) {
-            this.keyManagementService = keyManagementService;
-            this.eveApi = eveApi;
+        public EditKeyViewModel(EveApiService eveApi) {
+            _eveApi = eveApi;
+            DisplayName = "Edit Key";
         }
 
         public ApiKey Key {
-            get { return key; }
+            get { return _key; }
             set {
-                key = value;
+                _key = value;
                 NotifyOfPropertyChange(() => Key);
             }
         }
 
         public BindableCollection<ApiKeyEntity> Entities {
-            get { return entities; }
+            get { return _entities; }
             set {
-                entities = value;
+                _entities = value;
                 NotifyOfPropertyChange(() => Entities);
             }
         }
@@ -41,22 +39,7 @@ namespace eZet.EveProfiteer.ViewModels.Dialogs {
 
 
         public void RefreshButton() {
-            Entities = new BindableCollection<ApiKeyEntity>(eveApi.GetApiKeyEntities(Key));
-            isRefreshed = true;
-        }
-
-        // TODO Remove deleted characters
-        public void SaveButton() {
-            if (isRefreshed) {
-                foreach (ApiKeyEntity entity in Entities) {
-                    ApiKeyEntity a = Key.ApiKeyEntities.Single(e => e.Id == entity.Id);
-                    if (a != null) {
-                        a.IsActive = entity.IsActive;
-                    }
-                }
-            }
-            //db.SaveChanges();
-            TryClose(true);
+            Entities = new BindableCollection<ApiKeyEntity>(_eveApi.GetApiKeyEntities(Key));
         }
     }
 }

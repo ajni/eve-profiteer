@@ -32,6 +32,9 @@ namespace eZet.EveProfiteer.Models
         public Nullable<short> MaterialModifier { get; set; }
         public Nullable<short> WasteFactor { get; set; }
         public Nullable<int> MaxProductionLimit { get; set; }
+        public Nullable<int> duplicatingTime { get; set; }
+        public Nullable<int> reverseEngineeringTime { get; set; }
+        public Nullable<int> inventionTime { get; set; }
     
         public virtual InvType BlueprintInvType { get; set; }
         public virtual ICollection<ProductionBatch> ProductionBatches { get; set; }

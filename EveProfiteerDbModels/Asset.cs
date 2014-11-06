@@ -23,6 +23,7 @@ namespace eZet.EveProfiteer.Models
         public int ActualQuantity { get; set; }
         public decimal BrokerFees { get; set; }
         public decimal MaterialCost { get; set; }
+        public int MarketQuantity { get; set; }
     
         public virtual ApiKeyEntity ApiKeyEntity { get; set; }
         public virtual InvType invType { get; set; }

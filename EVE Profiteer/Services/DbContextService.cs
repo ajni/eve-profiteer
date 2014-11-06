@@ -11,19 +11,19 @@ namespace eZet.EveProfiteer.Services {
         }
 
         protected IQueryable<Transaction> MyTransactions(EveProfiteerDbEntities db) {
-            return db.Transactions.Where(t => t.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id);
+            return db.Transactions.Where(t => t.ApiKeyEntity_Id == ApplicationHelper.ActiveEntity.Id);
         }
 
         protected IQueryable<Order> MyOrders(EveProfiteerDbEntities db) {
-            return db.Orders.Where(t => t.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id);
+            return db.Orders.Where(t => t.ApiKeyEntity_Id == ApplicationHelper.ActiveEntity.Id);
         }
 
         protected IQueryable<Asset> MyAssets(EveProfiteerDbEntities db) {
-            return db.Assets.Where(t => t.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id);
+            return db.Assets.Where(t => t.ApiKeyEntity_Id == ApplicationHelper.ActiveEntity.Id);
         }
 
         protected IQueryable<MarketOrder> MyMarketOrders(EveProfiteerDbEntities db) {
-            return db.MarketOrders.Where(t => t.ApiKeyEntityId == ApplicationHelper.ActiveKeyEntity.Id);
+            return db.MarketOrders.Where(t => t.ApiKeyEntityId == ApplicationHelper.ActiveEntity.Id);
         }
 
         protected IQueryable<InvType> GetMarketTypes(EveProfiteerDbEntities db) {

@@ -9,6 +9,7 @@
     [UnaccountedQuantity] INT NOT NULL DEFAULT 0, 
     [LatestAverageCost] DECIMAL(18, 5) NOT NULL DEFAULT 0, 
     [BrokerFees] DECIMAL(18, 5) NOT NULL DEFAULT 0, 
+    [MarketQuantity] INT NOT NULL DEFAULT 0, 
     CONSTRAINT [FK_dbo.Assets_dbo.ToInvTypes] FOREIGN KEY ([InvTypes_TypeId]) REFERENCES [invTypes]([typeID]),
     CONSTRAINT [FK_dbo.Assets_dbo.ToApiKeyEntities] FOREIGN KEY ([ApiKeyEntity_Id]) REFERENCES [ApiKeyEntities]([Id]),
 

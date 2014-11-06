@@ -1,10 +1,11 @@
 ﻿using System.Windows;
-using DevExpress.Xpf.Mvvm.UI;
+using DevExpress.Mvvm.UI;
 
 namespace eZet.EveProfiteer.Ui.Converters {
     public class RoutedPropertyChangedEventArgsConverter :
         EventArgsConverterBase<RoutedPropertyChangedEventArgs<object>> {
-        protected override object Convert(RoutedPropertyChangedEventArgs<object> args) {
+
+        protected override object Convert(object sender, RoutedPropertyChangedEventArgs<object> args) {
             return args.NewValue;
         }
     }

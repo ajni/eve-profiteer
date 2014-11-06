@@ -14,7 +14,7 @@
     </RootPath>
     <RootNamespace>EveProfiteerDb</RootNamespace>
     <AssemblyName>EveProfiteerDb</AssemblyName>
-    <ModelCollation>1033,CI</ModelCollation>
+    <ModelCollation>1033,CS</ModelCollation>
     <DefaultFileStructure>BySchemaAndSchemaType</DefaultFileStructure>
     <DeployToDatabase>True</DeployToDatabase>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
@@ -23,8 +23,9 @@
     <SqlServerVerification>False</SqlServerVerification>
     <IncludeCompositeObjects>True</IncludeCompositeObjects>
     <TargetDatabaseSet>True</TargetDatabaseSet>
-    <DefaultCollation>SQL_Latin1_General_CP1_CI_AS</DefaultCollation>
+    <DefaultCollation>Latin1_General_BIN</DefaultCollation>
     <DefaultFilegroup>PRIMARY</DefaultFilegroup>
+    <GenerateCreateScript>False</GenerateCreateScript>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\Release\</OutputPath>
@@ -83,11 +84,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="EveProfiteerDb.publish.xml" />
-    <None Include="EveProfiteerDb_1.publish.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ArtifactReference Include="..\..\..\..\SQL Server Management Studio\DAC Packages\Crius_1.9_100804_db.dacpac">
-      <HintPath>..\..\..\..\SQL Server Management Studio\DAC Packages\Crius_1.9_100804_db.dacpac</HintPath>
+    <ArtifactReference Include="Oceanus_1.0_105658_db_yaml.dacpac">
+      <HintPath>Oceanus_1.0_105658_db_yaml.dacpac</HintPath>
       <SuppressMissingDependenciesErrors>False</SuppressMissingDependenciesErrors>
     </ArtifactReference>
   </ItemGroup>

@@ -12,7 +12,7 @@ using Microsoft.Practices.EnterpriseLibrary.Validation;
 
 namespace eZet.EveProfiteer.ViewModels.Dialogs {
     public class NewProductionBatchViewModel : Screen, IDataErrorInfo {
-        private readonly Services.Repository _repository;
+        private readonly Services.EveProfiteerRepository _eveProfiteerRepository;
         private InvBlueprintType _blueprint;
         private ICollection<BatchMaterialEntry> _materials;
         private int _units;
@@ -20,11 +20,11 @@ namespace eZet.EveProfiteer.ViewModels.Dialogs {
         private int _blueprintMe;
         private readonly DataErrorInfoHelper _dataErrorInfoHelper;
 
-        public NewProductionBatchViewModel(Services.Repository repository) {
-            _repository = repository;
+        public NewProductionBatchViewModel(Services.EveProfiteerRepository eveProfiteerRepository) {
+            _eveProfiteerRepository = eveProfiteerRepository;
             DisplayName = "New production batch";
             ProductionDate = DateTime.UtcNow;
-            Blueprints = _repository.GetBlueprints().AsNoTracking().ToList();
+            Blueprints = _eveProfiteerRepository.GetBlueprints().AsNoTracking().ToList();
             PropertyChanged += OnPropertyChanged;
             Blueprint = Blueprints.First();
             _dataErrorInfoHelper = new DataErrorInfoHelper(this);
@@ -108,7 +108,7 @@ namespace eZet.EveProfiteer.ViewModels.Dialogs {
         public void updateMaterials() {
             var list = new List<BatchMaterialEntry>();
             foreach (var material in Blueprint.ProductInvType.InvTypeMaterials) {
-                var asset = material.MaterialType.Assets.SingleOrDefault(f => f.ApiKeyEntity_Id == ApplicationHelper.ActiveKeyEntity.Id);
+                var asset = material.MaterialType.Assets.SingleOrDefault(f => f.ApiKeyEntity_Id == ApplicationHelper.ActiveEntity.Id);
                 if (asset == null) asset = new Asset();
                 list.Add(new BatchMaterialEntry(material, asset));
             }

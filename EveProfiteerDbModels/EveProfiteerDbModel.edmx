@@ -17,7 +17,8 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EntityId" Type="int" Nullable="false" />
           <Property Name="Name" Type="nvarchar(max)" />
           <Property Name="Type" Type="nvarchar(max)" />
           <Property Name="ImagePath" Type="nvarchar(max)" />
@@ -45,6 +46,7 @@
           <Property Name="UnaccountedQuantity" Type="int" Nullable="false" />
           <Property Name="LatestAverageCost" Type="decimal" Precision="18" Scale="5" Nullable="false" />
           <Property Name="BrokerFees" Type="decimal" Precision="18" Scale="5" Nullable="false" />
+          <Property Name="MarketQuantity" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="BatchMaterials">
           <Key>
@@ -78,6 +80,9 @@
           <Property Name="researchMaterialTime" Type="int" />
           <Property Name="researchCopyTime" Type="int" />
           <Property Name="researchTechTime" Type="int" />
+          <Property Name="duplicatingTime" Type="int" />
+          <Property Name="reverseEngineeringTime" Type="int" />
+          <Property Name="inventionTime" Type="int" />
           <Property Name="productivityModifier" Type="int" />
           <Property Name="materialModifier" Type="smallint" />
           <Property Name="wasteFactor" Type="smallint" />
@@ -145,7 +150,7 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Date" Type="datetime" Nullable="false" />
           <Property Name="RefId" Type="bigint" Nullable="false" />
-          <Property Name="refTypeId" Type="int" Nullable="false" />
+          <Property Name="RefTypeId" Type="int" Nullable="false" />
           <Property Name="OwnerName" Type="nvarchar(max)" />
           <Property Name="OwnerId" Type="bigint" Nullable="false" />
           <Property Name="ParticipantName" Type="nvarchar(max)" />
@@ -161,6 +166,8 @@
           <Property Name="OwnerTypeId" Type="int" Nullable="false" />
           <Property Name="ParticipantTypeId" Type="int" Nullable="false" />
         </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'EveProfiteerDb.dbo.mapRegions' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="mapRegions">
           <Key>
             <PropertyRef Name="regionID" />
@@ -505,13 +512,29 @@
           <EntitySet Name="invTypeMaterials" EntityType="Self.invTypeMaterials" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="invTypes" EntityType="Self.invTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="JournalEntries" EntityType="Self.JournalEntries" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="mapRegions" EntityType="Self.mapRegions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MarketOrders" EntityType="Self.MarketOrders" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Orders" EntityType="Self.Orders" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductionBatches" EntityType="Self.ProductionBatches" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RefTypes" EntityType="Self.RefTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="staStations" EntityType="Self.staStations" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Transactions" EntityType="Self.Transactions" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="mapRegions" EntityType="Self.mapRegions" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [mapRegions].[regionID] AS [regionID], 
+    [mapRegions].[regionName] AS [regionName], 
+    [mapRegions].[x] AS [x], 
+    [mapRegions].[y] AS [y], 
+    [mapRegions].[z] AS [z], 
+    [mapRegions].[xMin] AS [xMin], 
+    [mapRegions].[xMax] AS [xMax], 
+    [mapRegions].[yMin] AS [yMin], 
+    [mapRegions].[yMax] AS [yMax], 
+    [mapRegions].[zMin] AS [zMin], 
+    [mapRegions].[zMax] AS [zMax], 
+    [mapRegions].[factionID] AS [factionID], 
+    [mapRegions].[radius] AS [radius]
+    FROM [dbo].[mapRegions] AS [mapRegions]</DefiningQuery>
+          </EntitySet>
           <AssociationSet Name="FK_BatchMaterials_ToInvTypes" Association="Self.FK_BatchMaterials_ToInvTypes">
             <End Role="invTypes" EntitySet="invTypes" />
             <End Role="BatchMaterials" EntitySet="BatchMaterials" />
@@ -730,6 +753,7 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EntityId" Type="Int32" Nullable="false" />
           <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Type" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ImagePath" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
@@ -758,8 +782,7 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="RefId" Type="Int64" Nullable="false" />
-          <Property Name="RefTypeId" Type="Int32" Nullable="false" />
+          <Property Name="RefId" Nullable="false" Type="Int64" />
           <Property Name="OwnerName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="OwnerId" Type="Int64" Nullable="false" />
           <Property Name="ParticipantName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
@@ -778,6 +801,7 @@
           <NavigationProperty Name="OwnerType" Relationship="EveProfiteerDbModel.JournalEntry_OwnerTypeId_ToInvType" FromRole="JournalEntry" ToRole="InvType" />
           <NavigationProperty Name="ParticipantType" Relationship="EveProfiteerDbModel.JournalEntry_ParticipantTypeId_ToInvType" FromRole="JournalEntry" ToRole="InvType" />
           <NavigationProperty Name="RefType" Relationship="EveProfiteerDbModel.RefTypeJournalEntry" FromRole="JournalEntry" ToRole="RefType" />
+          <Property Name="RefTypeId" Type="Int32" Nullable="false" />
         </EntityType>
         <Association Name="FK_dbo_JournalEntries_dbo_ApiKeyEntities_ApiKeyEntity_Id">
           <End Type="EveProfiteerDbModel.ApiKeyEntity" Role="ApiKeyEntity" Multiplicity="0..1" />
@@ -1086,6 +1110,7 @@
           <Property Name="ActualQuantity" Type="Int32" Nullable="false" />
           <Property Name="BrokerFees" Type="Decimal" Nullable="false" Precision="18" Scale="5" />
           <Property Name="MaterialCost" Type="Decimal" Nullable="false" Precision="18" Scale="5" />
+          <Property Name="MarketQuantity" Type="Int32" Nullable="false" />
         </EntityType>
         <Association Name="FK_dbo_Assets_dbo_ToApiKeyEntities">
           <End Type="EveProfiteerDbModel.ApiKeyEntity" Role="ApiKeyEntity" Multiplicity="1" />
@@ -1143,6 +1168,9 @@
           <NavigationProperty Name="BlueprintInvType" Relationship="EveProfiteerDbModel.InvTypeInvBlueprintType" FromRole="InvBlueprintType" ToRole="InvType" />
           <NavigationProperty Name="ProductionBatches" Relationship="EveProfiteerDbModel.FK_ProductionBatches_ToInvBlueprintTypes" FromRole="InvBlueprintType" ToRole="ProductionBatch" />
           <NavigationProperty Name="ProductInvType" Relationship="EveProfiteerDbModel.InvTypeInvBlueprintType1" FromRole="InvBlueprintType" ToRole="InvType" />
+          <Property Name="duplicatingTime" Type="Int32" />
+          <Property Name="reverseEngineeringTime" Type="Int32" />
+          <Property Name="inventionTime" Type="Int32" />
         </EntityType>
         <EntityType Name="InvTypeMaterials">
           <Key>
@@ -1451,6 +1479,7 @@
           <EntitySetMapping Name="ApiKeyEntities">
             <EntityTypeMapping TypeName="EveProfiteerDbModel.ApiKeyEntity">
               <MappingFragment StoreEntitySet="ApiKeyEntities">
+                <ScalarProperty Name="EntityId" ColumnName="EntityId" />
                 <ScalarProperty Name="IsActive" ColumnName="IsActive" />
                 <ScalarProperty Name="ImagePath" ColumnName="ImagePath" />
                 <ScalarProperty Name="Type" ColumnName="Type" />
@@ -1472,6 +1501,7 @@
           <EntitySetMapping Name="JournalEntries">
             <EntityTypeMapping TypeName="EveProfiteerDbModel.JournalEntry">
               <MappingFragment StoreEntitySet="JournalEntries">
+                <ScalarProperty Name="RefTypeId" ColumnName="RefTypeId" />
                 <ScalarProperty Name="ParticipantTypeId" ColumnName="ParticipantTypeId" />
                 <ScalarProperty Name="OwnerTypeId" ColumnName="OwnerTypeId" />
                 <ScalarProperty Name="ApiKeyEntity_Id" ColumnName="ApiKeyEntity_Id" />
@@ -1486,7 +1516,6 @@
                 <ScalarProperty Name="ParticipantName" ColumnName="ParticipantName" />
                 <ScalarProperty Name="OwnerId" ColumnName="OwnerId" />
                 <ScalarProperty Name="OwnerName" ColumnName="OwnerName" />
-                <ScalarProperty Name="RefTypeId" ColumnName="refTypeId" />
                 <ScalarProperty Name="RefId" ColumnName="RefId" />
                 <ScalarProperty Name="Date" ColumnName="Date" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
@@ -1629,6 +1658,7 @@
           <EntitySetMapping Name="Assets">
             <EntityTypeMapping TypeName="EveProfiteerDbModel.Asset">
               <MappingFragment StoreEntitySet="Assets">
+                <ScalarProperty Name="MarketQuantity" ColumnName="MarketQuantity" />
                 <ScalarProperty Name="MaterialCost" ColumnName="MaterialCost" />
                 <ScalarProperty Name="BrokerFees" ColumnName="BrokerFees" />
                 <ScalarProperty Name="ActualQuantity" ColumnName="ActualQuantity" />
@@ -1655,6 +1685,9 @@
           <EntitySetMapping Name="InvBlueprintTypes">
             <EntityTypeMapping TypeName="EveProfiteerDbModel.InvBlueprintType">
               <MappingFragment StoreEntitySet="invBlueprintTypes">
+                <ScalarProperty Name="inventionTime" ColumnName="inventionTime" />
+                <ScalarProperty Name="reverseEngineeringTime" ColumnName="reverseEngineeringTime" />
+                <ScalarProperty Name="duplicatingTime" ColumnName="duplicatingTime" />
                 <ScalarProperty Name="MaxProductionLimit" ColumnName="maxProductionLimit" />
                 <ScalarProperty Name="WasteFactor" ColumnName="wasteFactor" />
                 <ScalarProperty Name="MaterialModifier" ColumnName="materialModifier" />
@@ -1742,8 +1775,8 @@
               <MappingFragment StoreEntitySet="mapRegions" >
                 <ScalarProperty Name="Radius" ColumnName="radius" />
                 <ScalarProperty Name="FactionId" ColumnName="factionID" />
-                <ScalarProperty Name="ZMin" ColumnName="zMin" />
                 <ScalarProperty Name="ZMax" ColumnName="zMax" />
+                <ScalarProperty Name="ZMin" ColumnName="zMin" />
                 <ScalarProperty Name="YMax" ColumnName="yMax" />
                 <ScalarProperty Name="YMin" ColumnName="yMin" />
                 <ScalarProperty Name="XMax" ColumnName="xMax" />

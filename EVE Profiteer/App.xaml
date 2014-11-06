@@ -4,6 +4,8 @@
              xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
              xmlns:p="clr-namespace:eZet.EveProfiteer.Properties"
              xmlns:models="clr-namespace:eZet.EveProfiteer.Models"
+             xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/charts"
+             xmlns:models1="clr-namespace:eZet.EveProfiteer.Models;assembly=EveProfiteerDbModels"
              x:Class="eZet.EveProfiteer.App"
              >
     <Application.Resources>
@@ -14,36 +16,60 @@
                 </ResourceDictionary>
 
             </ResourceDictionary.MergedDictionaries>
-            <DataTemplate x:Key="ApiKeyEntityListbox">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="60" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Border Margin="5" BorderBrush="Black" BorderThickness="1">
-                        <!--<Image Source="{Binding ImagePath}" Stretch="Fill" Width="50" Height="50" />-->
-                    </Border>
-                    <StackPanel Grid.Column="1" Margin="5">
-                        <StackPanel Orientation="Horizontal" TextBlock.FontWeight="Bold">
-                            <TextBlock Text="{Binding Name, FallbackValue=Name}" />
-                        </StackPanel>
-                        <TextBlock Text="{Binding EntityId, FallbackValue=Id}" />
-                    </StackPanel>
-                </Grid>
-            </DataTemplate>
-            <Style x:Key="ApiKeyEntityListBoxItemStyle" TargetType="{x:Type ListBoxItem}">
-                <Setter Property="IsSelected" Value="{Binding IsActive}" />
+            <Style x:Key="ButtonStyle" TargetType="Button">
+                <Setter Property="Padding" Value="10 2"></Setter>
+                <Setter Property="Margin" Value="10"></Setter>
             </Style>
-            <dxe:TextEditSettings x:Key="N0Edit" DisplayFormat="N0"></dxe:TextEditSettings>
-            <dxe:TextEditSettings x:Key="N2Edit" DisplayFormat="N2"></dxe:TextEditSettings>
-            <dxe:TextEditSettings x:Key="P2Edit" DisplayFormat="P2"></dxe:TextEditSettings>
-            <dxe:DateEditSettings x:Key="DateTimeEdit" DisplayFormat="{Binding Source={x:Static p:Settings.Default}, Path=DateTimeFormat, Mode=TwoWay}"></dxe:DateEditSettings>
 
+
+                <DataTemplate x:Key="ApiKeyEntityListbox" DataType="models1:ApiKeyEntity">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="60" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Border Margin="5" BorderBrush="Black" BorderThickness="1">
+                            <!--<Image Source="{Binding ImagePath}" Stretch="Fill" Width="50" Height="50" />-->
+                        </Border>
+                        <StackPanel Grid.Column="1" Margin="5">
+                            <StackPanel Orientation="Horizontal" TextBlock.FontWeight="Bold">
+                                <TextBlock Text="{Binding Name, FallbackValue=Name}" />
+                            </StackPanel>
+                            <TextBlock Text="{Binding EntityId, FallbackValue=Id}" />
+                        </StackPanel>
+                    </Grid>
+                </DataTemplate>
+
+                <Style x:Key="ApiKeyEntityListBoxItemStyle" TargetType="{x:Type ListBoxItem}">
+                    <Setter Property="IsSelected" Value="{Binding IsActive}" />
+                </Style>
+
+
+            <dxe:TextEditSettings x:Key="N0Edit" DisplayFormat="N0" MaskType="Numeric" Mask="N0"></dxe:TextEditSettings>
+            <dxe:TextEditSettings x:Key="N2Edit" DisplayFormat="N2" MaskType="Numeric" Mask="N2"></dxe:TextEditSettings>
+            <dxe:TextEditSettings x:Key="P2Edit" DisplayFormat="P2"  MaskType="Numeric" Mask="p2"></dxe:TextEditSettings>
+            <dxe:DateEditSettings x:Key="DateTimeEdit" DisplayFormat="{Binding Source={x:Static p:Settings.Default}, Path=DateTimeFormat, Mode=TwoWay}"></dxe:DateEditSettings>
             <dxe:DateEditSettings x:Key="DateEdit" DisplayFormat="{Binding Source={x:Static p:Settings.Default}, Path=DateFormat, Mode=TwoWay}"></dxe:DateEditSettings>
+
             <HierarchicalDataTemplate x:Key="TreeNodeTemplate" DataType="{x:Type models:MarketTreeNode}"
 					ItemsSource="{Binding Children}">
                 <ContentPresenter Content="{Binding Name}"/>
             </HierarchicalDataTemplate>
+            
+            <dxc:CrosshairOptions x:Key="CrossHairOptions" 
+                                  ShowArgumentLabels="True" 
+                                  ArgumentLineBrush="Black" 
+                                  ShowGroupHeaders="False" 
+                                  ShowOnlyInFocusedPane="False" 
+                                  ShowArgumentLine="True">
+            </dxc:CrosshairOptions>
+            <Style x:Key="ChartLegend" TargetType="dxc:Legend">
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="HorizontalPosition" Value="Center"/>
+                <Setter Property="Orientation" Value="Horizontal"/>
+                <Setter Property="VerticalPosition" Value="BottomOutside"/>
+                <Setter Property="UseCheckBoxes" Value="True"></Setter>
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

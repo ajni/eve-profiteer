@@ -1,12 +1,13 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Windows.Input;
 using Caliburn.Micro;
-using DevExpress.Xpf.Mvvm;
+using DevExpress.Mvvm;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.ViewModels.SettingsPanels;
 
 namespace eZet.EveProfiteer.ViewModels.Dialogs {
-    public class SettingsViewModel : Screen {
+    public sealed class SettingsViewModel : Screen {
         private SettingsPanelBase _content;
 
         public SettingsViewModel() {
@@ -18,9 +19,10 @@ namespace eZet.EveProfiteer.ViewModels.Dialogs {
             //SettingsTree.Add(new SettingsTreeNode { Name = "General" });
             SelectItemCommand = new DelegateCommand<SettingsTreeNode>(ExecuteSelectCommand);
             Content = SettingsTree.First().ViewModel;
+
         }
 
-        private void ExecuteSelectCommand(SettingsTreeNode node) {
+   private void ExecuteSelectCommand(SettingsTreeNode node) {
             Content = node.ViewModel;
         }
 

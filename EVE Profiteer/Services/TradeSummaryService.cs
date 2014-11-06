@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 using eZet.EveProfiteer.Models;
 namespace eZet.EveProfiteer.Services {
     public class TradeSummaryService {
-        private readonly Repository _repository;
+        private readonly EveProfiteerRepository _eveProfiteerRepository;
 
-        public TradeSummaryService(Repository repository) {
-            _repository = repository;
+        public TradeSummaryService(EveProfiteerRepository eveProfiteerRepository) {
+            _eveProfiteerRepository = eveProfiteerRepository;
         }
 
         public Task<List<Transaction>> GetTransactions(DateTime start, DateTime end) {
-            return _repository.MyTransactions().Where(t => t.TransactionDate >= start.Date && t.TransactionDate <= end.Date)
+            return _eveProfiteerRepository.MyTransactions().Where(t => t.TransactionDate >= start.Date && t.TransactionDate <= end.Date)
                          .ToListAsync();
         }
     }

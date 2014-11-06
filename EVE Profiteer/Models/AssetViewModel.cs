@@ -9,7 +9,7 @@ using eZet.EveProfiteer.Util;
 namespace eZet.EveProfiteer.Models {
     public class AssetViewModel : INotifyPropertyChanged {
         private readonly Asset _asset;
-        private IEnumerable<EmdItemHistory.ItemHistoryEntry> _itemHistoryEntries;
+        private IEnumerable<MarketHistoryEntry> _itemHistoryEntries;
         private decimal _currentSellPrice;
         private decimal _currentBuyPrice;
         private decimal _avgVolume;
@@ -20,7 +20,7 @@ namespace eZet.EveProfiteer.Models {
         }
 
 
-        public void Update(IEnumerable<EmdItemHistory.ItemHistoryEntry> itemHistoryEntries, decimal sellPrice,
+        public void Update(IEnumerable<MarketHistoryEntry> itemHistoryEntries, decimal sellPrice,
             decimal buyPrice) {
             _itemHistoryEntries = itemHistoryEntries.ToList();
             CurrentSellPrice = sellPrice;
@@ -44,7 +44,7 @@ namespace eZet.EveProfiteer.Models {
 
         public int UnaccountedQuantity { get { return CalculatedQuantity - InventoryQuantity - MarketQuantity; } }
 
-        public int MarketQuantity { get { return _asset.invType.MarketOrders.Where(order => order.ApiKeyEntityId == ApplicationHelper.ActiveKeyEntity.Id && order.Bid == false && order.OrderState == OrderState.Open).Sum(order => order.VolumeRemaining); } }
+        public int MarketQuantity { get { return _asset.invType.MarketOrders.Where(order => order.ApiKeyEntityId == ApplicationHelper.ActiveEntity.Id && order.Bid == false && order.OrderState == OrderState.Open).Sum(order => order.VolumeRemaining); } }
 
         public int UnaccountedTransactionQuantity { get { return _asset.UnaccountedQuantity; } }
 

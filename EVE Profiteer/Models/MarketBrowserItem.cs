@@ -4,7 +4,7 @@ using MoreLinq;
 
 namespace eZet.EveProfiteer.Models {
     public class MarketBrowserItem {
-        public MarketBrowserItem(InvType invType, IEnumerable<MarketHistoryEntry> marketHistory,
+        public MarketBrowserItem(InvType invType, IEnumerable<MarketHistoryAggregateEntry> marketHistory,
             IEnumerable<MarketBrowserOrder> sellOrders, IEnumerable<MarketBrowserOrder> buyOrders, int donchianLength) {
             InvType = invType;
             MarketHistory = marketHistory.OrderBy(entry => entry.Date).ToList();
@@ -14,12 +14,20 @@ namespace eZet.EveProfiteer.Models {
             initialize();
         }
 
+        public string CurrentBuyPriceString {
+            get { return "Buy: " + CurrentBuyPrice.ToString("N2"); }
+        }
+
+        public string CurrentSellPriceString {
+            get { return "Sell: " + CurrentSellPrice.ToString("N2"); }
+        }
+
         public int DonchianLength { get; set; }
 
         public double CommodityChannelIndexFactor = 0.015;
 
         public InvType InvType { get; set; }
-        public ICollection<MarketHistoryEntry> MarketHistory { get; set; }
+        public ICollection<MarketHistoryAggregateEntry> MarketHistory { get; set; }
 
         public ICollection<MarketBrowserOrder> SellOrders { get; private set; }
 
@@ -41,7 +49,7 @@ namespace eZet.EveProfiteer.Models {
             if (!MarketHistory.Any()) {
                 return;
             }
-            foreach (MarketHistoryEntry entry in MarketHistory) {
+            foreach (MarketHistoryAggregateEntry entry in MarketHistory) {
                 high.Add(entry.HighPrice);
                 low.Add(entry.LowPrice);
                 if (high.Count > DonchianLength)
@@ -56,9 +64,5 @@ namespace eZet.EveProfiteer.Models {
             }
         }
 
-        private void calcCCI(MarketHistoryEntry entry) {
-
-
-        }
     }
 }

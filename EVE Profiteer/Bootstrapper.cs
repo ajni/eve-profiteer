@@ -9,8 +9,8 @@ using eZet.EveProfiteer.Repository;
 using eZet.EveProfiteer.Services;
 using eZet.EveProfiteer.ViewModels;
 using eZet.EveProfiteer.ViewModels.Dialogs;
+using eZet.EveProfiteer.ViewModels.Modules;
 using eZet.EveProfiteer.ViewModels.SettingsPanels;
-using eZet.EveProfiteer.ViewModels.Tabs;
 
 namespace eZet.EveProfiteer {
     public class Bootstrapper : BootstrapperBase {
@@ -31,14 +31,11 @@ namespace eZet.EveProfiteer {
 
             // Data Services
             _container.PerRequest<EveProfiteerDbEntities>();
-            _container.Singleton<Services.Repository>();
-            //_container.PerRequest<EveProfiteerDbEntities>();
+            _container.PerRequest<EveProfiteerRepository>();
 
             // Repositories
             _container.PerRequest<IRepository<Transaction>, DbContextRepository<Transaction, EveProfiteerDbEntities>>();
             _container.PerRequest<IRepository<JournalEntry>, DbContextRepository<JournalEntry, EveProfiteerDbEntities>>();
-            _container.PerRequest<IRepository<ApiKey>, DbContextRepository<ApiKey, EveProfiteerDbEntities>>();
-            _container.PerRequest<IRepository<ApiKeyEntity>, DbContextRepository<ApiKeyEntity, EveProfiteerDbEntities>>();
             _container.PerRequest<IRepository<Order>, DbContextRepository<Order, EveProfiteerDbEntities>>();
 
 
@@ -49,7 +46,7 @@ namespace eZet.EveProfiteer {
             _container.PerRequest<OrderXmlService>();
             _container.PerRequest<RepositoryService<ApiKey>>();
             _container.PerRequest<RepositoryService<ApiKeyEntity>>();
-            _container.PerRequest<KeyManagementService>();
+            _container.PerRequest<KeyManagerService>();
             _container.PerRequest<AssetService>();
             _container.PerRequest<ProductionService>();
             _container.PerRequest<ShellService>();
@@ -67,7 +64,7 @@ namespace eZet.EveProfiteer {
 
             // View Models
             _container.PerRequest<IShell, ShellViewModel>();
-            _container.PerRequest<ManageKeysViewModel>();
+            _container.PerRequest<KeyManagerViewModel>();
             _container.PerRequest<NewProductionBatchViewModel>();
             _container.PerRequest<AddKeyViewModel>();
             _container.PerRequest<EditKeyViewModel>();

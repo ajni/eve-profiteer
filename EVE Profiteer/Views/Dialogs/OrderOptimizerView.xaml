@@ -32,7 +32,7 @@
                     <dxe:TextEdit EditValue="{Binding MinProfitMargin}" MaskType="Numeric" Mask="P1" MaskUseAsDisplayFormat="True"/>
                 </dxlc:LayoutItem>
                 <dxlc:LayoutItem IsEnabled="{Binding EditPriceLimits}" Label="Max. Profit Margin">
-                    <dxe:TextEdit EditValue="{Binding MaxProfitMargin}" MaskType="Numeric" Mask="P1" MaskUseAsDisplayFormat="True"/>
+                    <dxe:TextEdit EditValue="{Binding MaxAboveAverage}" MaskType="Numeric" Mask="P1" MaskUseAsDisplayFormat="True"/>
                 </dxlc:LayoutItem>
             </dxlc:LayoutGroup>
 

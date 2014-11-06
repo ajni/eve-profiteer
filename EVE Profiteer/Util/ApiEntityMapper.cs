@@ -9,7 +9,7 @@ namespace eZet.EveProfiteer.Util {
     public static class ApiEntityMapper {
 
         public static ApiKeyEntity Map(Character source, ApiKeyEntity target) {
-            target.Id = (int)source.CharacterId;
+            target.EntityId = (int)source.CharacterId;
             target.Name = source.CharacterName;
             target.Type = "Character";
             return target;
@@ -90,7 +90,7 @@ namespace eZet.EveProfiteer.Util {
             return target;
         }
 
-        public static MarketHistoryEntry Map(CrestMarketHistory.MarketHistoryEntry source, MarketHistoryEntry target) {
+        public static MarketHistoryAggregateEntry Map(CrestMarketHistory.MarketHistoryEntry source, MarketHistoryAggregateEntry target) {
             target.Volume = source.Volume;
             target.OrderCount = source.OrderCount;
             target.LowPrice = source.LowPrice;

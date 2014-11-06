@@ -12,7 +12,7 @@ namespace eZet.EveProfiteer.ViewModels.Dialogs {
             AvgPriceBuyOffset = Properties.Settings.Default.BuyPriceOffset;
             AvgPriceSellOffset = Properties.Settings.Default.SellPriceOffset;
             MinProfitMargin = Properties.Settings.Default.MinProfitMargin;
-            MaxProfitMargin = Properties.Settings.Default.MaxProfitMargin;
+            MaxAboveAverage = Properties.Settings.Default.MaxAboveAvg;
             MaxBuyOrderTotal = Properties.Settings.Default.MaxBuyOrderTotal;
             MinSellOrderTotal = Properties.Settings.Default.MinSellOrderTotal;
             MaxSellOrderTotal = Properties.Settings.Default.MaxSellOrderTotal;
@@ -30,7 +30,7 @@ namespace eZet.EveProfiteer.ViewModels.Dialogs {
         public double MinProfitMargin { get; set; }
 
         [Range(0, double.MaxValue)]
-        public double MaxProfitMargin { get; set; }
+        public double MaxAboveAverage { get; set; }
 
         [Range(0, double.MaxValue)]
         public decimal MaxBuyOrderTotal { get; set; }
@@ -78,7 +78,7 @@ namespace eZet.EveProfiteer.ViewModels.Dialogs {
                 Properties.Settings.Default.BuyPriceOffset = AvgPriceBuyOffset;
                 Properties.Settings.Default.SellPriceOffset = AvgPriceSellOffset;
                 Properties.Settings.Default.MinProfitMargin = MinProfitMargin;
-                Properties.Settings.Default.MaxProfitMargin = MaxProfitMargin;
+                Properties.Settings.Default.MaxAboveAvg = MaxAboveAverage;
                 Properties.Settings.Default.MaxBuyOrderTotal = MaxBuyOrderTotal;
                 Properties.Settings.Default.MinSellOrderTotal = MinSellOrderTotal;
                 Properties.Settings.Default.MaxSellOrderTotal = MaxSellOrderTotal;

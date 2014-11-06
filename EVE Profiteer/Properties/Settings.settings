@@ -50,8 +50,8 @@
     <Setting Name="MinProfitMargin" Type="System.Double" Scope="User">
       <Value Profile="(Default)">6</Value>
     </Setting>
-    <Setting Name="MaxProfitMargin" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">10</Value>
+    <Setting Name="MaxAboveAvg" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">15</Value>
     </Setting>
     <Setting Name="MaxBuyOrderTotal" Type="System.Decimal" Scope="User">
       <Value Profile="(Default)">200000000</Value>
@@ -85,6 +85,15 @@
     </Setting>
     <Setting Name="OrderManagerRememberSettings" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="OrderXmlPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Users\Lars Kristian\Documents\Dev\Projects\Eve Trader\settings</Value>
+    </Setting>
+    <Setting Name="MarketHistorySource" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Crest</Value>
+    </Setting>
+    <Setting Name="ActiveKeyEntity" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1</Value>
     </Setting>
   </Settings>
 </SettingsFile>

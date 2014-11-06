@@ -16,6 +16,9 @@
             <dxlc:LayoutItem Label="Default Station">
                 <dxe:ComboBoxEdit ItemsSource="{Binding Stations}" DisplayMember="StationName" EditValue="{Binding DefaultStation}"/>
             </dxlc:LayoutItem>
+            <dxlc:LayoutItem Label="Market History Source">
+                <dxe:ComboBoxEdit ItemsSource="{Binding MarketHistorySources}" EditValue="{Binding MarketHistorySource}"/>
+            </dxlc:LayoutItem>
         </dxlc:LayoutGroup>
     </dxlc:LayoutControl>
 

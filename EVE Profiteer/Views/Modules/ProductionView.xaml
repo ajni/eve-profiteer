@@ -1,0 +1,119 @@
+﻿<UserControl x:Class="eZet.EveProfiteer.Views.Modules.ProductionView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+             xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
+             xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
+             xmlns:modules="clr-namespace:eZet.EveProfiteer.ViewModels.Modules"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance d:Type=modules:ProductionViewModel, IsDesignTimeCreatable=False}"
+             
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <dxlc:DockLayoutControl>
+            <StackPanel dxlc:DockLayoutControl.Dock="Top">
+                <Button Name="ExecuteAddProductionBatch" Content="Add batch"/>
+
+            </StackPanel>
+            <dxg:GridControl Name="AssetsGrid" AutoGenerateColumns="None" ItemsSource="{Binding GridRows}"
+                         SelectedItems="{Binding SelectedRows}" SelectionMode="Row"
+                         SelectedItem="{Binding SelectedRow}" CurrentItem="{Binding FocusedRow}" dxlc:DockLayoutControl.Dock="Client">
+                <dxg:GridControl.View>
+                    <dxg:TableView Name="OrdersView"
+                               ShowAutoFilterRow="False"
+                               ShowTotalSummary="True"
+                               ShowFixedTotalSummary="True"
+                               ShowGroupPanel="False"
+                               NavigationStyle="Row"
+                               SearchColumns="TypeName"
+                               SearchPanelCriteriaOperatorType="And"
+                               AllowCascadeUpdate="False"
+                               AllowGroupSummaryCascadeUpdate="True"
+                               RowOpacityAnimationDuration="0.00:00:1"
+                               AllowScrollToFocusedRow="False">
+                        <dxg:TableView.RowCellMenuCustomizations>
+                            <dxb:BarButtonItem Content="View market details"
+                                           Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.ViewMarketDetailsCommand, RelativeSource={RelativeSource Self}}" />
+                            <dxb:BarButtonItem Content="View trade details"
+                                           Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.ViewTradeDetailsCommand, RelativeSource={RelativeSource Self}}" />
+                            <dxb:BarItemSeparator />
+                        </dxg:TableView.RowCellMenuCustomizations>
+
+                    </dxg:TableView>
+
+
+                </dxg:GridControl.View>
+                <!--<dxg:GridControl.TotalSummary>
+                <dxg:GridSummaryItem FieldName="InventoryTotalBalance" SummaryType="Sum" DisplayFormat="{}{0:N0}" />
+                <dxg:GridSummaryItem FieldName="InventoryTotalValue" SummaryType="Sum" DisplayFormat="{}{0:N0}" />
+                <dxg:GridSummaryItem FieldName="InventoryTotalCost" SummaryType="Sum" DisplayFormat="{}{0:N0}" />
+
+                <dxg:GridSummaryItem FieldName="IsBuyOrder"
+                                     SummaryType="Custom"
+                                     Alignment="Right"
+                                     DisplayFormat="Buying: {0}" />
+                <dxg:GridSummaryItem FieldName="IsSellOrder"
+                                     SummaryType="Custom"
+                                     Alignment="Right"
+                                     DisplayFormat="Selling: {0}" />
+                <dxg:GridSummaryItem SummaryType="Count" Alignment="Right" DisplayFormat="Total: {0}" />
+                <dxg:GridSummaryItem FieldName="TotalMaxBuyPrice"
+                                     SummaryType="Sum"
+                                     DisplayFormat="Buyorder total: {0:N0} isk"
+                                     Alignment="Left" />
+                <dxg:GridSummaryItem FieldName="TotalMinSellPrice"
+                                     SummaryType="Sum"
+                                     DisplayFormat="Sellorder total: {0:N0} isk"
+                                     Alignment="Left" />
+            </dxg:GridControl.TotalSummary>-->
+                <dxg:GridControl.Bands>
+
+                    <!--MAIN-->
+                    <dxg:GridControlBand Header="Production">
+                        <dxg:GridColumn FieldName="TypeName" Header="Type" Width="200">
+                        </dxg:GridColumn>
+                        <dxg:GridColumn FieldName="ProductionQuantity" Header="Quantity" AllowEditing="False" Width="80"
+                                    FixedWidth="True" />
+                    </dxg:GridControlBand>
+
+                    <!-- BATCH -->
+                    <dxg:GridControlBand Header="Total cost">
+                        <dxg:GridColumn FieldName="TotalCost" AllowEditing="False" Width="80"
+                                    FixedWidth="True" />
+                        <dxg:GridColumn FieldName="OtherCost" AllowEditing="False" Width="80"
+                                    FixedWidth="True" />
+                        <dxg:GridColumn FieldName="MaterialCost"/>
+                        <dxg:GridColumn FieldName="ProductionQuantity" AllowEditing="False" Width="80"
+                                    FixedWidth="True" />
+                    </dxg:GridControlBand>
+
+                    <dxg:GridControlBand Header="Cost per unit">
+                        <dxg:GridColumn FieldName="MaterialCostPerUnit" AllowEditing="False" Width="80"
+                                    FixedWidth="True" />
+                        <dxg:GridColumn FieldName="OtherCostPerUnit" AllowEditing="False" Width="80"
+                                    FixedWidth="True" />
+                        <dxg:GridColumn FieldName="TotalCostPerUnit"/>
+                    </dxg:GridControlBand>
+
+                    <!--MARKET-->
+                    <dxg:GridControlBand Header="Market">
+                        <dxg:GridColumn FieldName="QuantitySold" AllowEditing="False"/>
+                        <dxg:GridColumn FieldName="AvgSellPrice" AllowEditing="False"/>
+                        <dxg:GridColumn FieldName="ProfitPerUnit" AllowEditing="False"/>
+                        <dxg:GridColumn FieldName="TotalProfit" AllowEditing="False"/>
+                        <dxg:GridColumn FieldName="TotalSales" AllowEditing="False"/>
+                        <dxg:GridColumn FieldName="CostOfUnitsSold" AllowEditing="False"/>
+                        <dxg:GridColumn FieldName="Margin" AllowEditing="False"/>
+                        <dxg:GridColumn FieldName="QuantityLeft" AllowEditing="False"/>
+                        <dxg:GridColumn FieldName="BlueprintMe" AllowEditing="False"/>
+                        <dxg:GridColumn FieldName="CharacterMe" AllowEditing="False"/>
+                        <dxg:GridColumn FieldName="WasteFactor" AllowEditing="False"/>
+                    </dxg:GridControlBand>
+                </dxg:GridControl.Bands>
+            </dxg:GridControl>
+        </dxlc:DockLayoutControl>
+
+    </Grid>
+</UserControl>

@@ -9,13 +9,13 @@ using eZet.EveProfiteer.Models;
 namespace eZet.EveProfiteer.Services {
     public class AssetService : DbContextService {
         private readonly EveMarketService _marketService;
-        private readonly Repository _repository;
+        private readonly EveProfiteerRepository _eveProfiteerRepository;
 
         private readonly TraceSource _trace = new TraceSource("EveProfiteer", SourceLevels.All);
 
-        public AssetService(EveMarketService marketService, Repository repository) {
+        public AssetService(EveMarketService marketService, EveProfiteerRepository eveProfiteerRepository) {
             _marketService = marketService;
-            _repository = repository;
+            _eveProfiteerRepository = eveProfiteerRepository;
         }
 
         public async Task<List<Asset>> GetAssets() {
@@ -29,7 +29,7 @@ namespace eZet.EveProfiteer.Services {
             var priceResult = await _marketService.GetItemPricesAsync(station, items).ConfigureAwait(false);
             var historyResult = await _marketService.GetItemHistoryAsync(region, items, days).ConfigureAwait(false);
             var priceLookup = priceResult.Prices.ToLookup(i => i.TypeId);
-            var historyLookup = historyResult.History.ToLookup(i => i.TypeId);
+            var historyLookup = historyResult.ToLookup(i => i.TypeId);
             foreach (var asset in list) {
                 var buyPrice =
                     priceLookup[asset.TypeId].Single(price => price.OrderType == OrderType.Buy).Price;

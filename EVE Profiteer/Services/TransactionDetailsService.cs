@@ -7,14 +7,14 @@ using eZet.EveProfiteer.Models;
 
 namespace eZet.EveProfiteer.Services {
     public class TransactionDetailsService {
-        private readonly Repository _repository;
+        private readonly EveProfiteerRepository _eveProfiteerRepository;
 
-        public TransactionDetailsService(Repository repository) {
-            _repository = repository;
+        public TransactionDetailsService(EveProfiteerRepository eveProfiteerRepository) {
+            _eveProfiteerRepository = eveProfiteerRepository;
         }
 
         public async Task<List<InvType>> GetSelectableItems() {
-            IQueryable<IGrouping<InvType, Transaction>> groups = _repository.MyTransactions().GroupBy(t => t.InvType);
+            IQueryable<IGrouping<InvType, Transaction>> groups = _eveProfiteerRepository.MyTransactions().GroupBy(t => t.InvType);
             return await groups.AsNoTracking()
                     .Select(g => g.Key)
                     .OrderBy(t => t.TypeName)
@@ -22,13 +22,13 @@ namespace eZet.EveProfiteer.Services {
         }
 
         public async Task<List<Transaction>> GetTransactions(InvType type, DateTime start, DateTime end) {
-            return await _repository.MyTransactions()
+            return await _eveProfiteerRepository.MyTransactions()
                 .Where(f => f.TypeId == type.TypeId && f.TransactionDate >= start.Date && f.TransactionDate <= end.Date)
                 .Include("InvType").ToListAsync();
         }
 
         public async Task<Order> GetOrder(InvType type) {
-            return await _repository.MyOrders()
+            return await _eveProfiteerRepository.MyOrders()
                 .SingleOrDefaultAsync(t => t.TypeId == type.TypeId);
         }
     }
