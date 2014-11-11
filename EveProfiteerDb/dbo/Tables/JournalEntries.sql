@@ -17,12 +17,10 @@
     [ApiKeyEntity_Id] INT             NULL,
     [OwnerTypeId] INT NOT NULL, 
     [ParticipantTypeId] INT NOT NULL, 
-    CONSTRAINT [PK_dbo.JournalEntries] PRIMARY KEY CLUSTERED ([Id] ASC),
+    CONSTRAINT [PK_dbo.JournalEntries] PRIMARY KEY NONCLUSTERED ([Id] ASC),
     CONSTRAINT [FK_dbo.JournalEntries_dbo.ApiKeyEntities_ApiKeyEntity_Id] FOREIGN KEY ([ApiKeyEntity_Id]) REFERENCES [dbo].[ApiKeyEntities] ([Id])
 );
 
-
 GO
-CREATE NONCLUSTERED INDEX [IX_ApiKeyEntity_Id]
-    ON [dbo].[JournalEntries]([ApiKeyEntity_Id] ASC);
+CREATE CLUSTERED INDEX [IX_ApiKeyEntity_Id] ON [dbo].[JournalEntries]([ApiKeyEntity_Id] ASC);
 

@@ -74,9 +74,6 @@
     <Build Include="dbo\Tables\ProductionBatches.sql" />
     <Build Include="dbo\Tables\BatchMaterials.sql" />
     <Build Include="dbo\Tables\RefTypes.sql" />
-    <Build Include="dbo\Tables\OperatingCosts.sql" />
-    <Build Include="dbo\Tables\AcquisitionCosts.sql" />
-    <Build Include="dbo\Tables\FifoCost.sql" />
     <Build Include="dbo\Tables\MarketOrders.sql" />
   </ItemGroup>
   <ItemGroup>

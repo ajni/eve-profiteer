@@ -7,8 +7,6 @@
     xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
     xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
     xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
-             xmlns:themes="http://schemas.devexpress.com/winfx/2008/xaml/grid/themekeys"
-    xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
     xmlns:converters="clr-namespace:eZet.EveProfiteer.Ui.Converters"
     xmlns:modules="clr-namespace:eZet.EveProfiteer.ViewModels.Modules"
     mc:Ignorable="d"
@@ -18,11 +16,13 @@
     <UserControl.Resources>
 
         <ResourceDictionary>
-            <Style x:Key="RowBackgroundStyle"
-                   BasedOn="{StaticResource {themes:GridRowThemeKey ResourceKey=RowStyle, ThemeName={x:Static dx:ThemeManager.ApplicationThemeName}}}"
-                   TargetType="dxg:GridRowContent">
-                <Setter Property="Background"
+            <Style x:Key="RowBackgroundStyle" TargetType="dxg:RowControl">
+               <Style.Triggers>
+                <Trigger Property="SelectionState" Value="None">
+                    <Setter Property="Background"
                         Value="{Binding Path=Row, Converter={converters:OrderGridRowToBrushConverter}}" />
+                </Trigger>
+                </Style.Triggers>
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -68,8 +68,8 @@
                          CustomSummary="Orders_OnCustomSummary"
                          >
             <dxg:GridControl.View>
-                <dxg:SelectionView Name="OrdersView"
-                                   UseLightweightTemplates="None"
+                <dxg:TableView Name="OrdersView"
+                                   UseLightweightTemplates="All"
                                    ShowAutoFilterRow="False"
                                    ShowTotalSummary="True"
                                    ShowFixedTotalSummary="True"
@@ -102,7 +102,7 @@
                                            Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.DeleteOrdersCommand, RelativeSource={RelativeSource Self}}" />
                     </dxg:TableView.RowCellMenuCustomizations>
 
-                </dxg:SelectionView>
+                </dxg:TableView>
 
 
             </dxg:GridControl.View>
@@ -134,7 +134,7 @@
                 <!--MAIN-->
                 <dxg:GridControlBand>
 
-                    <dxg:SelectAllColumn Focusable="False" FixedWidth="True" />
+                    <!--<dxg:SelectAllColumn Focusable="False" FixedWidth="True" />-->
 
                     <dxg:GridColumn Name="TypeNameEditor" FieldName="TypeName" Header="Type" Width="200">
                         <dxg:GridColumn.CellTemplate>

@@ -9,18 +9,16 @@ using eZet.EveProfiteer.Models;
 namespace eZet.EveProfiteer.Services {
     public class AssetService : DbContextService {
         private readonly EveMarketService _marketService;
-        private readonly EveProfiteerRepository _eveProfiteerRepository;
 
         private readonly TraceSource _trace = new TraceSource("EveProfiteer", SourceLevels.All);
 
-        public AssetService(EveMarketService marketService, EveProfiteerRepository eveProfiteerRepository) {
+        public AssetService(EveMarketService marketService) {
             _marketService = marketService;
-            _eveProfiteerRepository = eveProfiteerRepository;
         }
 
         public async Task<List<Asset>> GetAssets() {
             using (var db = CreateDb()) {
-                return await MyAssets(db).Include(f => f.invType.MarketOrders).ToListAsync().ConfigureAwait(false);
+                return await db.MyAssets().Include(f => f.invType.MarketOrders).ToListAsync().ConfigureAwait(false);
             }
         }
 

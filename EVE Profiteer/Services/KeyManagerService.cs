@@ -13,17 +13,17 @@ namespace eZet.EveProfiteer.Services {
         private readonly EveProfiteerRepository repository;
 
         public Task AddKey(ApiKey key) {
-            repository.Db.ApiKeys.Add(key);
-            return repository.Db.SaveChangesAsync();
+            repository.Context.ApiKeys.Add(key);
+            return repository.Context.SaveChangesAsync();
         }
 
         public Task DeleteKey(ApiKey key) {
-            repository.Db.ApiKeys.Remove(key);
-            return repository.Db.SaveChangesAsync();
+            repository.Context.ApiKeys.Remove(key);
+            return repository.Context.SaveChangesAsync();
         }
 
         public Task<List<ApiKey>> GetKeys() {
-            return repository.Db.ApiKeys.Include(e => e.ApiKeyEntities).ToListAsync();
+            return repository.Context.ApiKeys.Include(e => e.ApiKeyEntities).ToListAsync();
         }
 
         public Task Update(ApiKey key, ICollection<ApiKeyEntity> entities) {
@@ -38,7 +38,7 @@ namespace eZet.EveProfiteer.Services {
             foreach (var entity in key.ApiKeyEntities.Where(entity => entities.All(e => e.EntityId != entity.EntityId))) {
                 key.ApiKeyEntities.Remove(entity);
             }
-            return repository.SaveAsync();
+            return repository.SaveChangesAsync();
         }
     }
 }

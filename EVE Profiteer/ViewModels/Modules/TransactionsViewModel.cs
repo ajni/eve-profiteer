@@ -12,7 +12,6 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
         private ViewPeriodEnum _selectedViewPeriod;
         private IQueryable<Transaction> _transactions;
 
-
         public enum ViewPeriodEnum {
             Today,
             Yesterday,
@@ -32,19 +31,25 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             }
         }
 
-
         public TransactionsViewModel(TransactionService transactionService) {
             _transactionService = transactionService;
             DateTimeFormat = Properties.Settings.Default.DateTimeFormat;
         }
 
-        protected override void OnActivate() {
-            if (Transactions == null)
+        protected override Task OnActivate() {
+            if (Transactions == null) {
+                _transactionService.Activate();
                 Transactions = _transactionService.GetTransactions();
+            }
+            return Task.FromResult(0);
         }
 
-        protected override void OnDeactivate(bool close) {
-            Transactions = null;
+        protected override Task OnDeactivate(bool close) {
+            if (close) {
+                Transactions = null;
+                _transactionService.Deactivate();
+            }
+            return Task.FromResult(0);
         }
 
         public string DateTimeFormat { get; private set; }
@@ -77,13 +82,6 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
                 _selectedViewPeriod = value;
                 NotifyOfPropertyChange(() => SelectedViewPeriod);
             }
-        }
-
-        public Task InitAsync() {
-            if (!IsReady) {
-                IsReady = true;
-            }
-            return Task.FromResult(false);
         }
     }
 }

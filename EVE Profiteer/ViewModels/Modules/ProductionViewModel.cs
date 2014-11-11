@@ -12,16 +12,14 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
         private readonly IWindowManager _windowManager;
         private readonly IEventAggregator _eventAggregator;
         private readonly ProductionService _productionService;
-        private readonly IDialogService _dialogService;
         private ProductionBatchEntry _selectedRow;
         private ProductionBatchEntry _focusedRow;
         private ICollection<ProductionBatchEntry> _selectedRows;
 
-        public ProductionViewModel(IWindowManager windowManager, IEventAggregator eventAggregator, ProductionService productionService, IDialogService dialogService) {
+        public ProductionViewModel(IWindowManager windowManager, IEventAggregator eventAggregator, ProductionService productionService) {
             _windowManager = windowManager;
             _eventAggregator = eventAggregator;
             _productionService = productionService;
-            _dialogService = dialogService;
             GridRows = new BindableCollection<ProductionBatchEntry>();
             AddProductionBatchCommand = new DelegateCommand(ExecuteAddProductionBatch);
         }
@@ -41,7 +39,7 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             return Task.FromResult(false);
         }
 
-        protected override async void OnInitialize() {
+        protected override async Task OnOpen() {
             GridRows.IsNotifying = false;
             GridRows.AddRange(await _productionService.GetProductionBatches());
             GridRows.IsNotifying = true;

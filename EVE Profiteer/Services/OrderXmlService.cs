@@ -52,7 +52,7 @@ namespace eZet.EveProfiteer.Services {
         private void loadType(IEnumerable<Order> orders) {
             IList<Order> enumerable = orders as IList<Order> ?? orders.ToList();
             IEnumerable<int> orderIds = enumerable.Select(f => f.TypeId);
-            IQueryable<InvType> types = _eveProfiteerRepository.Db.InvTypes.Where(f => orderIds.Contains(f.TypeId));
+            IQueryable<InvType> types = _eveProfiteerRepository.Context.InvTypes.Where(f => orderIds.Contains(f.TypeId));
             ILookup<int, InvType> lookup = types.ToLookup(f => f.TypeId);
             foreach (Order order in enumerable) {
                 order.InvType = lookup[order.TypeId].Single();

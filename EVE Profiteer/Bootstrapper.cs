@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows;
 using Caliburn.Micro;
+using Eve_Static_data;
 using eZet.EveProfiteer.Framework;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Repository;
@@ -28,6 +29,7 @@ namespace eZet.EveProfiteer {
 
             _container.Singleton<IWindowManager, WindowManager>();
             _container.Singleton<IEventAggregator, EventAggregator>();
+            _container.Singleton<EveStaticData>();
 
             // Data Services
             _container.PerRequest<EveProfiteerDbEntities>();

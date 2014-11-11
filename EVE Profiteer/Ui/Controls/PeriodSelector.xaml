@@ -1,0 +1,12 @@
+﻿<dxb:BarEditItem x:Class="eZet.EveProfiteer.Ui.Controls.PeriodSelector"
+                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
+                 xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+                 Name="ViewPeriodSelector" EditValue="{Binding SelectedViewPeriod}" EditWidth="100"
+                 Hint="Station to analyze."
+                 EditValueChanged="ViewPeriodSelector_OnEditValueChanged">
+    <dxb:BarEditItem.EditSettings>
+        <dxe:ComboBoxEditSettings ItemsSource="{Binding ViewPeriodValues}" />
+    </dxb:BarEditItem.EditSettings>
+</dxb:BarEditItem>

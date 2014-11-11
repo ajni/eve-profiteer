@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[Orders] (
-    [Id]                INT             IDENTITY (1, 1) NOT NULL,
+    [Id]                INT             IDENTITY NOT NULL,
     [TypeId]            INT          NOT NULL,
     [BuyQuantity]       INT             NOT NULL,
     [MaxBuyPrice]       DECIMAL (18, 2) NOT NULL,
@@ -17,9 +17,13 @@
     [Notes] TEXT NULL, 
     StationId INT NULL, 
     [AutoProcess] BIT NOT NULL DEFAULT 1, 
-    CONSTRAINT [PK_dbo.Orders] PRIMARY KEY CLUSTERED ([Id] ASC), 
-    CONSTRAINT [FK_Orders_ToApiKeyEntities] FOREIGN KEY ([ApiKeyEntity_Id]) REFERENCES [ApiKeyEntities]([Id]), 
-    CONSTRAINT [FK_Orders_ToInvTypes] FOREIGN KEY ([TypeId]) REFERENCES [invTypes]([typeID]), 
-    CONSTRAINT [FK_Orders_ToStaStations] FOREIGN KEY ([StationId]) REFERENCES [staStations]([stationID]), 
-);
-
+    [MapRegion_Id] INT NOT NULL DEFAULT 0, 
+    CONSTRAINT [PK_dbo.Orders] PRIMARY KEY NONCLUSTERED ([Id] ASC), 
+    CONSTRAINT [FK_dbo.Orders.ApiKeyEntities] FOREIGN KEY ([ApiKeyEntity_Id]) REFERENCES [ApiKeyEntities]([Id]), 
+    CONSTRAINT [FK_dbo.Orders.InvTypes] FOREIGN KEY ([TypeId]) REFERENCES [invTypes]([typeID]), 
+    CONSTRAINT [FK_dbo.Orders.StaStations] FOREIGN KEY ([StationId]) REFERENCES [staStations]([stationID]), 
+)
+GO
+CREATE CLUSTERED INDEX [IX_dbo.Orders.ApiKeyEntity_Id] ON [dbo].[Orders] ([ApiKeyEntity_Id] ASC);
+GO
+CREATE NONCLUSTERED INDEX [IX_dbo.Orders.InvType_Id] ON [dbo].[Orders] ([TypeId] ASC);

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using eZet.EveProfiteer.Models;
+using eZet.EveProfiteer.Ui.Events;
+using eZet.EveProfiteer.ViewModels.Modules;
 
 namespace eZet.EveProfiteer.Events {
-    public class AddOrdersEvent : EventArgs {
+    public class AddOrdersEvent :  ModuleEvent {
         public AddOrdersEvent(ICollection<InvType> items, bool sellOrder = true, bool buyOrder = true) {
             Items = items;
             SellOrder = sellOrder;
@@ -22,5 +24,10 @@ namespace eZet.EveProfiteer.Events {
         public bool BuyOrder { get; private set; }
 
         public ICollection<InvType> Items { get; private set; }
+
+        public override Type GetTabType() {
+            return typeof (OrderManagerViewModel);
+        }
+
     }
 }

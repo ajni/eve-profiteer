@@ -5,8 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
              xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
-             xmlns:themes="http://schemas.devexpress.com/winfx/2008/xaml/grid/themekeys"
-             xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
              xmlns:converters="clr-namespace:eZet.EveProfiteer.Ui.Converters"
              xmlns:modules="clr-namespace:eZet.EveProfiteer.ViewModels.Modules"
              mc:Ignorable="d" 
@@ -14,11 +12,14 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
 
-        <Style x:Key="RowBackgroundStyle"
-                   BasedOn="{StaticResource {themes:GridRowThemeKey ResourceKey=RowStyle, ThemeName={x:Static dx:ThemeManager.ApplicationThemeName}}}"
-                   TargetType="dxg:GridRowContent">
-            <Setter Property="Background"
+        <Style x:Key="RowBackgroundStyle" TargetType="dxg:RowControl">
+            <Style.Triggers>
+                <Trigger Property="SelectionState" Value="None">
+                        <Setter Property="Background"
                         Value="{Binding Path=Row, Converter={converters:MarketOrderToBrushConverter}}" />
+                </Trigger>
+            </Style.Triggers>
+        
         </Style>
     </UserControl.Resources>
     <Grid>
@@ -56,10 +57,8 @@
                         <dxb:BarEditItemLink BarItemName="EndDate" />
                     </dxb:Bar>
                 </dxb:BarManager.Bars>-->
-
             </dxb:BarManager>
-
-            <dxg:GridControl ItemsSource="{Binding MarketOrders}">
+            <dxg:GridControl ItemsSource="{Binding MarketOrders}" SelectionMode="Row" ClipboardCopyMode="ExcludeHeader">
                 <dxg:GridControl.View>
                     <dxg:TableView ShowTotalSummary="False"
                                    NewItemRowPosition="None"
@@ -84,9 +83,9 @@
                             <dxb:BarButtonItem Content="View order"
                                                Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.ViewOrderCommand, RelativeSource={RelativeSource Self}}"
                                                CommandParameter="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataControl.CurrentItem, RelativeSource={RelativeSource Self}}" />
-                            <dxb:BarButtonItem Content="Add to orders"
+                            <!--<dxb:BarButtonItem Content="Add to orders"
                                                Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.AddToOrdersCommand, RelativeSource={RelativeSource Self}}"
-                                               CommandParameter="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataControl.SelectedItems, RelativeSource={RelativeSource Self}}" />
+                                               CommandParameter="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataControl.SelectedItems, RelativeSource={RelativeSource Self}}" />-->
                         </dxg:TableView.RowCellMenuCustomizations>
                     </dxg:TableView>
                 </dxg:GridControl.View>
@@ -98,18 +97,18 @@
                 <dxg:GridControl.Columns>
                     <dxg:GridColumn FieldName="InvType.TypeName" Header="Item" Width="300"/>
                     <dxg:GridColumn FieldName="Station.StationName" Header="Station" Width="200"/>
-                    <dxg:GridColumn FieldName="InvType.Orders.Count" Header="Has Order"/>
-                    <dxg:GridColumn FieldName="OrderState" Header="Type" Width="100"/>
-                    <dxg:GridColumn FieldName="VolumeEntered" Width="50"/>
-                    <dxg:GridColumn FieldName="VolumeRemaining" Header="Qty"  Width="50"/>
-                    <dxg:GridColumn FieldName="MinVolume"  Width="50"/>
-                    <dxg:GridColumn FieldName="Range" Width="80"/>
-                    <dxg:GridColumn FieldName="AccountKey" Width="80"/>
-                    <dxg:GridColumn FieldName="Duration" />
-                    <dxg:GridColumn FieldName="Escrow" EditSettings="{StaticResource N2Edit}" Width="50"/>
-                    <dxg:GridColumn FieldName="Price" EditSettings="{StaticResource N2Edit}" Width="50"/>
-                    <dxg:GridColumn FieldName="Bid"/>
-                    <dxg:GridColumn FieldName="Issued" />
+                    <!--<dxg:GridColumn FieldName="InvType.Orders.Any()" Header="Has Order"/>-->
+                    <dxg:GridColumn FieldName="OrderState" Header="Type" Width="50"/>
+                    <dxg:GridColumn FieldName="VolumeEntered" Header="Entered" Width="50"/>
+                    <dxg:GridColumn FieldName="VolumeRemaining" Header="Remaining"  Width="50"/>
+                    <dxg:GridColumn FieldName="MinVolume" Header="Min"  Width="50"/>
+                    <dxg:GridColumn FieldName="Range" Width="50"/>
+                    <dxg:GridColumn FieldName="AccountKey" Width="50"/>
+                    <dxg:GridColumn FieldName="Duration" Width="50"/>
+                    <dxg:GridColumn FieldName="Escrow" EditSettings="{StaticResource N2Edit}" Width="100"/>
+                    <dxg:GridColumn FieldName="Price" EditSettings="{StaticResource N2Edit}" Width="100"/>
+                    <dxg:GridColumn FieldName="Bid" Width="50"/>
+                    <dxg:GridColumn FieldName="Issued" Width="80"/>
                 </dxg:GridControl.Columns>
             </dxg:GridControl>
 

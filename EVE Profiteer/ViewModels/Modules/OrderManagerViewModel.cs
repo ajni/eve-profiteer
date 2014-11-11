@@ -60,7 +60,6 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
                     () => _eventAggregator.PublishOnUIThread(new ViewMarketOrderEvent(FocusedOrder.Order.InvType)));
             DeleteOrdersCommand = new DelegateCommand(ExecuteDeleteOrders);
             ValidateOrderTypeCommand = new DelegateCommand<GridCellValidationEventArgs>(ExecuteValidateOrderType);
-            Initialize = InitializeAsync();
         }
 
 
@@ -132,7 +131,7 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
         public ICommand UpdateMarketDataCommand { get; private set; }
 
         public async void Handle(AddOrdersEvent e) {
-            await Initialize.ConfigureAwait(false);
+            await Activate().ConfigureAwait(false);
             var orders = new List<Order>();
             foreach (InvType item in e.Items) {
                 var order = new Order();
@@ -158,27 +157,28 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
         }
 
         public async void Handle(ViewOrderEvent message) {
-            await InitializeAsync().ConfigureAwait(false);
+            await Activate().ConfigureAwait(false);
             OrderViewModel order = Orders.SingleOrDefault(entry => entry.Order.InvType.TypeId == message.InvType.TypeId);
             FocusedOrder = order;
             SelectedOrder = order;
         }
 
-        protected override async Task InitializeAsync() {
+        protected override async Task OnOpen() {
             MarketTypes = await _orderManagerService.GetMarketTypesAsync().ConfigureAwait(false);
-            var orders = await  _orderManagerService.GetOrdersAsync().ConfigureAwait(false);
+            var orders = await _orderManagerService.GetOrdersAsync().ConfigureAwait(false);
             Orders.AddRange(orders);
             SelectedOrder = Orders.FirstOrDefault();
             FocusedOrder = Orders.FirstOrDefault();
         }
 
-        protected override void OnActivate() {
-            _orderManagerService.Activate();
-            base.OnActivate();
-        }
-
-        protected override void OnDeactivate(bool close) {
-            _orderManagerService.Deactivate();
+        protected override Task OnDeactivate(bool close) {
+            if (close) {
+                MarketTypes = null;
+                Orders.Clear();
+                SelectedOrder = null;
+                FocusedOrder = null;
+            }
+            return Task.FromResult(0);
         }
 
         private void ExecuteValidateOrderType(GridCellValidationEventArgs eventArgs) {

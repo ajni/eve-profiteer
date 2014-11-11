@@ -4,13 +4,13 @@ using eZet.EveProfiteer.Ui.Events;
 using eZet.EveProfiteer.ViewModels.Modules;
 
 namespace eZet.EveProfiteer.Events {
-    public class ViewOrderEvent : IActivateTabEvent {
+    public class ViewOrderEvent : ModuleEvent {
         public ViewOrderEvent(InvType invType) {
             InvType = invType;
         }
 
         public InvType InvType { get; set; }
-        public Type GetTabType() {
+        public override Type GetTabType() {
             return typeof(OrderManagerViewModel);
         }
     }

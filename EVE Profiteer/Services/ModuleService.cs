@@ -35,6 +35,7 @@ namespace eZet.EveProfiteer.Services {
             foreach (var config in Configurations) {
                 Modules.Add(GetModule(config));
             }
+            Modules.ForEach(f => f.Initialize());
         }
 
         private List<ModuleViewModel> Modules { get; set; }

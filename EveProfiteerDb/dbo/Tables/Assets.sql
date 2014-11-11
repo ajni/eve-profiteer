@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[Assets]
 (
-	[Id] INT IDENTITY NOT NULL PRIMARY KEY, 
+	[Id] INT IDENTITY NOT NULL, 
     [InvTypes_TypeId] INT NOT NULL, 
     [Quantity] INT NOT NULL DEFAULT 0, 
     [ActualQuantity] INT NOT NULL DEFAULT 0, 
@@ -10,11 +10,11 @@
     [LatestAverageCost] DECIMAL(18, 5) NOT NULL DEFAULT 0, 
     [BrokerFees] DECIMAL(18, 5) NOT NULL DEFAULT 0, 
     [MarketQuantity] INT NOT NULL DEFAULT 0, 
+    CONSTRAINT [PK_dbo.Assets] PRIMARY KEY NONCLUSTERED ([Id] ASC),
     CONSTRAINT [FK_dbo.Assets_dbo.ToInvTypes] FOREIGN KEY ([InvTypes_TypeId]) REFERENCES [invTypes]([typeID]),
-    CONSTRAINT [FK_dbo.Assets_dbo.ToApiKeyEntities] FOREIGN KEY ([ApiKeyEntity_Id]) REFERENCES [ApiKeyEntities]([Id]),
-
+    CONSTRAINT [FK_dbo.Assets_dbo.ToApiKeyEntities] FOREIGN KEY ([ApiKeyEntity_Id]) REFERENCES [ApiKeyEntities]([Id]), 
 )
 GO
-CREATE INDEX [IX_dbo.Assets_dbo.InvTypes_TypeId] ON [dbo].[Assets] ([InvTypes_TypeId])
+CREATE CLUSTERED INDEX [IX_dbo.Assets.ApiKeyEntity_Id] ON [dbo].[Assets] ([ApiKeyEntity_Id] ASC)
 GO
-CREATE INDEX [IX_dbo.Assets_dbo.ApiKeyEntity_Id] ON [dbo].[Assets] ([ApiKeyEntity_Id])
+CREATE NONCLUSTERED INDEX [IX_dbo.Assets.InvTypes_TypeId] ON [dbo].[Assets] ([InvTypes_TypeId] ASC)

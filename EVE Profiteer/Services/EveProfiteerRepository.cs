@@ -1,4 +1,5 @@
-﻿using System.Data.Entity;
+﻿using System;
+using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using eZet.EveProfiteer.Models;
@@ -6,54 +7,66 @@ using eZet.EveProfiteer.Util;
 
 namespace eZet.EveProfiteer.Services {
 
-    public class EveProfiteerRepository {
+    public class EveProfiteerRepository : IDisposable {
 
         public const int DustTypeidLimit = 350000;
 
-        public EveProfiteerDbEntities Db { get; private set; }
+        public EveProfiteerDbEntities Context { get; private set; }
 
-        public EveProfiteerRepository(EveProfiteerDbEntities db) {
-            Db = db;
+        public EveProfiteerRepository(EveProfiteerDbEntities context) {
+            Context = context;
         }
 
-        public Task SaveAsync() {
-            return Db.SaveChangesAsync();
+        public Task SaveChangesAsync() {
+            return Context.SaveChangesAsync();
         }
 
         public Task ReloadAsync<T>(T entity) where T : class {
-            return Db.Entry(entity).ReloadAsync();
+            return Context.Entry(entity).ReloadAsync();
+        }
+
+        public IQueryable<Asset> MyAssets() {
+            return Context.Assets.Where(t => t.ApiKeyEntity_Id == ApplicationHelper.ActiveEntity.Id);
         }
 
         public IOrderedQueryable<MapRegion> GetRegionsOrdered() {
-            return Db.MapRegions.OrderBy(r => r.RegionName);
+            return Context.MapRegions.OrderBy(r => r.RegionName);
         }
 
         public IQueryable<InvType> GetInvTypes() {
-            return Db.InvTypes.AsQueryable();
+            return Context.InvTypes.Where(e => e.TypeId < DustTypeidLimit);
         }
 
         public IQueryable<InvType> GetMarketTypes() {
-            return Db.InvTypes.Where(t => t.TypeId < DustTypeidLimit && t.Published == true && t.MarketGroupId != null).OrderBy(t => t.TypeName);
+            return Context.InvTypes.Where(t => t.TypeId < DustTypeidLimit && t.Published == true && t.MarketGroupId != null).OrderBy(t => t.TypeName);
         }
 
         public IQueryable<InvMarketGroup> GetMarketGroups() {
-            return Db.InvMarketGroups.AsQueryable();
+            return Context.InvMarketGroups.AsQueryable();
         }
 
         public IQueryable<InvBlueprintType> GetBlueprints() {
-            return Db.InvBlueprintTypes.Include(f => f.BlueprintInvType).Include(f => f.ProductInvType).Where(bp => bp.BlueprintInvType.Published == true);
+            return Context.InvBlueprintTypes.Include(f => f.BlueprintInvType).Include(f => f.ProductInvType).Where(bp => bp.BlueprintInvType.Published == true);
         }
 
         public IQueryable<Transaction> MyTransactions() {
-            return Db.Transactions.Where(t => t.ApiKeyEntity_Id == ApplicationHelper.ActiveEntity.Id);
+            return Context.Transactions.Where(t => t.ApiKeyEntity_Id == ApplicationHelper.ActiveEntity.Id);
         }
 
         public IQueryable<Order> MyOrders() {
-            return Db.Orders.Where(t => t.ApiKeyEntity_Id == ApplicationHelper.ActiveEntity.Id);
+            return Context.Orders.Where(t => t.ApiKeyEntity_Id == ApplicationHelper.ActiveEntity.Id);
         }
 
         public IQueryable<MarketOrder> MyMarketOrders() {
-            return Db.MarketOrders.Where(t => t.ApiKeyEntityId == ApplicationHelper.ActiveEntity.Id);
+            return Context.MarketOrders.Where(t => t.ApiKeyEntityId == ApplicationHelper.ActiveEntity.EntityId);
+        }
+
+        public void Dispose() {
+            ((IDisposable) Context).Dispose();
+        }
+
+        public IQueryable<JournalEntry> MyJournalEntries() {
+            return Context.JournalEntries.Include(f => f.RefType).Where(t => t.ApiKeyEntity_Id == ApplicationHelper.ActiveEntity.Id);
         }
     }
 }

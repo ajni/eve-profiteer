@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-
+﻿
 namespace eZet.EveProfiteer.Models {
     public class MarketTreeNode : CheckableTreeNode {
         public InvType InvType { get; set; }

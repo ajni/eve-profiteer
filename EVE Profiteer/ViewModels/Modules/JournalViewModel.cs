@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using eZet.EveProfiteer.Models;
@@ -11,13 +8,10 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
     public class JournalViewModel : ModuleViewModel {
         private readonly JournalService _journalService;
         private IQueryable<JournalEntry> _journal;
-        private JournalAggregate<DateTime> _dailyAggregate;
-        private JournalAggregate<string> _typeAggregate;
 
         public JournalViewModel(JournalService journalService) {
             _journalService = journalService;
         }
-
 
         public IQueryable<JournalEntry> Journal {
             get { return _journal; }
@@ -27,25 +21,6 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
                 NotifyOfPropertyChange();
             }
         }
-
-        public JournalAggregate<DateTime> DailyAggregate {
-            get { return _dailyAggregate; }
-            set {
-                if (Equals(value, _dailyAggregate)) return;
-                _dailyAggregate = value;
-                NotifyOfPropertyChange();
-            }
-        }
-
-        public JournalAggregate<string> TypeAggregate {
-            get { return _typeAggregate; }
-            set {
-                if (Equals(value, _typeAggregate)) return;
-                _typeAggregate = value;
-                NotifyOfPropertyChange();
-            }
-        }
-
 
         public ICommand ViewTradeDetailsCommand { get; private set; }
 
@@ -57,27 +32,21 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
 
         public ICommand AddToOrdersCommand { get; private set; }
 
-        protected override void OnActivate() {
-            if (Journal == null)
+        protected override Task OnActivate() {
+            _journalService.Activate();
+            if (Journal == null) {
                 Journal = _journalService.GetJournal();
+            }
+            return Task.FromResult(0);
         }
 
-        protected override void OnDeactivate(bool close) {
-            Journal = null;
-            _journalService.Deactivate();
-        }
-
-        public async Task InitAsync() {
-            if (!IsReady) {
-                List<JournalEntry> journal =
-                    await _journalService.GetJournal().AsNoTracking().ToListAsync().ConfigureAwait(false);
-                IEnumerable<IGrouping<string, JournalEntry>> typeGroup = journal.GroupBy(t => t.RefType.Name);
-                TypeAggregate = new JournalAggregate<string>(typeGroup);
-                IEnumerable<IGrouping<DateTime, JournalEntry>> dateGroup =
-                    journal.GroupBy(t => t.Date.Date).OrderBy(t => t.Key);
-                DailyAggregate = new JournalAggregate<DateTime>(dateGroup);
-                IsReady = true;
+        protected override async Task OnDeactivate(bool close) {
+            if (close) {
+                Journal = null;
+                await Initialized;
+                _journalService.Deactivate();
             }
         }
+
     }
 }

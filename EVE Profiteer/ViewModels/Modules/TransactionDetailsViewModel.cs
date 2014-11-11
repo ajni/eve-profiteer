@@ -44,7 +44,6 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             ViewMarketDetailsCommand =
                 new DelegateCommand(() => _eventAggregator.PublishOnUIThread(new ViewMarketBrowserEvent(SelectedItem)),
                     () => SelectedItem != null);
-            Initialize = InitializeAsync();
         }
 
         public string DateTimeFormat { get; set; }
@@ -106,9 +105,16 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             }
         }
 
+        protected async override Task OnOpen() {
+            InvTypes = await _transactionDetailsService.GetSelectableItems().ConfigureAwait(false);
+        }
 
-        protected override Task InitializeAsync() {
-                return LoadSelectableItems();
+        protected override Task OnDeactivate(bool close) {
+            if (close) {
+                InvTypes = null;
+                TransactionAggregate = null;
+            }
+            return base.OnDeactivate(close);
         }
 
         public ICollection<InvType> InvTypes {
@@ -164,7 +170,7 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
         }
 
         public async void Handle(ViewTransactionDetailsEvent message) {
-            await Initialize.ConfigureAwait(false);
+            await Activate().ConfigureAwait(false);
             SelectedItem = InvTypes.SingleOrDefault(t => t.TypeId == message.InvType.TypeId);
         }
 
@@ -190,8 +196,5 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Trade details loaded"));
         }
 
-        private async Task LoadSelectableItems() {
-            InvTypes = await _transactionDetailsService.GetSelectableItems().ConfigureAwait(false);
-        }
     }
 }

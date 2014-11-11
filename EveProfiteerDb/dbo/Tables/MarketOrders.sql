@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[MarketOrders]
 (
-	[Id] INT IDENTITY NOT NULL PRIMARY KEY, 
+	[Id] INT IDENTITY NOT NULL, 
     [OrderId] BIGINT NOT NULL, 
     [CharacterId] INT NOT NULL, 
     [StationId] INT NOT NULL, 
@@ -16,9 +16,11 @@
     [Price] DECIMAL(18, 2) NOT NULL, 
     [Bid] BIT NOT NULL, 
     [Issued] DATETIME2 NOT NULL,
+	CONSTRAINT [PK_dbo.MarketOrders] PRIMARY KEY NONCLUSTERED ([Id] ASC),
 	CONSTRAINT UQ_OrderId UNIQUE ([OrderId])
 )
+GO
+CREATE  INDEX [IX_MarketOrders.CharacterId] ON [dbo].[MarketOrders] ([CharacterId] ASC)
 
 GO
-
-CREATE INDEX [IX_MarketOrders_OrderId] ON [dbo].[MarketOrders] ([OrderId])
+CREATE NONCLUSTERED INDEX [IX_MarketOrders.OrderId] ON [dbo].[MarketOrders] ([OrderId] ASC)

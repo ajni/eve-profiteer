@@ -54,7 +54,7 @@ namespace eZet.EveProfiteer.Services {
 
         public async Task<List<InvType>> GetInvTypesForOrdersAsync() {
             using (var db = CreateDb()) {
-                return await MyOrders(db).Select(order => order.InvType).ToListAsync().ConfigureAwait(false);
+                return await db.MyOrders().Select(order => order.InvType).ToListAsync().ConfigureAwait(false);
             }
         }
 

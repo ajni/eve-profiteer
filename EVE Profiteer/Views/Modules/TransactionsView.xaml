@@ -7,52 +7,24 @@
              xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
              xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
              xmlns:modules="clr-namespace:eZet.EveProfiteer.ViewModels.Modules"
+             xmlns:controls="clr-namespace:eZet.EveProfiteer.Ui.Controls"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance d:Type=modules:TransactionsViewModel, IsDesignTimeCreatable=False}"
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <dx:EntityInstantFeedbackDataSource Name="DataSource" KeyExpression="Id" QueryableSource="{Binding Transactions}"></dx:EntityInstantFeedbackDataSource>
+        <dx:EntityInstantFeedbackDataSource Name="DataSource" KeyExpression="Id" QueryableSource="{Binding Transactions}"/>
 
         <DockPanel>
             <dxb:BarManager DockPanel.Dock="Top">
-                <!--<dxb:BarManager.Items>
-                    <dxb:BarEditItem Name="ViewPeriodSelector" EditValue="{Binding SelectedViewPeriod}" EditWidth="100"
-                                     Hint="Station to analyze."
-                                     EditValueChanged="ViewPeriodSelector_OnEditValueChanged">
-                        <dxb:BarEditItem.EditSettings>
-                            <dxe:ComboBoxEditSettings ItemsSource="{Binding ViewPeriodValues}" />
-                        </dxb:BarEditItem.EditSettings>
-                    </dxb:BarEditItem>
-                    <dxb:BarEditItem Name="StartDate" Content="From" EditValue="{Binding PeriodSelectorStart}">
-                        <dxb:BarEditItem.EditSettings>
-                            <dxe:DateEditSettings />
-                        </dxb:BarEditItem.EditSettings>
-
-                    </dxb:BarEditItem>
-                    <dxb:BarEditItem Name="EndDate" Content="To" EditValue="{Binding PeriodSelectorEnd}">
-                        <dxb:BarEditItem.EditSettings>
-                            <dxe:DateEditSettings />
-                        </dxb:BarEditItem.EditSettings>
-                    </dxb:BarEditItem>
-
-                    <dxb:BarButtonItem Name="ViewButton" Content="View" Command="{Binding ViewPeriodCommand}" />
-
-                </dxb:BarManager.Items>
-
                 <dxb:BarManager.Bars>
-                    <dxb:Bar>
-                        <dxb:BarButtonItemLink BarItemName="ViewButton" />
-                        <dxb:BarEditItemLink BarItemName="ViewPeriodSelector" />
-                        <dxb:BarEditItemLink BarItemName="StartDate" />
-                        <dxb:BarEditItemLink BarItemName="EndDate" />
-                    </dxb:Bar>
-                </dxb:BarManager.Bars>-->
-
+                    <controls:PeriodSelectorBar></controls:PeriodSelectorBar>
+                </dxb:BarManager.Bars>
             </dxb:BarManager>
 
             <dxg:GridControl ItemsSource="{Binding ElementName=DataSource, Path=Data}">
                 <dxg:GridControl.View>
-                    <dxg:TableView ShowTotalSummary="False"
+                    <dxg:TableView UseLightweightTemplates="All"
+                                   ShowTotalSummary="False"
                                    NewItemRowPosition="None"
                                    ShowAutoFilterRow="True"
                                    ShowFixedTotalSummary="True"

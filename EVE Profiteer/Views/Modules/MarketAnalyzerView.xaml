@@ -6,10 +6,8 @@
              xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
              xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
              xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
-             xmlns:dxgt="http://schemas.devexpress.com/winfx/2008/xaml/grid/themekeys"
              xmlns:converters="clr-namespace:eZet.EveProfiteer.Ui.Converters"
              xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
-             xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
              xmlns:models="clr-namespace:eZet.EveProfiteer.Models"
              xmlns:modules="clr-namespace:eZet.EveProfiteer.ViewModels.Modules"
              d:DesignHeight="300" d:DesignWidth="500"
@@ -18,11 +16,13 @@
     <UserControl.Resources>
 
         <ResourceDictionary>
-            <Style x:Key="RowBackgroundStyle"
-                   BasedOn="{StaticResource {dxgt:GridRowThemeKey ResourceKey=RowStyle, ThemeName={x:Static dx:ThemeManager.ApplicationThemeName}}}"
-                   TargetType="dxg:GridRowContent">
-                <Setter Property="Background"
-                        Value="{Binding Path=Row.Order, Converter={converters:OrderToBrushConverter}}" />
+            <Style x:Key="RowBackgroundStyle" TargetType="dxg:RowControl">
+                <Style.Triggers>
+                    <Trigger Property="SelectionState" Value="None">
+                        <Setter Property="Background"
+                        Value="{Binding Path=Row, Converter={converters:OrderToBrushConverter}}" />
+                    </Trigger>
+                </Style.Triggers>
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -107,6 +107,7 @@
                   VirtualizingPanel.IsVirtualizing="True"
                   VerticalAlignment="Stretch"
                   VerticalContentAlignment="Stretch"
+                  MaxWidth="800"
                   ItemsSource="{Binding MarketTreeNodes}">
             <TreeView.Resources>
                 <HierarchicalDataTemplate DataType="{x:Type models:MarketTreeNode}"
@@ -123,7 +124,7 @@
 
         <dxg:GridControl Name="MarketAnalyzerGrid" dxlc:DockLayoutControl.Dock="Client"
                          dxlc:DockLayoutControl.AllowVerticalSizing="True"
-                         ItemsSource="{Binding MarketAnalyzerResults}" SelectionMode="Row" CopyingToClipboard="MarketAnalyzerGrid_OnCopyingToClipboard" ClipboardCopyMode="ExcludeHeader">
+                         ItemsSource="{Binding MarketAnalyzerResults}" SelectionMode="Row" ClipboardCopyMode="ExcludeHeader">
             <dxg:GridControl.Bands>
                 <dxg:GridControlBand>
                     <dxg:GridColumn FieldName="InvType.TypeName" Header="Item" />
@@ -241,7 +242,7 @@
 
             </dxg:GridControl.Bands>
             <dxg:GridControl.View>
-                <dxg:TableView AllowEditing="False" NavigationStyle="Row" ShowAutoFilterRow="True"
+                <dxg:TableView AllowEditing="False" NavigationStyle="Cell"
                                ShowFixedTotalSummary="True" IsTotalSummaryMenuEnabled="True"
                                ShowGroupPanel="False" RowStyle="{StaticResource RowBackgroundStyle}"
                                ShowSearchPanelMode="Default" SearchColumns="InvType.TypeName"

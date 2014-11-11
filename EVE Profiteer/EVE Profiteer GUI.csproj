@@ -207,11 +207,19 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Ui\Events\IActivateTabEvent.cs" />
+    <Compile Include="Repository\EveStaticDataRepository.cs" />
+    <Compile Include="Ui\Controls\PeriodSelector.xaml.cs">
+      <DependentUpon>PeriodSelector.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Ui\Controls\PeriodSelectorBar.xaml.cs">
+      <DependentUpon>PeriodSelectorBar.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Ui\Events\ModuleEvent.cs" />
     <Compile Include="Ui\Events\ApiUpdateEvent.cs" />
     <Compile Include="Ui\Events\AssetsUpdatedEvent.cs" />
     <Compile Include="Ui\Events\DeleteOrdersEventArgs.cs" />
     <Compile Include="Ui\Events\IndustryJobsUpdatedEvent.cs" />
+    <Compile Include="Ui\Events\IOpenModuleEvent.cs" />
     <Compile Include="Ui\Events\JournalUpdatedEvent.cs" />
     <Compile Include="Ui\Events\MarketOrdersUpdatedEvent.cs" />
     <Compile Include="Ui\Events\StatusChangedEventArgs.cs" />
@@ -285,6 +293,8 @@
     <Compile Include="Models\TransactionAggregateSummary.cs" />
     <Compile Include="ViewModels\Dialogs\SettingsViewModel.cs" />
     <Compile Include="ViewModels\Dialogs\OrderOptimizerViewModel.cs" />
+    <Compile Include="ViewModels\ModuleHost.cs" />
+    <Compile Include="ViewModels\Modules\JournalAnalyzerViewModel.cs" />
     <Compile Include="ViewModels\SettingsPanels\GeneralSettingsViewModel.cs" />
     <Compile Include="ViewModels\SettingsPanels\SettingsPanelBase.cs" />
     <Compile Include="ViewModels\Modules\AssetsViewModel.cs" />
@@ -328,6 +338,9 @@
     </Compile>
     <Compile Include="Views\Dialogs\OrderOptimizerView.xaml.cs">
       <DependentUpon>OrderOptimizerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Modules\JournalAnalyzerView.xaml.cs">
+      <DependentUpon>JournalAnalyzerView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SettingsPanels\GeneralSettingsView.xaml.cs">
       <DependentUpon>GeneralSettingsView.xaml</DependentUpon>
@@ -374,6 +387,14 @@
     <Compile Include="Views\Modules\TransactionsView.xaml.cs">
       <DependentUpon>TransactionsView.xaml</DependentUpon>
     </Compile>
+    <Page Include="Ui\Controls\PeriodSelector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Ui\Controls\PeriodSelectorBar.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Dialogs\EditOrderDialogView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -399,6 +420,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Dialogs\OrderOptimizerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Modules\JournalAnalyzerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

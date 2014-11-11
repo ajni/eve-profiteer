@@ -1,33 +1,24 @@
-﻿using System.Linq;
-using Caliburn.Micro;
-using eZet.EveProfiteer.Models;
-using eZet.EveProfiteer.Util;
+﻿using Caliburn.Micro;
 
 namespace eZet.EveProfiteer.Services {
     public abstract class DbContextService {
 
-        protected EveProfiteerDbEntities CreateDb() {
-            return IoC.Get<EveProfiteerDbEntities>();
+        public EveProfiteerRepository Db { get; private set; }
+
+
+        public void Activate() {
+            if (Db == null)
+                Db = CreateDb();
         }
 
-        protected IQueryable<Transaction> MyTransactions(EveProfiteerDbEntities db) {
-            return db.Transactions.Where(t => t.ApiKeyEntity_Id == ApplicationHelper.ActiveEntity.Id);
+        public void Deactivate() {
+            if (Db != null) Db.Dispose();
+            Db = null;
         }
 
-        protected IQueryable<Order> MyOrders(EveProfiteerDbEntities db) {
-            return db.Orders.Where(t => t.ApiKeyEntity_Id == ApplicationHelper.ActiveEntity.Id);
+        protected EveProfiteerRepository CreateDb() {
+            return IoC.Get<EveProfiteerRepository>();
         }
 
-        protected IQueryable<Asset> MyAssets(EveProfiteerDbEntities db) {
-            return db.Assets.Where(t => t.ApiKeyEntity_Id == ApplicationHelper.ActiveEntity.Id);
-        }
-
-        protected IQueryable<MarketOrder> MyMarketOrders(EveProfiteerDbEntities db) {
-            return db.MarketOrders.Where(t => t.ApiKeyEntityId == ApplicationHelper.ActiveEntity.Id);
-        }
-
-        protected IQueryable<InvType> GetMarketTypes(EveProfiteerDbEntities db) {
-            return db.InvTypes.Where(t => t.Published == true && t.MarketGroupId != null);
-        }
     }
 }

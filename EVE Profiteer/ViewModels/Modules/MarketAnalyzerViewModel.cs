@@ -45,7 +45,6 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
                 new DelegateCommand<MarketAnalyzerEntry>(
                     entry => _eventAggregator.PublishOnUIThread(new ViewOrderEvent(entry.InvType)), entry => entry != null && entry.Order != null);
             PropertyChanged += onPropertyChanged;
-            Initialize = InitializeAsync();
         }
 
         public ICommand ViewMarketDetailsCommand { get; private set; }
@@ -133,7 +132,7 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
         }
 
         public async void Handle(OrdersChangedEventArgs ordersChangedEventArgs) {
-            await Initialize;
+            await Initialized;
             ILookup<int, MarketAnalyzerEntry> lookup = MarketAnalyzerResults.ToLookup(f => f.InvType.TypeId);
             foreach (Order order in ordersChangedEventArgs.Added) {
                 if (lookup.Contains(order.TypeId)) {
@@ -143,7 +142,7 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             MarketAnalyzerResults.Refresh();
         }
 
-        protected override async Task InitializeAsync() {
+        protected override async Task OnInitialize() {
             MarketTreeNodes =
                 await
                     _marketAnalyzerService.GetMarketTreeAsync(treeViewCheckBox_PropertyChanged)

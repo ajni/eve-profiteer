@@ -20,12 +20,6 @@ namespace eZet.EveProfiteer.Services {
             _eveProfiteerRepository = eveProfiteerRepository;
         }
 
-        public void Activate() {
-        }
-
-        public void Deactivate() {
-        }
-
         public Task<List<InvType>> GetMarketTypesAsync() {
             return _eveProfiteerRepository.GetMarketTypes().ToListAsync();
         }
@@ -76,7 +70,7 @@ namespace eZet.EveProfiteer.Services {
 
         public async Task<int> RemoveOrdersAsync(IEnumerable<OrderViewModel> orders) {
             var list = orders.Select(order => order.Order);
-            var db = _eveProfiteerRepository.Db;
+            var db = _eveProfiteerRepository.Context;
             foreach (var order in list) {
                 if (order.Id == 0) {
                     continue;
@@ -88,7 +82,7 @@ namespace eZet.EveProfiteer.Services {
         }
 
         public async Task<int> SaveOrdersAsync(IEnumerable<OrderViewModel> orders) {
-            var db = _eveProfiteerRepository.Db;
+            var db = _eveProfiteerRepository.Context;
             db.Configuration.AutoDetectChangesEnabled = false;
             db.Configuration.ValidateOnSaveEnabled = false;
             int count = 0;

@@ -14,12 +14,6 @@ namespace eZet.EveProfiteer.Models
     
     public partial class Transaction
     {
-        public Transaction()
-        {
-            this.FifoBuy = new HashSet<FifoCost>();
-            this.FifoSell = new HashSet<FifoCost>();
-        }
-    
         public int Id { get; set; }
         public System.DateTime TransactionDate { get; set; }
         public long TransactionId { get; set; }
@@ -46,7 +40,5 @@ namespace eZet.EveProfiteer.Models
         public virtual ApiKeyEntity ApiKeyEntity { get; set; }
         public virtual InvType InvType { get; set; }
         public virtual InvType ClientType { get; set; }
-        public virtual ICollection<FifoCost> FifoBuy { get; set; }
-        public virtual ICollection<FifoCost> FifoSell { get; set; }
     }
 }

@@ -36,7 +36,6 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             ViewEnd = DateTime.UtcNow.Date;
             ViewStart = ViewEnd.AddMonths(-6).Date;
             PropertyChanged += OnPropertyChanged;
-            Initialize = InitializeAsync();
         }
 
         public ICommand AddToOrdersCommand { get; private set; }
@@ -127,13 +126,9 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
         }
 
         public async void Handle(ViewMarketBrowserEvent message) {
-            await Initialize.ConfigureAwait(false);
+            await Initialized.ConfigureAwait(false);
             SelectedItem = InvTypes.Single(t => t.TypeId == message.InvType.TypeId);
             await LoadMarketDetails(SelectedRegion, SelectedItem).ConfigureAwait(false);
-        }
-
-        protected override async void OnInitialize() {
-            await Initialize;
         }
 
         private bool CanViewTradeDetails() {return MarketBrowserData != null && MarketBrowserData.InvType != null;
@@ -164,7 +159,7 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             SelectedItem = InvTypes.Single(t => t.TypeId == node.InvType.TypeId);
         }
 
-        public async Task InitializeAsync() {
+        protected override async Task OnInitialize() {
                 Regions = await _marketBrowserService.GetRegions().ConfigureAwait(false);
                 SelectedRegion = Regions.Single(region => region.RegionId == ConfigManager.DefaultRegion);
                 InvTypes = await _marketBrowserService.GetMarketTypes().ConfigureAwait(false);

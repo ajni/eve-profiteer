@@ -1,27 +1,11 @@
-﻿using System.Data.Entity;
-using System.Linq;
-using Caliburn.Micro;
+﻿using System.Linq;
 using eZet.EveProfiteer.Models;
-using eZet.EveProfiteer.Util;
 
 namespace eZet.EveProfiteer.Services {
-    public class JournalService {
-        private EveProfiteerDbEntities _db;
+    public class JournalService : DbContextService {
 
         public IQueryable<JournalEntry> GetJournal() {
-            if (_db == null)
-                _db = IoC.Get<EveProfiteerDbEntities>();
-            return
-                _db.JournalEntries.Where(t => t.ApiKeyEntity_Id == ApplicationHelper.ActiveEntity.Id)
-                    .Include("RefType");
+            return Db.MyJournalEntries();
         }
-
-        public void Deactivate() {
-            if (_db != null) {
-                _db.Dispose();
-                _db = null;
-            }
-        }
-
     }
 }

@@ -13,6 +13,7 @@ using Caliburn.Micro;
 using DevExpress.Mvvm;
 using DevExpress.Xpf.Bars;
 using DevExpress.Xpf.Docking;
+using DevExpress.Xpf.Docking.Base;
 using eZet.EveProfiteer.Events;
 using eZet.EveProfiteer.Framework;
 using eZet.EveProfiteer.Models;
@@ -25,15 +26,16 @@ using eZet.EveProfiteer.ViewModels.Dialogs;
 using eZet.EveProfiteer.Views;
 
 namespace eZet.EveProfiteer.ViewModels {
-    public sealed class ShellViewModel : Conductor<IScreen>.Collection.AllActive, IShell,
+    public sealed class ShellViewModel : ModuleHost, IShell,
         IHandle<StatusChangedEventArgs>,
-        IHandle<IActivateTabEvent> {
+        IHandle<ModuleEvent> {
         private readonly IEventAggregator _eventAggregator;
         private readonly ModuleService _moduleService;
         private readonly ShellService _shellService;
         private readonly TraceSource _trace = new TraceSource("EveProfiteer", SourceLevels.All);
         private readonly IWindowManager _windowManager;
         private string _statusMessage;
+        private BindableCollection<ApiKeyEntity> _entities;
 
         public ShellViewModel(IWindowManager windowManager, IEventAggregator eventAggregator, ShellService shellService,
             ModuleService moduleService) {
@@ -45,7 +47,9 @@ namespace eZet.EveProfiteer.ViewModels {
             StatusLocked = false;
 
             StatusMessage = "Initializing...";
+            Initialize = InitializeAsync();
             _eventAggregator.Subscribe(this);
+            Modules = new BindableCollection<ModuleViewModel>();
 
             OpenKeyManagerCommand = new DelegateCommand(ExecuteOpenKeyManager);
             OpenSettingsCommand = new DelegateCommand(ExecuteOpenSettings);
@@ -59,21 +63,27 @@ namespace eZet.EveProfiteer.ViewModels {
             UpdateIndustryJobsCommand = new DelegateCommand(ExecuteUpdateIndystryJobs);
             UpdateMarketOrdersCommand = new DelegateCommand(ExecuteUpdateMarketOrders);
             ActivateTabCommand = new DelegateCommand<Type>(ExecuteActivateTab);
-
-            Initialize = InitializeAsync();
         }
 
+
         protected override async void OnInitialize() {
-            await Initialize;
+            if (Initialize == null) return;
+            await Initialize.ConfigureAwait(false);
         }
 
         public Task Initialize { get; private set; }
 
-        public BindableCollection<ApiKeyEntity> Entities { get; set; }
+        public BindableCollection<ApiKeyEntity> Entities {
+            get { return _entities; }
+            set {
+                if (Equals(value, _entities)) return;
+                _entities = value;
+                NotifyOfPropertyChange();
+            }
+        }
 
         public ICommand OpenSettingsCommand { get; set; }
 
-        public ModuleViewModel ActiveModel { get; private set; }
 
         public string StatusMessage {
             get { return _statusMessage; }
@@ -112,7 +122,8 @@ namespace eZet.EveProfiteer.ViewModels {
 
         #endregion
 
-        public void Handle(IActivateTabEvent message) {
+        public void Handle(ModuleEvent message) {
+            var module = _moduleService.GetModule(message.GetTabType());
             ExecuteActivateTab(message.GetTabType());
         }
 
@@ -124,7 +135,7 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         private async Task InitializeAsync() {
-            IEnumerable<ApiKeyEntity> entities = await _shellService.GetAllActiveEntities().ConfigureAwait(false);
+            IEnumerable<ApiKeyEntity> entities = await _shellService.GetAllActiveEntities();
             Entities = new BindableCollection<ApiKeyEntity>(entities);
             int activeEntityId = Settings.Default.ActiveEntity;
             if (activeEntityId != 0) {
@@ -146,13 +157,11 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         private void ExecuteActivateTab(Type type) {
-            ModuleViewModel vm = _moduleService.GetModule(type);
-            activateTab(vm);
-            ActiveModel = vm;
+            activateTab(_moduleService.GetModule(type));
         }
 
-        private void activateTab(ModuleViewModel viewModel) {
-            ActivateItem(viewModel);
+        private async void activateTab(ModuleViewModel viewModel) {
+            await Activate(viewModel);
             var view = (ShellView) GetView();
             BaseLayoutItem tab = view.ModuleHost.VisiblePages.SingleOrDefault(page => page.DataContext == viewModel);
             if (tab == null) {
@@ -160,17 +169,28 @@ namespace eZet.EveProfiteer.ViewModels {
                 tab.Closed = false;
             }
             view.DockLayoutManager.DockController.Activate(tab);
+            view.DockLayoutManager.DockItemClosed += DockLayoutManagerOnDockItemClosed;
+            view.ModuleHost.SelectedItemChanged += ModuleHost_SelectedItemChanged;
         }
 
-        private void initDefaultModules() {
+        private void DockLayoutManagerOnDockItemClosed(object sender, DockItemClosedEventArgs e) {
+            e.AffectedItems.Apply(f => ((ModuleViewModel) f.DataContext).Deactivate(true));
+        }
+
+        private async void ModuleHost_SelectedItemChanged(object sender, SelectedItemChangedEventArgs e) {
+            if (e.OldItem != null) await ((ModuleViewModel)e.OldItem.DataContext).Deactivate(false);
+            if (e.Item != null) await ((ModuleViewModel)e.Item.DataContext).Activate();
+        }
+
+        private async void initDefaultModules() {
+            await Initialize;
             activateTab(_moduleService.GetDefault());
         }
 
         protected override void OnViewLoaded(object view) {
             var shellView = (ShellView) view;
-            initDefaultModules();
             initializeRibbon(shellView);
-            base.OnViewLoaded(view);
+            initDefaultModules();
         }
 
         private void initializeRibbon(ShellView view) {
@@ -302,7 +322,6 @@ namespace eZet.EveProfiteer.ViewModels {
 
         private async Task<int> updateMarketOrders() {
             // TODO fix this
-            return 0;
             int result = await _shellService.UpdateMarketOrdersAsync().ConfigureAwait(false);
             if (result > 0) {
                 _eventAggregator.PublishOnBackgroundThread(new MarketOrdersUpdatedEvent());

@@ -58,15 +58,6 @@
           <Property Name="Quantity" Type="int" Nullable="false" />
           <Property Name="TotalCost" Type="decimal" Precision="18" Scale="5" Nullable="false" />
         </EntityType>
-        <EntityType Name="FifoCost">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="int" Nullable="false" />
-          <Property Name="BuyTransactionId" Type="int" Nullable="false" />
-          <Property Name="SellTransactionId" Type="int" Nullable="false" />
-          <Property Name="Quantity" Type="int" Nullable="false" />
-        </EntityType>
         <EntityType Name="invBlueprintTypes">
           <Key>
             <PropertyRef Name="blueprintTypeID" />
@@ -229,6 +220,7 @@ warning 6002: The table/view 'EveProfiteerDb.dbo.mapRegions' does not have a pri
           <Property Name="Notes" Type="text" />
           <Property Name="StationId" Type="int" />
           <Property Name="AutoProcess" Type="bit" Nullable="false" />
+          <Property Name="MapRegion_Id" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="ProductionBatches">
           <Key>
@@ -328,9 +320,7 @@ warning 6002: The table/view 'EveProfiteerDb.dbo.mapRegions' does not have a pri
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_dbo_ApiKeyApiKeyEntities_dbo_ApiKeyEntities_ApiKeyEntity_Id">
-          <End Role="ApiKeyEntities" Type="Self.ApiKeyEntities" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
+          <End Role="ApiKeyEntities" Type="Self.ApiKeyEntities" Multiplicity="1" />
           <End Role="ApiKeyApiKeyEntities" Type="Self.ApiKeyApiKeyEntities" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ApiKeyEntities">
@@ -342,9 +332,7 @@ warning 6002: The table/view 'EveProfiteerDb.dbo.mapRegions' does not have a pri
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_dbo_ApiKeyApiKeyEntities_dbo_ApiKeys_ApiKey_Id">
-          <End Role="ApiKeys" Type="Self.ApiKeys" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
+          <End Role="ApiKeys" Type="Self.ApiKeys" Multiplicity="1" />
           <End Role="ApiKeyApiKeyEntities" Type="Self.ApiKeyApiKeyEntities" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ApiKeys">
@@ -391,6 +379,42 @@ warning 6002: The table/view 'EveProfiteerDb.dbo.mapRegions' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_dbo_Orders_ApiKeyEntities">
+          <End Role="ApiKeyEntities" Type="Self.ApiKeyEntities" Multiplicity="1" />
+          <End Role="Orders" Type="Self.Orders" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ApiKeyEntities">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Orders">
+              <PropertyRef Name="ApiKeyEntity_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_Orders_InvTypes">
+          <End Role="invTypes" Type="Self.invTypes" Multiplicity="1" />
+          <End Role="Orders" Type="Self.Orders" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="invTypes">
+              <PropertyRef Name="typeID" />
+            </Principal>
+            <Dependent Role="Orders">
+              <PropertyRef Name="TypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_Orders_StaStations">
+          <End Role="staStations" Type="Self.staStations" Multiplicity="0..1" />
+          <End Role="Orders" Type="Self.Orders" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="staStations">
+              <PropertyRef Name="stationID" />
+            </Principal>
+            <Dependent Role="Orders">
+              <PropertyRef Name="StationId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_dbo_Transactions_dbo_ApiKeyEntities_ApiKeyEntity_Id">
           <End Role="ApiKeyEntities" Type="Self.ApiKeyEntities" Multiplicity="1" />
           <End Role="Transactions" Type="Self.Transactions" Multiplicity="*" />
@@ -403,63 +427,15 @@ warning 6002: The table/view 'EveProfiteerDb.dbo.mapRegions' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_FifoCost_BuyTranscation_ToTransactions">
-          <End Role="Transactions" Type="Self.Transactions" Multiplicity="1" />
-          <End Role="FifoCost" Type="Self.FifoCost" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Transactions">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="FifoCost">
-              <PropertyRef Name="BuyTransactionId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_FifoCost_SellTranscation_ToTransactions">
-          <End Role="Transactions" Type="Self.Transactions" Multiplicity="1" />
-          <End Role="FifoCost" Type="Self.FifoCost" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Transactions">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="FifoCost">
-              <PropertyRef Name="SellTransactionId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Orders_ToApiKeyEntities">
-          <End Role="ApiKeyEntities" Type="Self.ApiKeyEntities" Multiplicity="1" />
-          <End Role="Orders" Type="Self.Orders" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ApiKeyEntities">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Orders">
-              <PropertyRef Name="ApiKeyEntity_Id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Orders_ToInvTypes">
+        <Association Name="FK_dbo_Transactions_dbo_InvType_TypeId">
           <End Role="invTypes" Type="Self.invTypes" Multiplicity="1" />
-          <End Role="Orders" Type="Self.Orders" Multiplicity="*" />
+          <End Role="Transactions" Type="Self.Transactions" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="invTypes">
               <PropertyRef Name="typeID" />
             </Principal>
-            <Dependent Role="Orders">
+            <Dependent Role="Transactions">
               <PropertyRef Name="TypeId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Orders_ToStaStations">
-          <End Role="staStations" Type="Self.staStations" Multiplicity="0..1" />
-          <End Role="Orders" Type="Self.Orders" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="staStations">
-              <PropertyRef Name="stationID" />
-            </Principal>
-            <Dependent Role="Orders">
-              <PropertyRef Name="StationId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -487,25 +463,12 @@ warning 6002: The table/view 'EveProfiteerDb.dbo.mapRegions' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Transaction_ToInvType">
-          <End Role="invTypes" Type="Self.invTypes" Multiplicity="1" />
-          <End Role="Transactions" Type="Self.Transactions" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="invTypes">
-              <PropertyRef Name="typeID" />
-            </Principal>
-            <Dependent Role="Transactions">
-              <PropertyRef Name="TypeId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityContainer Name="EveProfiteerDbModelStoreContainer">
           <EntitySet Name="ApiKeyApiKeyEntities" EntityType="Self.ApiKeyApiKeyEntities" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ApiKeyEntities" EntityType="Self.ApiKeyEntities" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ApiKeys" EntityType="Self.ApiKeys" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Assets" EntityType="Self.Assets" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BatchMaterials" EntityType="Self.BatchMaterials" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="FifoCost" EntityType="Self.FifoCost" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="invBlueprintTypes" EntityType="Self.invBlueprintTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="invGroups" EntityType="Self.invGroups" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="invMarketGroups" EntityType="Self.invMarketGroups" Schema="dbo" store:Type="Tables" />
@@ -563,29 +526,25 @@ warning 6002: The table/view 'EveProfiteerDb.dbo.mapRegions' does not have a pri
             <End Role="ApiKeyEntities" EntitySet="ApiKeyEntities" />
             <End Role="JournalEntries" EntitySet="JournalEntries" />
           </AssociationSet>
+          <AssociationSet Name="FK_dbo_Orders_ApiKeyEntities" Association="Self.FK_dbo_Orders_ApiKeyEntities">
+            <End Role="ApiKeyEntities" EntitySet="ApiKeyEntities" />
+            <End Role="Orders" EntitySet="Orders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_Orders_InvTypes" Association="Self.FK_dbo_Orders_InvTypes">
+            <End Role="invTypes" EntitySet="invTypes" />
+            <End Role="Orders" EntitySet="Orders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_Orders_StaStations" Association="Self.FK_dbo_Orders_StaStations">
+            <End Role="staStations" EntitySet="staStations" />
+            <End Role="Orders" EntitySet="Orders" />
+          </AssociationSet>
           <AssociationSet Name="FK_dbo_Transactions_dbo_ApiKeyEntities_ApiKeyEntity_Id" Association="Self.FK_dbo_Transactions_dbo_ApiKeyEntities_ApiKeyEntity_Id">
             <End Role="ApiKeyEntities" EntitySet="ApiKeyEntities" />
             <End Role="Transactions" EntitySet="Transactions" />
           </AssociationSet>
-          <AssociationSet Name="FK_FifoCost_BuyTranscation_ToTransactions" Association="Self.FK_FifoCost_BuyTranscation_ToTransactions">
-            <End Role="Transactions" EntitySet="Transactions" />
-            <End Role="FifoCost" EntitySet="FifoCost" />
-          </AssociationSet>
-          <AssociationSet Name="FK_FifoCost_SellTranscation_ToTransactions" Association="Self.FK_FifoCost_SellTranscation_ToTransactions">
-            <End Role="Transactions" EntitySet="Transactions" />
-            <End Role="FifoCost" EntitySet="FifoCost" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Orders_ToApiKeyEntities" Association="Self.FK_Orders_ToApiKeyEntities">
-            <End Role="ApiKeyEntities" EntitySet="ApiKeyEntities" />
-            <End Role="Orders" EntitySet="Orders" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Orders_ToInvTypes" Association="Self.FK_Orders_ToInvTypes">
+          <AssociationSet Name="FK_dbo_Transactions_dbo_InvType_TypeId" Association="Self.FK_dbo_Transactions_dbo_InvType_TypeId">
             <End Role="invTypes" EntitySet="invTypes" />
-            <End Role="Orders" EntitySet="Orders" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Orders_ToStaStations" Association="Self.FK_Orders_ToStaStations">
-            <End Role="staStations" EntitySet="staStations" />
-            <End Role="Orders" EntitySet="Orders" />
+            <End Role="Transactions" EntitySet="Transactions" />
           </AssociationSet>
           <AssociationSet Name="FK_ProductionBatches_ToApiKeyEntities" Association="Self.FK_ProductionBatches_ToApiKeyEntities">
             <End Role="ApiKeyEntities" EntitySet="ApiKeyEntities" />
@@ -594,10 +553,6 @@ warning 6002: The table/view 'EveProfiteerDb.dbo.mapRegions' does not have a pri
           <AssociationSet Name="FK_ProductionBatches_ToInvTypes" Association="Self.FK_ProductionBatches_ToInvTypes">
             <End Role="invTypes" EntitySet="invTypes" />
             <End Role="ProductionBatches" EntitySet="ProductionBatches" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Transaction_ToInvType" Association="Self.FK_Transaction_ToInvType">
-            <End Role="invTypes" EntitySet="invTypes" />
-            <End Role="Transactions" EntitySet="Transactions" />
           </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -724,15 +679,6 @@ warning 6002: The table/view 'EveProfiteerDb.dbo.mapRegions' does not have a pri
           <AssociationSet Name="RefTypeJournalEntry" Association="EveProfiteerDbModel.RefTypeJournalEntry">
             <End Role="RefType" EntitySet="RefTypes" />
             <End Role="JournalEntry" EntitySet="JournalEntries" />
-          </AssociationSet>
-          <EntitySet Name="FifoCosts" EntityType="EveProfiteerDbModel.FifoCost" />
-          <AssociationSet Name="FK_FifoCost_BuyTranscation_ToTransactions" Association="EveProfiteerDbModel.FK_FifoCost_BuyTranscation_ToTransactions">
-            <End Role="Transaction" EntitySet="Transactions" />
-            <End Role="FifoCost" EntitySet="FifoCosts" />
-          </AssociationSet>
-          <AssociationSet Name="FK_FifoCost_SellTranscation_ToTransactions" Association="EveProfiteerDbModel.FK_FifoCost_SellTranscation_ToTransactions">
-            <End Role="Transaction" EntitySet="Transactions" />
-            <End Role="FifoCost" EntitySet="FifoCosts" />
           </AssociationSet>
           <EntitySet Name="MarketOrders" EntityType="EveProfiteerDbModel.MarketOrder" />
           <AssociationSet Name="StaStationMarketOrder" Association="EveProfiteerDbModel.StaStationMarketOrder">
@@ -930,6 +876,7 @@ warning 6002: The table/view 'EveProfiteerDb.dbo.mapRegions' does not have a pri
           <Property Name="StationId" Type="Int32" />
           <NavigationProperty Name="staStation" Relationship="EveProfiteerDbModel.FK_Orders_ToStaStations" FromRole="Order" ToRole="StaStation" />
           <Property Name="AutoProcess" Type="Boolean" Nullable="false" />
+          <Property Name="MapRegion_Id" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="Transaction">
           <Key>
@@ -960,8 +907,6 @@ warning 6002: The table/view 'EveProfiteerDb.dbo.mapRegions' does not have a pri
           <Property Name="PerpetualAverageCost" Type="Decimal" Nullable="false" Precision="18" Scale="5" />
           <Property Name="CogsBrokerFees" Type="Decimal" Precision="18" Scale="5" />
           <Property Name="CogsMaterialCost" Type="Decimal" Precision="18" Scale="5" />
-          <NavigationProperty Name="FifoBuy" Relationship="EveProfiteerDbModel.FK_FifoCost_BuyTranscation_ToTransactions" FromRole="Transaction" ToRole="FifoCost" />
-          <NavigationProperty Name="FifoSell" Relationship="EveProfiteerDbModel.FK_FifoCost_SellTranscation_ToTransactions" FromRole="Transaction" ToRole="FifoCost" />
           </EntityType>
         <Association Name="FK_dbo_Transactions_dbo_ApiKeyEntities_ApiKeyEntity_Id">
           <End Type="EveProfiteerDbModel.ApiKeyEntity" Role="ApiKeyEntity" Multiplicity="1" />
@@ -1367,41 +1312,6 @@ warning 6002: The table/view 'EveProfiteerDb.dbo.mapRegions' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="FifoCost">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" />
-          <Property Name="BuyTransactionId" Type="Int32" Nullable="false" />
-          <Property Name="SellTransactionId" Type="Int32" Nullable="false" />
-          <Property Name="Quantity" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="BuyTransaction" Relationship="EveProfiteerDbModel.FK_FifoCost_BuyTranscation_ToTransactions" FromRole="FifoCost" ToRole="Transaction" />
-          <NavigationProperty Name="SellTransaction" Relationship="EveProfiteerDbModel.FK_FifoCost_SellTranscation_ToTransactions" FromRole="FifoCost" ToRole="Transaction" />
-        </EntityType>
-        <Association Name="FK_FifoCost_BuyTranscation_ToTransactions">
-          <End Type="EveProfiteerDbModel.Transaction" Role="Transaction" Multiplicity="1" />
-          <End Type="EveProfiteerDbModel.FifoCost" Role="FifoCost" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Transaction">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="FifoCost">
-              <PropertyRef Name="BuyTransactionId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_FifoCost_SellTranscation_ToTransactions">
-          <End Type="EveProfiteerDbModel.Transaction" Role="Transaction" Multiplicity="1" />
-          <End Type="EveProfiteerDbModel.FifoCost" Role="FifoCost" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Transaction">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="FifoCost">
-              <PropertyRef Name="SellTransactionId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="MarketOrder">
           <Key>
             <PropertyRef Name="Id" />
@@ -1564,6 +1474,7 @@ warning 6002: The table/view 'EveProfiteerDb.dbo.mapRegions' does not have a pri
           <EntitySetMapping Name="Orders">
             <EntityTypeMapping TypeName="EveProfiteerDbModel.Order">
               <MappingFragment StoreEntitySet="Orders">
+                <ScalarProperty Name="MapRegion_Id" ColumnName="MapRegion_Id" />
                 <ScalarProperty Name="AutoProcess" ColumnName="AutoProcess" />
                 <ScalarProperty Name="StationId" ColumnName="StationId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
@@ -1734,16 +1645,6 @@ warning 6002: The table/view 'EveProfiteerDb.dbo.mapRegions' does not have a pri
             <EntityTypeMapping TypeName="EveProfiteerDbModel.RefType">
               <MappingFragment StoreEntitySet="RefTypes">
                 <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="FifoCosts">
-            <EntityTypeMapping TypeName="EveProfiteerDbModel.FifoCost">
-              <MappingFragment StoreEntitySet="FifoCost">
-                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
-                <ScalarProperty Name="SellTransactionId" ColumnName="SellTransactionId" />
-                <ScalarProperty Name="BuyTransactionId" ColumnName="BuyTransactionId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

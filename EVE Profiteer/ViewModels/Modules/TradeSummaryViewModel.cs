@@ -26,7 +26,6 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
         private ViewPeriodEnum _selectedViewPeriod;
         private TransactionAggregate _summary;
 
-
         public TradeSummaryViewModel(TradeSummaryService tradeSummaryService, IEventAggregator eventAggregator) {
             _tradeSummaryService = tradeSummaryService;
             _eventAggregator = eventAggregator;
@@ -35,7 +34,6 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             PeriodSelectorEnd = DateTime.UtcNow;
             _selectedViewPeriod = ViewPeriodEnum.Week;
             ViewPeriodCommand = new DelegateCommand(ExecuteViewPeriod);
-            Initialize = InitializeAsync();
         }
 
         public ICommand ViewPeriodCommand { get; private set; }
@@ -71,12 +69,16 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             }
         }
 
-        protected override Task InitializeAsync() {
+        protected override Task OnOpen() {
             return ViewPeriod();
         }
 
-        public async void ExecuteViewPeriod() {
-            await ViewPeriod().ConfigureAwait(false);
+        protected override Task OnActivate() {
+            return refresh();
+        }
+
+        public void ExecuteViewPeriod() {
+            ViewPeriod().ConfigureAwait(false);
         }
 
         public Task ViewPeriod() {
@@ -113,9 +115,6 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             return load(ActualViewStart, ActualViewEnd);
         }
 
-        //protected override async void OnActivate() {
-        //    await refresh().ConfigureAwait(false);
-        //}
 
         private async Task load(DateTime start, DateTime end) {
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Loading..."));
@@ -126,17 +125,18 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Analysis complete"));
         }
 
-        private async Task refresh() {
+        private Task refresh() {
             if (NeedRefresh) {
                 NeedRefresh = false;
-                await ViewPeriod().ConfigureAwait(false);
+                return ViewPeriod();
             }
+            return Task.FromResult(0);
         }
 
-        public async void Handle(TransactionsUpdatedEvent message) {
+        public void Handle(TransactionsUpdatedEvent message) {
             NeedRefresh = true;
             if (IsActive)
-                await refresh();
+                refresh();
         }
 
     }

@@ -9,7 +9,7 @@ using eZet.EveProfiteer.Services;
 using eZet.EveProfiteer.Ui.Events;
 
 namespace eZet.EveProfiteer.ViewModels.Modules {
-    public class MarketOrdersViewModel : ModuleViewModel, IHandle<MarketOrdersUpdatedEvent> {
+    public sealed class MarketOrdersViewModel : ModuleViewModel, IHandle<MarketOrdersUpdatedEvent> {
         private readonly MarketOrderService _marketOrderService;
         private readonly IEventAggregator _eventAggregator;
         private IList<MarketOrder> _marketOrders;
@@ -42,29 +42,28 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
         public ICommand ViewOrderCommand { get; private set; }
 
         public async void Handle(MarketOrdersUpdatedEvent message) {
-            NeedRefresh = true;
-            if (IsActive)
-                await refresh();
+            await refresh();
         }
 
-        protected override void OnInitialize() {
-            Task.Run(() => loadAsync());
+        protected override Task OnDeactivate(bool close) {
+            MarketOrders = null;
+            Initialized = null;
+            return Task.FromResult(0);
         }
 
         private async Task refresh() {
-            if (NeedRefresh) {
-                NeedRefresh = false;
-                await loadAsync();
-            }
+            Initialized = InitializeAsync();
+            if (IsActive)
+                await Initialized;
         }
 
-        private async Task loadAsync() {
+        private async Task InitializeAsync() {
             MarketOrders = await _marketOrderService.GetMarketOrdersAsync().ConfigureAwait(false);
         }
 
 
-        private bool canExecuteViewOrder(MarketOrder arg) {
-            return arg != null && arg.InvType != null && arg.InvType.Orders != null && arg.InvType.Orders.Count == 1;
+        private bool canExecuteViewOrder(MarketOrder order) {
+            return order != null && order.InvType != null && order.InvType.Orders != null && order.InvType.Orders.Count == 1;
         }
 
         private void executeViewOrder(MarketOrder order) {

@@ -25,11 +25,11 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
         private readonly TradeAnalyzerService _tradeAnalyzerService;
         private readonly IEventAggregator _eventAggregator;
         private ViewPeriodEnum selectedViewPeriod;
+        private BindableCollection<TransactionAggregate> items;
 
         public TradeAnalyzerViewModel(IEventAggregator eventAggregator, TradeAnalyzerService tradeAnalyzerService) {
             _eventAggregator = eventAggregator;
             _tradeAnalyzerService = tradeAnalyzerService;
-            Items = new BindableCollection<TransactionAggregate>();
             ViewTradeDetailsCommand = new DelegateCommand<TransactionAggregate>(ExecuteViewTradeDetails,
                 entry => entry != null);
             ViewMarketDetailsCommand =
@@ -39,10 +39,8 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             ViewPeriodCommand = new DelegateCommand(ViewPeriod);
             ViewOrderCommand = new DelegateCommand<TransactionAggregate>(ExecuteViewOrder, CanViewOrder);
             AddToOrdersCommand = new DelegateCommand<ICollection<object>>(ExecuteAddToOrders, CanAddToOrders);
-
             PeriodSelectorStart = DateTime.UtcNow.AddMonths(-1);
             PeriodSelectorEnd = DateTime.UtcNow;
-            Initialize = InitializeAsync();
         }
 
         public DateTime ActualViewStart { get; private set; }
@@ -77,7 +75,21 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             }
         }
 
-        public BindableCollection<TransactionAggregate> Items { get; private set; }
+        public BindableCollection<TransactionAggregate> Items {
+            get { return items; }
+            private set {
+                if (Equals(value, items)) return;
+                items = value;
+                NotifyOfPropertyChange();
+            }
+        }
+
+        protected override Task OnDeactivate(bool close) {
+            if (close) {
+                Items = null;
+            }
+            return base.OnDeactivate(close);
+        }
 
         private bool CanAddToOrders(ICollection<object> arg) {
             if (arg == null || !arg.Any())
@@ -90,7 +102,6 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             List<InvType> items = obj.Select(item => ((TransactionAggregate)item).InvType).ToList();
             _eventAggregator.PublishOnUIThread(new AddOrdersEvent(items));
         }
-
 
         private bool CanViewOrder(TransactionAggregate entry) {
             return entry != null && entry.Order != null;
@@ -144,16 +155,14 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
         }
 
         private async Task analyze(DateTime start, DateTime end) {
-            Items.IsNotifying = false;
-            Items.Clear();
+            var items = new List<TransactionAggregate>();
             var transactionGroups = (await _tradeAnalyzerService.GetTransactions(start, end).ConfigureAwait(false)).GroupBy(t => t.InvType);
             ILookup<int, Order> orders = (await _tradeAnalyzerService.GetOrders()).ToLookup(order => order.TypeId);
             foreach (var transactionCollection in transactionGroups) {
-                Items.Add(new TransactionAggregate(transactionCollection.Key, transactionCollection.ToList(),
+                items.Add(new TransactionAggregate(transactionCollection.Key, transactionCollection.ToList(),
                     orders[transactionCollection.First().TypeId].SingleOrDefault()));
             }
-            Items.IsNotifying = true;
-            Items.Refresh();
+            Items = new BindableCollection<TransactionAggregate>(items);
         }
 
     }

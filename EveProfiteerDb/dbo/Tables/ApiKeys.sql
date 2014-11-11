@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[ApiKeys] (
-    [Id]       INT            IDENTITY (1, 1) NOT NULL,
+    [Id]       INT         IDENTITY NOT NULL,
     [ApiKeyId] INT         NOT NULL,
     [VCode]    NVARCHAR (MAX) NULL,
     [KeyType]  NVARCHAR (MAX) NULL,

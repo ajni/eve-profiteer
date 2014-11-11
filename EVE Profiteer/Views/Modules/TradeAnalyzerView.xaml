@@ -6,8 +6,6 @@
              xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
              xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
              xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
-             xmlns:themes="http://schemas.devexpress.com/winfx/2008/xaml/grid/themekeys"
-             xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
              xmlns:converters="clr-namespace:eZet.EveProfiteer.Ui.Converters"
              xmlns:modules="clr-namespace:eZet.EveProfiteer.ViewModels.Modules"
              mc:Ignorable="d"
@@ -16,9 +14,7 @@
     <UserControl.Resources>
 
         <ResourceDictionary>
-            <Style x:Key="RowBackgroundStyle"
-                   BasedOn="{StaticResource {themes:GridRowThemeKey ResourceKey=RowStyle, ThemeName={x:Static dx:ThemeManager.ApplicationThemeName}}}"
-                   TargetType="dxg:GridRowContent">
+            <Style x:Key="RowBackgroundStyle" TargetType="dxg:RowControl">
                 <Setter Property="Background"
                         Value="{Binding Path=Row.Order, Converter={converters:OrderToBrushConverter}}" />
             </Style>
@@ -46,16 +42,16 @@
                             <dxe:DateEditSettings />
                         </dxb:BarEditItem.EditSettings>
                     </dxb:BarEditItem>
+                    <dxb:BarButtonItem Name="ViewButton" Content="View" Command="{Binding ViewPeriodCommand}" />
                     <dxb:BarCheckItem Name="FilterOrders" CheckedChanged="FilterOrders_OnChecked"
                                       Description="Description" Content="Orders" />
                     <dxb:BarCheckItem Name="FilterInactiveOrders" CheckedChanged="FilterOrders_OnChecked"
                                       Content="Active Orders" />
-                    <dxb:BarButtonItem Name="ViewButton" Content="View" Command="{Binding ViewPeriodCommand}" />
 
                 </dxb:BarManager.Items>
 
                 <dxb:BarManager.Bars>
-                    <dxb:Bar>
+                    <dxb:Bar >
                         <dxb:BarButtonItemLink BarItemName="ViewButton" />
                         <dxb:BarEditItemLink BarItemName="ViewPeriodSelector" />
                         <dxb:BarEditItemLink BarItemName="StartDate" />
@@ -78,7 +74,7 @@
                                        ShowGroupPanel="False" IsRowCellMenuEnabled="True" ShowSearchPanelMode="Default"
                                        SearchColumns="InvType.TypeName"
                                        SearchPanelCriteriaOperatorType="And" AutoScrollOnSorting="False"
-                                       NavigationStyle="Row" AllowEditing="False" UseLightweightTemplates="None">
+                                       NavigationStyle="Row" AllowEditing="False" UseLightweightTemplates="All">
                         <dxg:TableView.RowCellMenuCustomizations>
                             <dxb:BarButtonItem Content="View market details"
                                                Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.ViewMarketDetailsCommand, RelativeSource={RelativeSource Self}}"

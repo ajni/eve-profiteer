@@ -27,8 +27,6 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             _eventAggregator.Subscribe(this);
         }
 
-        public IEventAggregator EventAggregator { get; set; }
-
         public int AgeSpan { get; set; }
 
         public BindableCollection<AssetViewModel> Assets {
@@ -73,26 +71,34 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
 
         public async void Handle(AssetsUpdatedEvent message) {
             if (IsActive) {
-                await InitAsync();
+                await refresh();
             } else {
                 _assetsUpdatedEvent = message;
             }
         }
 
-        public async Task InitAsync() {
+        protected override async Task OnOpen() {
             await LoadAssets().ConfigureAwait(false);
             await UpdateMarketData().ConfigureAwait(false);
         }
 
-        protected override async void OnInitialize() {
-            await InitAsync();
+        protected override Task OnDeactivate(bool close) {
+            if (close) {
+                Assets = null;
+            }
+            return base.OnDeactivate(close);
         }
 
-        protected override async void OnActivate() {
+        private async Task refresh() {
             if (_assetsUpdatedEvent != null) {
-                await InitAsync();
+                await OnOpen();
                 _assetsUpdatedEvent = null;
             }
+        }
+
+
+        protected async override Task OnActivate() {
+            await refresh();
             if (_viewAssetEvent != null) {
                 setFocus(_viewAssetEvent.InvType);
                 _viewAssetEvent = null;
