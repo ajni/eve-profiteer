@@ -3,10 +3,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Caliburn.Micro;
-using eZet.EveProfiteer.Events;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Properties;
 using eZet.EveProfiteer.Services;
+using eZet.EveProfiteer.Ui.Events;
 
 namespace eZet.EveProfiteer.ViewModels.Modules {
     public class AssetsViewModel : ModuleViewModel, IHandle<AssetsUpdatedEvent>, IHandle<ViewAssetEvent> {

@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Drawing;
-using System.Text;
-using eZet.EveProfiteer.Models.Annotations;
 
-namespace eZet.EveProfiteer.Events {
+namespace eZet.EveProfiteer.Ui.Events {
     public class StatusChangedEventArgs : EventArgs {
         public StatusChangedEventArgs(string status) {
             Status = status;

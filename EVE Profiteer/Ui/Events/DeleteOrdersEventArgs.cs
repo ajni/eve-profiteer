@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace eZet.EveProfiteer.Events {
+namespace eZet.EveProfiteer.Ui.Events {
     public class DeleteOrdersEventArgs : EventArgs {
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace eZet.EveProfiteer.Events {
+﻿namespace eZet.EveProfiteer.Ui.Events {
     public class AssetsUpdatedEvent {
 
 

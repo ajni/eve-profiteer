@@ -14,7 +14,6 @@ using DevExpress.Mvvm;
 using DevExpress.Xpf.Bars;
 using DevExpress.Xpf.Docking;
 using DevExpress.Xpf.Docking.Base;
-using eZet.EveProfiteer.Events;
 using eZet.EveProfiteer.Framework;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Properties;

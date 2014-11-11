@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using eZet.EveProfiteer.Models;
-using eZet.EveProfiteer.Ui.Events;
 using eZet.EveProfiteer.ViewModels.Modules;
 
-namespace eZet.EveProfiteer.Events {
+namespace eZet.EveProfiteer.Ui.Events {
     public class AddOrdersEvent :  ModuleEvent {
         public AddOrdersEvent(ICollection<InvType> items, bool sellOrder = true, bool buyOrder = true) {
             Items = items;
