@@ -24,8 +24,12 @@ namespace eZet.EveProfiteer.Models
         public decimal BrokerFees { get; set; }
         public decimal MaterialCost { get; set; }
         public int MarketQuantity { get; set; }
+        public Nullable<int> LastSellTransactionId { get; set; }
+        public Nullable<int> LastBuyTransactionId { get; set; }
     
         public virtual ApiKeyEntity ApiKeyEntity { get; set; }
         public virtual InvType invType { get; set; }
+        public virtual Transaction LastBuyTransaction { get; set; }
+        public virtual Transaction LastSellTransaction { get; set; }
     }
 }

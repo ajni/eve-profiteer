@@ -28,12 +28,16 @@
 );
 
 GO
-CREATE CLUSTERED INDEX [IX_Transactions.ApiKeyEntity_Id]
+CREATE NONCLUSTERED INDEX [IX_Transactions.ApiKeyEntity_Id]
     ON [dbo].[Transactions]([ApiKeyEntity_Id] ASC);
 
 GO
 CREATE NONCLUSTERED INDEX [IX_Transactions.TypeId]
     ON [dbo].[Transactions]([TypeId] ASC);
+
+	GO
+CREATE NONCLUSTERED INDEX [IX_Transactions.TransactionDate]
+    ON [dbo].[Transactions]([TransactionDate] ASC);
 
 GO
 CREATE NONCLUSTERED INDEX [IX_Transactions.TransactionId]

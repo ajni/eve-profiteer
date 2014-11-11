@@ -10,6 +10,6 @@
     CONSTRAINT [FK_BatchMaterials_ToProductionBatches] FOREIGN KEY ([BatchId]) REFERENCES [ProductionBatches]([Id]), 
 );
 GO
-CREATE CLUSTERED INDEX [IX_BatchMaterials.BatchId] ON [dbo].[BatchMaterials] ([BatchId] ASC);
+CREATE NONCLUSTERED INDEX [IX_BatchMaterials.BatchId] ON [dbo].[BatchMaterials] ([BatchId] ASC);
 GO
 CREATE NONCLUSTERED INDEX [IX_BatchMaterials.TypeId] ON [dbo].[BatchMaterials] ([TypeId] ASC);

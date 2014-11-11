@@ -16,7 +16,6 @@ namespace eZet.EveProfiteer.Models
     {
         public StaStation()
         {
-            this.Orders = new HashSet<Order>();
             this.MarketOrders = new HashSet<MarketOrder>();
         }
     
@@ -40,7 +39,6 @@ namespace eZet.EveProfiteer.Models
         public Nullable<byte> ReprocessingHangarFlag { get; set; }
     
         public virtual MapRegion MapRegion { get; set; }
-        public virtual ICollection<Order> Orders { get; set; }
         public virtual ICollection<MarketOrder> MarketOrders { get; set; }
     }
 }

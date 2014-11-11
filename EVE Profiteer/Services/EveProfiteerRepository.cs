@@ -33,6 +33,10 @@ namespace eZet.EveProfiteer.Services {
             return Context.MapRegions.OrderBy(r => r.RegionName);
         }
 
+        public IOrderedQueryable<StaStation> GetStationsOrdered() {
+            return Context.StaStations.OrderBy(r => r.StationName);
+        }
+
         public IQueryable<InvType> GetInvTypes() {
             return Context.InvTypes.Where(e => e.TypeId < DustTypeidLimit);
         }

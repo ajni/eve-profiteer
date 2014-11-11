@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using eZet.EveProfiteer.Models.Annotations;
-using eZet.EveProfiteer.Util;
 
 namespace eZet.EveProfiteer.Models {
     public class OrderViewModel : INotifyPropertyChanged {
@@ -18,16 +17,21 @@ namespace eZet.EveProfiteer.Models {
             Order = order;
         }
 
-        public OrderViewModel(Order order, DateTime lastTransaction) {
-            Order = order;
-            LastTransaction = lastTransaction;
+        public DateTime? LastSellDate {
+            get {
+                return _order.InvType.Assets.SingleOrDefault() != null && _order.InvType.Assets.Single().LastSellTransaction != null
+                    ? _order.InvType.Assets.Single().LastSellTransaction.TransactionDate
+                    : (DateTime?) null;
+            }
         }
 
-        public DateTime LastTransaction { get; set; }
-
-        public DateTime LastSellDate { get; set; }
-
-        public DateTime LastBuyDate { get; set; }
+        public DateTime? LastBuyDate {
+            get {
+                return _order.InvType.Assets.SingleOrDefault() != null && _order.InvType.Assets.Single().LastBuyTransaction != null
+                    ? _order.InvType.Assets.Single().LastBuyTransaction.TransactionDate
+                    : (DateTime?) null;
+            }
+        }
 
         public bool HasActiveSellOrder { get; set; }
 
@@ -36,7 +40,7 @@ namespace eZet.EveProfiteer.Models {
         public Asset Asset {
             get {
                 if (Order.Id == 0) return null;
-                 return Order.InvType.Assets.SingleOrDefault(asset => asset.ApiKeyEntity_Id == Order.ApiKeyEntity_Id);
+                return Order.InvType.Assets.SingleOrDefault(asset => asset.ApiKeyEntity_Id == Order.ApiKeyEntity_Id);
             }
         }
 
@@ -45,10 +49,6 @@ namespace eZet.EveProfiteer.Models {
             set { _order = value; }
         }
 
-        public StaStation staStation {
-            get { return _order.staStation; }
-            set { _order.staStation = value; }
-        }
 
         private InvType InvType {
             get { return _order.InvType; }
@@ -101,7 +101,7 @@ namespace eZet.EveProfiteer.Models {
         }
 
         public double GrossMarginBuyAndSell {
-            get { return (double) (MinSellPrice > 0 ? (MinSellPrice - MaxBuyPrice)/MinSellPrice : 0); }
+            get { return (double)(MinSellPrice > 0 ? (MinSellPrice - MaxBuyPrice) / MinSellPrice : 0); }
         }
 
         public double GrossMarginCostAndSell {
@@ -178,10 +178,6 @@ namespace eZet.EveProfiteer.Models {
             get { return InventoryQuantity + MarketQuantity; }
         }
 
-        public decimal InventoryBalancePerUnit {
-            get { return InventoryValuePerUnit - InventoryCostPerUnit; }
-        }
-
         public decimal InventoryValuePerUnit {
             get { return AvgPrice; }
         }
@@ -190,22 +186,29 @@ namespace eZet.EveProfiteer.Models {
             get { return Asset != null && TotalQuantity != 0 ? Asset.LatestAverageCost : 0; }
         }
 
-        public decimal InventoryTotalBalance {
-            get { return InventoryTotalValue - InventoryTotalCost; }
-        }
-
         public decimal InventoryTotalValue {
             get { return InventoryValuePerUnit * TotalQuantity; }
         }
 
         public decimal InventoryTotalCost {
-            get { return Asset != null ? Asset.MaterialCost : 0; }
+            get { return Asset != null  ? Asset.LatestAverageCost * TotalQuantity : 0; }
         }
-
 
         #endregion
 
         #region Estimated Profit
+
+        public decimal GrossProfitAtCurrentPrice {
+            get { return GrossProfitPerUnitAtCurrentPrice * TotalQuantity; }
+        }
+
+        public decimal GrossProfitAtAvgPrice {
+            get { return GrossProfitPerUnitAtAvgPrice * TotalQuantity; }
+        }
+
+        public decimal GrossProfitAtLimitPrice {
+            get { return GrossProfitPerUnitAtLimitPrice * TotalQuantity; }
+        }
 
         public decimal GrossProfitPerUnitAtCurrentPrice {
             get { return CurrentSellPrice - InventoryCostPerUnit; }
@@ -232,17 +235,16 @@ namespace eZet.EveProfiteer.Models {
 
         #region Market
 
-        public double BuyPriceRatio { get { return AvgPrice == 0 ? 0 : (double)((CurrentBuyPrice / AvgPrice)); } }
-        public double SellPriceRatio { get { return AvgPrice == 0 ? 0 : (double)(CurrentSellPrice / AvgPrice); } }
+        public double BuyAvgRatio { get { return AvgPrice == 0 ? 0 : (double)((CurrentBuyPrice / AvgPrice)); } }
+        public double SellAvgRatio { get { return AvgPrice == 0 ? 0 : (double)(CurrentSellPrice / AvgPrice); } }
+        public decimal AvgPrice {
+            get { return _order.AvgPrice; }
+            set { _order.AvgPrice = value; }
+        }
 
         public decimal CurrentBuyPrice {
             get { return _order.CurrentBuyPrice; }
             set { _order.CurrentBuyPrice = value; }
-        }
-
-        public decimal AvgPrice {
-            get { return _order.AvgPrice; }
-            set { _order.AvgPrice = value; }
         }
 
         public decimal CurrentSellPrice {

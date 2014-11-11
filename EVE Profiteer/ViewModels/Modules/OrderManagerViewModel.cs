@@ -26,6 +26,11 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
         private OrderViewModel _selectedOrder;
         private OrderViewModel _focusedOrder;
         private ICollection<InvType> _marketTypes;
+        private int dayLimit;
+        private MapRegion selectedRegion;
+        private StaStation selectedStation;
+        private BindableCollection<MapRegion> regions;
+        private BindableCollection<StaStation> stations;
 
         public OrderManagerViewModel(OrderManagerService orderManagerService, IWindowManager windowManager,
             IEventAggregator eventAggregator,
@@ -102,7 +107,52 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
 
         public ICommand DeleteOrdersCommand { get; private set; }
 
-        public int DayLimit { get; set; }
+        public int DayLimit {
+            get { return dayLimit; }
+            set {
+                if (value == dayLimit) return;
+                dayLimit = value;
+                NotifyOfPropertyChange();
+            }
+        }
+
+        public BindableCollection<MapRegion> Regions {
+            get { return regions; }
+            private set {
+                if (Equals(value, regions)) return;
+                regions = value;
+                NotifyOfPropertyChange();
+            }
+        }
+
+        public BindableCollection<StaStation> Stations {
+            get { return stations; }
+            private set {
+                if (Equals(value, stations)) return;
+                stations = value;
+                NotifyOfPropertyChange();
+            }
+        }
+
+        public MapRegion SelectedRegion {
+            get { return selectedRegion; }
+            set {
+                if (Equals(value, selectedRegion)) return;
+                selectedRegion = value;
+                Stations = new BindableCollection<StaStation>(selectedRegion.StaStations.OrderBy(f => f.StationName));
+                NotifyOfPropertyChange();
+            }
+        }
+
+        public StaStation SelectedStation {
+            get { return selectedStation; }
+            set {
+                if (Equals(value, selectedStation)) return;
+                selectedStation = value;
+                NotifyOfPropertyChange();
+            }
+        }
+
 
         public BindableCollection<OrderViewModel> Orders {
             get { return _orders; }
@@ -143,7 +193,7 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
                 item.Orders.Add(order);
                 orders.Add(order);
             }
-            await _orderManagerService.LoadMarketDataAsync(orders, DayLimit);
+            await _orderManagerService.LoadMarketDataAsync(orders, SelectedRegion.RegionId, SelectedStation.StationId, DayLimit);
             Orders.AddRange(orders.Select(order => new OrderViewModel(order)));
             SelectedOrders.Clear();
             SelectedOrders.AddRange(orders.Select(order => new OrderViewModel(order)));
@@ -169,6 +219,9 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             Orders.AddRange(orders);
             SelectedOrder = Orders.FirstOrDefault();
             FocusedOrder = Orders.FirstOrDefault();
+            Regions = new BindableCollection<MapRegion>(await _orderManagerService.GetRegions().ConfigureAwait(false));
+            SelectedRegion = Regions.Single(f => f.RegionId == Properties.Settings.Default.DefaultRegionId);
+            SelectedStation = Stations.Single(f => f.StationId == Properties.Settings.Default.DefaultStationId);
         }
 
         protected override Task OnDeactivate(bool close) {
@@ -244,7 +297,7 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
 
         public async void ExecuteUpdateMarketData() {
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Fetching market data..."));
-            await _orderManagerService.LoadMarketDataAsync(Orders.Select(entry => entry.Order), DayLimit);
+            await _orderManagerService.LoadMarketDataAsync(Orders.Select(entry => entry.Order), SelectedRegion.RegionId, SelectedStation.StationId, DayLimit);
             Orders.Refresh();
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Market data updated"));
         }

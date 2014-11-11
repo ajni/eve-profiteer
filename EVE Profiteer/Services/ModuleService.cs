@@ -26,7 +26,6 @@ namespace eZet.EveProfiteer.Services {
             Configurations.Add(new ModuleConfiguration<ProductionViewModel>("Production"));
             Configurations.Add(new ModuleConfiguration<TransactionsViewModel>("Transactions"));
             Configurations.Add(new ModuleConfiguration<JournalViewModel>("Journal"));
-
         }
 
         public void Initialize() {
@@ -60,8 +59,5 @@ namespace eZet.EveProfiteer.Services {
             module.DisplayName = configuration.DisplayName;
             return module;
         }
-
-
-
     }
 }

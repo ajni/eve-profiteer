@@ -17,11 +17,11 @@
 
         <ResourceDictionary>
             <Style x:Key="RowBackgroundStyle" TargetType="dxg:RowControl">
-               <Style.Triggers>
-                <Trigger Property="SelectionState" Value="None">
-                    <Setter Property="Background"
+                <Style.Triggers>
+                    <Trigger Property="SelectionState" Value="None">
+                        <Setter Property="Background"
                         Value="{Binding Path=Row, Converter={converters:OrderGridRowToBrushConverter}}" />
-                </Trigger>
+                    </Trigger>
                 </Style.Triggers>
             </Style>
         </ResourceDictionary>
@@ -34,7 +34,7 @@
 
         <dxb:BarManager DockPanel.Dock="Top">
             <dxb:BarManager.Items>
-            
+
                 <dxb:BarButtonItem Name="Process" Content="Process" Command="{Binding EditCommand}" Hint="Process and optimize all orders" />
                 <dxb:BarButtonItem Name="UpdateMarketData" Content="Update prices"
                                    Command="{Binding UpdateMarketDataCommand}"
@@ -44,12 +44,56 @@
                                    Hint="Import from XML files" />
                 <dxb:BarButtonItem Name="ExportXml" Content="Export XML" Command="{Binding ExportXmlCommand}"
                                    Hint="Export to XML files" />
+
+                <dxb:BarEditItem Name="RegionSelector" EditValue="{Binding SelectedRegion}" EditWidth="150"
+                                 Hint="Region">
+                    <dxb:BarEditItem.EditSettings>
+                        <dxe:ComboBoxEditSettings ItemsSource="{Binding Regions}"
+                                                  DisplayMember="RegionName"
+                                                  IncrementalFiltering="True"
+                                                  FilterCondition="Contains"
+                                                  ImmediatePopup="True"
+                                                  ValidateOnTextInput="False" />
+                    </dxb:BarEditItem.EditSettings>
+                </dxb:BarEditItem>
+                <dxb:BarEditItem Name="StationSelector"
+                                 EditValue="{Binding SelectedStation}"
+                                 EditWidth="300"
+                                 Hint="Station (optional)">
+                    <dxb:BarEditItem.EditSettings>
+                        <dxe:ComboBoxEditSettings ItemsSource="{Binding Stations}"
+                                                  DisplayMember="StationName"
+                                                  IncrementalFiltering="True"
+                                                  FilterCondition="Contains"
+                                                  ImmediatePopup="True"
+                                                  ValidateOnTextInput="False"
+                                                  NullValueButtonPlacement="EditBox"
+                                                  AllowNullInput="False"
+                                                  NullText="-- All stations --" />
+                    </dxb:BarEditItem.EditSettings>
+                </dxb:BarEditItem>
+                <dxb:BarEditItem Name="DayLimit"
+                                 EditValue="{Binding DayLimit, Converter={converters:DoubleToIntConverter}}"
+                                 EditWidth="80" Content2="{Binding DayLimit}"
+                                 Hint="Number of recent days to include in calculations">
+                    <dxb:BarEditItem.EditSettings>
+                        <dxe:TrackBarEditSettings Minimum="1" Maximum="30" TickFrequency="2" SmallStep="1"
+                                                  LargeStep="5" />
+                    </dxb:BarEditItem.EditSettings>
+                </dxb:BarEditItem>
             </dxb:BarManager.Items>
             <dxb:BarManager.Bars>
                 <dxb:Bar Caption="Order Editor">
                     <dxb:BarButtonItemLink BarItemName="Save" />
                     <dxb:BarButtonItemLink BarItemName="Process" />
-                    <dxb:BarButtonItemLink BarItemName="UpdateMarketData" />
+                </dxb:Bar>
+                <dxb:Bar Caption="Market Data">
+                    <dxb:Bar.ItemLinks>
+                        <dxb:BarButtonItemLink BarItemName="UpdateMarketData" />
+                        <dxb:BarEditItemLink BarItemName="RegionSelector" />
+                        <dxb:BarEditItemLink BarItemName="StationSelector" />
+                        <dxb:BarEditItemLink BarItemName="DayLimit" />
+                    </dxb:Bar.ItemLinks>
                 </dxb:Bar>
                 <dxb:Bar Caption="XML">
                     <dxb:BarButtonItemLink BarItemName="ImportXml" />
@@ -107,7 +151,7 @@
 
             </dxg:GridControl.View>
             <dxg:GridControl.TotalSummary>
-                <dxg:GridSummaryItem FieldName="InventoryTotalBalance" SummaryType="Sum" DisplayFormat="{}{0:N0}" />
+                <dxg:GridSummaryItem FieldName="GrossProfitAtCurrentPrice" SummaryType="Sum" DisplayFormat="{}{0:N0}" />
                 <dxg:GridSummaryItem FieldName="InventoryTotalValue" SummaryType="Sum" DisplayFormat="{}{0:N0}" />
                 <dxg:GridSummaryItem FieldName="InventoryTotalCost" SummaryType="Sum" DisplayFormat="{}{0:N0}" />
 
@@ -133,9 +177,6 @@
 
                 <!--MAIN-->
                 <dxg:GridControlBand>
-
-                    <!--<dxg:SelectAllColumn Focusable="False" FixedWidth="True" />-->
-
                     <dxg:GridColumn Name="TypeNameEditor" FieldName="TypeName" Header="Type" Width="200">
                         <dxg:GridColumn.CellTemplate>
                             <DataTemplate>
@@ -150,6 +191,9 @@
                             </DataTemplate>
                         </dxg:GridColumn.CellTemplate>
                     </dxg:GridColumn>
+
+                    <dxg:GridColumn FieldName="LastBuyDate" Header="Last Buy" AllowEditing="False" EditSettings="{DynamicResource DateEdit}" Width="80"/>
+                    <dxg:GridColumn FieldName="LastSellDate" Header="Last Sell" AllowEditing="False" EditSettings="{DynamicResource DateEdit}" Width="80"/>
                 </dxg:GridControlBand>
 
 
@@ -171,7 +215,7 @@
                             </ControlTemplate>
                         </dxg:GridColumn.EditTemplate>
                     </dxg:GridColumn>
-                    <!--Buy Order--> 
+                    <!--Buy Order-->
                     <dxg:GridColumn FieldName="IsBuyOrder" Header="Buy" Width="30" FixedWidth="True">
                         <dxg:GridColumn.DisplayTemplate>
                             <ControlTemplate>
@@ -194,7 +238,7 @@
                     <dxg:GridColumn FieldName="MaxBuyPrice" EditSettings="{DynamicResource N0Edit}" Width="100" />
                     <dxg:GridColumn FieldName="TotalMaxBuyPrice" Header="Buy Total"
                                     EditSettings="{DynamicResource N0Edit}" Visible="False" Width="100"/>
-                    
+
                     <!--Sell Order-->
                     <dxg:GridColumn FieldName="IsSellOrder" Header="Sell" Width="30" FixedWidth="True">
                         <dxg:GridColumn.DisplayTemplate>
@@ -227,10 +271,6 @@
                                     FixedWidth="True" />
                     <dxg:GridColumn Visible="False" FieldName="TotalMaxSellPrice" Header="Max Sell Total"
                                     EditSettings="{DynamicResource N0Edit}" Width="100"/>
-                    <dxg:GridColumn FieldName="LastTransaction" Header="Last Transaction" AllowEditing="False" Width="80"
-                                    EditSettings="{DynamicResource DateEdit}" />
-                    <!--<dxg:GridColumn FieldName="LastBuyDate" Header="Last Buy" AllowEditing="False" EditSettings="{DynamicResource DateEdit}"/>
-                    <dxg:GridColumn FieldName="LastSellDate" Header="Last Sell" AllowEditing="False" EditSettings="{DynamicResource DateEdit}"/>-->
                 </dxg:GridControlBand>
 
 
@@ -244,22 +284,26 @@
                                     FixedWidth="True" />
                     <dxg:GridColumn FieldName="MarketQuantity" Header="Market" AllowEditing="False" Width="50"
                                     FixedWidth="True" />
-                    <dxg:GridColumn Visible="False" FieldName="InventoryBalancePerUnit" Header="Balance PU"
-                                    AllowEditing="False" EditSettings="{DynamicResource N0Edit}" />
                     <dxg:GridColumn Visible="False" FieldName="InventoryValuePerUnit" Header="Value PU"
                                     AllowEditing="False" EditSettings="{DynamicResource N0Edit}" />
-                    <dxg:GridColumn FieldName="InventoryCostPerUnit" Header="Cost PU" AllowEditing="False"
+                    <dxg:GridColumn FieldName="InventoryCostPerUnit" Header="Cost PU" AllowEditing="False" Width="80"
                                     EditSettings="{DynamicResource N0Edit}" />
-                    <dxg:GridColumn Visible="False" FieldName="InventoryTotalBalance" Header="Total Balance"
-                                    AllowEditing="False" EditSettings="{DynamicResource N0Edit}" />
                     <dxg:GridColumn FieldName="InventoryTotalValue" Header="Total Value"
                                     AllowEditing="False" EditSettings="{DynamicResource N0Edit}" />
                     <dxg:GridColumn FieldName="InventoryTotalCost" Header="Inventory Cost" AllowEditing="False"
                                     EditSettings="{DynamicResource N0Edit}" />
-                <!--</dxg:GridControlBand>
+                    <!--</dxg:GridControlBand>
 
-                --><!--Estimated Profit--><!--
+                -->
+                    <!--Estimated Profit-->
+                    <!--
                 <dxg:GridControlBand Header="Esimated Profit">-->
+                    <dxg:GridColumn Visible="False" FieldName="GrossProfitAtCurrentPrice" Header="Total Current"
+                                    AllowEditing="False" EditSettings="{DynamicResource N0Edit}" />
+                    <dxg:GridColumn Visible="False" FieldName="GrossProfitAtAvgPrice" Header="Total Avg"
+                                    AllowEditing="False" EditSettings="{DynamicResource N0Edit}" />
+                    <dxg:GridColumn Visible="False" FieldName="GrossProfitAtLimitPrice" Header="Total Limit"
+                                    AllowEditing="False" EditSettings="{DynamicResource N0Edit}" />
                     <dxg:GridColumn FieldName="GrossProfitPerUnitAtCurrentPrice" Header="Current" ToolTip="Gross profit per unit sold, valued at current price." AllowEditing="False"
                                     Visible="False" EditSettings="{DynamicResource N0Edit}" />
                     <dxg:GridColumn FieldName="GrossMarginCostAndCurrent" Header="Cost/Current" ToolTip="Gross margin, valued at current price." AllowEditing="False"
@@ -275,13 +319,13 @@
 
                 <!--MARKET-->
                 <dxg:GridControlBand Header="Market Data">
-                    <dxg:GridColumn FieldName="BuyPriceRatio" AllowEditing="False"
-                                    EditSettings="{StaticResource P2Edit}" />
-                    <dxg:GridColumn FieldName="SellPriceRatio" AllowEditing="False"
-                                    EditSettings="{StaticResource P2Edit}" />
+                    <dxg:GridColumn FieldName="BuyAvgRatio" Header="Buy/Avg" AllowEditing="False" Width="50"
+                                    EditSettings="{StaticResource N2Edit}" />
+                    <dxg:GridColumn FieldName="SellAvgRatio" Header="Sell/Avg" AllowEditing="False" Width="50"
+                                    EditSettings="{StaticResource N2Edit}" />
+                    <dxg:GridColumn FieldName="AvgPrice" AllowEditing="False" EditSettings="{StaticResource N0Edit}" />
                     <dxg:GridColumn FieldName="CurrentBuyPrice" AllowEditing="False"
                                     EditSettings="{DynamicResource N0Edit}" />
-                    <dxg:GridColumn FieldName="AvgPrice" AllowEditing="False" EditSettings="{StaticResource N0Edit}" />
                     <dxg:GridColumn FieldName="CurrentSellPrice" AllowEditing="False"
                                     EditSettings="{StaticResource N0Edit}" />
                     <dxg:GridColumn FieldName="AvgVolume" AllowEditing="False" Width="80" FixedWidth="True"

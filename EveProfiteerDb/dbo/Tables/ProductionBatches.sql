@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[ProductionBatches]
 (
-	[Id] INT IDENTITY NOT NULL PRIMARY KEY, 
+	[Id] INT IDENTITY NOT NULL PRIMARY KEY NONCLUSTERED, 
     [ProductTypeId] INT NOT NULL, 
     [BlueprintTypeId] INT NOT NULL, 
     [ProductionQuantity] INT NOT NULL, 

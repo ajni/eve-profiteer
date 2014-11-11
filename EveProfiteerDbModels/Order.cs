@@ -30,12 +30,9 @@ namespace eZet.EveProfiteer.Models
         public bool IsSellOrder { get; set; }
         public bool IsBuyOrder { get; set; }
         public string Notes { get; set; }
-        public Nullable<int> StationId { get; set; }
         public bool AutoProcess { get; set; }
-        public int MapRegion_Id { get; set; }
     
         public virtual ApiKeyEntity ApiKeyEntity { get; set; }
         public virtual InvType InvType { get; set; }
-        public virtual StaStation staStation { get; set; }
     }
 }

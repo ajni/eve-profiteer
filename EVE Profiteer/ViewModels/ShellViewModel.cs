@@ -174,12 +174,12 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         private void DockLayoutManagerOnDockItemClosed(object sender, DockItemClosedEventArgs e) {
-            e.AffectedItems.Apply(f => ((ModuleViewModel) f.DataContext).Deactivate(true));
+            e.AffectedItems.Apply(async f => await ((ModuleViewModel) f.DataContext).Deactivate(true).ConfigureAwait(false));
         }
 
         private async void ModuleHost_SelectedItemChanged(object sender, SelectedItemChangedEventArgs e) {
-            if (e.OldItem != null) await ((ModuleViewModel)e.OldItem.DataContext).Deactivate(false);
-            if (e.Item != null) await ((ModuleViewModel)e.Item.DataContext).Activate();
+            if (e.OldItem != null) await ((ModuleViewModel)e.OldItem.DataContext).Deactivate(false).ConfigureAwait(false);
+            if (e.Item != null) await ((ModuleViewModel)e.Item.DataContext).Activate().ConfigureAwait(false);
         }
 
         private async void initDefaultModules() {

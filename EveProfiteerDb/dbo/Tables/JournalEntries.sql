@@ -22,5 +22,5 @@
 );
 
 GO
-CREATE CLUSTERED INDEX [IX_ApiKeyEntity_Id] ON [dbo].[JournalEntries]([ApiKeyEntity_Id] ASC);
+CREATE NONCLUSTERED INDEX [IX_ApiKeyEntity_Id] ON [dbo].[JournalEntries]([ApiKeyEntity_Id] ASC);
 

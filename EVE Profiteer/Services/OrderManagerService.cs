@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Diagnostics;
 using System.Linq;
@@ -20,49 +21,28 @@ namespace eZet.EveProfiteer.Services {
             _eveProfiteerRepository = eveProfiteerRepository;
         }
 
+        public Task<List<MapRegion>> GetRegions() {
+            return _eveProfiteerRepository.GetRegionsOrdered().ToListAsync();
+        }
+
         public Task<List<InvType>> GetMarketTypesAsync() {
             return _eveProfiteerRepository.GetMarketTypes().ToListAsync();
         }
 
         public async Task<List<OrderViewModel>> GetOrdersAsync() {
             var list = new List<OrderViewModel>();
-            var orders = await _eveProfiteerRepository.MyOrders().Include(o => o.InvType.Assets).ToListAsync().ConfigureAwait(false);
-            //var selldates = new Dictionary<int, DateTime>();
-            //MyTransactions(db).Where(t => t.TransactionType == TransactionType.Sell)
-            //    .GroupBy(t => t.TypeId)
-            //    .Apply(grouping =>
-            //        selldates.Add(grouping.Key, grouping.Max(t => t.TransactionDate)));
-
-            //var buyDates = new Dictionary<int, DateTime>();
-            //MyTransactions(db).Where(t => t.TransactionType == TransactionType.Buy)
-            //    .GroupBy(t => t.TypeId)
-            //    .Apply(grouping =>
-            //        buyDates.Add(grouping.Key,
-            //            grouping.Max(t => t.TransactionDate)));
+            var orders = await _eveProfiteerRepository.MyOrders().Include(o => o.InvType.Assets.Select(a => a.LastSellTransaction)).Include(o => o.InvType.Assets.Select(a => a.LastBuyTransaction)).ToListAsync().ConfigureAwait(false);
 
             var marketOrders = await _eveProfiteerRepository.MyMarketOrders().Where(t => t.OrderState == OrderState.Open).ToListAsync().ConfigureAwait(false);
             var marketLookup = marketOrders.ToLookup(t => t.TypeId);
+
             foreach (var order in orders) {
                 var ordervm = new OrderViewModel(order);
-
-                //if (order.InvType.Transactions.Any()) {
-                //    var date = order.InvType.Transactions.Max(t => t.TransactionDate);
-                //    ordervm.LastTransaction = date;
-                //}
-
+     
                 ordervm.HasActiveBuyOrder = marketLookup[order.TypeId].Any(t => t.Bid);
                 ordervm.HasActiveSellOrder = marketLookup[order.TypeId].Any(t => !t.Bid);
 
-                //DateTime t;
-                //selldates.TryGetValue(order.TypeId, out t);
-                //ordervm.LastSellDate = t;
-                //ordervm.LastTransaction = ordervm.LastSellDate;
-
-                //buyDates.TryGetValue(order.TypeId, out t);
-                //ordervm.LastBuyDate = t;
-                //if (ordervm.LastBuyDate > ordervm.LastSellDate) {
-                //    ordervm.LastTransaction = ordervm.LastBuyDate;
-                //}
+ 
                 list.Add(ordervm);
             }
             return list;
@@ -104,12 +84,12 @@ namespace eZet.EveProfiteer.Services {
             return await db.SaveChangesAsync().ConfigureAwait(false);
         }
 
-        public async Task LoadMarketDataAsync(IEnumerable<Order> orders, int dayLimit) {
+        public async Task LoadMarketDataAsync(IEnumerable<Order> orders, int region, int station, int dayLimit) {
             var enumerable = orders as IList<Order> ?? orders.ToList();
             var pricesTask =
-                _eveMarketService.GetItemPricesAsync(Properties.Settings.Default.DefaultStationId,
+                _eveMarketService.GetItemPricesAsync(station,
                     enumerable.Select(o => o.TypeId)).ConfigureAwait(false);
-            var historyTask = _eveMarketService.GetItemHistoryAsync(Properties.Settings.Default.DefaultRegionId,
+            var historyTask = _eveMarketService.GetItemHistoryAsync(region,
                 enumerable.Select(o => o.TypeId), dayLimit);
             var prices = await pricesTask;
             var priceLookup = prices.Prices.ToLookup(f => f.TypeId);

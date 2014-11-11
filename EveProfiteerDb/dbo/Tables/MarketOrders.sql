@@ -20,7 +20,7 @@
 	CONSTRAINT UQ_OrderId UNIQUE ([OrderId])
 )
 GO
-CREATE  INDEX [IX_MarketOrders.CharacterId] ON [dbo].[MarketOrders] ([CharacterId] ASC)
+CREATE NONCLUSTERED INDEX [IX_MarketOrders.CharacterId] ON [dbo].[MarketOrders] ([CharacterId] ASC)
 
 GO
 CREATE NONCLUSTERED INDEX [IX_MarketOrders.OrderId] ON [dbo].[MarketOrders] ([OrderId] ASC)
