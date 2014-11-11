@@ -258,14 +258,14 @@
                                 <StackPanel>
                                     <TextBlock Text="First Transaction: " />
                                     <TextBlock
-                                        Text="{Binding TransactionAggregate.FirstTransactionDate, StringFormat={x:Static util:ConfigManager.DateTimeFormat}}" />
+                                        Text="{Binding TransactionAggregate.FirstTransactionDate, StringFormat={x:Static util:BrushManager.DateTimeFormat}}" />
                                 </StackPanel>
                             </dxn:NavBarItem>
                             <dxn:NavBarItem>
                                 <StackPanel>
                                     <TextBlock Text="Last Transaction: " />
                                     <TextBlock
-                                        Text="{Binding TransactionAggregate.LastTransactionDate, StringFormat={x:Static util:ConfigManager.DateTimeFormat}}" />
+                                        Text="{Binding TransactionAggregate.LastTransactionDate, StringFormat={x:Static util:BrushManager.DateTimeFormat}}" />
                                 </StackPanel>
                             </dxn:NavBarItem>
                         </dxn:NavBarGroup>

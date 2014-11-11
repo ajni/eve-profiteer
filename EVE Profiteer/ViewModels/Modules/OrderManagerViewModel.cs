@@ -9,7 +9,6 @@ using DevExpress.Xpf.Grid;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
 using eZet.EveProfiteer.Ui.Events;
-using eZet.EveProfiteer.Util;
 using eZet.EveProfiteer.ViewModels.Dialogs;
 
 namespace eZet.EveProfiteer.ViewModels.Modules {
@@ -28,8 +27,8 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
         private int dayLimit;
         private MapRegion selectedRegion;
         private StaStation selectedStation;
-        private BindableCollection<MapRegion> regions;
-        private BindableCollection<StaStation> stations;
+        private ICollection<MapRegion> regions;
+        private ICollection<StaStation> stations;
 
         public OrderManagerViewModel(OrderManagerService orderManagerService, IWindowManager windowManager,
             IEventAggregator eventAggregator,
@@ -115,7 +114,7 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             }
         }
 
-        public BindableCollection<MapRegion> Regions {
+        public ICollection<MapRegion> Regions {
             get { return regions; }
             private set {
                 if (Equals(value, regions)) return;
@@ -124,7 +123,7 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             }
         }
 
-        public BindableCollection<StaStation> Stations {
+        public ICollection<StaStation> Stations {
             get { return stations; }
             private set {
                 if (Equals(value, stations)) return;
@@ -138,7 +137,8 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             set {
                 if (Equals(value, selectedRegion)) return;
                 selectedRegion = value;
-                Stations = new BindableCollection<StaStation>(selectedRegion.StaStations.OrderBy(f => f.StationName));
+                Stations = selectedRegion.StaStations.OrderBy(f => f.StationName).ToList();
+                SelectedStation = null;
                 NotifyOfPropertyChange();
             }
         }
@@ -192,8 +192,9 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
                 item.Orders.Add(order);
                 orders.Add(order);
             }
-            await _orderManagerService.LoadMarketDataAsync(orders, SelectedRegion.RegionId, SelectedStation.StationId, DayLimit);
-            Orders.AddRange(orders.Select(order => new OrderViewModel(order)));
+            var orderViewModels = orders.Select(f => new OrderViewModel(f)).ToList();
+            await _orderManagerService.LoadMarketDataAsync(orderViewModels, SelectedRegion, SelectedStation, DayLimit);
+            Orders.AddRange(orderViewModels);
             SelectedOrders.Clear();
             SelectedOrders.AddRange(orders.Select(order => new OrderViewModel(order)));
             SelectedOrder = Orders.Last();
@@ -220,7 +221,7 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             FocusedOrder = Orders.FirstOrDefault();
             Regions = new BindableCollection<MapRegion>(await _orderManagerService.GetRegions().ConfigureAwait(false));
             SelectedRegion = Regions.Single(f => f.RegionId == Properties.Settings.Default.DefaultRegionId);
-            SelectedStation = Stations.Single(f => f.StationId == Properties.Settings.Default.DefaultStationId);
+            SelectedStation = SelectedRegion.StaStations.Single(f => f.StationId == Properties.Settings.Default.DefaultStationId);
         }
 
         protected override Task OnDeactivate(bool close) {
@@ -272,12 +273,13 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
         public void ExecuteImportXml() {
             var dialog = new FolderBrowserDialog();
             dialog.ShowNewFolderButton = false;
-            dialog.SelectedPath = ConfigManager.OrderXmlPath;
+            dialog.SelectedPath = Properties.Settings.Default.OrderXmlPath;
             if (dialog.ShowDialog() == DialogResult.OK) {
                 ICollection<Order> orders = _orderXmlService.ImportOrders(dialog.SelectedPath);
                 Orders.Clear();
                 Orders.AddRange(orders.Select(order => new OrderViewModel(order)));
-                ConfigManager.OrderXmlPath = dialog.SelectedPath;
+                Properties.Settings.Default.OrderXmlPath = dialog.SelectedPath;
+                Properties.Settings.Default.Save();
             }
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Order(s) imported"));
         }
@@ -296,7 +298,7 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
 
         public async void ExecuteUpdateMarketData() {
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Fetching market data..."));
-            await _orderManagerService.LoadMarketDataAsync(Orders.Select(entry => entry.Order), SelectedRegion.RegionId, SelectedStation.StationId, DayLimit);
+            await _orderManagerService.LoadMarketDataAsync(Orders, SelectedRegion, SelectedStation, DayLimit);
             Orders.Refresh();
             _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Market data updated"));
         }

@@ -60,7 +60,7 @@ namespace eZet.EveProfiteer.Services {
 
         public async Task<IList<MarketAnalyzerEntry>> AnalyzeAsync(MapRegion region, StaStation station, IEnumerable<InvType> invTypes, int days) {
             var items = invTypes.Select(type => type.TypeId).ToList();
-            var priceResult = await _eveMarketService.GetItemPricesAsync(station.StationId, items).ConfigureAwait(false);
+            var priceResult = await _eveMarketService.GetItemPricesAsync(region.RegionId, station.StationId, items).ConfigureAwait(false);
             var historyResult = await _eveMarketService.GetItemHistoryAsync(region.RegionId, items, days).ConfigureAwait(false);
             var analyzer = new MarketAnalyzer(invTypes, priceResult.Prices.Where(o => o.OrderType == OrderType.Sell),
                 priceResult.Prices.Where(o => o.OrderType == OrderType.Buy), historyResult);

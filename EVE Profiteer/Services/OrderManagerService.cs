@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Mime;
 using System.Threading.Tasks;
 using DevExpress.XtraPrinting.Native;
 using eZet.EveProfiteer.Models;
@@ -38,11 +39,13 @@ namespace eZet.EveProfiteer.Services {
 
             foreach (var order in orders) {
                 var ordervm = new OrderViewModel(order);
-     
+                order.InvType.Assets =
+                    order.InvType.Assets.Where(f => f.ApiKeyEntity_Id == ApplicationHelper.ActiveEntity.Id)
+                        .ToList();
                 ordervm.HasActiveBuyOrder = marketLookup[order.TypeId].Any(t => t.Bid);
                 ordervm.HasActiveSellOrder = marketLookup[order.TypeId].Any(t => !t.Bid);
 
- 
+
                 list.Add(ordervm);
             }
             return list;
@@ -84,12 +87,15 @@ namespace eZet.EveProfiteer.Services {
             return await db.SaveChangesAsync().ConfigureAwait(false);
         }
 
-        public async Task LoadMarketDataAsync(IEnumerable<Order> orders, int region, int station, int dayLimit) {
+        public async Task LoadMarketDataAsync(IEnumerable<OrderViewModel> orderViewModels, MapRegion region, StaStation station, int dayLimit) {
+            var orders = orderViewModels.Select(f => f.Order);
             var enumerable = orders as IList<Order> ?? orders.ToList();
+            var regionId = region != null ? region.RegionId : 0;
+            var stationId = station != null ? station.StationId : 0;
             var pricesTask =
-                _eveMarketService.GetItemPricesAsync(station,
+                _eveMarketService.GetItemPricesAsync(regionId, stationId,
                     enumerable.Select(o => o.TypeId)).ConfigureAwait(false);
-            var historyTask = _eveMarketService.GetItemHistoryAsync(region,
+            var historyTask = _eveMarketService.GetItemHistoryAsync(regionId,
                 enumerable.Select(o => o.TypeId), dayLimit);
             var prices = await pricesTask;
             var priceLookup = prices.Prices.ToLookup(f => f.TypeId);

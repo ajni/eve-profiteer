@@ -264,7 +264,7 @@
     <Compile Include="Ui\Converters\DoubleToIntConverter.cs" />
     <Compile Include="Ui\Converters\MarketOrderToBrushConverter.cs" />
     <Compile Include="Ui\Converters\OrderGridRowToBrushConverter.cs" />
-    <Compile Include="Ui\Converters\OrderToBrushConverter.cs" />
+    <Compile Include="Ui\Converters\TradeAnalyzerBrushConverter.cs" />
     <Compile Include="Ui\Events\AddOrdersEvent.cs" />
     <Compile Include="Framework\IShell.cs" />
     <Compile Include="Models\MarketAnalyzer.cs" />
@@ -280,7 +280,7 @@
     <Compile Include="Ui\ModuleConfiguration.cs" />
     <Compile Include="Util\ApiEntityMapper.cs" />
     <Compile Include="Util\ApplicationHelper.cs" />
-    <Compile Include="Util\ConfigManager.cs" />
+    <Compile Include="Util\BrushManager.cs" />
     <Compile Include="Util\ProgressType.cs" />
     <Compile Include="Util\SettingsBindingExtension.cs" />
     <Compile Include="Models\CheckableTreeNode.cs" />

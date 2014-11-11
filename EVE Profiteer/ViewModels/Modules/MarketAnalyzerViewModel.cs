@@ -147,11 +147,11 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
                     _marketAnalyzerService.GetMarketTreeAsync(treeViewCheckBox_PropertyChanged)
                         .ConfigureAwait(false);
             Regions = await _marketAnalyzerService.GetRegionsAsync().ConfigureAwait(false);
-            SelectedRegion = Regions.SingleOrDefault(f => f.RegionId == ConfigManager.DefaultRegion);
+            SelectedRegion = Regions.SingleOrDefault(f => f.RegionId == Properties.Settings.Default.DefaultRegionId);
             if (SelectedRegion != null) {
                 Stations = SelectedRegion.StaStations.OrderByDescending(f => f.StationName).ToList();
             }
-            SelectedStation = Stations.SingleOrDefault(station => station.StationId == ConfigManager.DefaultStation);
+            SelectedStation = Stations.SingleOrDefault(station => station.StationId == Properties.Settings.Default.DefaultStationId);
         }
 
         private void onPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs) {

@@ -20,7 +20,7 @@ namespace eZet.EveProfiteer.Services {
         }
 
         public Task<MapRegion> GetDefaultRegion() {
-            return _eveProfiteerRepository.GetRegionsOrdered().Include("StaStations").SingleOrDefaultAsync(region => region.RegionId == ConfigManager.DefaultRegion);
+            return _eveProfiteerRepository.GetRegionsOrdered().Include("StaStations").SingleOrDefaultAsync(region => region.RegionId == Properties.Settings.Default.DefaultRegionId);
         }
 
         public Task<List<MapRegion>> GetRegions() {

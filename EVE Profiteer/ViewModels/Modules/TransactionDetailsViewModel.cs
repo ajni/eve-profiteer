@@ -38,11 +38,11 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             _transactionDetailsService = transactionDetailsService;
             DateTimeFormat = Properties.Settings.Default.DateTimeFormat;
             eventAggregator.Subscribe(this);
-            PropertyChanged += OnPropertyChanged;
             SelectedViewPeriod = ViewPeriodEnum.Month;
             ViewMarketDetailsCommand =
                 new DelegateCommand(() => _eventAggregator.PublishOnUIThread(new ViewMarketBrowserEvent(SelectedItem)),
                     () => SelectedItem != null);
+            PropertyChanged += OnPropertyChanged;
         }
 
         public string DateTimeFormat { get; set; }

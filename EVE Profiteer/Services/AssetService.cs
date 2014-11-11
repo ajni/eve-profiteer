@@ -24,7 +24,7 @@ namespace eZet.EveProfiteer.Services {
 
         public async Task UpdateMarketData(IEnumerable<AssetViewModel> list, int region, int station, int days) {
             var items = list.Select(asset => asset.TypeId).ToList();
-            var priceResult = await _marketService.GetItemPricesAsync(station, items).ConfigureAwait(false);
+            var priceResult = await _marketService.GetItemPricesAsync(region, station, items).ConfigureAwait(false);
             var historyResult = await _marketService.GetItemHistoryAsync(region, items, days).ConfigureAwait(false);
             var priceLookup = priceResult.Prices.ToLookup(i => i.TypeId);
             var historyLookup = historyResult.ToLookup(i => i.TypeId);

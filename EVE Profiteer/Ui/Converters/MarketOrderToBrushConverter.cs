@@ -21,7 +21,7 @@ namespace eZet.EveProfiteer.Ui.Converters {
             var order = (MarketOrder) value;
             if (order == null || order.InvType == null) return null;
             if (order.Bid && !order.InvType.Orders.Any(f => f.IsBuyOrder) || !order.Bid && !order.InvType.Orders.Any(f => f.IsSellOrder))
-                return ConfigManager.ActiveOrderBrush;
+                return BrushManager.ActiveOrderBrush;
             return null;
         }
 

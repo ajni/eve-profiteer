@@ -298,10 +298,10 @@
                                                CrosshairLabelPattern="{}{S} : {V1:N2} : {V2:N2}"
                                                ArgumentScaleType="DateTime">
                             <dxc:RangeAreaSeries2D.Border2>
-                                <dxc:SeriesBorder Brush="{DynamicResource {x:Static SystemColors.HotTrackBrushKey}}" />
+                                <dxc:SeriesBorder Brush="{StaticResource {x:Static SystemColors.HotTrackBrushKey}}" />
                             </dxc:RangeAreaSeries2D.Border2>
                             <dxc:RangeAreaSeries2D.Border1>
-                                <dxc:SeriesBorder Brush="{DynamicResource {x:Static SystemColors.HotTrackBrushKey}}" />
+                                <dxc:SeriesBorder Brush="{StaticResource {x:Static SystemColors.HotTrackBrushKey}}" />
                             </dxc:RangeAreaSeries2D.Border1>
 
                         </dxc:RangeAreaSeries2D>

@@ -29,7 +29,7 @@
                 </TreeView>
             </DockPanel>
             <ContentControl dxlc:DockLayoutControl.Dock="Client" cal:View.Model="{Binding Content}"/>
-            <Border BorderThickness="0 0 0 1"  BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"></Border>
+            <Border BorderThickness="0 0 0 1"  BorderBrush="{StaticResource {x:Static SystemColors.ActiveBorderBrushKey}}"></Border>
    
         </dxlc:DockLayoutControl>
     </Grid>

@@ -69,9 +69,9 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             }
         }
 
-        protected override Task OnOpen() {
-            return ViewPeriod();
-        }
+        //protected override Task OnOpen() {
+        //    return ViewPeriod();
+        //}
 
         protected override Task OnActivate() {
             return refresh();

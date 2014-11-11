@@ -17,7 +17,7 @@
         <DockPanel>
             <dxb:BarManager DockPanel.Dock="Top">
                 <dxb:BarManager.Bars>
-                    <controls:PeriodSelectorBar></controls:PeriodSelectorBar>
+                    <!--<controls:PeriodSelectorBar></controls:PeriodSelectorBar>-->
                 </dxb:BarManager.Bars>
             </dxb:BarManager>
 
@@ -68,7 +68,7 @@
                     <dxg:GridColumn FieldName="Total" UnboundExpression="[Price] * [Quantity]" UnboundType="Decimal" EditSettings="{StaticResource N2Edit}" Width="80"/>
                     <dxg:GridColumn FieldName="TaxLiability" EditSettings="{StaticResource N2Edit}" Width="80"/>
                     <dxg:GridColumn FieldName="BrokerFee" EditSettings="{StaticResource N2Edit}" Width="80"/>
-                    <dxg:GridColumn AllowEditing="True" FieldName="PerpetualAverageCost" EditSettings="{StaticResource N2Edit}" />
+                    <dxg:GridColumn FieldName="PerpetualAverageCost" EditSettings="{StaticResource N2Edit}" />
                     <dxg:GridColumn FieldName="PostTransactionStock" EditSettings="{StaticResource N0Edit}" Width="50"/>
                     <dxg:GridColumn FieldName="UnaccountedQuantity" EditSettings="{StaticResource N0Edit}" Width="50"/>
                     <dxg:GridColumn FieldName="ClientName" Header="Client"/>

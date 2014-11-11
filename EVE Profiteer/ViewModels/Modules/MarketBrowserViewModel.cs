@@ -34,7 +34,6 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             ViewTradeDetailsCommand = new DelegateCommand(ExecuteViewTradeDetails, CanViewTradeDetails);
             ViewEnd = DateTime.UtcNow.Date;
             ViewStart = ViewEnd.AddMonths(-6).Date;
-            PropertyChanged += OnPropertyChanged;
         }
 
         public ICommand AddToOrdersCommand { get; private set; }
@@ -102,7 +101,7 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             private set {
                 if (Equals(value, _treeRootNodes)) return;
                 _treeRootNodes = value;
-                NotifyOfPropertyChange(() => TreeRootNodes);
+                NotifyOfPropertyChange();
             }
         }
 
@@ -111,7 +110,7 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             private set {
                 if (Equals(value, _marketBrowserData)) return;
                 _marketBrowserData = value;
-                NotifyOfPropertyChange(() => MarketBrowserData);
+                NotifyOfPropertyChange();
             }
         }
 
@@ -120,7 +119,7 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             set {
                 if (_dayLimit == value) return;
                 _dayLimit = value;
-                NotifyOfPropertyChange(() => DayLimit);
+                NotifyOfPropertyChange();
             }
         }
 
@@ -143,7 +142,7 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
         }
 
         private async void OnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs) {
-            if (propertyChangedEventArgs.PropertyName == "SelectedItem")
+            if (propertyChangedEventArgs.PropertyName == "SelectedItem" || propertyChangedEventArgs.PropertyName == "SelectedRegion")
                 await LoadMarketDetails(SelectedRegion, SelectedItem).ConfigureAwait(false);
         }
 
@@ -160,9 +159,10 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
 
         protected override async Task OnInitialize() {
                 Regions = await _marketBrowserService.GetRegions().ConfigureAwait(false);
-                SelectedRegion = Regions.Single(region => region.RegionId == ConfigManager.DefaultRegion);
+                SelectedRegion = Regions.Single(region => region.RegionId == Properties.Settings.Default.DefaultRegionId);
                 InvTypes = await _marketBrowserService.GetMarketTypes().ConfigureAwait(false);
                 TreeRootNodes = await _marketBrowserService.GetMarketTree().ConfigureAwait(false);
+                PropertyChanged += OnPropertyChanged;
         }
 
 

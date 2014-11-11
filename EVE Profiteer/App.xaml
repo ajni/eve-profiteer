@@ -6,6 +6,7 @@
              xmlns:models="clr-namespace:eZet.EveProfiteer.Models"
              xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/charts"
              xmlns:models1="clr-namespace:eZet.EveProfiteer.Models;assembly=EveProfiteerDbModels"
+             xmlns:util="clr-namespace:eZet.EveProfiteer.Util"
              x:Class="eZet.EveProfiteer.App"
              >
     <Application.Resources>
@@ -49,7 +50,7 @@
             <dxe:TextEditSettings x:Key="N2Edit" DisplayFormat="N2" MaskType="Numeric" Mask="N2"></dxe:TextEditSettings>
             <dxe:TextEditSettings x:Key="P2Edit" DisplayFormat="P2"  MaskType="Numeric" Mask="p2"></dxe:TextEditSettings>
             <dxe:DateEditSettings x:Key="DateTimeEdit" DisplayFormat="{Binding Source={x:Static p:Settings.Default}, Path=DateTimeFormat, Mode=TwoWay}"></dxe:DateEditSettings>
-            <dxe:DateEditSettings x:Key="DateEdit" DisplayFormat="{Binding Source={x:Static p:Settings.Default}, Path=DateFormat, Mode=TwoWay}"></dxe:DateEditSettings>
+            <dxe:DateEditSettings x:Key="DateEdit" DisplayFormat="{Binding Source={x:Static util:BrushManager.DateTimeFormat}}"></dxe:DateEditSettings>
 
             <HierarchicalDataTemplate x:Key="TreeNodeTemplate" DataType="{x:Type models:MarketTreeNode}"
 					ItemsSource="{Binding Children}">

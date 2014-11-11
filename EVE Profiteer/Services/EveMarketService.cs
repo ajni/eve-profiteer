@@ -36,7 +36,7 @@ namespace eZet.EveProfiteer.Services {
                     options.Items.Clear();
                 }
             }
-            var finalResult =  (await _eveMarketData.GetItemOrdersAsync(options, OrderType.Both).ConfigureAwait(false)).Result;
+            var finalResult = (await _eveMarketData.GetItemOrdersAsync(options, OrderType.Both).ConfigureAwait(false)).Result;
             finalResult.Orders.Apply(order => orders.Orders.Add(order));
             return orders;
         }
@@ -45,11 +45,14 @@ namespace eZet.EveProfiteer.Services {
             return await _eveCrest.GetMarketHistoryAsync(region, invType).ConfigureAwait(false);
         }
 
-        public async Task<EmdItemPrices> GetItemPricesAsync(int stationId, IEnumerable<int> types) {
+        public async Task<EmdItemPrices> GetItemPricesAsync(int regionId, int stationId, IEnumerable<int> types) {
             var prices = new EmdItemPrices();
             prices.Prices = new EveMarketDataRowCollection<EmdItemPrices.ItemPriceEntry>();
             var options = new EveMarketDataOptions();
-            options.Stations.Add(stationId);
+            if (stationId > 0)
+                options.Stations.Add(stationId);
+            else if (regionId > 0)
+                options.Regions.Add(regionId);
             foreach (int typeId in types) {
                 options.Items.Add(typeId);
                 if (options.Items.Count >= 1000) {
@@ -72,16 +75,16 @@ namespace eZet.EveProfiteer.Services {
 
         private async Task<IEnumerable<MarketHistoryEntry>> getCrestItemHistoryAsync(int region, IEnumerable<int> types, int dayLimit) {
             var updater = new MarketHistoryUpdater();
-            await updater.update(types, new[] {region});
+            await updater.update(types, new[] { region });
             List<EveData.MarketData.MarketHistoryEntry> list;
             using (var marketDataContext = new EveMarketDataContext()) {
                 var limit = DateTime.UtcNow.AddDays(-dayLimit);
-                 list = await marketDataContext.MarketHistoryEntries.AsNoTracking()
-                    .Where(e => types.Contains(e.TypeId) && e.Date > limit)
-                    .ToListAsync()
-                    .ConfigureAwait(false);
+                list = await marketDataContext.MarketHistoryEntries.AsNoTracking()
+                   .Where(e => types.Contains(e.TypeId) && e.Date > limit)
+                   .ToListAsync()
+                   .ConfigureAwait(false);
             }
-           return list.Select(MarketHistoryEntry.Create);
+            return list.Select(MarketHistoryEntry.Create);
         }
 
         private async Task<IEnumerable<MarketHistoryEntry>> getEmdItemHistoryAsync(int region, IEnumerable<int> types, int dayLimit) {

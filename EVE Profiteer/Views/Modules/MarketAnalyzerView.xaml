@@ -20,7 +20,7 @@
                 <Style.Triggers>
                     <Trigger Property="SelectionState" Value="None">
                         <Setter Property="Background"
-                        Value="{Binding Path=Row, Converter={converters:OrderToBrushConverter}}" />
+                        Value="{Binding Path=Row, Converter={converters:TradeAnalyzerBrushConverter}}" />
                     </Trigger>
                 </Style.Triggers>
             </Style>

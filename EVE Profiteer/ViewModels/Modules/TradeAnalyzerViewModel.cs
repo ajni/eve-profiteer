@@ -40,6 +40,7 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             AddToOrdersCommand = new DelegateCommand<ICollection<object>>(ExecuteAddToOrders, CanAddToOrders);
             PeriodSelectorStart = DateTime.UtcNow.AddMonths(-1);
             PeriodSelectorEnd = DateTime.UtcNow;
+            SelectedViewPeriod = ViewPeriodEnum.Week;
         }
 
         public DateTime ActualViewStart { get; private set; }

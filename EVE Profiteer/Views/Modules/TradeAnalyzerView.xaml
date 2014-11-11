@@ -16,7 +16,7 @@
         <ResourceDictionary>
             <Style x:Key="RowBackgroundStyle" TargetType="dxg:RowControl">
                 <Setter Property="Background"
-                        Value="{Binding Path=Row.Order, Converter={converters:OrderToBrushConverter}}" />
+                        Value="{Binding Path=Row.Order, Converter={converters:TradeAnalyzerBrushConverter}}" />
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -108,59 +108,22 @@
                     <dxg:GridSummaryItem SummaryType="Count" Alignment="Right" DisplayFormat="Items: {0:N0}" />
                 </dxg:GridControl.TotalSummary>
                 <dxg:GridControl.Columns>
-                    <dxg:GridColumn Visible="False" FieldName="InvType.TypeId" Header="Type ID" />
+                    <dxg:GridColumn FieldName="InvType.TypeId" Header="Type ID" Visible="False"/>
                     <dxg:GridColumn FieldName="InvType.TypeName" Header="Item" />
-                    <dxg:GridColumn FieldName="Balance">
-                        <dxg:GridColumn.EditSettings>
-                            <dxe:TextEditSettings DisplayFormat="N2" />
-                        </dxg:GridColumn.EditSettings>
-                    </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="GrossProfit" Header="Gross Profit">
-                        <dxg:GridColumn.EditSettings>
-                            <dxe:TextEditSettings DisplayFormat="N2" />
-                        </dxg:GridColumn.EditSettings>
-                    </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="AvgGrossProfitPerDay" Header="Daily Gross Profit">
-                        <dxg:GridColumn.EditSettings>
-                            <dxe:TextEditSettings DisplayFormat="N2" />
-                        </dxg:GridColumn.EditSettings>
-                    </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="AvgGrossProfitPerUnit">
-                        <dxg:GridColumn.EditSettings>
-                            <dxe:TextEditSettings DisplayFormat="N2" />
-                        </dxg:GridColumn.EditSettings>
-                    </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="AvgGrossMargin">
-                        <dxg:GridColumn.EditSettings>
-                            <dxe:TextEditSettings DisplayFormat="P" />
-                        </dxg:GridColumn.EditSettings>
-                    </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="Sales">
-                        <dxg:GridColumn.EditSettings>
-                            <dxe:TextEditSettings DisplayFormat="N2" />
-                        </dxg:GridColumn.EditSettings>
-                    </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="MaterialCost">
-                        <dxg:GridColumn.EditSettings>
-                            <dxe:TextEditSettings DisplayFormat="N2" />
-                        </dxg:GridColumn.EditSettings>
-                    </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="SellQuantity" Header="Qty Sold" />
-                    <dxg:GridColumn FieldName="BuyQuantity" Header="Qty Bought" />
-                    <dxg:GridColumn FieldName="AvgBuyPrice">
-                        <dxg:GridColumn.EditSettings>
-                            <dxe:TextEditSettings DisplayFormat="N2" />
-                        </dxg:GridColumn.EditSettings>
-                    </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="AvgSellPrice">
-                        <dxg:GridColumn.EditSettings>
-                            <dxe:TextEditSettings DisplayFormat="N2" />
-                        </dxg:GridColumn.EditSettings>
-                    </dxg:GridColumn>
-                    <dxg:GridColumn Visible="False" FieldName="Transactions.Count" Header="Transactions" />
-                    <dxg:GridColumn Visible="False" FieldName="StockDelta" />
-                    <dxg:GridColumn Visible="False" FieldName="FirstTransactionDate" Header="First transaction" />
-                    <dxg:GridColumn Visible="False" FieldName="LastTransactionDate" Header="Last transaction" />
+                    <dxg:GridColumn FieldName="Balance" EditSettings="{StaticResource N2Edit}"/>
+                    <dxg:GridColumn FieldName="GrossProfit" Header="Gross Profit" EditSettings="{StaticResource N2Edit}"/>
+                    <dxg:GridColumn FieldName="AvgGrossProfitPerDay" Header="Gross Profit pr Day" Visible="False" EditSettings="{StaticResource N2Edit}"/>
+                    <dxg:GridColumn FieldName="AvgGrossProfitPerUnit" Header="Gross Profit PU" EditSettings="{StaticResource N2Edit}"/>
+                    <dxg:GridColumn FieldName="AvgGrossMargin" Header="Gross Margin" Width="80" EditSettings="{StaticResource P2Edit}"/>
+                    <dxg:GridColumn FieldName="Sales" EditSettings="{StaticResource N2Edit}"/>
+                    <dxg:GridColumn FieldName="MaterialCost" EditSettings="{StaticResource N2Edit}"/>
+                    <dxg:GridColumn FieldName="SellQuantity" Header="Qty Sold" Width="80"/>
+                    <dxg:GridColumn FieldName="BuyQuantity" Header="Qty Bought" Width="80"/>
+                    <dxg:GridColumn FieldName="AvgBuyPrice" EditSettings="{StaticResource N2Edit}"/>
+                    <dxg:GridColumn FieldName="AvgSellPrice" EditSettings="{StaticResource N2Edit}"/>
+                    <dxg:GridColumn FieldName="Transactions.Count" Header="Transactions" Visible="False" />
+                    <dxg:GridColumn FieldName="StockDelta" Visible="False" />
+
                 </dxg:GridControl.Columns>
             </dxg:GridControl>
 

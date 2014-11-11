@@ -62,6 +62,11 @@ namespace eZet.EveProfiteer.ViewModels {
             UpdateIndustryJobsCommand = new DelegateCommand(ExecuteUpdateIndystryJobs);
             UpdateMarketOrdersCommand = new DelegateCommand(ExecuteUpdateMarketOrders);
             ActivateTabCommand = new DelegateCommand<Type>(ExecuteActivateTab);
+            StatusMessage = "Ready";
+        }
+
+        protected override void OnDeactivate(bool close) {
+            Settings.Default.Save();
         }
 
 
@@ -189,7 +194,7 @@ namespace eZet.EveProfiteer.ViewModels {
         protected override void OnViewLoaded(object view) {
             var shellView = (ShellView) view;
             initializeRibbon(shellView);
-            initDefaultModules();
+            //initDefaultModules();
         }
 
         private void initializeRibbon(ShellView view) {
@@ -320,7 +325,6 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         private async Task<int> updateMarketOrders() {
-            // TODO fix this
             int result = await _shellService.UpdateMarketOrdersAsync().ConfigureAwait(false);
             if (result > 0) {
                 _eventAggregator.PublishOnBackgroundThread(new MarketOrdersUpdatedEvent());
