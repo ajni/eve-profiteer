@@ -39,21 +39,21 @@ namespace eZet.EveProfiteer.Services {
         }
 
         public Task<IList<Transaction>> GetNewTransactionsAsync(ApiKey key, ApiKeyEntity entity, long latestId) {
-            return getTransactionsAsync(key, entity, 5000, latestId);
+            return getTransactionsAsync(key, entity, 2560, latestId);
         }
 
         public Task<IList<Transaction>> GetAllTransactionsAsync(ApiKey key, ApiKeyEntity entity,
             Func<Transaction> transactionFactory) {
-            return getTransactionsAsync(key, entity, 5000);
+            return getTransactionsAsync(key, entity, 2560);
         }
 
         public Task<IList<JournalEntry>> GetNewJournalEntriesAsync(ApiKey key, ApiKeyEntity entity, long latestId) {
-            return getJournalEntriesAsync(key, entity, 5000, latestId);
+            return getJournalEntriesAsync(key, entity, 2560, latestId);
         }
 
         public Task<IList<JournalEntry>> GetAllJournalEntriesAsync(ApiKey key, ApiKeyEntity entity,
             Func<JournalEntry> transactionFactory) {
-            return getJournalEntriesAsync(key, entity, 5000);
+            return getJournalEntriesAsync(key, entity, 2560);
         }
 
         public async Task<AssetList> GetAssetsAsync(ApiKey key, ApiKeyEntity entity) {

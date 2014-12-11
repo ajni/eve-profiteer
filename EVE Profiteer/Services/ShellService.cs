@@ -121,17 +121,13 @@ namespace eZet.EveProfiteer.Services {
             _trace.TraceEvent(TraceEventType.Start, 0, "StartUpdateTransactions");
             long latest = await getLatestTransactionId().ConfigureAwait(false);
             _trace.TraceEvent(TraceEventType.Verbose, 0, "Latest transaction ID: " + latest);
-            var transactions =
-                await
-                    Task.Run(
-                        () =>
-                            _eveApiService.GetNewTransactionsAsync(ApplicationHelper.ActiveEntity.ApiKeys.First(),
-                                ApplicationHelper.ActiveEntity, latest));
+            var transactions = await _eveApiService.GetNewTransactionsAsync(ApplicationHelper.ActiveEntity.ApiKeys.First(),
+                                ApplicationHelper.ActiveEntity, latest).ConfigureAwait(false);
             _trace.TraceEvent(TraceEventType.Verbose, 0, "Fetched transactions: " + transactions.Count);
-            transactions = await processTransactionsAsync(transactions).ConfigureAwait(false);
-            var result = await insertTransactions(transactions).ConfigureAwait(false);
+            await processTransactionsAsync(transactions).ConfigureAwait(false);
+            //var result = await insertTransactions(transactions).ConfigureAwait(false);
             _trace.TraceEvent(TraceEventType.Stop, 0, "CompleteUpdateTransactions");
-            return result;
+            return transactions.Count;
         }
 
         public async Task<int> UpdateJournalAsync() {
@@ -256,6 +252,7 @@ namespace eZet.EveProfiteer.Services {
             EveProfiteerRepository db;
             using (db = CreateDb()) {
                 db.Context.Configuration.AutoDetectChangesEnabled = false;
+                db.Context.Configuration.ValidateOnSaveEnabled = false;
                 IList<Transaction> list = transactions.OrderBy(t => t.TransactionId).ToList();
                 int count = 0;
                 foreach (Transaction transaction in list) {
@@ -268,6 +265,7 @@ namespace eZet.EveProfiteer.Services {
                     db.Context.Dispose();
                     db = CreateDb();
                     db.Context.Configuration.AutoDetectChangesEnabled = false;
+                    db.Context.Configuration.ValidateOnSaveEnabled = false;
                 }
                 db.Context.ChangeTracker.DetectChanges();
                 result = await db.Context.SaveChangesAsync().ConfigureAwait(false);
@@ -289,6 +287,7 @@ namespace eZet.EveProfiteer.Services {
                             .ConfigureAwait(false);
                 Dictionary<int, Asset> assetLookup = assets.ToDictionary(t => t.InvTypes_TypeId, t => t);
                 foreach (Transaction transaction in list.OrderBy(t => t.TransactionDate)) {
+                    db.Context.Transactions.Add(transaction);
                     Asset asset;
                     if (!assetLookup.TryGetValue(transaction.TypeId, out asset)) {
                         asset = new Asset {
@@ -304,7 +303,6 @@ namespace eZet.EveProfiteer.Services {
                     if (transaction.TransactionType == TransactionType.Buy) {
                         if (asset.LastBuyTransaction == null || transaction.TransactionDate > asset.LastBuyTransaction.TransactionDate) {
                             asset.LastBuyTransaction = transaction;
-                            list.Remove(transaction);
                         }
                         asset.MaterialCost += transactionTotal;
                         asset.BrokerFees += transaction.BrokerFee;
@@ -315,7 +313,6 @@ namespace eZet.EveProfiteer.Services {
                     } else if (transaction.TransactionType == TransactionType.Sell) {
                         if (asset.LastSellTransaction == null || transaction.TransactionDate > asset.LastSellTransaction.TransactionDate) {
                             asset.LastSellTransaction = transaction;
-                            list.Remove(transaction);
                         }
                         transaction.TaxLiability = transactionTotal * (decimal)ApplicationHelper.TaxRate / 100;
                         transaction.PerpetualAverageCost = asset.LatestAverageCost;
@@ -337,6 +334,10 @@ namespace eZet.EveProfiteer.Services {
                         transaction.PostTransactionStock = asset.Quantity;
                     }
                 }
+                //foreach (var asset in assetLookup.Values) {
+                //    list.Remove(asset.LastBuyTransaction);
+                //    list.Remove(asset.LastSellTransaction);
+                //}
                 // save changes to assets
                 db.Context.ChangeTracker.DetectChanges();
                 await db.Context.SaveChangesAsync().ConfigureAwait(false);
