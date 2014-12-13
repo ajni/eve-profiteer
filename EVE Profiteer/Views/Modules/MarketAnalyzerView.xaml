@@ -20,7 +20,7 @@
                 <Style.Triggers>
                     <Trigger Property="SelectionState" Value="None">
                         <Setter Property="Background"
-                        Value="{Binding Path=Row, Converter={converters:TradeAnalyzerBrushConverter}}" />
+                        Value="{Binding Path=Row, Converter={converters:MarketAnalyzerBrushConverter}}" />
                     </Trigger>
                 </Style.Triggers>
             </Style>
@@ -48,7 +48,7 @@
                 <dxb:BarEditItem Name="StationSelector"
                                  EditValue="{Binding SelectedStation}"
                                  EditWidth="300"
-                                 Hint="Station (optional)">
+                                 Hint="Station">
                     <dxb:BarEditItem.EditSettings>
                         <dxe:ComboBoxEditSettings ItemsSource="{Binding Stations}"
                                                   DisplayMember="StationName"
@@ -56,9 +56,7 @@
                                                   FilterCondition="Contains"
                                                   ImmediatePopup="True"
                                                   ValidateOnTextInput="False"
-                                                  NullValueButtonPlacement="EditBox"
-                                                  AllowNullInput="False"
-                                                  NullText="-- All stations --" />
+                                                  />
                     </dxb:BarEditItem.EditSettings>
                 </dxb:BarEditItem>
                 <dxb:BarEditItem Name="DayLimit"
@@ -125,6 +123,40 @@
         <dxg:GridControl Name="MarketAnalyzerGrid" dxlc:DockLayoutControl.Dock="Client"
                          dxlc:DockLayoutControl.AllowVerticalSizing="True"
                          ItemsSource="{Binding MarketAnalyzerResults}" SelectionMode="Row" ClipboardCopyMode="ExcludeHeader">
+            <dxg:GridControl.View>
+                <dxg:TableView AllowEditing="False"
+                               NavigationStyle="Cell"
+                               ShowFixedTotalSummary="True"
+                               IsTotalSummaryMenuEnabled="True"
+                               ShowGroupPanel="False"
+                               RowStyle="{StaticResource RowBackgroundStyle}"
+                               ShowSearchPanelMode="Default"
+                               SearchColumns="InvType.TypeName"
+                               SearchPanelCriteriaOperatorType="And"
+                               ShowFilterPanelMode="ShowAlways"
+                               AutoScrollOnSorting="False"
+                               UseLightweightTemplates="All"
+                               >
+                <dxg:TableView.RowCellMenuCustomizations>
+                    <dxb:BarButtonItem Content="View market details"
+                                           Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.ViewMarketDetailsCommand, RelativeSource={RelativeSource Self}}"
+                                           CommandParameter="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataControl.CurrentItem, RelativeSource={RelativeSource Self}}" />
+                    <dxb:BarButtonItem Content="View trade details"
+                                           Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.ViewTradeDetailsCommand, RelativeSource={RelativeSource Self}}"
+                                           CommandParameter="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataControl.CurrentItem, RelativeSource={RelativeSource Self}}" />
+                    <dxb:BarItemSeparator />
+                    <dxb:BarButtonItem Content="View in Order Manager"
+                                           Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.ViewOrderCommand, RelativeSource={RelativeSource Self}}"
+                                           CommandParameter="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataControl.CurrentItem, RelativeSource={RelativeSource Self}}" />
+                    <dxb:BarButtonItem Content="Add to Order Manager"
+                                           Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.AddOrderCommand, RelativeSource={RelativeSource Self}}"
+                                           CommandParameter="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataControl.SelectedItems, RelativeSource={RelativeSource Self}}" />
+                </dxg:TableView.RowCellMenuCustomizations>
+            </dxg:TableView>
+            </dxg:GridControl.View>
+            <dxg:GridControl.TotalSummary>
+                <dxg:GridSummaryItem SummaryType="Count" Alignment="Right" DisplayFormat="Items: {0}" />
+            </dxg:GridControl.TotalSummary>
             <dxg:GridControl.Bands>
                 <dxg:GridControlBand>
                     <dxg:GridColumn FieldName="InvType.TypeName" Header="Item" />
@@ -241,35 +273,8 @@
                 </dxg:GridControlBand>
 
             </dxg:GridControl.Bands>
-            <dxg:GridControl.View>
-                <dxg:TableView AllowEditing="False" NavigationStyle="Cell"
-                               ShowFixedTotalSummary="True" IsTotalSummaryMenuEnabled="True"
-                               ShowGroupPanel="False" RowStyle="{StaticResource RowBackgroundStyle}"
-                               ShowSearchPanelMode="Default" SearchColumns="InvType.TypeName"
-                               SearchPanelCriteriaOperatorType="And" ShowFilterPanelMode="ShowAlways"
-                               AutoScrollOnSorting="False"
-                               UseLightweightTemplates="None"
-                               >
-                    <dxg:TableView.RowCellMenuCustomizations>
-                        <dxb:BarButtonItem Content="View market details"
-                                           Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.ViewMarketDetailsCommand, RelativeSource={RelativeSource Self}}"
-                                           CommandParameter="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataControl.CurrentItem, RelativeSource={RelativeSource Self}}" />
-                        <dxb:BarButtonItem Content="View trade details"
-                                           Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.ViewTradeDetailsCommand, RelativeSource={RelativeSource Self}}"
-                                           CommandParameter="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataControl.CurrentItem, RelativeSource={RelativeSource Self}}" />
-                        <dxb:BarItemSeparator />
-                        <dxb:BarButtonItem Content="View order"
-                                           Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.ViewOrderCommand, RelativeSource={RelativeSource Self}}"
-                                           CommandParameter="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataControl.CurrentItem, RelativeSource={RelativeSource Self}}" />
-                        <dxb:BarButtonItem Content="Add to orders"
-                                           Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.AddToOrdersCommand, RelativeSource={RelativeSource Self}}"
-                                           CommandParameter="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataControl.SelectedItems, RelativeSource={RelativeSource Self}}" />
-                    </dxg:TableView.RowCellMenuCustomizations>
-                </dxg:TableView>
-            </dxg:GridControl.View>
-            <dxg:GridControl.TotalSummary>
-                <dxg:GridSummaryItem SummaryType="Count" Alignment="Right" DisplayFormat="Items: {0}" />
-            </dxg:GridControl.TotalSummary>
+      
+               
         </dxg:GridControl>
     </dxlc:DockLayoutControl>
 

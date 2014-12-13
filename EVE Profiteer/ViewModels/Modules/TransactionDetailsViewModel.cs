@@ -180,7 +180,7 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
         }
 
         private async Task LoadItem(InvType type) {
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Processing trade details..."));
+            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs(this, "Processing trade details..."));
             if (type == null) {
                 return;
             }
@@ -192,7 +192,7 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             } else {
                 TransactionAggregate = new TransactionAggregate();
             }
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Trade details loaded"));
+            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs(this, "Trade details loaded"));
         }
 
     }

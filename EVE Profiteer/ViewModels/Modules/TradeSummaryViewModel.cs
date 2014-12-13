@@ -10,7 +10,7 @@ using eZet.EveProfiteer.Services;
 using eZet.EveProfiteer.Ui.Events;
 
 namespace eZet.EveProfiteer.ViewModels.Modules {
-    public sealed class TradeSummaryViewModel : ModuleViewModel, IHandle<TransactionsUpdatedEvent> {
+    public sealed class TradeSummaryViewModel : ModuleViewModel {
         public enum ViewPeriodEnum {
             //Today,
             //Yesterday,
@@ -69,14 +69,6 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             }
         }
 
-        //protected override Task OnOpen() {
-        //    return ViewPeriod();
-        //}
-
-        protected override Task OnActivate() {
-            return refresh();
-        }
-
         public void ExecuteViewPeriod() {
             ViewPeriod().ConfigureAwait(false);
         }
@@ -117,26 +109,12 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
 
 
         private async Task load(DateTime start, DateTime end) {
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Loading..."));
+            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs(this, "Loading..."));
             List<Transaction> transactions = await
                 _tradeSummaryService.GetTransactions(start, end).ConfigureAwait(false);
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Analyzing..."));
+            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs(this, "Analyzing..."));
             Summary = new TransactionAggregate(transactions.GroupBy(t => t.TransactionDate.Date));
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Analysis complete"));
-        }
-
-        private Task refresh() {
-            if (NeedRefresh) {
-                NeedRefresh = false;
-                return ViewPeriod();
-            }
-            return Task.FromResult(0);
-        }
-
-        public void Handle(TransactionsUpdatedEvent message) {
-            NeedRefresh = true;
-            if (IsActive)
-                refresh();
+            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs(this, "Analysis complete"));
         }
 
     }

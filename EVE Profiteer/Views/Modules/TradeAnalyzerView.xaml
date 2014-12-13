@@ -16,7 +16,7 @@
         <ResourceDictionary>
             <Style x:Key="RowBackgroundStyle" TargetType="dxg:RowControl">
                 <Setter Property="Background"
-                        Value="{Binding Path=Row.Order, Converter={converters:TradeAnalyzerBrushConverter}}" />
+                        Value="{Binding Path=Row.Order, Converter={converters:MarketAnalyzerBrushConverter}}" />
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>

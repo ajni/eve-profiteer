@@ -5,7 +5,9 @@
     [Type]      NVARCHAR (MAX) NULL,
     [ImagePath] NVARCHAR (MAX) NULL,
     [IsActive]  BIT            NOT NULL,
-	CONSTRAINT [PK_dbo.ApiKeyEntities] PRIMARY KEY NONCLUSTERED ([Id] ASC),
+	[DefaultStationId] INT NULL, 
+    [DefaultRegionId] INT NULL, 
+    CONSTRAINT [PK_dbo.ApiKeyEntities] PRIMARY KEY NONCLUSTERED ([Id] ASC),
 )
 
 GO

@@ -8,7 +8,7 @@ namespace eZet.EveProfiteer.ViewModels.Dialogs {
         private bool _editOrderQuantities;
 
         public OrderOptimizerViewModel() {
-            DisplayName = "Update price limits on orders";
+            DisplayName = "Order Optimizer";
             AvgPriceBuyOffset = Properties.Settings.Default.BuyPriceOffset;
             AvgPriceSellOffset = Properties.Settings.Default.SellPriceOffset;
             MinProfitMargin = Properties.Settings.Default.MinProfitMargin;

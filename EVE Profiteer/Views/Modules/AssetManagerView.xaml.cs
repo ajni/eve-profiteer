@@ -2,10 +2,10 @@
 
 namespace eZet.EveProfiteer.Views.Modules {
     /// <summary>
-    /// Interaction logic for AssetsView.xaml
+    /// Interaction logic for AssetManagerView.xaml
     /// </summary>
-    public partial class AssetsView : UserControl {
-        public AssetsView() {
+    public partial class AssetManagerView : UserControl {
+        public AssetManagerView() {
             InitializeComponent();
         }
     }

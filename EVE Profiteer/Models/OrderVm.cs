@@ -6,14 +6,16 @@ using System.Runtime.CompilerServices;
 using eZet.EveProfiteer.Models.Annotations;
 
 namespace eZet.EveProfiteer.Models {
-    public class OrderViewModel : INotifyPropertyChanged {
+    public class OrderVm : INotifyPropertyChanged {
         private Order _order;
+        private Asset _asset;
+        private InvType _invType;
 
-        public OrderViewModel() {
+        public OrderVm() {
             Order = new Order();
         }
 
-        public OrderViewModel(Order order) {
+        public OrderVm(Order order) {
             Order = order;
         }
 
@@ -163,7 +165,7 @@ namespace eZet.EveProfiteer.Models {
         #region Inventory
 
         public int InventoryQuantity {
-            get { return Asset != null ? Asset.ActualQuantity : 0; }
+            get { return Asset != null ? Asset.InventoryQuantity : 0; }
         }
 
         public int MarketQuantity {
@@ -171,7 +173,7 @@ namespace eZet.EveProfiteer.Models {
         }
 
         public int CalculatedQuantity {
-            get { return Asset != null ? Asset.Quantity : 0; }
+            get { return Asset != null ? Asset.CalculatedQuantity : 0; }
         }
 
         public int TotalQuantity {

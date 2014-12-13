@@ -357,4 +357,18 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="AutoProcess" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="59153502-3dcb-4f22-8d5e-c13e600a3a10" ChangeDateTime="12/12/2014 15:42:05">
+    <Property Name="ElementName" Value="[dbo].[Assets].[Quantity]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Assets]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="CalculatedQuantity" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="ced5b1e8-3bc1-4b8b-99cc-6692f8bec53a" ChangeDateTime="12/12/2014 15:52:29">
+    <Property Name="ElementName" Value="[dbo].[Assets].[ActualQuantity]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Assets]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="InventoryQuantity" />
+  </Operation>
 </Operations>

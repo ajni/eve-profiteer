@@ -12,7 +12,7 @@ namespace eZet.EveProfiteer.Ui.Events {
         }
 
         public override Type GetTabType() {
-            return typeof(AssetsViewModel);
+            return typeof(AssetManagerViewModel);
         }
     }
 }

@@ -13,7 +13,6 @@
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance d:Type=modules:OrderManagerViewModel, IsDesignTimeCreatable=False}">
     <UserControl.Resources>
-
         <ResourceDictionary>
             <Style x:Key="RowBackgroundStyle" TargetType="dxg:RowControl">
                 <Style.Triggers>
@@ -34,8 +33,11 @@
         <dxb:BarManager DockPanel.Dock="Top">
             <dxb:BarManager.Items>
 
-                <dxb:BarButtonItem Name="Process" Content="Process" Command="{Binding EditCommand}"
+                <dxb:BarButtonItem Name="Load" Content="Load" Command="{Binding LoadCommand}"
+                                   Hint="Load orders for selected station" />
+                <dxb:BarButtonItem Name="Process" Content="Quick Edit" Command="{Binding EditCommand}"
                                    Hint="Process and optimize all orders" />
+                
                 <dxb:BarButtonItem Name="UpdateMarketData" Content="Update prices"
                                    Command="{Binding UpdateMarketDataCommand}"
                                    Hint="Update market and price data for all orders" />
@@ -84,14 +86,15 @@
             </dxb:BarManager.Items>
             <dxb:BarManager.Bars>
                 <dxb:Bar Caption="Order Editor">
+                    <dxb:BarButtonItemLink BarItemName="Load" />
+                    <dxb:BarEditItemLink BarItemName="RegionSelector" />
+                    <dxb:BarEditItemLink BarItemName="StationSelector" />
                     <dxb:BarButtonItemLink BarItemName="Save" />
                     <dxb:BarButtonItemLink BarItemName="Process" />
                 </dxb:Bar>
                 <dxb:Bar Caption="Market Data">
                     <dxb:Bar.ItemLinks>
                         <dxb:BarButtonItemLink BarItemName="UpdateMarketData" />
-                        <dxb:BarEditItemLink BarItemName="RegionSelector" />
-                        <dxb:BarEditItemLink BarItemName="StationSelector" />
                         <dxb:BarEditItemLink BarItemName="DayLimit" />
                     </dxb:Bar.ItemLinks>
                 </dxb:Bar>

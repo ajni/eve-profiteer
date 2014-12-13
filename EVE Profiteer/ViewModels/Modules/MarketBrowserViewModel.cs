@@ -147,9 +147,17 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
         }
 
         private async Task LoadMarketDetails(MapRegion region, InvType invType) {
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Loading market details..."));
+            if (region == null) {
+                _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs(this, "Cannot load data: No region selected"));
+                return;
+            }
+            if (invType == null) {
+                _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs(this, "Cannot load data: No type selected"));
+                return;
+            }
+            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs(this, "Fetching market data..."));
             MarketBrowserData = await GetMarketDetails(region, invType).ConfigureAwait(false);
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Market details loaded"));
+            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs(this, "Market data loaded"));
         }
 
         private void ExecuteSelectItem(MarketTreeNode node) {
@@ -158,11 +166,11 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
         }
 
         protected override async Task OnInitialize() {
-                Regions = await _marketBrowserService.GetRegions().ConfigureAwait(false);
-                SelectedRegion = Regions.Single(region => region.RegionId == Properties.Settings.Default.DefaultRegionId);
-                InvTypes = await _marketBrowserService.GetMarketTypes().ConfigureAwait(false);
-                TreeRootNodes = await _marketBrowserService.GetMarketTree().ConfigureAwait(false);
-                PropertyChanged += OnPropertyChanged;
+            Regions = await _marketBrowserService.GetRegions().ConfigureAwait(false);
+            SelectedRegion = Regions.Single(region => region.RegionId == Properties.Settings.Default.DefaultRegionId);
+            InvTypes = await _marketBrowserService.GetMarketTypes().ConfigureAwait(false);
+            TreeRootNodes = await _marketBrowserService.GetMarketTree().ConfigureAwait(false);
+            PropertyChanged += OnPropertyChanged;
         }
 
 
@@ -172,6 +180,7 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
         }
 
         private async Task<MarketBrowserItem> GetMarketDetails(MapRegion region, InvType invType) {
+
             return await _marketBrowserService.GetMarketDetails(region, invType).ConfigureAwait(false);
         }
     }

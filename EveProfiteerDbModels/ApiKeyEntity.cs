@@ -31,6 +31,8 @@ namespace eZet.EveProfiteer.Models
         public string Type { get; set; }
         public string ImagePath { get; set; }
         public bool IsActive { get; set; }
+        public Nullable<int> DefaultStationId { get; set; }
+        public Nullable<int> DefaultRegionId { get; set; }
     
         public virtual ICollection<JournalEntry> JournalEntries { get; set; }
         public virtual ICollection<ApiKey> ApiKeys { get; set; }

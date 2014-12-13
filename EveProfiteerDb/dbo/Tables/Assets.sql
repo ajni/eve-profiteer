@@ -2,8 +2,8 @@
 (
 	[Id] INT IDENTITY NOT NULL, 
     [InvTypes_TypeId] INT NOT NULL, 
-    [Quantity] INT NOT NULL DEFAULT 0, 
-    [ActualQuantity] INT NOT NULL DEFAULT 0, 
+    [CalculatedQuantity] INT NOT NULL DEFAULT 0, 
+    [InventoryQuantity] INT NOT NULL DEFAULT 0, 
     [MaterialCost] DECIMAL(18, 5) NOT NULL DEFAULT 0,
 	[ApiKeyEntity_Id] INT NOT NULL, 
     [UnaccountedQuantity] INT NOT NULL DEFAULT 0, 

@@ -6,16 +6,19 @@ using System.Threading.Tasks;
 using Caliburn.Micro;
 using eZet.EveLib.Modules;
 using eZet.EveProfiteer.Models;
+using eZet.EveProfiteer.Repository;
 using eZet.EveProfiteer.Util;
 
 namespace eZet.EveProfiteer.Services {
     public class MarketAnalyzerService : DbContextService {
         private readonly EveMarketService _eveMarketService;
         private readonly EveProfiteerRepository _eveProfiteerRepository;
+        private readonly EveStaticDataRepository _staticData;
 
-        public MarketAnalyzerService(EveMarketService eveMarketService, EveProfiteerRepository eveProfiteerRepository) {
+        public MarketAnalyzerService(EveMarketService eveMarketService, EveProfiteerRepository eveProfiteerRepository, EveStaticDataRepository staticData) {
             _eveMarketService = eveMarketService;
             _eveProfiteerRepository = eveProfiteerRepository;
+            _staticData = staticData;
         }
 
         public async Task<BindableCollection<MarketTreeNode>> GetMarketTreeAsync(
@@ -49,7 +52,7 @@ namespace eZet.EveProfiteer.Services {
         }
 
         public Task<List<MapRegion>> GetRegionsAsync() {
-            return _eveProfiteerRepository.GetRegionsOrdered().Include("StaStations").ToListAsync();
+            return _staticData.GetRegionsOrdered().ToListAsync();
         }
 
         public async Task<List<InvType>> GetInvTypesForOrdersAsync() {

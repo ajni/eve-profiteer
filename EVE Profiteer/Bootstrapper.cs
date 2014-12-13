@@ -34,6 +34,7 @@ namespace eZet.EveProfiteer {
             // Data Services
             _container.PerRequest<EveProfiteerDbEntities>();
             _container.PerRequest<EveProfiteerRepository>();
+            _container.Singleton<EveStaticDataRepository>();
 
             // Repositories
             _container.PerRequest<IRepository<Transaction>, DbContextRepository<Transaction, EveProfiteerDbEntities>>();
@@ -76,13 +77,15 @@ namespace eZet.EveProfiteer {
             _container.PerRequest<TradeAnalyzerViewModel>();
             _container.PerRequest<TransactionDetailsViewModel>();
             _container.PerRequest<MarketBrowserViewModel>();
-            _container.PerRequest<AssetsViewModel>();
+            _container.PerRequest<AssetManagerViewModel>();
             _container.PerRequest<ProductionViewModel>();
             _container.PerRequest<OrderOptimizerViewModel>();
             _container.PerRequest<TransactionsViewModel>();
             _container.PerRequest<JournalViewModel>();
             _container.PerRequest<MarketOrdersViewModel>();
             _container.PerRequest<SettingsViewModel>();
+            _container.PerRequest<AssetReductionDialogViewModel>();
+
             
             // Settings panel view models
             _container.PerRequest<GeneralSettingsViewModel>();
@@ -105,6 +108,8 @@ namespace eZet.EveProfiteer {
         }
 
         protected override void OnStartup(object sender, StartupEventArgs e) {
+            // start initialization
+            IoC.Get<EveStaticDataRepository>();
             DisplayRootViewFor<IShell>();
         }
     }

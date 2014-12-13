@@ -116,7 +116,7 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
         }
 
         public async void ViewPeriod() {
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Analyzing..."));
+            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs(this, "Analyzing..."));
 
             ActualViewEnd = DateTime.UtcNow;
             switch (SelectedViewPeriod) {
@@ -150,7 +150,7 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
                     break;
             }
             await analyze(ActualViewStart, ActualViewEnd).ConfigureAwait(false);
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Analysis complete"));
+            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs(this, "Analysis complete"));
 
         }
 

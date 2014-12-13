@@ -17,6 +17,7 @@ using DevExpress.Xpf.Docking.Base;
 using eZet.EveProfiteer.Framework;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Properties;
+using eZet.EveProfiteer.Repository;
 using eZet.EveProfiteer.Services;
 using eZet.EveProfiteer.Ui;
 using eZet.EveProfiteer.Ui.Events;
@@ -49,7 +50,6 @@ namespace eZet.EveProfiteer.ViewModels {
             Initialize = InitializeAsync();
             _eventAggregator.Subscribe(this);
             Modules = new BindableCollection<ModuleViewModel>();
-
             OpenKeyManagerCommand = new DelegateCommand(ExecuteOpenKeyManager);
             OpenSettingsCommand = new DelegateCommand(ExecuteOpenSettings);
             UpdateTransactionsCommand = new DelegateCommand(ExecuteUpdateTransactions);
@@ -62,7 +62,6 @@ namespace eZet.EveProfiteer.ViewModels {
             UpdateIndustryJobsCommand = new DelegateCommand(ExecuteUpdateIndystryJobs);
             UpdateMarketOrdersCommand = new DelegateCommand(ExecuteUpdateMarketOrders);
             ActivateTabCommand = new DelegateCommand<Type>(ExecuteActivateTab);
-            StatusMessage = "Ready";
         }
 
         protected override void OnDeactivate(bool close) {
@@ -146,6 +145,11 @@ namespace eZet.EveProfiteer.ViewModels {
                 ApiKeyEntity entity = Entities.Single(e => e.Id == activeEntityId);
                 if (entity != null) ApplicationHelper.ActiveEntity = entity;
             }
+            StatusMessage = "Initializing data...";
+            await IoC.Get<EveStaticDataRepository>().Initialize;
+            StatusMessage = "Initializing modules...";
+            await _moduleService.InitialiseAsync();
+            StatusMessage = "Ready";
         }
 
         private void ExecuteOpenSettings() {
@@ -198,7 +202,7 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         private void initializeRibbon(ShellView view) {
-            foreach (ModuleConfiguration config in _moduleService.Configurations) {
+            foreach (ModuleConfiguration config in _moduleService.Configuration) {
                 var button = new BarButtonItem();
                 button.Command = ActivateTabCommand;
                 button.Content = config.DisplayName;

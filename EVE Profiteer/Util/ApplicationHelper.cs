@@ -17,11 +17,15 @@ namespace eZet.EveProfiteer.Util {
             BrokerFeeRate = 0.73;
             ActiveEntity = new ApiKeyEntity();
             ActiveEntity.Name = "No Active Entity";
+            StationId = 60003760;
+
         }
 
         public static double TaxRate { get; set; }
 
         public static double BrokerFeeRate { get; set; }
+
+        public static int StationId { get; set; }
 
 
         public static ApiKeyEntity ActiveEntity {

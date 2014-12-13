@@ -48,7 +48,7 @@ namespace eZet.EveProfiteer.Views.Modules {
         }
 
         private void OrdersView_OnValidateRow(object sender, GridRowValidationEventArgs e) {
-            var order = (OrderViewModel)e.Row;
+            var order = (OrderVm)e.Row;
             if (order.Order.TypeId == 0)
                 e.IsValid = false;
         }

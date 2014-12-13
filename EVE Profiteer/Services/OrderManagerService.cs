@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.Entity;
 using System.Diagnostics;
 using System.Linq;
-using System.Net.Mime;
 using System.Threading.Tasks;
 using DevExpress.XtraPrinting.Native;
 using eZet.EveProfiteer.Models;
+using eZet.EveProfiteer.Repository;
 using eZet.EveProfiteer.Util;
 using OrderType = eZet.EveLib.Modules.OrderType;
 
@@ -14,31 +13,34 @@ namespace eZet.EveProfiteer.Services {
     public class OrderManagerService {
         private readonly EveMarketService _eveMarketService;
         private readonly EveProfiteerRepository _eveProfiteerRepository;
+        private readonly EveStaticDataRepository _staticData;
 
         private readonly TraceSource _trace = new TraceSource("EveLib", SourceLevels.All);
 
-        public OrderManagerService(EveMarketService eveMarketService, EveProfiteerRepository eveProfiteerRepository) {
+        public OrderManagerService(EveMarketService eveMarketService, EveProfiteerRepository eveProfiteerRepository, EveStaticDataRepository staticData) {
             _eveMarketService = eveMarketService;
+            _staticData = staticData;
             _eveProfiteerRepository = eveProfiteerRepository;
         }
 
         public Task<List<MapRegion>> GetRegions() {
-            return _eveProfiteerRepository.GetRegionsOrdered().ToListAsync();
+            return _staticData.GetRegionsOrdered().ToListAsync();
+            //return _eveProfiteerRepository.GetRegionsOrdered().ToListAsync();
         }
 
         public Task<List<InvType>> GetMarketTypesAsync() {
             return _eveProfiteerRepository.GetMarketTypes().ToListAsync();
         }
 
-        public async Task<List<OrderViewModel>> GetOrdersAsync() {
-            var list = new List<OrderViewModel>();
-            var orders = await _eveProfiteerRepository.MyOrders().Include(o => o.InvType.Assets.Select(a => a.LastSellTransaction)).Include(o => o.InvType.Assets.Select(a => a.LastBuyTransaction)).ToListAsync().ConfigureAwait(false);
+        public async Task<List<OrderVm>> GetOrdersAsync(int stationId) {
+            var list = new List<OrderVm>();
+            var orders = await _eveProfiteerRepository.MyOrders().Where(o => o.StationId == stationId).Include(o => o.InvType.Assets.Select(a => a.LastSellTransaction)).Include(o => o.InvType.Assets.Select(a => a.LastBuyTransaction)).ToListAsync().ConfigureAwait(false);
 
             var marketOrders = await _eveProfiteerRepository.MyMarketOrders().Where(t => t.OrderState == OrderState.Open).ToListAsync().ConfigureAwait(false);
             var marketLookup = marketOrders.ToLookup(t => t.TypeId);
 
             foreach (var order in orders) {
-                var ordervm = new OrderViewModel(order);
+                var ordervm = new OrderVm(order);
                 order.InvType.Assets =
                     order.InvType.Assets.Where(f => f.ApiKeyEntity_Id == ApplicationHelper.ActiveEntity.Id)
                         .ToList();
@@ -51,7 +53,7 @@ namespace eZet.EveProfiteer.Services {
             return list;
         }
 
-        public async Task<int> RemoveOrdersAsync(IEnumerable<OrderViewModel> orders) {
+        public async Task<int> RemoveOrdersAsync(IEnumerable<OrderVm> orders) {
             var list = orders.Select(order => order.Order);
             var db = _eveProfiteerRepository.Context;
             foreach (var order in list) {
@@ -64,7 +66,7 @@ namespace eZet.EveProfiteer.Services {
             return await db.SaveChangesAsync().ConfigureAwait(false);
         }
 
-        public async Task<int> SaveOrdersAsync(IEnumerable<OrderViewModel> orders) {
+        public async Task<int> SaveOrdersAsync(IEnumerable<OrderVm> orders) {
             var db = _eveProfiteerRepository.Context;
             db.Configuration.AutoDetectChangesEnabled = false;
             db.Configuration.ValidateOnSaveEnabled = false;
@@ -79,15 +81,14 @@ namespace eZet.EveProfiteer.Services {
                     db.Orders.Add(order);
                 } else {
                     //order.InvType = null;
-                    db.Orders.Attach(order);
+                    //db.Orders.Attach(order);
                     db.Entry(order).State = EntityState.Modified;
                 }
             }
-            db.ChangeTracker.DetectChanges();
             return await db.SaveChangesAsync().ConfigureAwait(false);
         }
 
-        public async Task LoadMarketDataAsync(IEnumerable<OrderViewModel> orderViewModels, MapRegion region, StaStation station, int dayLimit) {
+        public async Task LoadMarketDataAsync(IEnumerable<OrderVm> orderViewModels, MapRegion region, StaStation station, int dayLimit) {
             var orders = orderViewModels.Select(f => f.Order);
             var enumerable = orders as IList<Order> ?? orders.ToList();
             var regionId = region != null ? region.RegionId : 0;

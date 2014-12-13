@@ -14,22 +14,28 @@ namespace eZet.EveProfiteer.Models
     
     public partial class Asset
     {
+        public Asset()
+        {
+            this.AssetReductions = new HashSet<AssetReduction>();
+        }
+    
         public int Id { get; set; }
         public int InvTypes_TypeId { get; set; }
-        public int Quantity { get; set; }
         public int ApiKeyEntity_Id { get; set; }
         public int UnaccountedQuantity { get; set; }
         public decimal LatestAverageCost { get; set; }
-        public int ActualQuantity { get; set; }
         public decimal BrokerFees { get; set; }
         public decimal MaterialCost { get; set; }
         public int MarketQuantity { get; set; }
         public Nullable<int> LastSellTransactionId { get; set; }
         public Nullable<int> LastBuyTransactionId { get; set; }
+        public int CalculatedQuantity { get; set; }
+        public int InventoryQuantity { get; set; }
     
         public virtual ApiKeyEntity ApiKeyEntity { get; set; }
         public virtual InvType invType { get; set; }
         public virtual Transaction LastBuyTransaction { get; set; }
         public virtual Transaction LastSellTransaction { get; set; }
+        public virtual ICollection<AssetReduction> AssetReductions { get; set; }
     }
 }

@@ -75,7 +75,7 @@
     <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
     <CodeContractsReferenceAssembly>DoNotBuild</CodeContractsReferenceAssembly>
     <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
+    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -229,12 +229,12 @@
     <Compile Include="Ui\Events\ViewMarketOrderEvent.cs" />
     <Compile Include="Ui\Events\ViewOrderEvent.cs" />
     <Compile Include="Ui\Events\ViewTransactionDetailsEvent.cs" />
-    <Compile Include="Models\AssetViewModel.cs" />
+    <Compile Include="Models\AssetVm.cs" />
     <Compile Include="Models\CharacterData.cs" />
     <Compile Include="Models\JournalAggregate.cs" />
     <Compile Include="Models\MarketHistoryAggregateEntry.cs" />
     <Compile Include="Models\MarketHistoryEntry.cs" />
-    <Compile Include="Models\OrderViewModel.cs" />
+    <Compile Include="Models\OrderVm.cs" />
     <Compile Include="Models\OverviewData.cs" />
     <Compile Include="Models\ProductionBatchEntry.cs" />
     <Compile Include="Models\TransactionAggregate.cs" />
@@ -265,7 +265,7 @@
     <Compile Include="Ui\Converters\DoubleToIntConverter.cs" />
     <Compile Include="Ui\Converters\MarketOrderToBrushConverter.cs" />
     <Compile Include="Ui\Converters\OrderGridRowToBrushConverter.cs" />
-    <Compile Include="Ui\Converters\TradeAnalyzerBrushConverter.cs" />
+    <Compile Include="Ui\Converters\MarketAnalyzerBrushConverter.cs" />
     <Compile Include="Ui\Events\AddOrdersEvent.cs" />
     <Compile Include="Framework\IShell.cs" />
     <Compile Include="Models\MarketAnalyzer.cs" />
@@ -286,6 +286,7 @@
     <Compile Include="Util\SettingsBindingExtension.cs" />
     <Compile Include="Models\CheckableTreeNode.cs" />
     <Compile Include="Models\BatchMaterialEntry.cs" />
+    <Compile Include="ViewModels\Dialogs\AssetReductionDialogViewModel.cs" />
     <Compile Include="ViewModels\Dialogs\NewProductionBatchViewModel.cs" />
     <Compile Include="ViewModels\Dialogs\AnalyzerProgressViewModel.cs" />
     <Compile Include="ViewModels\Dialogs\EditKeyViewModel.cs" />
@@ -298,7 +299,7 @@
     <Compile Include="ViewModels\Modules\JournalAnalyzerViewModel.cs" />
     <Compile Include="ViewModels\SettingsPanels\GeneralSettingsViewModel.cs" />
     <Compile Include="ViewModels\SettingsPanels\SettingsPanelBase.cs" />
-    <Compile Include="ViewModels\Modules\AssetsViewModel.cs" />
+    <Compile Include="ViewModels\Modules\AssetManagerViewModel.cs" />
     <Compile Include="ViewModels\Modules\JournalViewModel.cs" />
     <Compile Include="ViewModels\Modules\MarketOrdersViewModel.cs" />
     <Compile Include="ViewModels\Modules\ProductionViewModel.cs" />
@@ -311,12 +312,14 @@
     <Compile Include="Ui\Events\ViewMarketBrowserEvent.cs" />
     <Compile Include="ViewModels\Modules\TransactionsViewModel.cs" />
     <Compile Include="ViewModels\ModuleViewModel.cs" />
+    <Compile Include="Views\Dialogs\AssetReductionDialogView.xaml.cs">
+      <DependentUpon>AssetReductionDialogView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Dialogs\EditOrderDialogView.xaml.cs">
       <DependentUpon>EditOrderDialogView.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\Modules\MarketAnalyzerViewModel.cs" />
     <Compile Include="ViewModels\Modules\TradeSummaryViewModel.cs" />
-    <Compile Include="ViewModels\Dialogs\ScannerLinkViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
@@ -346,8 +349,8 @@
     <Compile Include="Views\SettingsPanels\GeneralSettingsView.xaml.cs">
       <DependentUpon>GeneralSettingsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Modules\AssetsView.xaml.cs">
-      <DependentUpon>AssetsView.xaml</DependentUpon>
+    <Compile Include="Views\Modules\AssetManagerView.xaml.cs">
+      <DependentUpon>AssetManagerView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Modules\JournalView.xaml.cs">
       <DependentUpon>JournalView.xaml</DependentUpon>
@@ -376,9 +379,6 @@
     <Compile Include="Views\Dialogs\KeyManagerView.xaml.cs">
       <DependentUpon>KeyManagerView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Dialogs\ScannerLinkView.xaml.cs">
-      <DependentUpon>ScannerLinkView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\ShellView.xaml.cs">
       <DependentUpon>ShellView.xaml</DependentUpon>
     </Compile>
@@ -395,6 +395,10 @@
     <Page Include="Ui\Controls\PeriodSelectorBar.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Dialogs\AssetReductionDialogView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Dialogs\EditOrderDialogView.xaml">
       <SubType>Designer</SubType>
@@ -432,7 +436,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Modules\AssetsView.xaml">
+    <Page Include="Views\Modules\AssetManagerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -471,10 +475,6 @@
     <Page Include="Views\Dialogs\KeyManagerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Dialogs\ScannerLinkView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\ShellView.xaml">
       <SubType>Designer</SubType>

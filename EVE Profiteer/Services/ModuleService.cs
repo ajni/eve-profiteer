@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Caliburn.Micro;
 using eZet.EveProfiteer.Ui;
 using eZet.EveProfiteer.ViewModels;
@@ -10,36 +11,37 @@ namespace eZet.EveProfiteer.Services {
     public class ModuleService {
 
         public ModuleService() {
-            loadModules();
+            configure();
         }
 
-        private void loadModules() {
-            Configurations = new List<ModuleConfiguration>();
-            Configurations.Add(new ModuleConfiguration<TradeSummaryViewModel>("Trade Summary", ModuleConfiguration.ModuleCategory.Trade));
-            Configurations.Add(new ModuleConfiguration<TradeAnalyzerViewModel>("Trade Analyzer", ModuleConfiguration.ModuleCategory.Trade));
-            Configurations.Add(new ModuleConfiguration<TransactionDetailsViewModel>("Transaction Details", ModuleConfiguration.ModuleCategory.Trade));
-            Configurations.Add(new ModuleConfiguration<MarketBrowserViewModel>("Market Browser", ModuleConfiguration.ModuleCategory.Trade));
-            Configurations.Add(new ModuleConfiguration<MarketAnalyzerViewModel>("Market Analyzer", ModuleConfiguration.ModuleCategory.Trade));
-            Configurations.Add(new ModuleConfiguration<OrderManagerViewModel>("Order Manager", ModuleConfiguration.ModuleCategory.Trade));
-            Configurations.Add(new ModuleConfiguration<MarketOrdersViewModel>("Market Orders"));
-            Configurations.Add(new ModuleConfiguration<AssetsViewModel>("Assets"));
-            Configurations.Add(new ModuleConfiguration<ProductionViewModel>("Production"));
-            Configurations.Add(new ModuleConfiguration<TransactionsViewModel>("Transactions"));
-            Configurations.Add(new ModuleConfiguration<JournalViewModel>("Journal"));
+        private void configure() {
+            Configuration = new List<ModuleConfiguration>();
+            Configuration.Add(new ModuleConfiguration<TradeSummaryViewModel>("Trade Summary", ModuleConfiguration.ModuleCategory.Trade));
+            Configuration.Add(new ModuleConfiguration<TradeAnalyzerViewModel>("Trade Analyzer", ModuleConfiguration.ModuleCategory.Trade));
+            Configuration.Add(new ModuleConfiguration<TransactionDetailsViewModel>("Transaction Details", ModuleConfiguration.ModuleCategory.Trade));
+            Configuration.Add(new ModuleConfiguration<MarketBrowserViewModel>("Market Browser", ModuleConfiguration.ModuleCategory.Trade));
+            Configuration.Add(new ModuleConfiguration<MarketAnalyzerViewModel>("Market Analyzer", ModuleConfiguration.ModuleCategory.Trade));
+            Configuration.Add(new ModuleConfiguration<OrderManagerViewModel>("Order Manager", ModuleConfiguration.ModuleCategory.Trade));
+            Configuration.Add(new ModuleConfiguration<AssetManagerViewModel>("Assets Manager", ModuleConfiguration.ModuleCategory.Trade));
+            Configuration.Add(new ModuleConfiguration<MarketOrdersViewModel>("Market Orders"));
+            Configuration.Add(new ModuleConfiguration<ProductionViewModel>("Production"));
+            Configuration.Add(new ModuleConfiguration<TransactionsViewModel>("Transactions"));
+            Configuration.Add(new ModuleConfiguration<JournalViewModel>("Journal"));
         }
 
-        public void Initialize() {
-            if (Modules != null) return;
+        public Task InitialiseAsync() {
+            if (Modules != null) return Task.FromResult(0);
             Modules = new List<ModuleViewModel>();
-            foreach (var config in Configurations) {
+            foreach (var config in Configuration) {
                 Modules.Add(GetModule(config));
             }
-            Modules.ForEach(f => f.Initialize());
+            var tasks = Modules.Select(async f => await f.Initialize());
+            return Task.WhenAll(tasks);
         }
 
         private List<ModuleViewModel> Modules { get; set; }
 
-        public List<ModuleConfiguration> Configurations { get; private set; }
+        public List<ModuleConfiguration> Configuration { get; private set; }
 
 
         public ModuleConfiguration Default { get; private set; }
@@ -50,7 +52,7 @@ namespace eZet.EveProfiteer.Services {
 
 
         public ModuleViewModel GetModule(Type type) {
-            Initialize();
+            InitialiseAsync();
             return Modules.Single(e => e.GetType() == type);
         }
 

@@ -31,8 +31,10 @@ namespace eZet.EveProfiteer.Models
         public bool IsBuyOrder { get; set; }
         public string Notes { get; set; }
         public bool AutoProcess { get; set; }
+        public int StationId { get; set; }
     
         public virtual ApiKeyEntity ApiKeyEntity { get; set; }
         public virtual InvType InvType { get; set; }
+        public virtual StaStation staStation { get; set; }
     }
 }

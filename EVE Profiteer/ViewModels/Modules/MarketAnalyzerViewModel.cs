@@ -30,7 +30,7 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             _eventAggregator.Subscribe(this);
             SelectedItems = new BindableCollection<MarketTreeNode>();
             AnalyzeCommand = new DelegateCommand(executeAnalyze, () => SelectedItems.Count != 0);
-            AddToOrdersCommand = new DelegateCommand<ICollection<object>>(executeAddToOrders, canAddToOrders);
+            AddOrderCommand = new DelegateCommand<ICollection<object>>(executeAddOrder, canAddToOrders);
             AnalyzeOrdersCommand = new DelegateCommand(executeAnalyzeOrders);
             ViewTradeDetailsCommand =
                 new DelegateCommand<MarketAnalyzerEntry>(
@@ -50,7 +50,7 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
 
         public ICommand ViewOrderCommand { get; private set; }
 
-        public ICommand AddToOrdersCommand { get; private set; }
+        public ICommand AddOrderCommand { get; private set; }
 
         public ICommand AnalyzeCommand { get; private set; }
 
@@ -172,7 +172,7 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             return items.All(item => item.Order == null);
         }
 
-        private void executeAddToOrders(ICollection<object> objects) {
+        private void executeAddOrder(ICollection<object> objects) {
             List<InvType> items = objects.Select(item => ((MarketAnalyzerEntry)item).InvType).ToList();
             _eventAggregator.PublishOnUIThread(new AddOrdersEvent(items));
         }
@@ -183,13 +183,13 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
         }
 
         private async Task analyze(IEnumerable<InvType> items) {
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Fetching market data..."));
+            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs(this, "Fetching market data..."));
             ICollection<MarketAnalyzerEntry> result =
                 await
                     _marketAnalyzerService.AnalyzeAsync(SelectedRegion, SelectedStation, items, DayLimit)
                         .ConfigureAwait(false);
             MarketAnalyzerResults = new BindableCollection<MarketAnalyzerEntry>(result);
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Market analysis complete"));
+            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs(this, "Market analysis complete"));
         }
 
         private void treeViewCheckBox_PropertyChanged(object sender, PropertyChangedEventArgs e) {

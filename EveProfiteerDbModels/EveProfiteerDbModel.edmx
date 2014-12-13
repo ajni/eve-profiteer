@@ -23,6 +23,8 @@
           <Property Name="Type" Type="nvarchar(max)" />
           <Property Name="ImagePath" Type="nvarchar(max)" />
           <Property Name="IsActive" Type="bit" Nullable="false" />
+          <Property Name="DefaultStationId" Type="int" />
+          <Property Name="DefaultRegionId" Type="int" />
         </EntityType>
         <EntityType Name="ApiKeys">
           <Key>
@@ -33,14 +35,25 @@
           <Property Name="VCode" Type="nvarchar(max)" />
           <Property Name="KeyType" Type="nvarchar(max)" />
         </EntityType>
+        <EntityType Name="AssetReductions">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="AssetId" Type="int" Nullable="false" />
+          <Property Name="Quantity" Type="int" Nullable="false" />
+          <Property Name="PostReductionQuantity" Type="int" Nullable="false" />
+          <Property Name="Description" Type="text" Nullable="false" />
+          <Property Name="Date" Type="datetime" Nullable="false" />
+        </EntityType>
         <EntityType Name="Assets">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="InvTypes_TypeId" Type="int" Nullable="false" />
-          <Property Name="Quantity" Type="int" Nullable="false" />
-          <Property Name="ActualQuantity" Type="int" Nullable="false" />
+          <Property Name="CalculatedQuantity" Type="int" Nullable="false" />
+          <Property Name="InventoryQuantity" Type="int" Nullable="false" />
           <Property Name="MaterialCost" Type="decimal" Precision="18" Scale="5" Nullable="false" />
           <Property Name="ApiKeyEntity_Id" Type="int" Nullable="false" />
           <Property Name="UnaccountedQuantity" Type="int" Nullable="false" />
@@ -219,6 +232,7 @@
           <Property Name="IsBuyOrder" Type="bit" Nullable="false" />
           <Property Name="Notes" Type="text" />
           <Property Name="AutoProcess" Type="bit" Nullable="false" />
+          <Property Name="StationId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="ProductionBatches">
           <Key>
@@ -293,6 +307,18 @@
           <Property Name="CogsBrokerFees" Type="decimal" Precision="18" Scale="5" />
           <Property Name="CogsMaterialCost" Type="decimal" Precision="18" Scale="5" />
         </EntityType>
+        <Association Name="FK_AssetReductions_Assets">
+          <End Role="Assets" Type="Self.Assets" Multiplicity="1" />
+          <End Role="AssetReductions" Type="Self.AssetReductions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Assets">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AssetReductions">
+              <PropertyRef Name="AssetId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_BatchMaterials_ToInvTypes">
           <End Role="invTypes" Type="Self.invTypes" Multiplicity="1" />
           <End Role="BatchMaterials" Type="Self.BatchMaterials" Multiplicity="*" />
@@ -425,6 +451,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_dbo_Orders_mapStations">
+          <End Role="staStations" Type="Self.staStations" Multiplicity="1" />
+          <End Role="Orders" Type="Self.Orders" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="staStations">
+              <PropertyRef Name="stationID" />
+            </Principal>
+            <Dependent Role="Orders">
+              <PropertyRef Name="StationId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_dbo_Transactions_dbo_ApiKeyEntities_ApiKeyEntity_Id">
           <End Role="ApiKeyEntities" Type="Self.ApiKeyEntities" Multiplicity="1" />
           <End Role="Transactions" Type="Self.Transactions" Multiplicity="*" />
@@ -477,6 +515,7 @@
           <EntitySet Name="ApiKeyApiKeyEntities" EntityType="Self.ApiKeyApiKeyEntities" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ApiKeyEntities" EntityType="Self.ApiKeyEntities" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ApiKeys" EntityType="Self.ApiKeys" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AssetReductions" EntityType="Self.AssetReductions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Assets" EntityType="Self.Assets" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BatchMaterials" EntityType="Self.BatchMaterials" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="invBlueprintTypes" EntityType="Self.invBlueprintTypes" Schema="dbo" store:Type="Tables" />
@@ -492,6 +531,10 @@
           <EntitySet Name="RefTypes" EntityType="Self.RefTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="staStations" EntityType="Self.staStations" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Transactions" EntityType="Self.Transactions" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_AssetReductions_Assets" Association="Self.FK_AssetReductions_Assets">
+            <End Role="Assets" EntitySet="Assets" />
+            <End Role="AssetReductions" EntitySet="AssetReductions" />
+          </AssociationSet>
           <AssociationSet Name="FK_BatchMaterials_ToInvTypes" Association="Self.FK_BatchMaterials_ToInvTypes">
             <End Role="invTypes" EntitySet="invTypes" />
             <End Role="BatchMaterials" EntitySet="BatchMaterials" />
@@ -534,6 +577,10 @@
           </AssociationSet>
           <AssociationSet Name="FK_dbo_Orders_InvTypes" Association="Self.FK_dbo_Orders_InvTypes">
             <End Role="invTypes" EntitySet="invTypes" />
+            <End Role="Orders" EntitySet="Orders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_Orders_mapStations" Association="Self.FK_dbo_Orders_mapStations">
+            <End Role="staStations" EntitySet="staStations" />
             <End Role="Orders" EntitySet="Orders" />
           </AssociationSet>
           <AssociationSet Name="FK_dbo_Transactions_dbo_ApiKeyEntities_ApiKeyEntity_Id" Association="Self.FK_dbo_Transactions_dbo_ApiKeyEntities_ApiKeyEntity_Id">
@@ -695,6 +742,15 @@
             <End Role="Transaction" EntitySet="Transactions" />
             <End Role="Asset" EntitySet="Assets" />
           </AssociationSet>
+          <EntitySet Name="AssetReductions" EntityType="EveProfiteerDbModel.AssetReduction" />
+          <AssociationSet Name="FK_AssetReductions_Assets" Association="EveProfiteerDbModel.FK_AssetReductions_Assets">
+            <End Role="Asset" EntitySet="Assets" />
+            <End Role="AssetReduction" EntitySet="AssetReductions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_Orders_mapStations" Association="EveProfiteerDbModel.FK_dbo_Orders_mapStations">
+            <End Role="StaStation" EntitySet="StaStations" />
+            <End Role="Order" EntitySet="Orders" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="ApiKeyEntity">
           <Key>
@@ -713,6 +769,8 @@
           <NavigationProperty Name="Assets" Relationship="EveProfiteerDbModel.FK_dbo_Assets_dbo_ToApiKeyEntities" FromRole="ApiKeyEntity" ToRole="Asset" />
           <NavigationProperty Name="ProductionBatches" Relationship="EveProfiteerDbModel.FK_ProductionBatches_ToApiKeyEntities" FromRole="ApiKeyEntity" ToRole="ProductionBatch" />
           <NavigationProperty Name="MarketOrders" Relationship="EveProfiteerDbModel.ApiKeyEntityMarketOrder" FromRole="ApiKeyEntity" ToRole="MarketOrder" />
+          <Property Name="DefaultStationId" Type="Int32" />
+          <Property Name="DefaultRegionId" Type="Int32" />
         </EntityType>
         <EntityType Name="ApiKey">
           <Key>
@@ -876,6 +934,8 @@
           <NavigationProperty Name="ApiKeyEntity" Relationship="EveProfiteerDbModel.FK_Orders_ToApiKeyEntities" FromRole="Order" ToRole="ApiKeyEntity" />
           <NavigationProperty Name="InvType" Relationship="EveProfiteerDbModel.FK_Orders_ToInvTypes" FromRole="Order" ToRole="invType" />
           <Property Name="AutoProcess" Type="Boolean" Nullable="false" />
+          <Property Name="StationId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="staStation" Relationship="EveProfiteerDbModel.FK_dbo_Orders_mapStations" FromRole="Order" ToRole="StaStation" />
         </EntityType>
         <EntityType Name="Transaction">
           <Key>
@@ -979,6 +1039,7 @@
           <Property Name="ReprocessingHangarFlag" Type="Byte" />
           <NavigationProperty Name="MapRegion" Relationship="EveProfiteerDbModel.MapRegionStaStation" FromRole="StaStation" ToRole="MapRegion" />
           <NavigationProperty Name="MarketOrders" Relationship="EveProfiteerDbModel.StaStationMarketOrder" FromRole="StaStation" ToRole="MarketOrder" />
+          <NavigationProperty Name="Orders" Relationship="EveProfiteerDbModel.FK_dbo_Orders_mapStations" FromRole="StaStation" ToRole="Order" />
         </EntityType>
         <Association Name="MapRegionStaStation">
           <End Type="EveProfiteerDbModel.MapRegion" Role="MapRegion" Multiplicity="0..1" />
@@ -1032,13 +1093,11 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="InvTypes_TypeId" Type="Int32" Nullable="false" />
-          <Property Name="Quantity" Type="Int32" Nullable="false" />
           <Property Name="ApiKeyEntity_Id" Type="Int32" Nullable="false" />
           <Property Name="UnaccountedQuantity" Type="Int32" Nullable="false" />
           <Property Name="LatestAverageCost" Type="Decimal" Nullable="false" Precision="18" Scale="5" />
           <NavigationProperty Name="ApiKeyEntity" Relationship="EveProfiteerDbModel.FK_dbo_Assets_dbo_ToApiKeyEntities" FromRole="Asset" ToRole="ApiKeyEntity" />
           <NavigationProperty Name="invType" Relationship="EveProfiteerDbModel.FK_dbo_Assets_dbo_ToInvTypes" FromRole="Asset" ToRole="InvType" />
-          <Property Name="ActualQuantity" Type="Int32" Nullable="false" />
           <Property Name="BrokerFees" Type="Decimal" Nullable="false" Precision="18" Scale="5" />
           <Property Name="MaterialCost" Type="Decimal" Nullable="false" Precision="18" Scale="5" />
           <Property Name="MarketQuantity" Type="Int32" Nullable="false" />
@@ -1046,6 +1105,9 @@
           <Property Name="LastBuyTransactionId" Type="Int32" />
           <NavigationProperty Name="LastBuyTransaction" Relationship="EveProfiteerDbModel.FK_dbo_Assets_LastBuyTransaction" FromRole="Asset" ToRole="Transaction" />
           <NavigationProperty Name="LastSellTransaction" Relationship="EveProfiteerDbModel.FK_dbo_Assets_LastSellTransaction" FromRole="Asset" ToRole="Transaction" />
+          <Property Name="CalculatedQuantity" Type="Int32" Nullable="false" />
+          <Property Name="InventoryQuantity" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="AssetReductions" Relationship="EveProfiteerDbModel.FK_AssetReductions_Assets" FromRole="Asset" ToRole="AssetReduction" />
         </EntityType>
         <Association Name="FK_dbo_Assets_dbo_ToApiKeyEntities">
           <End Type="EveProfiteerDbModel.ApiKeyEntity" Role="ApiKeyEntity" Multiplicity="1" />
@@ -1394,6 +1456,42 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="AssetReduction">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="AssetId" Type="Int32" Nullable="false" />
+          <Property Name="Quantity" Type="Int32" Nullable="false" />
+          <Property Name="Description" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Asset" Relationship="EveProfiteerDbModel.FK_AssetReductions_Assets" FromRole="AssetReduction" ToRole="Asset" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="PostReductionQuantity" Type="Int32" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_AssetReductions_Assets">
+          <End Type="EveProfiteerDbModel.Asset" Role="Asset" Multiplicity="1" />
+          <End Type="EveProfiteerDbModel.AssetReduction" Role="AssetReduction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Asset">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AssetReduction">
+              <PropertyRef Name="AssetId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_Orders_mapStations">
+          <End Type="EveProfiteerDbModel.StaStation" Role="StaStation" Multiplicity="1" />
+          <End Type="EveProfiteerDbModel.Order" Role="Order" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="StaStation">
+              <PropertyRef Name="StationId" />
+            </Principal>
+            <Dependent Role="Order">
+              <PropertyRef Name="StationId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1403,6 +1501,8 @@
           <EntitySetMapping Name="ApiKeyEntities">
             <EntityTypeMapping TypeName="EveProfiteerDbModel.ApiKeyEntity">
               <MappingFragment StoreEntitySet="ApiKeyEntities">
+                <ScalarProperty Name="DefaultRegionId" ColumnName="DefaultRegionId" />
+                <ScalarProperty Name="DefaultStationId" ColumnName="DefaultStationId" />
                 <ScalarProperty Name="EntityId" ColumnName="EntityId" />
                 <ScalarProperty Name="IsActive" ColumnName="IsActive" />
                 <ScalarProperty Name="ImagePath" ColumnName="ImagePath" />
@@ -1488,6 +1588,7 @@
           <EntitySetMapping Name="Orders">
             <EntityTypeMapping TypeName="EveProfiteerDbModel.Order">
               <MappingFragment StoreEntitySet="Orders">
+                <ScalarProperty Name="StationId" ColumnName="StationId" />
                 <ScalarProperty Name="AutoProcess" ColumnName="AutoProcess" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Notes" ColumnName="Notes" />
@@ -1581,16 +1682,16 @@
           <EntitySetMapping Name="Assets">
             <EntityTypeMapping TypeName="EveProfiteerDbModel.Asset">
               <MappingFragment StoreEntitySet="Assets">
+                <ScalarProperty Name="InventoryQuantity" ColumnName="InventoryQuantity" />
+                <ScalarProperty Name="CalculatedQuantity" ColumnName="CalculatedQuantity" />
                 <ScalarProperty Name="LastBuyTransactionId" ColumnName="LastBuyTransaction" />
                 <ScalarProperty Name="LastSellTransactionId" ColumnName="LastSellTransaction" />
                 <ScalarProperty Name="MarketQuantity" ColumnName="MarketQuantity" />
                 <ScalarProperty Name="MaterialCost" ColumnName="MaterialCost" />
                 <ScalarProperty Name="BrokerFees" ColumnName="BrokerFees" />
-                <ScalarProperty Name="ActualQuantity" ColumnName="ActualQuantity" />
                 <ScalarProperty Name="LatestAverageCost" ColumnName="LatestAverageCost" />
                 <ScalarProperty Name="UnaccountedQuantity" ColumnName="UnaccountedQuantity" />
                 <ScalarProperty Name="ApiKeyEntity_Id" ColumnName="ApiKeyEntity_Id" />
-                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
                 <ScalarProperty Name="InvTypes_TypeId" ColumnName="InvTypes_TypeId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
@@ -1701,6 +1802,18 @@
                 <ScalarProperty Name="X" ColumnName="x" />
                 <ScalarProperty Name="RegionName" ColumnName="regionName" />
                 <ScalarProperty Name="RegionId" ColumnName="regionID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AssetReductions">
+            <EntityTypeMapping TypeName="EveProfiteerDbModel.AssetReduction">
+              <MappingFragment StoreEntitySet="AssetReductions">
+                <ScalarProperty Name="PostReductionQuantity" ColumnName="PostReductionQuantity" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="AssetId" ColumnName="AssetId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

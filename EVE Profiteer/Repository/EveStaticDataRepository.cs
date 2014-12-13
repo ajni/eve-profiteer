@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Caliburn.Micro;
 using eZet.EveProfiteer.Models;
-using eZet.EveProfiteer.Services;
 
 
 namespace eZet.EveProfiteer.Repository {
@@ -12,17 +11,48 @@ namespace eZet.EveProfiteer.Repository {
 
         public const int DustTypeidLimit = 350000;
 
-        public EveProfiteerRepository Db { get; private set; }
+        public EveProfiteerDbEntities Context { get; private set; }
+
+        public readonly Task Initialize;
 
 
-        public EveStaticDataRepository(EveProfiteerRepository db) {
-            Db = db;
+        public EveStaticDataRepository(EveProfiteerDbEntities context) {
+            Context = context;
+            Initialize = InitializeAsync();
         }
+
+        public async Task InitializeAsync() {
+            await Context.StaStations.LoadAsync().ConfigureAwait(false);
+            await Context.MapRegions.LoadAsync().ConfigureAwait(false);
+            await Context.InvTypes.LoadAsync().ConfigureAwait(false);
+            await Context.InvMarketGroups.LoadAsync().ConfigureAwait(false);
+        }
+
+        public IQueryable<StaStation> GetStations() {
+            return Context.StaStations.AsQueryable();
+        }
+
+        public IQueryable<MapRegion> GetRegions() {
+            return Context.MapRegions.AsQueryable();
+        }
+
+        public IOrderedQueryable<MapRegion> GetRegionsOrdered() {
+            return Context.MapRegions.OrderBy(r => r.RegionName);
+        }
+
+        public IQueryable<InvType> GetMarketTypes() {
+            return Context.InvTypes.Where(t => t.TypeId < DustTypeidLimit && t.Published == true && t.MarketGroupId != null).OrderBy(t => t.TypeName);
+        }
+
+        public IQueryable<InvMarketGroup> GetMarketGroups() {
+            return Context.InvMarketGroups.AsQueryable();
+        }
+
 
         public async Task<BindableCollection<MarketTreeNode>> GetMarketTree() {
             var rootList = new BindableCollection<MarketTreeNode>();
-            List<InvType> items = await Db.GetMarketTypes().ToListAsync().ConfigureAwait(false);
-            List<InvMarketGroup> groupList = await Db.GetMarketGroups().ToListAsync().ConfigureAwait(false);
+            List<InvType> items = await GetMarketTypes().ToListAsync().ConfigureAwait(false);
+            List<InvMarketGroup> groupList = await GetMarketGroups().ToListAsync().ConfigureAwait(false);
             ILookup<int, MarketTreeNode> groups = groupList.Select(t => new MarketTreeNode(t)).ToLookup(t => t.Id);
             foreach (InvType item in items) {
                 var node = new MarketTreeNode(item);

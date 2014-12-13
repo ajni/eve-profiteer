@@ -17,6 +17,7 @@ namespace eZet.EveProfiteer.Models
         public StaStation()
         {
             this.MarketOrders = new HashSet<MarketOrder>();
+            this.Orders = new HashSet<Order>();
         }
     
         public int StationId { get; set; }
@@ -40,5 +41,6 @@ namespace eZet.EveProfiteer.Models
     
         public virtual MapRegion MapRegion { get; set; }
         public virtual ICollection<MarketOrder> MarketOrders { get; set; }
+        public virtual ICollection<Order> Orders { get; set; }
     }
 }

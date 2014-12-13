@@ -72,7 +72,7 @@ namespace eZet.EveProfiteer.Services {
                 await
                     _eveApiService.GetAssetsAsync(ApplicationHelper.ActiveEntity.ApiKeys.First(), ApplicationHelper.ActiveEntity)
                         .ConfigureAwait(false);
-            var groups = result.Flatten().Where(asset => !asset.Singleton).GroupBy(asset => asset.TypeId).ToList();
+            var groups = result.Flatten().Where(asset => !asset.Singleton && asset.LocationId == ApplicationHelper.StationId && asset.Flag == 4).GroupBy(asset => asset.TypeId).ToList();
             using (var db = CreateDb()) {
                 var assets =
                     await
@@ -89,12 +89,12 @@ namespace eZet.EveProfiteer.Services {
                         };
                         db.Context.Assets.Add(asset);
                     }
-                    asset.ActualQuantity = group.Sum(item => item.Quantity);
+                    asset.InventoryQuantity = group.Sum(item => item.Quantity);
                     //processAssetQuantity(asset);
                     assets.Remove(asset);
                 }
                 foreach (var asset in assets) {
-                    asset.ActualQuantity = 0;
+                    asset.InventoryQuantity = 0;
                 }
                 _trace.TraceEvent(TraceEventType.Verbose, 0, "Processed {0} assets.", groups.Count());
                 _trace.TraceEvent(TraceEventType.Stop, 0, "CompleteUpdateAssets");
@@ -306,32 +306,33 @@ namespace eZet.EveProfiteer.Services {
                         }
                         asset.MaterialCost += transactionTotal;
                         asset.BrokerFees += transaction.BrokerFee;
-                        asset.Quantity += transaction.Quantity;
-                        asset.LatestAverageCost = (asset.MaterialCost + asset.BrokerFees) / asset.Quantity;
-                        transaction.PerpetualAverageCost = asset.LatestAverageCost;
-                        transaction.PostTransactionStock = asset.Quantity;
+                        asset.CalculatedQuantity += transaction.Quantity;
+                        asset.LatestAverageCost = (asset.MaterialCost + asset.BrokerFees) / asset.CalculatedQuantity;
+                        transaction.PerpetualAverageCost = (asset.MaterialCost + asset.BrokerFees) / asset.CalculatedQuantity;
+                        transaction.PostTransactionStock = asset.CalculatedQuantity;
                     } else if (transaction.TransactionType == TransactionType.Sell) {
                         if (asset.LastSellTransaction == null || transaction.TransactionDate > asset.LastSellTransaction.TransactionDate) {
                             asset.LastSellTransaction = transaction;
                         }
                         transaction.TaxLiability = transactionTotal * (decimal)ApplicationHelper.TaxRate / 100;
-                        transaction.PerpetualAverageCost = asset.LatestAverageCost;
-                        if (asset.Quantity > 0) {
+                        if (asset.CalculatedQuantity > 0) {
                             // If we have item in stock, specify costs
-                            transaction.CogsBrokerFees = transaction.Quantity * (asset.BrokerFees / asset.Quantity);
-                            transaction.CogsMaterialCost = transaction.Quantity * (asset.MaterialCost / asset.Quantity);
-                            asset.MaterialCost -= transaction.Quantity * (asset.MaterialCost / asset.Quantity);
-                            asset.BrokerFees -= transaction.Quantity * (asset.BrokerFees / asset.Quantity);
+                            transaction.PerpetualAverageCost = (asset.MaterialCost + asset.BrokerFees) / asset.CalculatedQuantity;
+                            transaction.CogsBrokerFees = transaction.Quantity * (asset.BrokerFees / asset.CalculatedQuantity);
+                            transaction.CogsMaterialCost = transaction.Quantity * (asset.MaterialCost / asset.CalculatedQuantity);
+                            asset.MaterialCost -= transaction.Quantity * (asset.MaterialCost / asset.CalculatedQuantity);
+                            asset.BrokerFees -= transaction.Quantity * (asset.BrokerFees / asset.CalculatedQuantity);
                         }
-                        asset.Quantity -= transaction.Quantity;
-                        if (asset.Quantity <= 0) {
-                            transaction.UnaccountedQuantity = Math.Abs(asset.Quantity);
+                        asset.CalculatedQuantity -= transaction.Quantity;
+                        if (asset.CalculatedQuantity <= 0) {
+                            transaction.UnaccountedQuantity = Math.Abs(asset.CalculatedQuantity);
                             asset.UnaccountedQuantity -= transaction.UnaccountedQuantity;
                             asset.MaterialCost = 0;
                             asset.BrokerFees = 0;
-                            asset.Quantity = 0;
+                            asset.CalculatedQuantity = 0;
+                            asset.LatestAverageCost = 0;
                         }
-                        transaction.PostTransactionStock = asset.Quantity;
+                        transaction.PostTransactionStock = asset.CalculatedQuantity;
                     }
                 }
                 //foreach (var asset in assetLookup.Values) {

@@ -12,8 +12,8 @@
         private void init() {
             ActualQuantity = BaseQuantity;
             TotalCost = CostPerUnit*ActualQuantity;
-            CalculatedInventory = _asset.Quantity;
-            ActualInventory = _asset.ActualQuantity;
+            CalculatedInventory = _asset.CalculatedQuantity;
+            ActualInventory = _asset.InventoryQuantity;
         }
 
         public string TypeName { get { return _material.MaterialType.TypeName; } }
