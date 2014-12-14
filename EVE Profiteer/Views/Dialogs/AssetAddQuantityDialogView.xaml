@@ -1,0 +1,59 @@
+﻿<dx:DXDialog x:Class="eZet.EveProfiteer.Views.Dialogs.AssetAddQuantityDialogView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
+             xmlns:dialogs="clr-namespace:eZet.EveProfiteer.ViewModels.Dialogs"
+             xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
+             xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=dialogs:AssetAddQuantityDialogViewModel, IsDesignTimeCreatable=False}"
+             d:DesignHeight="300" d:DesignWidth="300"
+             Width="500"
+             >
+    <Grid>
+
+        <dxlc:LayoutControl Orientation="Vertical">
+            <dxlc:LayoutGroup Header="Quantity"
+                              Orientation="Vertical"
+                              View="GroupBox">
+
+                <dxlc:LayoutGroup Orientation="Horizontal">
+
+                    <dxlc:LayoutItem Label="Calculated Quantity">
+                        <TextBlock Text="{Binding CalculatedQuantity}" />
+                    </dxlc:LayoutItem>
+                    <dxlc:LayoutItem Label="Actual Quantity">
+                        <TextBlock Text="{Binding ActualQuantity}" />
+                    </dxlc:LayoutItem>
+                </dxlc:LayoutGroup>
+                <dxlc:LayoutItem Label="Add">
+                    <dxe:TextEdit Text="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}" MaskType="Numeric" Mask="N0" MaskUseAsDisplayFormat="True"/>
+                </dxlc:LayoutItem>
+                <dxlc:LayoutItem Label="New Calculated Quantity">
+                    <TextBlock Text="{Binding NewCalculatedQuantity}" />
+                </dxlc:LayoutItem>
+            </dxlc:LayoutGroup>
+            <dxlc:LayoutGroup Header="Transaction Value"
+                              Orientation="Vertical"
+                              View="GroupBox">
+                <dxlc:LayoutItem Label="Transaction Income">
+                    <dxe:TextEdit Text="{Binding TransactionCost}" MaskType="Numeric" Mask="N2" MaskUseAsDisplayFormat="True"/>
+                </dxlc:LayoutItem>
+            </dxlc:LayoutGroup>
+            <dxlc:LayoutGroup Header="Other"
+                              Orientation="Vertical"
+                              View="GroupBox">
+                <dxlc:LayoutItem Label="Description">
+                    <dxe:TextEdit Text="{Binding Description}" />
+                </dxlc:LayoutItem>
+                <dxlc:LayoutItem Label="Date">
+                    <dxe:DateEdit DateTime="{Binding Date}" MaskType="DateTimeAdvancingCaret"/>
+                </dxlc:LayoutItem>
+            </dxlc:LayoutGroup>
+        </dxlc:LayoutControl>
+
+    </Grid>
+
+</dx:DXDialog>

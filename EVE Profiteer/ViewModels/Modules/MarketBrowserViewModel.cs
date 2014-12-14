@@ -148,16 +148,16 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
 
         private async Task LoadMarketDetails(MapRegion region, InvType invType) {
             if (region == null) {
-                _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs(this, "Cannot load data: No region selected"));
+                _eventAggregator.PublishOnUIThread(new StatusEvent(this, "Cannot load data: No region selected"));
                 return;
             }
             if (invType == null) {
-                _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs(this, "Cannot load data: No type selected"));
+                _eventAggregator.PublishOnUIThread(new StatusEvent(this, "Cannot load data: No type selected"));
                 return;
             }
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs(this, "Fetching market data..."));
+            _eventAggregator.PublishOnUIThread(new StatusEvent(this, "Fetching market data..."));
             MarketBrowserData = await GetMarketDetails(region, invType).ConfigureAwait(false);
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs(this, "Market data loaded"));
+            _eventAggregator.PublishOnUIThread(new StatusEvent(this, "Market data loaded"));
         }
 
         private void ExecuteSelectItem(MarketTreeNode node) {

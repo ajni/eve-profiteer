@@ -50,7 +50,7 @@ namespace eZet.EveProfiteer {
             _container.PerRequest<RepositoryService<ApiKey>>();
             _container.PerRequest<RepositoryService<ApiKeyEntity>>();
             _container.PerRequest<KeyManagerService>();
-            _container.PerRequest<AssetService>();
+            _container.PerRequest<AssetManagerService>();
             _container.PerRequest<ProductionService>();
             _container.PerRequest<ShellService>();
             _container.PerRequest<TransactionService>();
@@ -84,7 +84,6 @@ namespace eZet.EveProfiteer {
             _container.PerRequest<JournalViewModel>();
             _container.PerRequest<MarketOrdersViewModel>();
             _container.PerRequest<SettingsViewModel>();
-            _container.PerRequest<AssetReductionDialogViewModel>();
 
             
             // Settings panel view models

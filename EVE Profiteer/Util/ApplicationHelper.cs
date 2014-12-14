@@ -2,7 +2,9 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
+using Caliburn.Micro;
 using eZet.EveProfiteer.Models;
+using eZet.EveProfiteer.Ui.Events;
 
 namespace eZet.EveProfiteer.Util {
     public class ApplicationHelper {
@@ -34,6 +36,7 @@ namespace eZet.EveProfiteer.Util {
                 if (value == Application.Current.Properties[ActiveKeyEntityString]) return;
                 Application.Current.Properties[ActiveKeyEntityString] = value;
                 OnStaticPropertyChanged();
+                IoC.Get<IEventAggregator>().PublishOnUIThreadAsync(new ActiveEntityChangedEvent(value));
             }
         }
 

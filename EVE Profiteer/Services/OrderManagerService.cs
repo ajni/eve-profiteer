@@ -10,44 +10,38 @@ using eZet.EveProfiteer.Util;
 using OrderType = eZet.EveLib.Modules.OrderType;
 
 namespace eZet.EveProfiteer.Services {
-    public class OrderManagerService {
+    public class OrderManagerService : DbContextService {
         private readonly EveMarketService _eveMarketService;
-        private readonly EveProfiteerRepository _eveProfiteerRepository;
         private readonly EveStaticDataRepository _staticData;
 
         private readonly TraceSource _trace = new TraceSource("EveLib", SourceLevels.All);
 
-        public OrderManagerService(EveMarketService eveMarketService, EveProfiteerRepository eveProfiteerRepository, EveStaticDataRepository staticData) {
+        public OrderManagerService(EveMarketService eveMarketService, EveStaticDataRepository staticData) {
             _eveMarketService = eveMarketService;
             _staticData = staticData;
-            _eveProfiteerRepository = eveProfiteerRepository;
         }
 
         public Task<List<MapRegion>> GetRegions() {
             return _staticData.GetRegionsOrdered().ToListAsync();
-            //return _eveProfiteerRepository.GetRegionsOrdered().ToListAsync();
         }
 
         public Task<List<InvType>> GetMarketTypesAsync() {
-            return _eveProfiteerRepository.GetMarketTypes().ToListAsync();
+            return Db.GetMarketTypes().ToListAsync();
         }
 
         public async Task<List<OrderVm>> GetOrdersAsync(int stationId) {
             var list = new List<OrderVm>();
-            var orders = await _eveProfiteerRepository.MyOrders().Where(o => o.StationId == stationId).Include(o => o.InvType.Assets.Select(a => a.LastSellTransaction)).Include(o => o.InvType.Assets.Select(a => a.LastBuyTransaction)).ToListAsync().ConfigureAwait(false);
-
-            var marketOrders = await _eveProfiteerRepository.MyMarketOrders().Where(t => t.OrderState == OrderState.Open).ToListAsync().ConfigureAwait(false);
+            var orders = await Db.MyOrders().Where(o => o.StationId == stationId).Include(o => o.InvType.Assets).ToListAsync().ConfigureAwait(false);
+            var marketOrders = await Db.MyMarketOrders().Where(t => t.OrderState == OrderState.Open).ToListAsync().ConfigureAwait(false);
             var marketLookup = marketOrders.ToLookup(t => t.TypeId);
 
             foreach (var order in orders) {
-                var ordervm = new OrderVm(order);
                 order.InvType.Assets =
                     order.InvType.Assets.Where(f => f.ApiKeyEntity_Id == ApplicationHelper.ActiveEntity.Id)
                         .ToList();
-                ordervm.HasActiveBuyOrder = marketLookup[order.TypeId].Any(t => t.Bid);
-                ordervm.HasActiveSellOrder = marketLookup[order.TypeId].Any(t => !t.Bid);
-
-
+                var sellOrder = marketLookup[order.TypeId].SingleOrDefault(t => !t.Bid);
+                var buyOrder = marketLookup[order.TypeId].SingleOrDefault(t => t.Bid);
+                var ordervm = new OrderVm(order, buyOrder, sellOrder);
                 list.Add(ordervm);
             }
             return list;
@@ -55,7 +49,7 @@ namespace eZet.EveProfiteer.Services {
 
         public async Task<int> RemoveOrdersAsync(IEnumerable<OrderVm> orders) {
             var list = orders.Select(order => order.Order);
-            var db = _eveProfiteerRepository.Context;
+            var db = Db.Context;
             foreach (var order in list) {
                 if (order.Id == 0) {
                     continue;
@@ -67,7 +61,7 @@ namespace eZet.EveProfiteer.Services {
         }
 
         public async Task<int> SaveOrdersAsync(IEnumerable<OrderVm> orders) {
-            var db = _eveProfiteerRepository.Context;
+            var db = Db.Context;
             db.Configuration.AutoDetectChangesEnabled = false;
             db.Configuration.ValidateOnSaveEnabled = false;
             int count = 0;

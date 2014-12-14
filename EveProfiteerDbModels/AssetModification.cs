@@ -12,14 +12,16 @@ namespace eZet.EveProfiteer.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class AssetReduction
+    public partial class AssetModification
     {
         public int Id { get; set; }
         public int AssetId { get; set; }
         public int Quantity { get; set; }
         public string Description { get; set; }
         public System.DateTime Date { get; set; }
-        public int PostReductionQuantity { get; set; }
+        public int PostModificationQuantity { get; set; }
+        public decimal TransactionValue { get; set; }
+        public System.DateTime Timestamp { get; set; }
     
         public virtual Asset Asset { get; set; }
     }

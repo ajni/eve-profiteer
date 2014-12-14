@@ -23,9 +23,9 @@ namespace eZet.EveProfiteer.Services {
 
         public async Task<BindableCollection<MarketTreeNode>> GetMarketTreeAsync(
             PropertyChangedEventHandler itemPropertyChanged) {
-            var rootList = new BindableCollection<MarketTreeNode>();
-            List<InvType> items = await _eveProfiteerRepository.GetMarketTypes().Include("Orders").ToListAsync().ConfigureAwait(false);
-            List<InvMarketGroup> groupList = await _eveProfiteerRepository.GetMarketGroups().ToListAsync().ConfigureAwait(false);
+            var tree = new BindableCollection<MarketTreeNode>();
+            List<InvType> items = await _eveProfiteerRepository.GetMarketTypes().Include(f => f.Orders).ToListAsync().ConfigureAwait(false);
+            List<InvMarketGroup> groupList = await _staticData.GetMarketGroups().ToListAsync().ConfigureAwait(false);
             ILookup<int, MarketTreeNode> groups = groupList.Select(t => new MarketTreeNode(t)).ToLookup(t => t.Id);
 
             foreach (InvType item in items) {
@@ -45,10 +45,10 @@ namespace eZet.EveProfiteer.Services {
                     parent.Children.Add(node);
                     node.Parent = parent;
                 } else {
-                    rootList.Add(node);
+                    tree.Add(node);
                 }
             }
-            return rootList;
+            return tree;
         }
 
         public Task<List<MapRegion>> GetRegionsAsync() {
@@ -69,7 +69,7 @@ namespace eZet.EveProfiteer.Services {
                 priceResult.Prices.Where(o => o.OrderType == OrderType.Buy), historyResult);
             analyzer.Analyze();
             foreach (var entry in analyzer.Result) {
-                entry.Order = entry.InvType.Orders.SingleOrDefault(order => order.ApiKeyEntity_Id == ApplicationHelper.ActiveEntity.Id);
+                entry.Order = entry.InvType.Orders.SingleOrDefault(order => order.ApiKeyEntity_Id == ApplicationHelper.ActiveEntity.Id && order.StationId == station.StationId);
             }
             return analyzer.Result;
         }

@@ -9,23 +9,20 @@ using eZet.EveProfiteer.Util;
 using OrderType = eZet.EveLib.Modules.OrderType;
 
 namespace eZet.EveProfiteer.Services {
-    public class AssetService : DbContextService {
+    public class AssetManagerService : DbContextService {
         private readonly EveMarketService _marketService;
 
         private readonly TraceSource _trace = new TraceSource("EveProfiteer", SourceLevels.All);
 
-        private EveProfiteerRepository _repository;
-
-        public AssetService(EveMarketService marketService) {
+        public AssetManagerService(EveMarketService marketService) {
             _marketService = marketService;
         }
 
         public async Task<IEnumerable<AssetVm>> GetAssets() {
-            Activate();
             List<Asset> assets = await
                 Db.MyAssets()
                     .Include(a => a.invType.Orders)
-                    .Include(a => a.AssetReductions)
+                    .Include(a => a.AssetModifications)
                     .ToListAsync()
                     .ConfigureAwait(false);
 
@@ -33,15 +30,15 @@ namespace eZet.EveProfiteer.Services {
                 assets.Select(
                     asset =>
                         new AssetVm(asset,
-                            asset.invType.Orders.Where(f => f.ApiKeyEntity_Id == ApplicationHelper.ActiveEntity.Id), asset.AssetReductions));
+                            asset.invType.Orders.Where(f => f.ApiKeyEntity_Id == ApplicationHelper.ActiveEntity.Id), asset.AssetModifications));
         }
 
         public async Task Save(IEnumerable<AssetVm> assets) {
                 await Db.SaveChangesAsync().ConfigureAwait(false);
         }
 
-        public void AddReduction(AssetReduction reduction) {
-            Db.Context.AssetReductions.Add(reduction);
+        public void AddModification(AssetModification modification) {
+            Db.Context.AssetModifications.Add(modification);
         }
 
         public async Task UpdateMarketData(IEnumerable<AssetVm> list, int region, int station, int days) {

@@ -56,7 +56,7 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
         public ICommand AddToOrdersCommand { get; private set; }
 
         protected override Task OnActivate() {
-            _journalService.Activate();
+            //_journalService.Activate();
             if (Journal == null) {
                 Journal = _journalService.GetJournal();
             }

@@ -38,7 +38,6 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
 
         protected override Task OnActivate() {
             if (Transactions == null) {
-                _transactionService.Activate();
                 Transactions = _transactionService.GetTransactions();
             }
             return Task.FromResult(0);

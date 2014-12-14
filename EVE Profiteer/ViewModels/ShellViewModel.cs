@@ -27,7 +27,7 @@ using eZet.EveProfiteer.Views;
 
 namespace eZet.EveProfiteer.ViewModels {
     public sealed class ShellViewModel : ModuleHost, IShell,
-        IHandle<StatusChangedEventArgs>,
+        IHandle<StatusEvent>,
         IHandle<ModuleEvent> {
         private readonly IEventAggregator _eventAggregator;
         private readonly ModuleService _moduleService;
@@ -130,8 +130,8 @@ namespace eZet.EveProfiteer.ViewModels {
             ExecuteActivateTab(message.GetTabType());
         }
 
-        public void Handle(StatusChangedEventArgs message) {
-            _trace.TraceEvent(TraceEventType.Information, 0, "StatusChangedEventArgs: {0}", message.Status);
+        public void Handle(StatusEvent message) {
+            _trace.TraceEvent(TraceEventType.Information, 0, "StatusEvent: {0}", message.Status);
             if (!StatusLocked) {
                 StatusMessage = message.Status;
             }
@@ -156,11 +156,11 @@ namespace eZet.EveProfiteer.ViewModels {
             bool? result = _windowManager.ShowDialog(IoC.Get<SettingsViewModel>());
             if (result.GetValueOrDefault()) {
                 Settings.Default.Save();
-                _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Settings Saved"));
+                _eventAggregator.PublishOnUIThread(new StatusEvent("Settings Saved"));
             }
             else {
                 Settings.Default.Reload();
-                _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Settings Discarded"));
+                _eventAggregator.PublishOnUIThread(new StatusEvent("Settings Discarded"));
             }
         }
 
@@ -248,58 +248,58 @@ namespace eZet.EveProfiteer.ViewModels {
         }
 
         private async void ExecuteUpdateApi() {
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Updating API..."));
+            _eventAggregator.PublishOnUIThread(new StatusEvent("Updating API..."));
             Task transactions = Task.Run(() => updateTransactions());
             Task journal = Task.Run(() => updateJournal());
             Task<int> marketOrders = Task.Run(() => updateMarketOrders());
             Task assets = Task.Run(() => updateAssets());
             await Task.WhenAll(assets, transactions, journal, marketOrders).ConfigureAwait(false);
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("API Update Complete"));
+            _eventAggregator.PublishOnUIThread(new StatusEvent("API Update Complete"));
         }
 
         private async void ExecuteUpdateAssets() {
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Updating Assets..."));
+            _eventAggregator.PublishOnUIThread(new StatusEvent("Updating Assets..."));
             await updateAssets();
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Assets Updated"));
+            _eventAggregator.PublishOnUIThread(new StatusEvent("Assets Updated"));
         }
 
 
         private async void ExecuteUpdateTransactions() {
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Updating Transactions..."));
+            _eventAggregator.PublishOnUIThread(new StatusEvent("Updating Transactions..."));
             await updateTransactions();
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Transactions Updated"));
+            _eventAggregator.PublishOnUIThread(new StatusEvent("Transactions Updated"));
         }
 
 
         private async void ExecuteUpdateJournal() {
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Updating Journal..."));
+            _eventAggregator.PublishOnUIThread(new StatusEvent("Updating Journal..."));
             await updateJournal();
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Journal Updated"));
+            _eventAggregator.PublishOnUIThread(new StatusEvent("Journal Updated"));
         }
 
         private async void ExecuteUpdateMarketOrders() {
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Updating Market Orders..."));
+            _eventAggregator.PublishOnUIThread(new StatusEvent("Updating Market Orders..."));
             int result = await updateMarketOrders();
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Market Orders Updated ({0})", result));
+            _eventAggregator.PublishOnUIThread(new StatusEvent("Market Orders Updated ({0})", result));
         }
 
         private async void ExecuteUpdateRefTypes() {
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Updating Reference Types..."));
+            _eventAggregator.PublishOnUIThread(new StatusEvent("Updating Reference Types..."));
             await _shellService.UpdateRefIdsAsync().ConfigureAwait(false);
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Reference Types Updated"));
+            _eventAggregator.PublishOnUIThread(new StatusEvent("Reference Types Updated"));
         }
 
         private async void ExecuteProcessAllTransactions() {
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Processing All Transactions..."));
+            _eventAggregator.PublishOnUIThread(new StatusEvent("Processing All Transactions..."));
             await _shellService.ProcessAllTransactionsAsync();
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("All Transactions Processed"));
+            _eventAggregator.PublishOnUIThread(new StatusEvent("All Transactions Processed"));
         }
 
 
         private async void ExecuteUpdateIndystryJobs() {
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Updating Industry Jobs..."));
+            _eventAggregator.PublishOnUIThread(new StatusEvent("Updating Industry Jobs..."));
             await _shellService.UpdateIndustryJobs();
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs("Industry Jobs Updated"));
+            _eventAggregator.PublishOnUIThread(new StatusEvent("Industry Jobs Updated"));
             _eventAggregator.PublishOnBackgroundThread(new IndustryJobsUpdatedEvent());
         }
 

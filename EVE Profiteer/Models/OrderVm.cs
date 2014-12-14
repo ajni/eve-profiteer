@@ -7,9 +7,10 @@ using eZet.EveProfiteer.Models.Annotations;
 
 namespace eZet.EveProfiteer.Models {
     public class OrderVm : INotifyPropertyChanged {
-        private Order _order;
-        private Asset _asset;
-        private InvType _invType;
+
+        public MarketOrder SellOrder { get; private set; }
+
+        public MarketOrder BuyOrder { get; private set; }
 
         public OrderVm() {
             Order = new Order();
@@ -19,25 +20,31 @@ namespace eZet.EveProfiteer.Models {
             Order = order;
         }
 
+        public OrderVm(Order order, MarketOrder buyOrder, MarketOrder sellOrder)
+            : this(order) {
+            BuyOrder = buyOrder;
+            SellOrder = sellOrder;
+        }
+
         public DateTime? LastSellDate {
             get {
-                return _order.InvType.Assets.SingleOrDefault() != null && _order.InvType.Assets.Single().LastSellTransaction != null
-                    ? _order.InvType.Assets.Single().LastSellTransaction.TransactionDate
-                    : (DateTime?) null;
+                return Order.InvType.Assets.SingleOrDefault() != null && Order.InvType.Assets.Single().LastSellTransaction != null
+                    ? Order.InvType.Assets.Single().LastSellTransaction.TransactionDate
+                    : (DateTime?)null;
             }
         }
 
         public DateTime? LastBuyDate {
             get {
-                return _order.InvType.Assets.SingleOrDefault() != null && _order.InvType.Assets.Single().LastBuyTransaction != null
-                    ? _order.InvType.Assets.Single().LastBuyTransaction.TransactionDate
-                    : (DateTime?) null;
+                return Order.InvType.Assets.SingleOrDefault() != null && Order.InvType.Assets.Single().LastBuyTransaction != null
+                    ? Order.InvType.Assets.Single().LastBuyTransaction.TransactionDate
+                    : (DateTime?)null;
             }
         }
 
-        public bool HasActiveSellOrder { get; set; }
+        public bool HasActiveSellOrder { get { return SellOrder != null; } }
 
-        public bool HasActiveBuyOrder { get; set; }
+        public bool HasActiveBuyOrder { get { return BuyOrder != null; } }
 
         public Asset Asset {
             get {
@@ -46,14 +53,11 @@ namespace eZet.EveProfiteer.Models {
             }
         }
 
-        public Order Order {
-            get { return _order; }
-            set { _order = value; }
-        }
+        public Order Order { get; private set; }
 
 
         private InvType InvType {
-            get { return _order.InvType; }
+            get { return Order.InvType; }
         }
 
         [Required(AllowEmptyStrings = false)]
@@ -65,25 +69,25 @@ namespace eZet.EveProfiteer.Models {
         #region Edit Order
 
         public bool AutoProcess {
-            get { return _order.AutoProcess; }
-            set { _order.AutoProcess = value; }
+            get { return Order.AutoProcess; }
+            set { Order.AutoProcess = value; }
         }
 
         public bool IsBuyOrder {
-            get { return _order.IsBuyOrder; }
-            set { _order.IsBuyOrder = value; }
+            get { return Order.IsBuyOrder; }
+            set { Order.IsBuyOrder = value; }
         }
 
 
         public int BuyQuantity {
-            get { return _order.BuyQuantity; }
-            set { _order.BuyQuantity = value; }
+            get { return Order.BuyQuantity; }
+            set { Order.BuyQuantity = value; }
         }
 
         public decimal MaxBuyPrice {
-            get { return _order.MaxBuyPrice; }
+            get { return Order.MaxBuyPrice; }
             set {
-                _order.MaxBuyPrice = value;
+                Order.MaxBuyPrice = value;
                 OnPropertyChanged();
                 OnPropertyChanged("TotalMaxBuyPrice");
             }
@@ -98,8 +102,8 @@ namespace eZet.EveProfiteer.Models {
         }
 
         public bool IsSellOrder {
-            get { return _order.IsSellOrder; }
-            set { _order.IsSellOrder = value; }
+            get { return Order.IsSellOrder; }
+            set { Order.IsSellOrder = value; }
         }
 
         public double GrossMarginBuyAndSell {
@@ -113,17 +117,17 @@ namespace eZet.EveProfiteer.Models {
 
 
         public int MaxSellQuantity {
-            get { return _order.MaxSellQuantity; }
+            get { return Order.MaxSellQuantity; }
             set {
-                _order.MaxSellQuantity = value;
+                Order.MaxSellQuantity = value;
                 OnPropertyChanged("TotalMaxSellPrice");
             }
         }
 
         public decimal MinSellPrice {
-            get { return _order.MinSellPrice; }
+            get { return Order.MinSellPrice; }
             set {
-                _order.MinSellPrice = value;
+                Order.MinSellPrice = value;
                 OnPropertyChanged();
                 OnPropertyChanged("TotalMinSellPrice");
                 OnPropertyChanged("TotalMaxSellPrice");
@@ -134,13 +138,13 @@ namespace eZet.EveProfiteer.Models {
         }
 
         public int MinSellQuantity {
-            get { return _order.MinSellQuantity; }
-            set { _order.MinSellQuantity = value; }
+            get { return Order.MinSellQuantity; }
+            set { Order.MinSellQuantity = value; }
         }
 
         public DateTime UpdateTime {
-            get { return _order.UpdateTime; }
-            set { _order.UpdateTime = value; }
+            get { return Order.UpdateTime; }
+            set { Order.UpdateTime = value; }
         }
 
 
@@ -193,7 +197,7 @@ namespace eZet.EveProfiteer.Models {
         }
 
         public decimal InventoryTotalCost {
-            get { return Asset != null  ? Asset.LatestAverageCost * TotalQuantity : 0; }
+            get { return Asset != null ? Asset.LatestAverageCost * TotalQuantity : 0; }
         }
 
         #endregion
@@ -240,23 +244,23 @@ namespace eZet.EveProfiteer.Models {
         public double BuyAvgRatio { get { return AvgPrice == 0 ? 0 : (double)((CurrentBuyPrice / AvgPrice)); } }
         public double SellAvgRatio { get { return AvgPrice == 0 ? 0 : (double)(CurrentSellPrice / AvgPrice); } }
         public decimal AvgPrice {
-            get { return _order.AvgPrice; }
-            set { _order.AvgPrice = value; }
+            get { return Order.AvgPrice; }
+            set { Order.AvgPrice = value; }
         }
 
         public decimal CurrentBuyPrice {
-            get { return _order.CurrentBuyPrice; }
-            set { _order.CurrentBuyPrice = value; }
+            get { return Order.CurrentBuyPrice; }
+            set { Order.CurrentBuyPrice = value; }
         }
 
         public decimal CurrentSellPrice {
-            get { return _order.CurrentSellPrice; }
-            set { _order.CurrentSellPrice = value; }
+            get { return Order.CurrentSellPrice; }
+            set { Order.CurrentSellPrice = value; }
         }
 
         public double AvgVolume {
-            get { return _order.AvgVolume; }
-            set { _order.AvgVolume = value; }
+            get { return Order.AvgVolume; }
+            set { Order.AvgVolume = value; }
         }
 
         #endregion

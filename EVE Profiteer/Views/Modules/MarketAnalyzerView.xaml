@@ -39,6 +39,7 @@
                     <dxb:BarEditItem.EditSettings>
                         <dxe:ComboBoxEditSettings ItemsSource="{Binding Regions}"
                                                   DisplayMember="RegionName"
+                                                  AutoComplete="True"
                                                   IncrementalFiltering="True"
                                                   FilterCondition="Contains"
                                                   ImmediatePopup="True"
@@ -52,6 +53,7 @@
                     <dxb:BarEditItem.EditSettings>
                         <dxe:ComboBoxEditSettings ItemsSource="{Binding Stations}"
                                                   DisplayMember="StationName"
+                                                  AutoComplete="True"
                                                   IncrementalFiltering="True"
                                                   FilterCondition="Contains"
                                                   ImmediatePopup="True"
@@ -76,10 +78,10 @@
             <dxb:BarManager.Bars>
                 <dxb:Bar Caption="Analyze">
                     <dxb:Bar.DockInfo>
-                        <dxb:BarDockInfo ContainerType="Top" />
+                        <dxb:BarDockInfo ContainerType="Top"/>
                     </dxb:Bar.DockInfo>
                     <dxb:Bar.ItemLinks>
-                        <dxb:BarButtonItemLink BarItemName="Analyze" />
+                        <dxb:BarButtonItemLink BarItemName="Analyze"/>
                         <dxb:BarEditItemLink BarItemName="RegionSelector" />
                         <dxb:BarEditItemLink BarItemName="StationSelector" />
                         <dxb:BarEditItemLink BarItemName="DayLimit" />

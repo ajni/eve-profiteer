@@ -31,9 +31,9 @@
                 <dxlc:LayoutItem IsEnabled="{Binding EditPriceLimits}" Label="Min. Profit Margin">
                     <dxe:TextEdit EditValue="{Binding MinProfitMargin}" MaskType="Numeric" Mask="P1" MaskUseAsDisplayFormat="True"/>
                 </dxlc:LayoutItem>
-                <dxlc:LayoutItem IsEnabled="{Binding EditPriceLimits}" Label="Max. Profit Margin">
+                <!--<dxlc:LayoutItem IsEnabled="{Binding EditPriceLimits}" Label="Max. Profit Margin">
                     <dxe:TextEdit EditValue="{Binding MaxAboveAverage}" MaskType="Numeric" Mask="P1" MaskUseAsDisplayFormat="True"/>
-                </dxlc:LayoutItem>
+                </dxlc:LayoutItem>-->
             </dxlc:LayoutGroup>
 
             <dxlc:LayoutGroup Header="Inventory Limit" Orientation="Vertical" UseLayoutRounding="True" View="GroupBox">

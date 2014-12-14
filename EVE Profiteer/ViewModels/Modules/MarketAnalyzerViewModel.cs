@@ -63,7 +63,7 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             private set {
                 if (Equals(value, _marketTreeNodes)) return;
                 _marketTreeNodes = value;
-                NotifyOfPropertyChange(() => MarketTreeNodes);
+                NotifyOfPropertyChange();
             }
         }
 
@@ -72,7 +72,7 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             private set {
                 if (Equals(value, _regions)) return;
                 _regions = value;
-                NotifyOfPropertyChange(() => Regions);
+                NotifyOfPropertyChange();
             }
         }
 
@@ -81,7 +81,7 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             private set {
                 if (Equals(value, _stations)) return;
                 _stations = value;
-                NotifyOfPropertyChange(() => Stations);
+                NotifyOfPropertyChange();
             }
         }
 
@@ -90,7 +90,7 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             set {
                 if (Equals(_selectedRegion, value)) return;
                 _selectedRegion = value;
-                NotifyOfPropertyChange(() => SelectedRegion);
+                NotifyOfPropertyChange();
             }
         }
 
@@ -99,7 +99,7 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             set {
                 if (Equals(value, _selectedStation)) return;
                 _selectedStation = value;
-                NotifyOfPropertyChange(() => SelectedStation);
+                NotifyOfPropertyChange();
             }
         }
 
@@ -108,7 +108,7 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             private set {
                 if (Equals(_selectedItems, value)) return;
                 _selectedItems = value;
-                NotifyOfPropertyChange(() => SelectedItems);
+                NotifyOfPropertyChange();
             }
         }
 
@@ -117,7 +117,7 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             private set {
                 if (Equals(_marketAnalyzerResults, value)) return;
                 _marketAnalyzerResults = value;
-                NotifyOfPropertyChange(() => MarketAnalyzerResults);
+                NotifyOfPropertyChange();
             }
         }
 
@@ -126,7 +126,7 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             set {
                 if (Equals(_dayLimit, value)) return;
                 _dayLimit = value;
-                NotifyOfPropertyChange(() => DayLimit);
+                NotifyOfPropertyChange();
             }
         }
 
@@ -156,8 +156,8 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
 
         private void onPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs) {
             if (propertyChangedEventArgs.PropertyName == "SelectedRegion") {
-                Stations = SelectedRegion.StaStations.OrderByDescending(f => f.StationName).ToList();
-                SelectedStation = null;
+                Stations = SelectedRegion.StaStations.OrderBy(f => f.StationName).ToList();
+                SelectedStation = Stations.FirstOrDefault();
             }
         }
 
@@ -183,13 +183,13 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
         }
 
         private async Task analyze(IEnumerable<InvType> items) {
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs(this, "Fetching market data..."));
+            _eventAggregator.PublishOnUIThread(new StatusEvent(this, "Fetching market data..."));
             ICollection<MarketAnalyzerEntry> result =
                 await
                     _marketAnalyzerService.AnalyzeAsync(SelectedRegion, SelectedStation, items, DayLimit)
                         .ConfigureAwait(false);
             MarketAnalyzerResults = new BindableCollection<MarketAnalyzerEntry>(result);
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs(this, "Market analysis complete"));
+            _eventAggregator.PublishOnUIThread(new StatusEvent(this, "Market analysis complete"));
         }
 
         private void treeViewCheckBox_PropertyChanged(object sender, PropertyChangedEventArgs e) {

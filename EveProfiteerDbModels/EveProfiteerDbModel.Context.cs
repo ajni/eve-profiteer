@@ -42,6 +42,6 @@ namespace eZet.EveProfiteer.Models
         public virtual DbSet<ProductionBatch> ProductionBatches { get; set; }
         public virtual DbSet<RefType> RefTypes { get; set; }
         public virtual DbSet<MarketOrder> MarketOrders { get; set; }
-        public virtual DbSet<AssetReduction> AssetReductions { get; set; }
+        public virtual DbSet<AssetModification> AssetModifications { get; set; }
     }
 }

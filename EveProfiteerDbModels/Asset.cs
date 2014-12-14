@@ -16,7 +16,7 @@ namespace eZet.EveProfiteer.Models
     {
         public Asset()
         {
-            this.AssetReductions = new HashSet<AssetReduction>();
+            this.AssetModifications = new HashSet<AssetModification>();
         }
     
         public int Id { get; set; }
@@ -36,6 +36,6 @@ namespace eZet.EveProfiteer.Models
         public virtual InvType invType { get; set; }
         public virtual Transaction LastBuyTransaction { get; set; }
         public virtual Transaction LastSellTransaction { get; set; }
-        public virtual ICollection<AssetReduction> AssetReductions { get; set; }
+        public virtual ICollection<AssetModification> AssetModifications { get; set; }
     }
 }

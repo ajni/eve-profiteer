@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Caliburn.Micro;
 using eZet.EveProfiteer.Models.Annotations;
 
 namespace eZet.EveProfiteer.Models {
@@ -12,13 +14,21 @@ namespace eZet.EveProfiteer.Models {
         private decimal _currentBuyPrice;
         private decimal _currentSellPrice;
         private IEnumerable<MarketHistoryEntry> _itemHistoryEntries;
+        private BindableCollection<AssetModification> _assetModifications;
 
-        public IEnumerable<AssetReduction> AssetReductions { get; private set; }
+        public BindableCollection<AssetModification> AssetModifications {
+            get { return _assetModifications; }
+            private set {
+                if (Equals(value, _assetModifications)) return;
+                _assetModifications = value;
+                OnPropertyChanged();
+            }
+        }
 
 
-        public AssetVm(Asset asset, IEnumerable<Order> orders, IEnumerable<AssetReduction> assetReductions) {
+        public AssetVm(Asset asset, IEnumerable<Order> orders, IEnumerable<AssetModification> assetReductions) {
             Asset = asset;
-            AssetReductions = assetReductions;
+            AssetModifications = new BindableCollection<AssetModification>(assetReductions);
             Orders = orders.ToList();
         }
 

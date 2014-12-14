@@ -13,7 +13,7 @@ using eZet.EveProfiteer.Ui.Events;
 using eZet.EveProfiteer.ViewModels.Dialogs;
 
 namespace eZet.EveProfiteer.ViewModels.Modules {
-    public sealed class OrderManagerViewModel : ModuleViewModel, IHandle<AddOrdersEvent>,
+    public sealed class OrderManagerViewModel : ModuleViewModel, IHandle<AddOrdersEvent>, IHandle<ActiveEntityChangedEvent>,
         IHandle<ViewOrderEvent> {
         private readonly IEventAggregator _eventAggregator;
         private readonly IWindowManager _windowManager;
@@ -143,9 +143,9 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             set {
                 if (Equals(value, selectedRegion)) return;
                 selectedRegion = value;
-                Stations = selectedRegion.StaStations.OrderBy(f => f.StationName).ToList();
-                SelectedStation = null;
                 NotifyOfPropertyChange();
+                Stations = selectedRegion.StaStations.OrderBy(f => f.StationName).ToList();
+                SelectedStation = Stations.First();
             }
         }
 
@@ -211,7 +211,7 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             string msg = "Order(s) added";
             if (orders.Count == 1)
                 msg = "'" + orders.Single().InvType.TypeName + "' added to Orders";
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs(this, msg));
+            _eventAggregator.PublishOnUIThread(new StatusEvent(this, msg));
         }
 
         public async void Handle(ViewOrderEvent message) {
@@ -230,10 +230,18 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             SelectedStation = SelectedRegion.StaStations.Single(f => f.StationId == Properties.Settings.Default.DefaultStationId);
         }
 
+        private void clear() {
+            MarketTypes = null;
+            SelectedOrder = null;
+            FocusedOrder = null;
+            Orders.Clear();
+            _orderManagerService.Deactivate();
+        }
+
         private async Task loadOrders() {
             Orders.Clear();
             if (SelectedStation == null) {
-                _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs(this, "No Station Selected"));
+                _eventAggregator.PublishOnUIThread(new StatusEvent(this, "No Station Selected"));
                 return;
             }
             MarketTypes = await _orderManagerService.GetMarketTypesAsync().ConfigureAwait(false);
@@ -241,14 +249,9 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             Orders.AddRange(orders);
         }
 
-        
-
         protected override Task OnDeactivate(bool close) {
             if (close) {
-                MarketTypes = null;
-                Orders.Clear();
-                SelectedOrder = null;
-                FocusedOrder = null;
+                clear();
             }
             return Task.FromResult(0);
         }
@@ -280,13 +283,13 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             foreach (OrderVm order in SelectedOrders.ToList()) {
                 Orders.Remove(order);
             }
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs(this, "Order(s) deleted (" + result + ")"));
+            _eventAggregator.PublishOnUIThread(new StatusEvent(this, "Order(s) deleted (" + result + ")"));
         }
 
         public async void ExecuteSave() {
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs(this, "Saving orders..."));
+            _eventAggregator.PublishOnUIThread(new StatusEvent(this, "Saving orders..."));
             var result = await Task.Run(() => _orderManagerService.SaveOrdersAsync(Orders)).ConfigureAwait(false);
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs(this, "Order(s) saved (" + result + ")"));
+            _eventAggregator.PublishOnUIThread(new StatusEvent(this, "Order(s) saved (" + result + ")"));
         }
 
         public void ExecuteImportXml() {
@@ -300,7 +303,7 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
                 Properties.Settings.Default.OrderXmlPath = dialog.SelectedPath;
                 Properties.Settings.Default.Save();
             }
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs(this, "Order(s) imported"));
+            _eventAggregator.PublishOnUIThread(new StatusEvent(this, "Order(s) imported"));
         }
 
         public void ExecuteExportXml() {
@@ -312,14 +315,14 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
                 Properties.Settings.Default.OrderXmlPath = dialog.SelectedPath;
                 Properties.Settings.Default.Save();
             }
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs(this, "Order(s) exported"));
+            _eventAggregator.PublishOnUIThread(new StatusEvent(this, "Order(s) exported"));
         }
 
         public async void ExecuteUpdateMarketData() {
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs(this, "Fetching market data..."));
+            _eventAggregator.PublishOnUIThread(new StatusEvent(this, "Fetching market data..."));
             await _orderManagerService.LoadMarketDataAsync(Orders, SelectedRegion, SelectedStation, DayLimit);
             Orders.Refresh();
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs(this, "Market data updated"));
+            _eventAggregator.PublishOnUIThread(new StatusEvent(this, "Market data updated"));
         }
 
 
@@ -380,7 +383,11 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             }
             Orders.IsNotifying = true;
             Orders.Refresh();
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs(this, "Orders updated"));
+            _eventAggregator.PublishOnUIThread(new StatusEvent(this, "Quick Edit Completed"));
+        }
+
+        public void Handle(ActiveEntityChangedEvent message) {
+            clear();
         }
     }
 }

@@ -215,6 +215,7 @@
     <Compile Include="Ui\Controls\PeriodSelectorBar.xaml.cs">
       <DependentUpon>PeriodSelectorBar.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Ui\Events\ActiveEntityChangedEvent.cs" />
     <Compile Include="Ui\Events\ModuleEvent.cs" />
     <Compile Include="Ui\Events\ApiUpdateEvent.cs" />
     <Compile Include="Ui\Events\AssetsUpdatedEvent.cs" />
@@ -223,7 +224,7 @@
     <Compile Include="Ui\Events\IOpenModuleEvent.cs" />
     <Compile Include="Ui\Events\JournalUpdatedEvent.cs" />
     <Compile Include="Ui\Events\MarketOrdersUpdatedEvent.cs" />
-    <Compile Include="Ui\Events\StatusChangedEventArgs.cs" />
+    <Compile Include="Ui\Events\StatusEvent.cs" />
     <Compile Include="Ui\Events\TransactionsUpdatedEvent.cs" />
     <Compile Include="Ui\Events\ViewAssetEvent.cs" />
     <Compile Include="Ui\Events\ViewMarketOrderEvent.cs" />
@@ -242,7 +243,7 @@
     <Compile Include="Models\MarketBrowserOrder.cs" />
     <Compile Include="Models\MarketTreeNode.cs" />
     <Compile Include="Models\SettingsTreeNode.cs" />
-    <Compile Include="Services\AssetService.cs" />
+    <Compile Include="Services\AssetManagerService.cs" />
     <Compile Include="Services\DbContextService.cs" />
     <Compile Include="EventConfig.cs" />
     <Compile Include="Services\JournalService.cs" />
@@ -286,7 +287,8 @@
     <Compile Include="Util\SettingsBindingExtension.cs" />
     <Compile Include="Models\CheckableTreeNode.cs" />
     <Compile Include="Models\BatchMaterialEntry.cs" />
-    <Compile Include="ViewModels\Dialogs\AssetReductionDialogViewModel.cs" />
+    <Compile Include="ViewModels\Dialogs\AssetAddQuantityDialogViewModel.cs" />
+    <Compile Include="ViewModels\Dialogs\AssetRemoveQuantityDialogViewModel.cs" />
     <Compile Include="ViewModels\Dialogs\NewProductionBatchViewModel.cs" />
     <Compile Include="ViewModels\Dialogs\AnalyzerProgressViewModel.cs" />
     <Compile Include="ViewModels\Dialogs\EditKeyViewModel.cs" />
@@ -312,8 +314,11 @@
     <Compile Include="Ui\Events\ViewMarketBrowserEvent.cs" />
     <Compile Include="ViewModels\Modules\TransactionsViewModel.cs" />
     <Compile Include="ViewModels\ModuleViewModel.cs" />
-    <Compile Include="Views\Dialogs\AssetReductionDialogView.xaml.cs">
-      <DependentUpon>AssetReductionDialogView.xaml</DependentUpon>
+    <Compile Include="Views\Dialogs\AssetAddQuantityDialogView.xaml.cs">
+      <DependentUpon>AssetAddQuantityDialogView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Dialogs\AssetRemoveQuantityDialogView.xaml.cs">
+      <DependentUpon>AssetRemoveQuantityDialogView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Dialogs\EditOrderDialogView.xaml.cs">
       <DependentUpon>EditOrderDialogView.xaml</DependentUpon>
@@ -396,7 +401,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Dialogs\AssetReductionDialogView.xaml">
+    <Page Include="Views\Dialogs\AssetAddQuantityDialogView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Dialogs\AssetRemoveQuantityDialogView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

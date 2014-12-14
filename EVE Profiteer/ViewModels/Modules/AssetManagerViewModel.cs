@@ -6,6 +6,7 @@ using System.Windows.Input;
 using Caliburn.Micro;
 using DevExpress.Mvvm;
 using DevExpress.Xpf.Core;
+using DevExpress.Xpf.Editors.Helpers;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Properties;
 using eZet.EveProfiteer.Services;
@@ -14,26 +15,25 @@ using eZet.EveProfiteer.ViewModels.Dialogs;
 
 namespace eZet.EveProfiteer.ViewModels.Modules {
     public class AssetManagerViewModel : ModuleViewModel, IHandle<AssetsUpdatedEvent>, IHandle<ViewAssetEvent> {
-        private readonly AssetService _assetService;
+        private readonly AssetManagerService _assetManagerService;
         private readonly IEventAggregator _eventAggregator;
         private readonly IWindowManager _windowManager;
         private BindableCollection<AssetVm> _assets;
         private AssetVm _focusedRow;
-        private AssetVm _selectedRow;
-        private BindableCollection<AssetVm> _selectedRows;
         private ViewAssetEvent _viewAssetEvent;
         private AssetsUpdatedEvent _assetsUpdatedEvent;
 
-        public AssetManagerViewModel(IEventAggregator eventAggregator, IWindowManager windowManager, AssetService assetService) {
+        public AssetManagerViewModel(IEventAggregator eventAggregator, IWindowManager windowManager, AssetManagerService assetManagerService) {
             _eventAggregator = eventAggregator;
             _windowManager = windowManager;
-            _assetService = assetService;
-            AgeSpan = 10;
+            _assetManagerService = assetManagerService;
+            MarketHistoryAge = 10;
             Assets = new BindableCollection<AssetVm>();
             _eventAggregator.Subscribe(this);
             ViewMarketDetailsCommand = new DelegateCommand(() => _eventAggregator.PublishOnUIThread(new ViewMarketBrowserEvent(FocusedRow.Asset.invType)));
             ViewTradeDetailsCommand = new DelegateCommand(() => _eventAggregator.PublishOnUIThread(new ViewTransactionDetailsEvent(FocusedRow.Asset.invType)));
-            UsedForOtherCommand = new DelegateCommand(executeUsedForOther);
+            AddQuantityCommand = new DelegateCommand(executeAddQuantity);
+            RemoveQuantityCommand = new DelegateCommand(executeRemoveQuantity);
             ResetDataCommand = new DelegateCommand(executeResetData);
             MatchActualQuantityCommand = new DelegateCommand(executeMatchActualQuantity);
             SaveCommand = new DelegateCommand(executeSave);
@@ -41,19 +41,23 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             UpdateMarketDataCommand = new DelegateCommand(async () => await UpdateMarketData());
         }
 
+
+
+        public ICommand AddQuantityCommand { get; private set; }
+
         public ICommand UpdateMarketDataCommand { get; private set; }
 
         private async void excuteRevert() {
-            _assetService.Deactivate();
-            Assets = new BindableCollection<AssetVm>(await _assetService.GetAssets().ConfigureAwait(false));
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs(this , "Changes Discarded"));
+            _assetManagerService.Deactivate();
+            Assets = new BindableCollection<AssetVm>(await _assetManagerService.GetAssets().ConfigureAwait(false));
+            _eventAggregator.PublishOnUIThread(new StatusEvent(this, "Changes Discarded"));
         }
 
         public ICommand RevertCommand { get; private set; }
 
         private async void executeSave() {
-            await _assetService.Save(Assets).ConfigureAwait(false);
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs(this, "Changed Saved"));
+            await _assetManagerService.Save(Assets).ConfigureAwait(false);
+            _eventAggregator.PublishOnUIThread(new StatusEvent(this, "Changed Saved"));
         }
 
         private void executeMatchActualQuantity() {
@@ -80,13 +84,41 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             }
         }
 
-        private void executeUsedForOther() {
-            var vm = IoC.Get<AssetReductionDialogViewModel>();
-            vm.MaxQuantity = Math.Abs(FocusedRow.CalculatedQuantity);
-            vm.Quantity = vm.MaxQuantity;
-            if (_windowManager.ShowDialog(vm).GetValueOrDefault()) {
+        private void executeAddQuantity() {
+            if (FocusedRow == null) {
+                _eventAggregator.PublishOnUIThread(new StatusEvent(this, "No asset selected"));
+                return;
+            }
+            var vm = new AssetAddQuantityDialogViewModel(FocusedRow);
+            if (_windowManager.ShowDialog(vm).GetValueOrDefault() && vm.Quantity > 0) {
+                FocusedRow.MaterialCost += vm.TransactionCost;
+                FocusedRow.CalculatedQuantity += vm.Quantity;
+                var mod = new AssetModification();
+                mod.AssetId = FocusedRow.Asset.Id;
+                mod.Quantity = vm.Quantity;
+                mod.Description = vm.Description;
+                mod.Date = vm.Date;
+                mod.PostModificationQuantity = FocusedRow.CalculatedQuantity;
+                mod.TransactionValue = vm.TransactionCost;
+                _assetManagerService.AddModification(mod);
+                FocusedRow.AssetModifications.Add(mod);
+            }
+        }
+
+        private void executeRemoveQuantity() {
+            if (FocusedRow == null) {
+                _eventAggregator.PublishOnUIThread(new StatusEvent(this, "No asset selected"));
+                return;
+            }
+            var vm = new AssetRemoveQuantityDialogViewModel(FocusedRow);
+            vm.Quantity = Math.Abs(FocusedRow.CalculatedQuantity);
+            if (_windowManager.ShowDialog(vm).GetValueOrDefault() && vm.Quantity > 0) {
                 var newQuantity = FocusedRow.CalculatedQuantity - vm.Quantity;
-                if (newQuantity >= 0) {
+                if (newQuantity < 0) {
+                    _eventAggregator.PublishOnUIThread(new StatusEvent(this, "New quantity cannot be less than zero"));
+                    return;
+                }
+                if (newQuantity <= 0) {
                     newQuantity = 0;
                     FocusedRow.BrokerFees = 0;
                     FocusedRow.MaterialCost = 0;
@@ -95,16 +127,18 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
                     FocusedRow.MaterialCost = (FocusedRow.MaterialCost / FocusedRow.CalculatedQuantity) * newQuantity;
                 }
                 FocusedRow.CalculatedQuantity = newQuantity;
-                var reduction = new AssetReduction();
-                reduction.Quantity = vm.Quantity;
-                reduction.Description = vm.Description;
-                reduction.AssetId = FocusedRow.Asset.Id;
-                reduction.PostReductionQuantity = newQuantity;
-                _assetService.AddReduction(reduction);
+                var mod = new AssetModification();
+                mod.Quantity = 0 - vm.Quantity;
+                mod.Description = vm.Description;
+                mod.Date = vm.Date;
+                mod.AssetId = FocusedRow.Asset.Id;
+                mod.PostModificationQuantity = newQuantity;
+                _assetManagerService.AddModification(mod);
+                FocusedRow.AssetModifications.Add(mod);
             }
         }
 
-        public int AgeSpan { get; set; }
+        public int MarketHistoryAge { get; set; }
 
         public BindableCollection<AssetVm> Assets {
             get { return _assets; }
@@ -130,7 +164,7 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
 
         public ICommand ViewTradeDetailsCommand { get; private set; }
 
-        public ICommand UsedForOtherCommand { get; private set; }
+        public ICommand RemoveQuantityCommand { get; private set; }
         public ICommand ResetDataCommand { get; private set; }
         public ICommand MatchActualQuantityCommand { get; private set; }
 
@@ -152,7 +186,7 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
         protected override Task OnDeactivate(bool close) {
             if (close) {
                 Assets = null;
-                _assetService.Deactivate();
+                _assetManagerService.Deactivate();
             }
             return base.OnDeactivate(close);
         }
@@ -174,19 +208,19 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
         }
 
         private async Task UpdateMarketData() {
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs(this, "Updating Market Data..."));
+            _eventAggregator.PublishOnUIThread(new StatusEvent(this, "Updating Market Data..."));
             Assets.IsNotifying = false;
-            await _assetService.UpdateMarketData(Assets, Settings.Default.DefaultRegionId,
-                Settings.Default.DefaultStationId, AgeSpan).ConfigureAwait(false);
+            await _assetManagerService.UpdateMarketData(Assets, Settings.Default.DefaultRegionId,
+                Settings.Default.DefaultStationId, MarketHistoryAge).ConfigureAwait(false);
             Assets.IsNotifying = true;
             Assets.Refresh();
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs(this, "Market Data Updated"));
+            _eventAggregator.PublishOnUIThread(new StatusEvent(this, "Market Data Updated"));
         }
 
         private async Task LoadAssets() {
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs(this, "Loading Assets..."));
-            Assets = new BindableCollection<AssetVm>(await _assetService.GetAssets().ConfigureAwait(false));
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs(this, "Assets Loaded"));
+            _eventAggregator.PublishOnUIThread(new StatusEvent(this, "Loading Assets..."));
+            Assets = new BindableCollection<AssetVm>(await _assetManagerService.GetAssets().ConfigureAwait(false));
+            _eventAggregator.PublishOnUIThread(new StatusEvent(this, "Assets Loaded"));
 
         }
 

@@ -14,7 +14,6 @@
 
             <dxb:BarManager DockPanel.Dock="Top">
                 <dxb:BarManager.Items>
-
                     <dxb:BarButtonItem Name="SaveChanges" Content="Save Changes" Command="{Binding SaveCommand}" Hint="Save all changes" />
                     <dxb:BarButtonItem Name="RevertChanges" Content="Revert Changes" Command="{Binding RevertCommand}" Hint="Revert all changes" />
                     <dxb:BarButtonItem Name="UpdateMarketData" Content="Update Market Data" Command="{Binding UpdateMarketDataCommand}" Hint="Updates Market Data" />
@@ -50,6 +49,7 @@
                                AllowScrollToFocusedRow="True"
                                AutoScrollOnSorting="False"
                                AllowMasterDetail="True"
+                               DetailHeaderContent="Modifications"
                         >
                         <dxg:TableView.RowCellMenuCustomizations>
                             <dxb:BarButtonItem Content="View market details"
@@ -58,11 +58,11 @@
                                            Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.ViewTradeDetailsCommand, RelativeSource={RelativeSource Self}}" />
                             <dxb:BarItemSeparator />
 
-                            <dxb:BarSubItem Content="Add asset reduction">
-                                <dxb:BarButtonItem Content="Production Batch"
-                                           Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.UsedForOtherCommand, RelativeSource={RelativeSource Self}}" />
-                                <dxb:BarButtonItem Content="Other"
-                                           Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.UsedForOtherCommand, RelativeSource={RelativeSource Self}}" />
+                            <dxb:BarSubItem Content="Edit Quantity">
+                                <dxb:BarButtonItem Content="Add Quantity"
+                                           Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.AddQuantityCommand, RelativeSource={RelativeSource Self}}" />
+                                <dxb:BarButtonItem Content="Remove Quantity"
+                                           Command="{Binding Path=(dxg:GridPopupMenu.GridMenuInfo).View.DataContext.RemoveQuantityCommand, RelativeSource={RelativeSource Self}}" />
                             </dxb:BarSubItem>
                             <dxb:BarItemSeparator />
                             <dxb:BarButtonItem Content="Reset data"
@@ -74,18 +74,20 @@
                     </dxg:TableView>
                 </dxg:GridControl.View>
                 <dxg:GridControl.DetailDescriptor>
-                    <dxg:DataControlDetailDescriptor ItemsSourcePath="Asset.AssetReductions">
+                    <dxg:DataControlDetailDescriptor ItemsSourceBinding="{Binding Asset.AssetModifications, Mode=TwoWay}">
                         <dxg:DataControlDetailDescriptor.DataControl>
                             <dxg:GridControl AutoGenerateColumns="None">
                                 <dxg:GridControl.View>
-                                    <dxg:TableView DetailHeaderContent="Reductions"
+                                    <dxg:TableView DetailHeaderContent="Modifications"
                                                    AutoWidth="True"
-                                                   ShowGroupPanel="False" />
+                                                   ShowGroupPanel="False"
+                                                   />
                                 </dxg:GridControl.View>
                                 <dxg:GridControl.Columns>
                                     <dxg:GridColumn FieldName="Date"/>
-                                    <dxg:GridColumn FieldName="Quantity"/>
-                                    <dxg:GridColumn FieldName="Post-reduction quantity"/>
+                                    <dxg:GridColumn FieldName="Quantity" Header="Change"/>
+                                    <dxg:GridColumn FieldName="PostModificationQuantity"/>
+                                    <dxg:GridColumn FieldName="TransactionValue"/>
                                     <dxg:GridColumn FieldName="Description"/>
                                 </dxg:GridControl.Columns>
                             </dxg:GridControl>

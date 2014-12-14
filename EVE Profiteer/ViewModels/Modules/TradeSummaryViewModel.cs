@@ -109,12 +109,12 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
 
 
         private async Task load(DateTime start, DateTime end) {
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs(this, "Loading..."));
+            _eventAggregator.PublishOnUIThread(new StatusEvent(this, "Loading..."));
             List<Transaction> transactions = await
                 _tradeSummaryService.GetTransactions(start, end).ConfigureAwait(false);
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs(this, "Analyzing..."));
+            _eventAggregator.PublishOnUIThread(new StatusEvent(this, "Analyzing..."));
             Summary = new TransactionAggregate(transactions.GroupBy(t => t.TransactionDate.Date));
-            _eventAggregator.PublishOnUIThread(new StatusChangedEventArgs(this, "Analysis complete"));
+            _eventAggregator.PublishOnUIThread(new StatusEvent(this, "Analysis complete"));
         }
 
     }

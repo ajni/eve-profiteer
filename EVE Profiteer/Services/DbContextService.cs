@@ -3,17 +3,19 @@
 namespace eZet.EveProfiteer.Services {
     public abstract class DbContextService {
 
-        public EveProfiteerRepository Db { get; private set; }
+        private EveProfiteerRepository _db;
 
-
-        public void Activate() {
-            if (Db == null)
-                Db = CreateDb();
+        protected EveProfiteerRepository Db {
+            get {
+                if (_db == null)
+                    _db = CreateDb();
+                return _db;
+            }
         }
 
         public void Deactivate() {
             if (Db != null) Db.Dispose();
-            Db = null;
+            _db = null;
         }
 
         protected EveProfiteerRepository CreateDb() {

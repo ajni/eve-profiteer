@@ -2,7 +2,7 @@
 using Caliburn.Micro;
 
 namespace eZet.EveProfiteer.ViewModels.Dialogs {
-    public class OrderOptimizerViewModel : Screen {
+    public sealed class OrderOptimizerViewModel : Screen {
         private bool _editPriceLimits;
         private bool _editInventoryLimit;
         private bool _editOrderQuantities;

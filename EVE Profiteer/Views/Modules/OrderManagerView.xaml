@@ -52,6 +52,7 @@
                     <dxb:BarEditItem.EditSettings>
                         <dxe:ComboBoxEditSettings ItemsSource="{Binding Regions}"
                                                   DisplayMember="RegionName"
+                                                  AutoComplete="True"
                                                   IncrementalFiltering="True"
                                                   FilterCondition="Contains"
                                                   ImmediatePopup="True"
@@ -65,13 +66,13 @@
                     <dxb:BarEditItem.EditSettings>
                         <dxe:ComboBoxEditSettings ItemsSource="{Binding Stations}"
                                                   DisplayMember="StationName"
+                                                  AutoComplete="True"
                                                   IncrementalFiltering="True"
                                                   FilterCondition="Contains"
                                                   ImmediatePopup="True"
                                                   ValidateOnTextInput="False"
-                                                  NullValueButtonPlacement="EditBox"
                                                   AllowNullInput="False"
-                                                  NullText="-- All stations --" />
+                                                  />
                     </dxb:BarEditItem.EditSettings>
                 </dxb:BarEditItem>
                 <dxb:BarEditItem Name="DayLimit"

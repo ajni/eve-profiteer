@@ -130,7 +130,7 @@
     <Compile Include="Asset.cs">
       <DependentUpon>EveProfiteerDbModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="AssetReduction.cs">
+    <Compile Include="AssetModification.cs">
       <DependentUpon>EveProfiteerDbModel.tt</DependentUpon>
     </Compile>
     <Compile Include="BatchMaterial.cs">

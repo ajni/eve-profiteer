@@ -42,9 +42,11 @@
           <Property Name="Id" Type="int" Nullable="false" />
           <Property Name="AssetId" Type="int" Nullable="false" />
           <Property Name="Quantity" Type="int" Nullable="false" />
-          <Property Name="PostReductionQuantity" Type="int" Nullable="false" />
+          <Property Name="PostModificationQuantity" Type="int" Nullable="false" />
           <Property Name="Description" Type="text" Nullable="false" />
-          <Property Name="Date" Type="datetime" Nullable="false" />
+          <Property Name="TransactionValue" Type="decimal" Precision="18" Scale="5" Nullable="false" />
+          <Property Name="Timestamp" Type="datetime" Nullable="false" />
+          <Property Name="Date" Type="datetime2" Precision="7" Nullable="false" />
         </EntityType>
         <EntityType Name="Assets">
           <Key>
@@ -742,10 +744,10 @@
             <End Role="Transaction" EntitySet="Transactions" />
             <End Role="Asset" EntitySet="Assets" />
           </AssociationSet>
-          <EntitySet Name="AssetReductions" EntityType="EveProfiteerDbModel.AssetReduction" />
+          <EntitySet Name="AssetModifications" EntityType="EveProfiteerDbModel.AssetModification" />
           <AssociationSet Name="FK_AssetReductions_Assets" Association="EveProfiteerDbModel.FK_AssetReductions_Assets">
             <End Role="Asset" EntitySet="Assets" />
-            <End Role="AssetReduction" EntitySet="AssetReductions" />
+            <End Role="AssetReduction" EntitySet="AssetModifications" />
           </AssociationSet>
           <AssociationSet Name="FK_dbo_Orders_mapStations" Association="EveProfiteerDbModel.FK_dbo_Orders_mapStations">
             <End Role="StaStation" EntitySet="StaStations" />
@@ -1107,7 +1109,7 @@
           <NavigationProperty Name="LastSellTransaction" Relationship="EveProfiteerDbModel.FK_dbo_Assets_LastSellTransaction" FromRole="Asset" ToRole="Transaction" />
           <Property Name="CalculatedQuantity" Type="Int32" Nullable="false" />
           <Property Name="InventoryQuantity" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="AssetReductions" Relationship="EveProfiteerDbModel.FK_AssetReductions_Assets" FromRole="Asset" ToRole="AssetReduction" />
+          <NavigationProperty Name="AssetModifications" Relationship="EveProfiteerDbModel.FK_AssetReductions_Assets" FromRole="Asset" ToRole="AssetReduction" />
         </EntityType>
         <Association Name="FK_dbo_Assets_dbo_ToApiKeyEntities">
           <End Type="EveProfiteerDbModel.ApiKeyEntity" Role="ApiKeyEntity" Multiplicity="1" />
@@ -1456,7 +1458,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="AssetReduction">
+        <EntityType Name="AssetModification">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
@@ -1465,12 +1467,14 @@
           <Property Name="Quantity" Type="Int32" Nullable="false" />
           <Property Name="Description" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Asset" Relationship="EveProfiteerDbModel.FK_AssetReductions_Assets" FromRole="AssetReduction" ToRole="Asset" />
-          <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="PostReductionQuantity" Type="Int32" Nullable="false" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="PostModificationQuantity" Type="Int32" Nullable="false" />
+          <Property Name="TransactionValue" Type="Decimal" Nullable="false" Precision="18" Scale="5" />
+          <Property Name="Timestamp" Type="DateTime" Nullable="false" Precision="3" />
         </EntityType>
         <Association Name="FK_AssetReductions_Assets">
           <End Type="EveProfiteerDbModel.Asset" Role="Asset" Multiplicity="1" />
-          <End Type="EveProfiteerDbModel.AssetReduction" Role="AssetReduction" Multiplicity="*" />
+          <End Type="EveProfiteerDbModel.AssetModification" Role="AssetReduction" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Asset">
               <PropertyRef Name="Id" />
@@ -1805,10 +1809,12 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="AssetReductions">
-            <EntityTypeMapping TypeName="EveProfiteerDbModel.AssetReduction">
+          <EntitySetMapping Name="AssetModifications">
+            <EntityTypeMapping TypeName="EveProfiteerDbModel.AssetModification">
               <MappingFragment StoreEntitySet="AssetReductions">
-                <ScalarProperty Name="PostReductionQuantity" ColumnName="PostReductionQuantity" />
+                <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
+                <ScalarProperty Name="TransactionValue" ColumnName="TransactionValue" />
+                <ScalarProperty Name="PostModificationQuantity" ColumnName="PostModificationQuantity" />
                 <ScalarProperty Name="Date" ColumnName="Date" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="Quantity" ColumnName="Quantity" />

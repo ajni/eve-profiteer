@@ -53,7 +53,7 @@
         <AssociationConnector Association="EveProfiteerDbModel.ApiKeyEntityMarketOrder" />
         <AssociationConnector Association="EveProfiteerDbModel.FK_dbo_Assets_LastBuyTransaction" />
         <AssociationConnector Association="EveProfiteerDbModel.FK_dbo_Assets_LastSellTransaction" />
-        <EntityTypeShape EntityType="EveProfiteerDbModel.AssetReduction" Width="1.5" PointX="12.75" PointY="11.375" />
+        <EntityTypeShape EntityType="EveProfiteerDbModel.AssetModification" Width="1.5" PointX="12.75" PointY="11.375" />
         <AssociationConnector Association="EveProfiteerDbModel.FK_AssetReductions_Assets" />
         <AssociationConnector Association="EveProfiteerDbModel.FK_dbo_Orders_mapStations" />
         </Diagram>
