@@ -9,11 +9,14 @@ namespace eZet.EveProfiteer.Ui.Converters {
     public class MarketAnalyzerBrushConverter : MarkupExtension, IValueConverter {
 
         public MarketAnalyzerBrushConverter() {
-            
+
         }
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
             if (value == null) return null;
-            var order = ((MarketAnalyzerEntry) value).Order;
+            Order order;
+            var entry = value as MarketAnalyzerEntry;
+            if (entry != null) order = entry.Order;
+            else order = value as Order;
             if (order == null) return null;
             if (order.IsBuyOrder || order.IsSellOrder)
                 return BrushManager.ActiveOrderBrush;

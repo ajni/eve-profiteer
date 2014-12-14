@@ -74,7 +74,7 @@
                     </dxg:TableView>
                 </dxg:GridControl.View>
                 <dxg:GridControl.DetailDescriptor>
-                    <dxg:DataControlDetailDescriptor ItemsSourceBinding="{Binding Asset.AssetModifications, Mode=TwoWay}">
+                    <dxg:DataControlDetailDescriptor ItemsSourcePath="Asset.AssetModifications">
                         <dxg:DataControlDetailDescriptor.DataControl>
                             <dxg:GridControl AutoGenerateColumns="None">
                                 <dxg:GridControl.View>

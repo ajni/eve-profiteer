@@ -15,7 +15,7 @@ namespace eZet.EveProfiteer.Models
     public partial class Transaction
     {
         public int Id { get; set; }
-        public System.DateTime TransactionDate { get; set; }
+        public DateTime TransactionDate { get; set; }
         public long TransactionId { get; set; }
         public int Quantity { get; set; }
         public int TypeId { get; set; }

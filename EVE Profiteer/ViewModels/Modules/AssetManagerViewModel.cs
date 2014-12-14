@@ -6,7 +6,6 @@ using System.Windows.Input;
 using Caliburn.Micro;
 using DevExpress.Mvvm;
 using DevExpress.Xpf.Core;
-using DevExpress.Xpf.Editors.Helpers;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Properties;
 using eZet.EveProfiteer.Services;
