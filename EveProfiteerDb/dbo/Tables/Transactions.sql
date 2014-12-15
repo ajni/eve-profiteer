@@ -7,7 +7,7 @@
     [Price]           DECIMAL (18, 2) NOT NULL,
     [ClientId]        BIGINT          NOT NULL,
     [ClientName]      NVARCHAR (MAX)  NULL,
-    [StationId]       BIGINT          NOT NULL,
+    [StationId]       INT          NOT NULL,
     [StationName]     NVARCHAR (MAX)  NULL,
     [TransactionType] INT    NOT NULL,
     [TransactionFor]  NVARCHAR (MAX)  NULL,
@@ -24,7 +24,7 @@
     CONSTRAINT [PK_dbo.Transactions] PRIMARY KEY NONCLUSTERED ([Id] ASC),
     CONSTRAINT [FK_dbo.Transactions_dbo.ApiKeyEntities.ApiKeyEntity_Id] FOREIGN KEY ([ApiKeyEntity_Id]) REFERENCES [dbo].[ApiKeyEntities] ([Id]), 
 	CONSTRAINT [FK_dbo.Transactions_dbo.InvType.TypeId] FOREIGN KEY ([TypeId]) REFERENCES [invTypes]([typeID]), 
-    UNIQUE ([TransactionId]),
+	CONSTRAINT [FK_dbo.Transactions.StationId] FOREIGN KEY ([StationId]) REFERENCES [staStations]([stationID]),
 );
 
 GO

@@ -31,11 +31,13 @@ namespace eZet.EveProfiteer.Models
         public Nullable<int> LastBuyTransactionId { get; set; }
         public int CalculatedQuantity { get; set; }
         public int InventoryQuantity { get; set; }
+        public int StationId { get; set; }
     
         public virtual ApiKeyEntity ApiKeyEntity { get; set; }
         public virtual InvType invType { get; set; }
         public virtual Transaction LastBuyTransaction { get; set; }
         public virtual Transaction LastSellTransaction { get; set; }
         public virtual ICollection<AssetModification> AssetModifications { get; set; }
+        public virtual StaStation staStation { get; set; }
     }
 }

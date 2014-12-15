@@ -15,14 +15,14 @@ namespace eZet.EveProfiteer.Models
     public partial class Transaction
     {
         public int Id { get; set; }
-        public DateTime TransactionDate { get; set; }
+        public System.DateTime TransactionDate { get; set; }
         public long TransactionId { get; set; }
         public int Quantity { get; set; }
         public int TypeId { get; set; }
         public decimal Price { get; set; }
         public long ClientId { get; set; }
         public string ClientName { get; set; }
-        public long StationId { get; set; }
+        public int StationId { get; set; }
         public string StationName { get; set; }
         public TransactionType TransactionType { get; set; }
         public string TransactionFor { get; set; }
@@ -40,5 +40,6 @@ namespace eZet.EveProfiteer.Models
         public virtual ApiKeyEntity ApiKeyEntity { get; set; }
         public virtual InvType InvType { get; set; }
         public virtual InvType ClientType { get; set; }
+        public virtual StaStation staStation { get; set; }
     }
 }

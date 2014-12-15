@@ -111,6 +111,7 @@
                     <dxg:GridControlBand VisibleIndex="0">-->
 
                         <dxg:GridColumn FieldName="TypeName" Header="Type" Width="200"/>
+                    <dxg:GridColumn FieldName="StationName" Header="Station" Width="200"/>
                         <dxg:GridColumn FieldName="HasBuyOrder" Header="Buy" AllowEditing="False" FixedWidth="True" Width="60"/>
                         <dxg:GridColumn FieldName="HasSellOrder" Header="Sell" AllowEditing="False" FixedWidth="True" Width="60"/>
                     <!--</dxg:GridControlBand>

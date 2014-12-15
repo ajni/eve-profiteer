@@ -15,12 +15,12 @@
     [IsSellOrder] BIT NOT NULL, 
     [IsBuyOrder] BIT NOT NULL, 
     [Notes] TEXT NULL, 
-    [AutoProcess] BIT NOT NULL DEFAULT 1, 
-    [StationId] INT NOT NULL DEFAULT 60003760, 
+    [AutoProcess] BIT NOT NULL , 
+    [StationId] INT NOT NULL , 
     CONSTRAINT [PK_dbo.Orders] PRIMARY KEY NONCLUSTERED ([Id] ASC), 
     CONSTRAINT [FK_dbo.Orders.ApiKeyEntities] FOREIGN KEY ([ApiKeyEntity_Id]) REFERENCES [ApiKeyEntities]([Id]), 
     CONSTRAINT [FK_dbo.Orders.InvTypes] FOREIGN KEY ([TypeId]) REFERENCES [invTypes]([typeID]), 
-	CONSTRAINT [FK_dbo.Orders.mapStations] FOREIGN KEY ([StationId]) REFERENCES [staStations]([stationID]),
+	CONSTRAINT [FK_dbo.Orders.staStations] FOREIGN KEY ([StationId]) REFERENCES [staStations]([stationID]),
 
 )
 GO

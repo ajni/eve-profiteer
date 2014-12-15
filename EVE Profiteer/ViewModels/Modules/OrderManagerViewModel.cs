@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using Caliburn.Micro;
 using DevExpress.Mvvm;
+using DevExpress.Xpf.Editors.Helpers;
 using DevExpress.Xpf.Grid;
 using eZet.EveProfiteer.Models;
 using eZet.EveProfiteer.Services;
@@ -42,11 +43,11 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             Orders = new BindableCollection<OrderVm>();
             SelectedOrders = new BindableCollection<OrderVm>();
             DayLimit = 10;
-            ImportXmlCommand = new DelegateCommand(ExecuteImportXml);
-            ExportXmlCommand = new DelegateCommand(ExecuteExportXml);
-            EditCommand = new DelegateCommand(ExecuteEdit);
-            SaveCommand = new DelegateCommand(ExecuteSave);
-            LoadCommand = new DelegateCommand(executeLoad);
+            ImportXmlCommand = new DelegateCommand(executeImportXml);
+            ExportXmlCommand = new DelegateCommand(executeExportXml);
+            QuickEditCommand = new DelegateCommand(executeQuickEdit);
+            SaveOrdersCommand = new DelegateCommand(executeSaveOrders);
+            LoadOrdersCommand = new DelegateCommand(executeLoad);
             UpdateMarketDataCommand = new DelegateCommand(ExecuteUpdateMarketData);
             ViewTradeDetailsCommand =
                 new DelegateCommand(
@@ -63,8 +64,8 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             ViewMarketOrderCommand =
                 new DelegateCommand(
                     () => _eventAggregator.PublishOnUIThread(new ViewMarketOrderEvent(FocusedOrder.Order.InvType)));
-            DeleteOrdersCommand = new DelegateCommand(ExecuteDeleteOrders);
-            ValidateOrderTypeCommand = new DelegateCommand<GridCellValidationEventArgs>(ExecuteValidateOrderType);
+            DeleteOrdersCommand = new DelegateCommand(executeDeleteOrders);
+            ValidateOrderTypeCommand = new DelegateCommand<GridCellValidationEventArgs>(executeValidateOrderType);
         }
 
         private async void executeLoad() {
@@ -175,15 +176,15 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             }
         }
 
-        public ICommand LoadCommand { get; private set; }
+        public ICommand LoadOrdersCommand { get; private set; }
 
         public ICommand ImportXmlCommand { get; private set; }
 
         public ICommand ExportXmlCommand { get; private set; }
 
-        public ICommand SaveCommand { get; private set; }
+        public ICommand SaveOrdersCommand { get; private set; }
 
-        public ICommand EditCommand { get; private set; }
+        public ICommand QuickEditCommand { get; private set; }
 
         public ICommand UpdateMarketDataCommand { get; private set; }
 
@@ -256,7 +257,7 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             return Task.FromResult(0);
         }
 
-        private void ExecuteValidateOrderType(GridCellValidationEventArgs eventArgs) {
+        private void executeValidateOrderType(GridCellValidationEventArgs eventArgs) {
             if (eventArgs.Value == null) {
                 eventArgs.IsValid = false;
                 eventArgs.SetError("Invalid item.");
@@ -278,7 +279,7 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             }
         }
 
-        private async void ExecuteDeleteOrders() {
+        private async void executeDeleteOrders() {
             var result = await _orderManagerService.RemoveOrdersAsync(SelectedOrders).ConfigureAwait(false);
             foreach (OrderVm order in SelectedOrders.ToList()) {
                 Orders.Remove(order);
@@ -286,19 +287,21 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             _eventAggregator.PublishOnUIThread(new StatusEvent(this, "Order(s) deleted (" + result + ")"));
         }
 
-        public async void ExecuteSave() {
+        private async void executeSaveOrders() {
             _eventAggregator.PublishOnUIThread(new StatusEvent(this, "Saving orders..."));
             var result = await Task.Run(() => _orderManagerService.SaveOrdersAsync(Orders)).ConfigureAwait(false);
             _eventAggregator.PublishOnUIThread(new StatusEvent(this, "Order(s) saved (" + result + ")"));
         }
 
-        public void ExecuteImportXml() {
+        private async void executeImportXml() {
             var dialog = new FolderBrowserDialog();
             dialog.ShowNewFolderButton = false;
             dialog.SelectedPath = Properties.Settings.Default.OrderXmlPath;
             if (dialog.ShowDialog() == DialogResult.OK) {
                 ICollection<Order> orders = _orderXmlService.ImportOrders(dialog.SelectedPath);
+                orders.ForEach(f => f.StationId = SelectedStation.StationId);
                 Orders.Clear();
+                await _orderManagerService.LoadInvTypes(orders);
                 Orders.AddRange(orders.Select(order => new OrderVm(order)));
                 Properties.Settings.Default.OrderXmlPath = dialog.SelectedPath;
                 Properties.Settings.Default.Save();
@@ -306,7 +309,7 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             _eventAggregator.PublishOnUIThread(new StatusEvent(this, "Order(s) imported"));
         }
 
-        public void ExecuteExportXml() {
+        private void executeExportXml() {
             var dialog = new FolderBrowserDialog();
             dialog.ShowNewFolderButton = false;
             dialog.SelectedPath = Properties.Settings.Default.OrderXmlPath;
@@ -318,7 +321,7 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
             _eventAggregator.PublishOnUIThread(new StatusEvent(this, "Order(s) exported"));
         }
 
-        public async void ExecuteUpdateMarketData() {
+        private async void ExecuteUpdateMarketData() {
             _eventAggregator.PublishOnUIThread(new StatusEvent(this, "Fetching market data..."));
             await _orderManagerService.LoadMarketDataAsync(Orders, SelectedRegion, SelectedStation, DayLimit);
             Orders.Refresh();
@@ -329,7 +332,7 @@ namespace eZet.EveProfiteer.ViewModels.Modules {
         /// <summary>
         /// Processes and optimizes orders
         /// </summary>
-        public void ExecuteEdit() {
+        private void executeQuickEdit() {
             var vm = IoC.Get<OrderOptimizerViewModel>();
             var result = _windowManager.ShowDialog(vm);
             if (result == true) {

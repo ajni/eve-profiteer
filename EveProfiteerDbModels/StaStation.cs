@@ -18,6 +18,8 @@ namespace eZet.EveProfiteer.Models
         {
             this.MarketOrders = new HashSet<MarketOrder>();
             this.Orders = new HashSet<Order>();
+            this.Assets = new HashSet<Asset>();
+            this.Transactions = new HashSet<Transaction>();
         }
     
         public int StationId { get; set; }
@@ -42,5 +44,7 @@ namespace eZet.EveProfiteer.Models
         public virtual MapRegion MapRegion { get; set; }
         public virtual ICollection<MarketOrder> MarketOrders { get; set; }
         public virtual ICollection<Order> Orders { get; set; }
+        public virtual ICollection<Asset> Assets { get; set; }
+        public virtual ICollection<Transaction> Transactions { get; set; }
     }
 }

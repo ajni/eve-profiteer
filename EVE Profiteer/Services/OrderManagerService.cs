@@ -41,7 +41,7 @@ namespace eZet.EveProfiteer.Services {
                         .ToList();
                 var sellOrder = marketLookup[order.TypeId].SingleOrDefault(t => !t.Bid);
                 var buyOrder = marketLookup[order.TypeId].SingleOrDefault(t => t.Bid);
-                var ordervm = new OrderVm(order, buyOrder, sellOrder);
+                var ordervm = new OrderVm(stationId, order, buyOrder, sellOrder);
                 list.Add(ordervm);
             }
             return list;
@@ -69,8 +69,10 @@ namespace eZet.EveProfiteer.Services {
             foreach (var order in list) {
                 _trace.TraceEvent(TraceEventType.Verbose, 0, "" + count++);
                 if (order.Id == 0) {
-                    order.InvType = await db.InvTypes.FindAsync(order.InvType.TypeId).ConfigureAwait(false);
-                    await db.Entry(order.InvType).Collection(f => f.Assets).LoadAsync().ConfigureAwait(false);
+                    if (order.InvType == null) {
+                        order.InvType = await db.InvTypes.FindAsync(order.TypeId).ConfigureAwait(false);
+                        await db.Entry(order.InvType).Collection(f => f.Assets).LoadAsync().ConfigureAwait(false);
+                    }
                     order.ApiKeyEntity_Id = ApplicationHelper.ActiveEntity.Id;
                     db.Orders.Add(order);
                 } else {
@@ -80,6 +82,16 @@ namespace eZet.EveProfiteer.Services {
                 }
             }
             return await db.SaveChangesAsync().ConfigureAwait(false);
+        }
+
+        public async Task LoadInvTypes(IEnumerable<Order> orders) {
+            IList<Order> enumerable = orders as IList<Order> ?? orders.ToList();
+            IEnumerable<int> orderIds = enumerable.Select(f => f.TypeId);
+            var types = await Db.Context.InvTypes.Where(f => orderIds.Contains(f.TypeId)).ToListAsync().ConfigureAwait(false);
+            ILookup<int, InvType> lookup = types.ToLookup(f => f.TypeId);
+            foreach (Order order in enumerable) {
+                order.InvType = lookup[order.TypeId].Single();
+            }
         }
 
         public async Task LoadMarketDataAsync(IEnumerable<OrderVm> orderViewModels, MapRegion region, StaStation station, int dayLimit) {

@@ -9,6 +9,7 @@ namespace eZet.EveProfiteer.Services {
             get {
                 if (_db == null)
                     _db = CreateDb();
+                _db.Context.Configuration.LazyLoadingEnabled = false;
                 return _db;
             }
         }

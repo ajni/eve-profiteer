@@ -18,6 +18,9 @@ namespace eZet.EveProfiteer.Repository {
 
         public EveStaticDataRepository(EveProfiteerDbEntities context) {
             Context = context;
+            Context.Configuration.AutoDetectChangesEnabled = false;
+            Context.Configuration.LazyLoadingEnabled = false;
+            Context.Configuration.ProxyCreationEnabled = false;
             Initialize = InitializeAsync();
         }
 

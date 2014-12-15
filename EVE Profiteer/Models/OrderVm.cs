@@ -12,6 +12,8 @@ namespace eZet.EveProfiteer.Models {
 
         public MarketOrder BuyOrder { get; private set; }
 
+        public int StationId { get; private set; }
+
         public OrderVm() {
             Order = new Order();
         }
@@ -20,24 +22,25 @@ namespace eZet.EveProfiteer.Models {
             Order = order;
         }
 
-        public OrderVm(Order order, MarketOrder buyOrder, MarketOrder sellOrder)
+        public OrderVm(int stationId, Order order, MarketOrder buyOrder, MarketOrder sellOrder)
             : this(order) {
+            StationId = stationId;
             BuyOrder = buyOrder;
             SellOrder = sellOrder;
         }
 
         public DateTime? LastSellDate {
             get {
-                return Order.InvType.Assets.SingleOrDefault() != null && Order.InvType.Assets.Single().LastSellTransaction != null
-                    ? Order.InvType.Assets.Single().LastSellTransaction.TransactionDate
+                return Asset != null && Asset.LastSellTransaction != null
+                    ? Asset.LastSellTransaction.TransactionDate
                     : (DateTime?)null;
             }
         }
 
         public DateTime? LastBuyDate {
             get {
-                return Order.InvType.Assets.SingleOrDefault() != null && Order.InvType.Assets.Single().LastBuyTransaction != null
-                    ? Order.InvType.Assets.Single().LastBuyTransaction.TransactionDate
+                return Asset != null && Asset.LastBuyTransaction != null
+                    ? Asset.LastBuyTransaction.TransactionDate
                     : (DateTime?)null;
             }
         }
@@ -49,7 +52,7 @@ namespace eZet.EveProfiteer.Models {
         public Asset Asset {
             get {
                 if (Order.Id == 0) return null;
-                return Order.InvType.Assets.SingleOrDefault(asset => asset.ApiKeyEntity_Id == Order.ApiKeyEntity_Id);
+                return Order.InvType.Assets.SingleOrDefault(asset => asset.ApiKeyEntity_Id == Order.ApiKeyEntity_Id && asset.StationId == StationId);
             }
         }
 

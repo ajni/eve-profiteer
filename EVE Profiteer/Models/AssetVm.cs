@@ -34,14 +34,18 @@ namespace eZet.EveProfiteer.Models {
 
         private List<Order> Orders { get; set; }
 
+        public int TypeId {
+            get { return Asset.InvTypes_TypeId; }
+        }
 
         public string TypeName {
             get { return Asset.invType.TypeName; }
         }
 
-        public int TypeId {
-            get { return Asset.InvTypes_TypeId; }
+        public string StationName {
+            get { return Asset.staStation.StationName; }
         }
+
 
         public bool HasSellOrder {
             get { return Orders.Any(o => o.IsSellOrder); }

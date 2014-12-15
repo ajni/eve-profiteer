@@ -23,6 +23,7 @@ namespace eZet.EveProfiteer.Services {
                 Db.MyAssets()
                     .Include(a => a.invType.Orders)
                     .Include(a => a.AssetModifications)
+                    .Include(a => a.staStation)
                     .ToListAsync()
                     .ConfigureAwait(false);
 

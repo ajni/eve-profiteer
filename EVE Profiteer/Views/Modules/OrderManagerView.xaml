@@ -33,15 +33,15 @@
         <dxb:BarManager DockPanel.Dock="Top">
             <dxb:BarManager.Items>
 
-                <dxb:BarButtonItem Name="Load" Content="Load" Command="{Binding LoadCommand}"
+                <dxb:BarButtonItem Name="Load" Content="Load" Command="{Binding LoadOrdersCommand}"
                                    Hint="Load orders for selected station" />
-                <dxb:BarButtonItem Name="Process" Content="Quick Edit" Command="{Binding EditCommand}"
+                <dxb:BarButtonItem Name="Process" Content="Quick Edit" Command="{Binding QuickEditCommand}"
                                    Hint="Process and optimize all orders" />
                 
                 <dxb:BarButtonItem Name="UpdateMarketData" Content="Update prices"
                                    Command="{Binding UpdateMarketDataCommand}"
                                    Hint="Update market and price data for all orders" />
-                <dxb:BarButtonItem Name="Save" Content="Save" Command="{Binding SaveCommand}" Hint="Save all changes" />
+                <dxb:BarButtonItem Name="Save" Content="Save" Command="{Binding SaveOrdersCommand}" Hint="Save all changes" />
                 <dxb:BarButtonItem Name="ImportXml" Content="Import XML" Command="{Binding ImportXmlCommand}"
                                    Hint="Import from XML" />
                 <dxb:BarButtonItem Name="ExportXml" Content="Export XML" Command="{Binding ExportXmlCommand}"

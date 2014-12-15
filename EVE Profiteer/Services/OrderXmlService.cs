@@ -8,15 +8,13 @@ using eZet.EveProfiteer.Models;
 
 namespace eZet.EveProfiteer.Services {
     public class OrderXmlService {
-        private readonly EveProfiteerRepository _eveProfiteerRepository;
 
         public string BuyOrdersFileName = "BuyOrders.xml";
 
         public string SellOrdersFileName = "SellOrders.xml";
 
 
-        public OrderXmlService(EveProfiteerRepository eveProfiteerRepository) {
-            _eveProfiteerRepository = eveProfiteerRepository;
+        public OrderXmlService() {
         }
 
         public ICollection<Order> ImportOrders(string path) {
@@ -37,7 +35,6 @@ namespace eZet.EveProfiteer.Services {
                 }
             } catch (FileNotFoundException) {
             }
-            loadType(orders);
             return orders;
         }
 
@@ -49,15 +46,7 @@ namespace eZet.EveProfiteer.Services {
                 ToSellOrderCollection(orders));
         }
 
-        private void loadType(IEnumerable<Order> orders) {
-            IList<Order> enumerable = orders as IList<Order> ?? orders.ToList();
-            IEnumerable<int> orderIds = enumerable.Select(f => f.TypeId);
-            IQueryable<InvType> types = _eveProfiteerRepository.Context.InvTypes.Where(f => orderIds.Contains(f.TypeId));
-            ILookup<int, InvType> lookup = types.ToLookup(f => f.TypeId);
-            foreach (Order order in enumerable) {
-                order.InvType = lookup[order.TypeId].Single();
-            }
-        }
+
 
         private static BuyOrderCollection ToBuyOrderCollection(IEnumerable<Order> orders) {
             var buyOrders = new BuyOrderCollection();
@@ -114,6 +103,7 @@ namespace eZet.EveProfiteer.Services {
                 order.MaxBuyPrice = buyOrder.MaxPrice;
                 order.BuyQuantity = buyOrder.Quantity;
             }
+            order.AutoProcess = true;
             return order;
         }
     }
